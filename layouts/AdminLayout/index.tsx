@@ -1,7 +1,7 @@
 'use client'
 import { Overview } from '@/app/dashboard/_components/Overview'
 import { Search } from '@/components/common/Search'
-import { ProfileDropdown } from '@/components/profile/ProfileDropdown'
+import { ProfileDropdown } from '@/app/profile/_components/ProfileDropdown'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
