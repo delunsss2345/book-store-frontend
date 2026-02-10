@@ -1,7 +1,20 @@
-import DefaultLayout from "@/layouts/DefaultLayout";
+"use client";
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
-  return <DefaultLayout>{children}</DefaultLayout>;
+import Footer from "@/app/(main)/_components/Footer";
+import Header from "@/app/(main)/_components/Header";
+
+
+
+export default function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <>
+      <Header />
+      <main>{children}</main>
+      <Footer />
+    </>
+  );
 }
-
-export default Layout ; 

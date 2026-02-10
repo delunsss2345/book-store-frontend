@@ -69,7 +69,6 @@ async function request<T>(method: string, path: string, opt: ApiOptions = {}): P
     const contentType = res.headers.get("content-type") || ""; // check có phải json 
     const isJson = contentType.includes("application/json");
     const data: { message?: string, error?: string } = isJson ? await res.json().catch(() => null) : await res.text().catch(() => "");
-
     if (!res.ok) {
         const msg =
             (isJson && data && (data.message || data.error)) ? (data.message || data.error || 'InternalServerError') : `HTTP ${res.status ?? 505}`;

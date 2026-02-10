@@ -1,4 +1,5 @@
 import { API_MESSAGE } from "@/constants/api/messageApi";
+import { handleError } from "@/lib/api/errorHandler";
 import { api } from "@/lib/api/fetchHandler";
 import { ResponseApi } from "@/lib/api/responseHandler";
 import { LoginResponse } from "@/types/response/auth.response";
@@ -37,8 +38,6 @@ export async function POST(request: NextRequest) {
         if (process.env.NODE_ENV === 'development') {
             console.error("Login API Error:", error);
         }
-        return ResponseApi.error(
-            API_MESSAGE.SYSTEM_TRY_AGAIN, HttpStatusCode.BadRequest
-        )
+        return handleError(error);
     }
 }

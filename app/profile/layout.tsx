@@ -1,7 +1,17 @@
-import ProfileLayout from "@/layouts/ProfileLayout";
+import { Footer } from "@/app/profile/_components/Footer";
+import Header from "@/app/profile/_components/Header";
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
-  return <ProfileLayout>{children}</ProfileLayout>;
+
+export default function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <>
+      <Header />
+      <main>{children}</main>
+      <Footer />
+    </>
+  );
 }
-
-export default Layout ; 

@@ -1,10 +1,11 @@
+import ProfileButton from "@/app/(main)/_components/Header/ProfileButton";
+import SearchBar from "@/app/(main)/_components/Header/Search";
+import SettingsTranslation from "@/app/(main)/_components/Header/SettingTranslation";
+import Nav from "@/app/(main)/_components/Nav";
 import { useIsMobile } from "@/hooks/use-mobile";
 import useTranslator from "@/hooks/use-translator";
 import { Heart, Menu, ShoppingBag } from "lucide-react";
-import Nav from "../Nav";
-import ProfileButton from "./ProfileButton";
-import SearchBar from "./Search";
-import SettingsTranslation from "./SettingTranslation";
+
 
 const Header = () => {
   const { t } = useTranslator();
