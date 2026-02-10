@@ -53,6 +53,7 @@ async function request<T>(method: string, path: string, opt: ApiOptions = {}): P
 
     let res: Response;
     try {
+        console.log(url);
         res = await fetch(url, {
             ...init,
             method,

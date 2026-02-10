@@ -1,4 +1,4 @@
-export type RegisterPayload = {
+export type RegisterDTO = {
   firstName: string;
   lastName: string;
   email: string;
@@ -6,14 +6,19 @@ export type RegisterPayload = {
   confirmPassword: string;
 };
 
-export type LoginPayload = {
+export type LoginDTO = {
   email: string;
   password: string;
+  deviceFingerprint?: string;
 };
 
-export type LogoutPayload = {
+export type LogoutDTO = {
   refreshToken: string;
 };
+
+export type RegisterPayload = RegisterDTO;
+export type LoginPayload = LoginDTO;
+export type LogoutPayload = LogoutDTO;
 
 export type ChangePasswordPayload = {
   oldPassword: string;

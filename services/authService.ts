@@ -1,9 +1,9 @@
 import type {
   ChangePasswordPayload,
-  LoginPayload,
-  LogoutPayload,
+  LoginDTO,
+  LogoutDTO,
   RefreshTokenPayload,
-  RegisterPayload,
+  RegisterDTO,
   VerifyAccountPayload,
 } from "@/types/request/auth.request";
 
@@ -18,13 +18,13 @@ import type {
 import { http } from "@/utils/http";
 
 export const authApi = {
-  login: (payload: LoginPayload) =>
+  login: (payload: LoginDTO) =>
     http.post<LoginResponse>("/auth/login", payload),
 
-  register: (payload: RegisterPayload) =>
+  register: (payload: RegisterDTO) =>
     http.post<RegisterResponse>("/auth/register", payload),
 
-  logout: (payload: LogoutPayload) =>
+  logout: (payload: LogoutDTO) =>
     http.post<LogoutResponse>("/auth/logout", payload),
 
   changePassword: (payload: ChangePasswordPayload) =>

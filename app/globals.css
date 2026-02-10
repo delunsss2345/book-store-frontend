@@ -4,7 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --container-main: 1540px;
+  --container-main: 1440px;
   --width-md: 1140px;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -49,7 +49,6 @@
 }
 
 :root {
-  --container-main: 1640px;
   --width-md: 1140px;
 
   --radius: 0.625rem;

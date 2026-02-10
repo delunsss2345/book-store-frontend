@@ -1,9 +1,9 @@
-"use client";
+// "use client";
 
-import OrderPage from "@/pages/OrderPage";
+// // import OrderPage from "@/pages/OrderPage";
 
-const Page = () => {
-    return <OrderPage />;
-};
+// const Page = () => {
+//     return <OrderPage />;
+// };
 
-export default Page;
+// export default Page;

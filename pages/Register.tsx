@@ -1,10 +1,24 @@
-import RegisterForm from "@/components/auth/RegisterForm";
+import RegisterForm, { RegisterValues } from "@/components/auth/RegisterForm";
+import { useRegisterMutation } from "@/features/auth";
 import useTranslator from "@/hooks/use-translator";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const Register = () => {
   const { t } = useTranslator();
+  const router = useRouter();
+  const registerMutation = useRegisterMutation();
 
-  const onSubmit = async () => {};
+  const onSubmit = async (values: RegisterValues) => {
+    toast.promise((registerMutation.mutateAsync(values)), {
+      loading: 'Đang đăng ký',
+      success: () => {
+        router.push('/');
+        return 'Đăng ký thành công! Vui lòng kiểm tra email để xác minh tài khoản.';
+      },
+      error: 'Đăng ký thất bại',
+    });
+  };
 
   return (
     <div className="space-y-4">

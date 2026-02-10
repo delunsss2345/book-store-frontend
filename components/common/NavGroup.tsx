@@ -18,6 +18,7 @@ import {
 import { NavCollapsible, NavGroup as NavGroupProps, NavItem, NavLink } from '@/types/layouts/sidebar.type'
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { type ReactNode } from 'react'
 import { Badge } from '../ui/badge'
 import {
@@ -30,6 +31,7 @@ import {
 } from '../ui/dropdown-menu'
 
 export function NavGroup({ title, items }: NavGroupProps) {
+  const pathname = usePathname() ?? ''
   return (
     <SidebarGroup>
       <SidebarGroupLabel>{title}</SidebarGroupLabel>
@@ -38,11 +40,11 @@ export function NavGroup({ title, items }: NavGroupProps) {
           const key = `${item.title}-${item.url}`
 
           if (!item.items) {
-              return <SidebarMenuLink key={key} item={item} href={item.url} />
+            return <SidebarMenuLink key={key} item={item} href={pathname} />
           }
-          
 
-          return <SidebarMenuCollapsible key={key} item={item} href={null} />
+
+          return <SidebarMenuCollapsible key={key} item={item} href={pathname} />
         })}
       </SidebarMenu>
     </SidebarGroup>
@@ -166,7 +168,7 @@ function SidebarMenuCollapsedDropdown({
 
 function checkIsActive(href: string, item: NavItem, mainNav = false) {
   return (
-    href === item.url || 
-    !!item?.items?.filter((i) => i.url === href).length 
+    href === item.url ||
+    !!item?.items?.filter((i) => i.url === href).length
   )
 }

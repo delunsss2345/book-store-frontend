@@ -6,6 +6,7 @@ import axios, {
   type AxiosResponse,
 } from "axios";
 import { isPublicApi } from "./isPublicPath";
+import { useAuthStore } from "@/features/auth/store/auth.store";
 
 const baseURL = envConfig.NEXT_PUBLIC_BASE_API ?? "";
 
@@ -19,7 +20,7 @@ const refreshAxiosInstance: AxiosInstance = axios.create({
 
 // Mỗi request đều gắn accessToken
 axiosInstance.interceptors.request.use((config) => {
-  const accessToken = localStorage.getItem("accessToken");
+  const accessToken = useAuthStore.getState().accessToken
 
   if (!isPublicApi(config.url) && accessToken) {
     config.headers.set("Authorization", `Bearer ${accessToken}`);
@@ -47,13 +48,29 @@ const processQueue = (error: unknown) => {
 };
 
 // Gọi refreshToken
+const extractBearerToken = (value: string | undefined) => {
+  if (!value) return null;
+  const [type, token] = value.split(" ");
+  if (type?.toLowerCase() === "bearer" && token) {
+    return token;
+  }
+  return value;
+};
+
 const refreshToken = async () => {
   try {
     const result = await refreshAxiosInstance.post(`${baseURL}/auth/refresh`, {
-      refresh_token: localStorage.getItem("refreshToken"),
+      refreshToken: localStorage.getItem("refreshToken"),
     });
 
-    localStorage.setItem("accessToken", result.data.data.accessToken);
+    const authHeader = result.headers?.authorization ?? result.headers?.Authorization;
+    const tokenFromHeader = extractBearerToken(authHeader);
+    const tokenFromBody = result.data?.data?.accessToken ?? result.data?.accessToken;
+    const accessToken = tokenFromHeader ?? tokenFromBody;
+
+    if (accessToken) {
+      localStorage.setItem("accessToken", accessToken);
+    }
     // localStorage.setItem("refreshToken", result.data.data.refresh_token);
 
     // Gắn queue  null nếu thành công

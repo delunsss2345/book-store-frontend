@@ -1,9 +1,9 @@
-"use client";
+// "use client";
 
-import BookDetail from "@/pages/BookDetail";
+// import BookDetail from "@/pages/BookDetail";
 
-const Page = () => {
-  return <BookDetail />;
-};
+// const Page = () => {
+//   return <BookDetail />;
+// };
 
-export default Page;
+// export default Page;

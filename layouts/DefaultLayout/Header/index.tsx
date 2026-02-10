@@ -10,8 +10,8 @@ const Header = () => {
   const { t } = useTranslator();
   const isMobile = useIsMobile();
   return (
-    <header className="w-full max-w-[var(--container-main)]">
-      <div className="mx-auto flex h-16 w-full max-w-[var(--container-main)] items-center justify-between gap-6  px-2 sm:px-1">
+    <header className="px-4 w-full">
+      <div className="mx-auto flex h-16 w-full items-center justify-between gap-6  px-2 sm:px-1">
         {isMobile ? (
           <>
             <div>
