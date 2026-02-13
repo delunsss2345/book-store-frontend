@@ -1,11 +1,24 @@
-'use client'
-import ForgotPasswordForm from "@/app/(auth)/_components/ForgotPasswordForm";
+"use client";
+
+import ForgotPasswordForm, {
+  type ForgotPasswordValues,
+} from "@/app/(auth)/_components/ForgotPasswordForm";
+import { useForgotPasswordMutation } from "@/features/auth";
 import useTranslator from "@/hooks/use-translator";
+import { toast } from "sonner";
 
 const ForgotPassword = () => {
   const { t } = useTranslator();
+  const forgotPasswordMutation = useForgotPasswordMutation();
+  const isLoading = forgotPasswordMutation.isPending;
 
-  const onSubmit = async () => { };
+  const onSubmit = async (values: ForgotPasswordValues) => {
+    toast.promise(forgotPasswordMutation.mutateAsync(values), {
+      loading: t("auth.forgotSubmitting"),
+      success: t("auth.success.forgot", { email: values.email }),
+      error: t("auth.errors.requestFailed"),
+    });
+  };
 
   return (
     <div className="space-y-4">
@@ -16,7 +29,7 @@ const ForgotPassword = () => {
         </p>
       </div>
 
-      <ForgotPasswordForm onSubmit={onSubmit} />
+      <ForgotPasswordForm isLoading={isLoading} onSubmit={onSubmit} />
     </div>
   );
 };

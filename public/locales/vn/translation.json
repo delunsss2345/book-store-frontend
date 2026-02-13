@@ -188,10 +188,12 @@
     "forgotSubmitting": "Đang gửi...",
     "verifySubmit": "Xác minh",
     "verifying": "Đang xác minh...",
+    "verifyingToken": "Đang xác minh email...",
     "success": {
       "register": "Đăng ký thành công. Hãy kiểm tra email để nhận mã xác minh.",
       "verify": "Xác minh thành công. Bạn có thể đăng nhập.",
-      "forgot": "Nếu email tồn tại, chúng tôi sẽ gửi hướng dẫn đặt lại đến {{email}}."
+      "forgot": "Nếu email tồn tại, chúng tôi sẽ gửi hướng dẫn đặt lại đến {{email}}.",
+      "resend": "Nếu email tồn tại, chúng tôi đã gửi lại email xác minh tới {{email}}."
     },
     "errors": {
       "emailInvalid": "Email không hợp lệ",
@@ -199,7 +201,8 @@
       "required": "Bắt buộc",
       "passwordMismatch": "Mật khẩu không khớp",
       "requestFailed": "Có lỗi xảy ra. Vui lòng thử lại.",
-      "missingVerifyId": "Thiếu mã định danh xác minh."
+      "missingVerifyId": "Thiếu mã định danh xác minh.",
+      "verifyTokenInvalid": "Token xác minh không hợp lệ hoặc đã hết hạn."
     }
   },
   "orders": {

@@ -7,11 +7,11 @@ import { z } from "zod";
 import { FormMessageI18n } from "@/components/common/FormMessageI18n";
 import { Button } from "@/components/ui/button";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import useTranslator from "@/hooks/use-translator";
@@ -25,18 +25,27 @@ export type VerifyEmailValues = z.infer<ReturnType<typeof getVerifyEmailSchema>>
 
 type VerifyEmailFormProps = {
   isLoading?: boolean;
+  defaultEmail?: string;
   onSubmit?: (values: VerifyEmailValues) => void | Promise<void>;
 };
 
-const VerifyEmailForm = ({ isLoading = false, onSubmit }: VerifyEmailFormProps) => {
+const VerifyEmailForm = ({
+  isLoading = false,
+  defaultEmail = "",
+  onSubmit,
+}: VerifyEmailFormProps) => {
   const { t } = useTranslator();
   const verifyEmailSchema = React.useMemo(() => getVerifyEmailSchema(t), [t]);
 
   const form = useForm<VerifyEmailValues>({
     resolver: zodResolver(verifyEmailSchema),
-    defaultValues: { email: "" },
+    defaultValues: { email: defaultEmail },
     mode: "onSubmit",
   });
+
+  React.useEffect(() => {
+    form.reset({ email: defaultEmail });
+  }, [defaultEmail, form]);
 
   const handleSubmit = async (values: VerifyEmailValues) => {
     await onSubmit?.(values);

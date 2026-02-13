@@ -10,15 +10,16 @@ const Register = () => {
   const { t } = useTranslator();
   const router = useRouter();
   const registerMutation = useRegisterMutation();
+  const isLoading = registerMutation.isPending;
 
   const onSubmit = async (values: RegisterValues) => {
-    toast.promise((registerMutation.mutateAsync(values)), {
-      loading: 'Đang đăng ký',
+    toast.promise(registerMutation.mutateAsync(values), {
+      loading: t("auth.registering"),
       success: () => {
-        router.push('/');
-        return 'Đăng ký thành công! Vui lòng kiểm tra email để xác minh tài khoản.';
+        router.push(`/verify-email?email=${encodeURIComponent(values.email)}`);
+        return t("auth.success.register");
       },
-      error: 'Đăng ký thất bại',
+      error: t("auth.errors.requestFailed"),
     });
   };
 
@@ -31,7 +32,7 @@ const Register = () => {
         </p>
       </div>
 
-      <RegisterForm onSubmit={onSubmit} />
+      <RegisterForm isLoading={isLoading} onSubmit={onSubmit} />
     </div>
   );
 };

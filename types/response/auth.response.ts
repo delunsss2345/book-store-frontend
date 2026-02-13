@@ -39,13 +39,22 @@ export type LoginResponseData = AuthTokenData & {
   user: UserLoginResponse;
 };
 
-export type RefreshTokenResponseData = AuthTokenData;
+export type RefreshTokenResponseData = AuthTokenData & {
+  user?: UserLoginResponse;
+};
+
+export type AuthActionResponseData = {
+  success: boolean;
+};
 
 export type RegisterResponseData = UserResponse;
 
 export type LoginResponse = ApiResponse<LoginResponseData>;
 export type RefreshTokenResponse = ApiResponse<RefreshTokenResponseData>;
 export type RegisterResponse = ApiResponse<RegisterResponseData>;
+export type ForgotPasswordResponse = ApiResponse<AuthActionResponseData>;
+export type ResendEmailResponse = ApiResponse<AuthActionResponseData>;
+export type VerifyEmailResponse = ApiResponse<AuthActionResponseData>;
 
 export type LogoutResponse = void;
 export type ChangePasswordResponse = void;

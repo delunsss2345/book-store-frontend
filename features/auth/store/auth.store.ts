@@ -7,6 +7,7 @@ type AuthStore = {
     accessToken: string | null;
     isHydrated: boolean;
     setSession: (payload: { user: UserLoginResponse; accessToken: string }) => void;
+    setAccessToken: (accessToken: string | null) => void;
     clearSession: () => void;
     setHydrated: (value: boolean) => void;
 };
@@ -18,6 +19,7 @@ export const useAuthStore = create<AuthStore>()(
             accessToken: null,
             isHydrated: false,
             setSession: ({ user, accessToken }) => set({ user, accessToken }),
+            setAccessToken: (accessToken) => set({ accessToken }),
             clearSession: () => set({ user: null, accessToken: null }),
             setHydrated: (value) => set({ isHydrated: value }),
         }),

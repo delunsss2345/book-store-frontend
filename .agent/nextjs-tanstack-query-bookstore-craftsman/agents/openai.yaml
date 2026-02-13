@@ -1,0 +1,6 @@
+interface:
+  display_name: "Next.js Bookstore Craftsman"
+  short_description: "Next.js + TanStack Query v5 + UI/UX bookstore (shadcn + tailwind only), code-first, token-lean"
+  default_prompt: "Next.js bookstore task. Output strictly: ASSUMPTIONS/PLAN/PATCH/RUN/VERIFY/NOTES. UI must be shadcn+tailwind only."
+policy:
+  allow_implicit_invocation: true

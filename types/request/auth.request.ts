@@ -12,12 +12,22 @@ export type LoginDTO = {
   deviceFingerprint?: string;
 };
 
+export type ForgotPasswordDTO = {
+  email: string;
+};
+
+export type ResendEmailDTO = {
+  email: string;
+};
+
 export type LogoutDTO = {
   refreshToken: string;
 };
 
 export type RegisterPayload = RegisterDTO;
 export type LoginPayload = LoginDTO;
+export type ForgotPasswordPayload = ForgotPasswordDTO;
+export type ResendEmailPayload = ResendEmailDTO;
 export type LogoutPayload = LogoutDTO;
 
 export type ChangePasswordPayload = {

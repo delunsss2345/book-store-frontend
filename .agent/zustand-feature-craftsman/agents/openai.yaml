@@ -1,0 +1,6 @@
+interface:
+  display_name: "Zustand Feature Craftsman"
+  short_description: "Zustand + feature-based store hooks folders selector index.ts (TS/Next.js), code-first, token-lean"
+  default_prompt: "Implement/refactor Zustand with feature folders. Output strictly: ASSUMPTIONS/PLAN/PATCH/RUN/VERIFY/NOTES."
+policy:
+  allow_implicit_invocation: true

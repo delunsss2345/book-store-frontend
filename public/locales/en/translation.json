@@ -188,10 +188,12 @@
     "forgotSubmitting": "Sending reset link...",
     "verifySubmit": "Verify account",
     "verifying": "Verifying...",
+    "verifyingToken": "Verifying your email...",
     "success": {
       "register": "Registration successful. Check your email for the verification token.",
       "verify": "Verification successful. You can log in now.",
-      "forgot": "If the email exists, we will send reset instructions to {{email}}."
+      "forgot": "If the email exists, we will send reset instructions to {{email}}.",
+      "resend": "If the email exists, we sent a new verification email to {{email}}."
     },
     "errors": {
       "emailInvalid": "Invalid email address",
@@ -199,7 +201,8 @@
       "required": "This field is required",
       "passwordMismatch": "Passwords do not match",
       "requestFailed": "Something went wrong. Please try again.",
-      "missingVerifyId": "Verification link is missing an id."
+      "missingVerifyId": "Verification link is missing an id.",
+      "verifyTokenInvalid": "Verification token is invalid or expired."
     }
   }
 }

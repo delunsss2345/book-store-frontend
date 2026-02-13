@@ -1,12 +1,14 @@
 import { envConfig } from "@/config/envConfig";
+import { useAuthStore } from "@/features/auth/store/auth.store";
 import type { PromiseHandlers } from "@/types/lib/axios";
+import type { RefreshTokenResponseData } from "@/types/response/auth.response";
 import axios, {
+  AxiosHeaders,
   type AxiosInstance,
   type AxiosRequestConfig,
   type AxiosResponse,
 } from "axios";
 import { isPublicApi } from "./isPublicPath";
-import { useAuthStore } from "@/features/auth/store/auth.store";
 
 const baseURL = envConfig.NEXT_PUBLIC_BASE_API ?? "";
 
@@ -20,10 +22,19 @@ const refreshAxiosInstance: AxiosInstance = axios.create({
 
 // Mỗi request đều gắn accessToken
 axiosInstance.interceptors.request.use((config) => {
-  const accessToken = useAuthStore.getState().accessToken
+  const accessToken = useAuthStore.getState().accessToken;
 
   if (!isPublicApi(config.url) && accessToken) {
-    config.headers.set("Authorization", `Bearer ${accessToken}`);
+    if (!config.headers) {
+      config.headers = new AxiosHeaders();
+    }
+
+    if (typeof config.headers.set === "function") {
+      config.headers.set("Authorization", `Bearer ${accessToken}`);
+    } else {
+      (config.headers as Record<string, string>).Authorization =
+        `Bearer ${accessToken}`;
+    }
   }
 
   return config;
@@ -35,7 +46,7 @@ let isRefreshing = false;
 let failedQueue: PromiseHandlers[] = [];
 
 // Xử lí queue
-const processQueue = (error: unknown) => {
+const processQueue = (error?: unknown) => {
   failedQueue.forEach((prom) => {
     if (error) {
       prom.reject(error);
@@ -57,28 +68,50 @@ const extractBearerToken = (value: string | undefined) => {
   return value;
 };
 
+type RefreshRouteResponse = {
+  success?: boolean;
+  data?: RefreshTokenResponseData;
+} & Partial<RefreshTokenResponseData>;
+
 const refreshToken = async () => {
+  const { user, setAccessToken, setSession, clearSession } =
+    useAuthStore.getState();
+
   try {
-    const result = await refreshAxiosInstance.post(`${baseURL}/auth/refresh`, {
-      refreshToken: localStorage.getItem("refreshToken"),
-    });
+    const result = await refreshAxiosInstance.post<RefreshRouteResponse>(
+      "/auth/refresh-token",
+    );
 
-    const authHeader = result.headers?.authorization ?? result.headers?.Authorization;
+    const authHeader =
+      result.headers?.authorization ?? result.headers?.Authorization;
     const tokenFromHeader = extractBearerToken(authHeader);
-    const tokenFromBody = result.data?.data?.accessToken ?? result.data?.accessToken;
-    const accessToken = tokenFromHeader ?? tokenFromBody;
+    const payload = result.data?.data ?? result.data;
+    const tokenFromBody = payload?.accessToken;
+    const accessToken = tokenFromHeader ?? tokenFromBody ?? null;
 
-    if (accessToken) {
-      localStorage.setItem("accessToken", accessToken);
+    if (!accessToken) {
+      throw new Error("Missing access token from refresh response");
     }
-    // localStorage.setItem("refreshToken", result.data.data.refresh_token);
+
+    if (payload?.user) {
+      setSession({
+        user: payload.user,
+        accessToken,
+      });
+    } else if (user) {
+      setSession({
+        user,
+        accessToken,
+      });
+    } else {
+      setAccessToken(accessToken);
+    }
 
     // Gắn queue  null nếu thành công
-    processQueue(null);
+    processQueue();
   } catch (error) {
     processQueue(error);
-    localStorage.removeItem("accessToken");
-    // localStorage.removeItem("refreshToken");
+    clearSession();
     throw error;
   }
 };
@@ -88,8 +121,11 @@ const getNewToken = async () => {
   // Chưa refresh token thì đánh giấu
   if (!isRefreshing) {
     isRefreshing = true;
-    await refreshToken(); // gọi lại
-    isRefreshing = false; // thành công đánh dấu
+    try {
+      await refreshToken(); // gọi lại
+    } finally {
+      isRefreshing = false; // thành công đánh dấu
+    }
     return;
   }
 
@@ -106,16 +142,17 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     const isAuthApi = isPublicApi(originalRequest?.url);
+    const hasAccessToken = Boolean(useAuthStore.getState().accessToken);
 
     // Đánh dấu lỗi
     const shouldRenewToken =
       error.response?.status === 401 &&
       !isAuthApi &&
-      localStorage.getItem("refreshToken") &&
+      hasAccessToken &&
       !originalRequest?._retry;
 
     // Nếu chưa từng đánh dấu thì vào
-    if (shouldRenewToken) {
+    if (shouldRenewToken && originalRequest) {
       // đánh dấu
       originalRequest._retry = true;
 
