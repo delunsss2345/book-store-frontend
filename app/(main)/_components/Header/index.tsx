@@ -1,11 +1,9 @@
 "use client";
-
 import CartSheet from "@/app/(main)/_components/Header/CartSheet";
 import ProfileButton from "@/app/(main)/_components/Header/ProfileButton";
 import SearchBar from "@/app/(main)/_components/Header/Search";
 import SettingsTranslation from "@/app/(main)/_components/Header/SettingTranslation";
 import Nav from "@/app/(main)/_components/Nav";
-import { useAuthStore } from "@/features/auth/store/auth.store";
 import { useIsMobile } from "@/hooks/use-mobile";
 import useTranslator from "@/hooks/use-translator";
 import { Heart, Menu } from "lucide-react";
@@ -14,9 +12,7 @@ import Link from "next/link";
 const Header = () => {
   const { t } = useTranslator();
   const isMobile = useIsMobile();
-  const currentUser = useAuthStore((s) => s.user);
-  const isHydrated = useAuthStore((s) => s.isHydrated);
-  const showAuthenticatedActions = isHydrated && Boolean(currentUser);
+
 
   return (
     <header className="w-full px-4">
@@ -38,19 +34,17 @@ const Header = () => {
             <div className="flex items-center gap-2">
               <SearchBar />
               <SettingsTranslation />
-              {showAuthenticatedActions ? <ProfileButton /> : null}
+              <ProfileButton />
             </div>
           ) : null}
 
-          {showAuthenticatedActions ? (
-            <Link
-              href="/wishlist"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-sm hover:bg-muted"
-              aria-label={t("header.aria.wishlist")}
-            >
-              <Heart className="h-5 w-5" />
-            </Link>
-          ) : null}
+          <Link
+            href="/wishlist"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-sm hover:bg-muted"
+            aria-label={t("header.aria.wishlist")}
+          >
+            <Heart className="h-5 w-5" />
+          </Link>
 
           <CartSheet />
         </div>

@@ -1,9 +1,11 @@
+import { useAuthStore } from "@/features/auth";
 import useTranslator from "@/hooks/use-translator";
 import { User } from "lucide-react";
 import Link from "next/link";
 
 const ProfileButton = () => {
   const { t } = useTranslator();
+
   return (
     <button
       type="button"

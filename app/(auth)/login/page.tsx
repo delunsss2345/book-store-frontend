@@ -1,8 +1,8 @@
 'use client'
 
 import LoginForm, { type LoginValues } from "@/app/(auth)/_components/LoginForm";
-import { LoginButtons } from "@/app/(auth)/_components/LoginWithGoogle";
 import { useLoginMutation } from "@/features/auth/hooks/use-login-mutation";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -26,7 +26,16 @@ const Login = () => {
   return (
     <>
       <LoginForm isLoading={isLoading} onSubmit={onSubmit} />
-      <LoginButtons />
+
+      <p className="mt-4 text-center text-sm text-muted-foreground">
+        Chưa có tài khoản?{" "}
+        <Link
+          href="/register"
+          className="font-medium text-foreground underline underline-offset-4 transition-opacity hover:opacity-80"
+        >
+          Đăng ký
+        </Link>
+      </p>
     </>
   );
 };

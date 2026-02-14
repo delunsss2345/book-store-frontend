@@ -11,7 +11,6 @@ import useTranslator from "@/hooks/use-translator";
 const ProfilePage = () => {
   const { t } = useTranslator();
   const currentUser = useAuthStore((s) => s.user);
-
   return (
     <main className="min-h-[calc(100vh-8rem)] bg-background">
       <div className="mx-auto max-w-6xl px-4 py-10">
