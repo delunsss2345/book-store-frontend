@@ -81,8 +81,6 @@ function CardInner({
         className={cn(
           "relative",
           "mx-auto",
-          "bg-transparent",
-          "shadow-[0_10px_30px_rgba(0,0,0,0.12)]",
           s.figure
         )}
       >

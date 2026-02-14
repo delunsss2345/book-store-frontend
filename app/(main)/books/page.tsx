@@ -12,11 +12,11 @@ import {
 } from "@/components/ui/sheet";
 import {
     ChevronDown,
-    SlidersHorizontal,
-    ChevronsLeft,
     ChevronLeft,
     ChevronRight,
+    ChevronsLeft,
     ChevronsRight,
+    SlidersHorizontal,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -367,7 +367,7 @@ export default function AllTitlesPage() {
 
             {/* Book grid */}
             <div className="mt-8">
-                <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
+                <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 lg:grid-cols-4 bg-transparent">
                     {books.map((book, i) => (
                         <BookCard
                             key={i}
