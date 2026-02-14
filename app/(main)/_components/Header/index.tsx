@@ -15,7 +15,7 @@ const Header = () => {
 
 
   return (
-    <header className="w-full px-4">
+    <header className="relative z-50 w-full bg-white px-4">
       <div className="mx-auto flex h-16 w-full items-center justify-between gap-6 px-2 sm:px-1">
         {isMobile ? (
           <div>

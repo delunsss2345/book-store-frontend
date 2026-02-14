@@ -44,7 +44,7 @@ export default function OverviewChart() {
                   style={{ height: `${heightPercent}%` }}
                   title={`${item.name}: $${item.total.toLocaleString()}`}
                 />
-                <span className="mt-2 text-center text-[10px] text-muted-foreground">
+                <span className="mt-2 text-center text-[1rem] text-muted-foreground">
                   {item.name}
                 </span>
               </div>
