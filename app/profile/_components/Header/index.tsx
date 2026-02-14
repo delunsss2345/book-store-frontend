@@ -11,10 +11,15 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
+import { useLogoutMutation } from "@/features/auth/hooks/use-logout-mutation";
 import useTranslator from "@/hooks/use-translator";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const Header = () => {
     const { t } = useTranslator();
+    const logoutMutation = useLogoutMutation();
+    const router = useRouter();
     const countryKeys = ["germany", "france", "unitedStates", "unitedKingdom"];
     const policyLinks = [
         { href: "/refund-policy", key: "refundPolicy" },
@@ -25,6 +30,15 @@ const Header = () => {
         { href: "/contact", key: "contactInformation" },
     ];
     const activeCountryKey = "germany";
+
+    const handleLogout = async () => {
+        toast.promise(logoutMutation.mutateAsync(), {
+            loading: t("auth.registering"),
+            success: t("auth.success.register"),
+            error: t("auth.errors.requestFailed"),
+        });
+        router.push("/");
+    }
 
     return (
         <header className="w-full">
@@ -58,7 +72,7 @@ const Header = () => {
                                 </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem asChild>
-                                <Link href="/logout">{t("profile.header.menu.signOut")}</Link>
+                                <Button variant='ghost' className="border-0! hover:none!" onClick={handleLogout} >{t("profile.header.menu.signOut")}</Button>
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>

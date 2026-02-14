@@ -2,10 +2,9 @@ import type {
   ChangePasswordPayload,
   ForgotPasswordDTO,
   LoginDTO,
-  LogoutDTO,
   RegisterDTO,
   ResendEmailDTO,
-  VerifyAccountPayload,
+  VerifyAccountPayload
 } from "@/types/request/auth.request";
 
 import type {
@@ -39,8 +38,8 @@ export const authApi = {
       params: { token },
     }),
 
-  logout: (payload: LogoutDTO) =>
-    http.post<LogoutResponse>("/auth/logout", payload),
+  logout: () =>
+    http.post<LogoutResponse>("/auth/logout"),
 
   changePassword: (payload: ChangePasswordPayload) =>
     http.post<ChangePasswordResponse>("/auth/change-password", payload),

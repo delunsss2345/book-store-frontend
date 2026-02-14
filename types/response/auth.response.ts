@@ -47,7 +47,7 @@ export type AuthActionResponseData = {
   success: boolean;
 };
 
-export type RegisterResponseData = UserResponse;
+export type RegisterResponseData = LoginResponseData
 
 export type LoginResponse = ApiResponse<LoginResponseData>;
 export type RefreshTokenResponse = ApiResponse<RefreshTokenResponseData>;
@@ -56,6 +56,8 @@ export type ForgotPasswordResponse = ApiResponse<AuthActionResponseData>;
 export type ResendEmailResponse = ApiResponse<AuthActionResponseData>;
 export type VerifyEmailResponse = ApiResponse<AuthActionResponseData>;
 
-export type LogoutResponse = void;
+export type LogoutResponse = ApiResponse<{
+  success: boolean
+}>
 export type ChangePasswordResponse = void;
 export type VerifyAccountResponse = void;

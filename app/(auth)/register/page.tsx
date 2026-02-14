@@ -3,22 +3,17 @@
 import RegisterForm, { RegisterValues } from "@/app/(auth)/_components/RegisterForm";
 import { useRegisterMutation } from "@/features/auth";
 import useTranslator from "@/hooks/use-translator";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 const Register = () => {
   const { t } = useTranslator();
-  const router = useRouter();
   const registerMutation = useRegisterMutation();
   const isLoading = registerMutation.isPending;
 
   const onSubmit = async (values: RegisterValues) => {
     toast.promise(registerMutation.mutateAsync(values), {
       loading: t("auth.registering"),
-      success: () => {
-        router.push(`/verify-email?email=${encodeURIComponent(values.email)}`);
-        return t("auth.success.register");
-      },
+      success: t("auth.success.register"),
       error: t("auth.errors.requestFailed"),
     });
   };
