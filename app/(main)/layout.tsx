@@ -16,7 +16,7 @@ export default function Layout({
       <Header />
       <main>{children}</main>
       <Footer />
-      <ChatWidget />
+    
     </>
   );
 }

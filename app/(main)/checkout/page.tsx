@@ -23,9 +23,6 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 
-/* ------------------------------------------------------------------ */
-/*  Hardcoded mock data (UI only – no logic)                          */
-/* ------------------------------------------------------------------ */
 
 const orderItems = [
     {
@@ -39,24 +36,14 @@ const orderItems = [
     },
     {
         id: "2",
-        title: "🎁 Quà tặng Bao lì xì 2026 (100% off)",
-        qty: 1,
-        price: 0,
-        isFree: true,
-        imageUrl:
-            "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=120&q=60",
-    },
-    {
-        id: "3",
         title: "Clog SUKE nhựa đúc nam nữ trắng",
         variant: "M4W6 | 36‑37",
         qty: 2,
         price: 678300,
         originalPrice: 798000,
-        discount: "MUA 2 GIẢM 15% (-119.700 đ)",
         imageUrl:
-            "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=120&q=60",
-    },
+            "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=120&q=60"
+    }
 ];
 
 const fmt = (n: number) =>
@@ -109,24 +96,6 @@ export default function CheckoutPage() {
                             hàng này.
                         </p>
 
-                        {/* Warning box – out‑of‑stock */}
-                        <div className="mt-4 rounded-md border border-red-200 bg-red-50 p-4">
-                            <div className="flex items-start gap-2">
-                                <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-500" />
-                                <div className="text-sm text-zinc-700">
-                                    <p className="font-medium">
-                                        Kho online đã hết hàng, sản phẩm chỉ còn tại cửa hàng:
-                                    </p>
-                                    <ul className="ml-4 mt-1 list-disc">
-                                        <li>Sandal Platy 2 đen/39W | 24.5 cm</li>
-                                    </ul>
-                                    <p className="mt-2 text-xs text-zinc-500 italic">
-                                        Vui lòng chọn hình thức nhận tại cửa hàng. Nhân viên sẽ liên
-                                        hệ bạn sớm hoặc gọi 0987.699.654
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
 
                         {/* Shipping method tabs */}
                         <div className="mt-5 overflow-hidden rounded-lg border border-zinc-200">
@@ -151,10 +120,9 @@ export default function CheckoutPage() {
                                 <SelectTrigger className="h-12 w-full rounded-md border-zinc-300 text-sm">
                                     <SelectValue placeholder="Quốc gia/ Vùng" />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent position="popper" >
                                     <SelectItem value="vn">Việt Nam</SelectItem>
                                     <SelectItem value="us">United States</SelectItem>
-                                    <SelectItem value="jp">Japan</SelectItem>
                                 </SelectContent>
                             </Select>
 
@@ -225,7 +193,6 @@ export default function CheckoutPage() {
                         </div>
                     </section>
 
-                    {/* ---- Thanh toán (Payment) ---- */}
                     <section>
                         <h2 className="text-xl font-semibold">Thanh toán</h2>
                         <p className="mt-1 text-sm text-zinc-500">
@@ -259,36 +226,6 @@ export default function CheckoutPage() {
                                     </span>
                                 </div>
                             </label>
-
-                            {/* VNPAY description */}
-                            <div className="border-b border-zinc-200 bg-zinc-50 px-4 py-3 text-center text-sm text-zinc-500">
-                                Bạn sẽ được chuyển hướng đến VNPAY để hoàn tất quá trình mua
-                                hàng.
-                            </div>
-
-                            {/* ZaloPay */}
-                            <label
-                                htmlFor="zalopay"
-                                className="flex cursor-pointer items-center gap-3 border-b border-zinc-200 px-4 py-4"
-                            >
-                                <RadioGroupItem value="zalopay" id="zalopay" />
-                                <span className="text-sm text-zinc-700">
-                                    Thanh toán online qua cổng thanh toán ZaloPay
-                                </span>
-                                <div className="ml-auto flex items-center gap-1.5">
-                                    <span className="rounded bg-red-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
-                                        MC
-                                    </span>
-                                    <span className="rounded bg-blue-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
-                                        JCB
-                                    </span>
-                                    <span className="rounded bg-blue-700 px-1.5 py-0.5 text-[10px] font-bold text-white">
-                                        VISA
-                                    </span>
-                                    <span className="text-xs text-zinc-400">+2</span>
-                                </div>
-                            </label>
-
                             {/* COD */}
                             <label
                                 htmlFor="cod"
@@ -406,7 +343,6 @@ export default function CheckoutPage() {
 
                     <Separator className="my-6" />
 
-                    {/* Grand total */}
                     <div className="flex items-center justify-between">
                         <span className="text-base font-semibold">Tổng</span>
                         <div className="text-right">
@@ -415,10 +351,6 @@ export default function CheckoutPage() {
                         </div>
                     </div>
 
-                    {/* Savings */}
-                    <p className="mt-2 text-sm text-teal-600">
-                        ⊘ TỔNG SỐ TIỀN TIẾT KIỆM ĐƯỢC {fmt(119700)}
-                    </p>
                 </aside>
             </div>
         </div>

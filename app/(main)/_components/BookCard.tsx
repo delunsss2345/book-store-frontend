@@ -101,9 +101,9 @@ function CardInner({
       </figure>
 
       {/* BADGE */}
-      <div className={s.badgeWrap}>
-        {badge ? <span className={s.badge}>{badge}</span> : <span className="inline-block h-[28px]" />}
-      </div>
+      {badge && <div className={s.badgeWrap}>
+        <span className={s.badge}>{badge}</span>
+      </div>}
 
       {/* TEXT (khóa nhịp, để card nào cũng đều) */}
       <div className="mx-auto mt-2 max-w-[26ch]">

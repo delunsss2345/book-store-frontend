@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { FileDown, Minus, Plus, Upload, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 import * as React from "react";
 
 type CartItem = {
@@ -57,6 +58,7 @@ const initialItems: CartItem[] = [
 
 export default function ShoppingCartPage() {
     const [items, setItems] = React.useState<CartItem[]>(initialItems);
+    const router = useRouter();
 
     const updateQty = (id: string, delta: number) => {
         setItems((prev) =>
@@ -210,8 +212,9 @@ export default function ShoppingCartPage() {
                         </div>
 
                         <Button
+                            onClick={() => router.push("/checkout")}
                             variant="outline"
-                            className="mt-5 w-full rounded-none border-zinc-900 py-5 text-xs uppercase tracking-wider"
+                            className="mt-5 w-full cursor-pointer rounded-none border-zinc-900 py-5 text-xs uppercase tracking-wider"
                             disabled={items.length === 0}
                         >
                             Proceed to checkout
@@ -219,33 +222,6 @@ export default function ShoppingCartPage() {
                     </div>
 
                     <Separator />
-
-                    {/* Cart upload */}
-                    <div>
-                        <h2 className="text-sm font-bold">Cart Upload from spreadsheet</h2>
-                        <p className="mt-2 text-xs leading-relaxed text-zinc-500">
-                            Upload your order list to automatically populate your cart.
-                            Please use our template to ensure correct formatting
-                            (semicolon-separated). You can use either the EAN or ISBN.
-                        </p>
-                        <div className="mt-4 flex items-center gap-3">
-                            <Button
-                                variant="outline"
-                                className="rounded-none text-xs"
-                                size="sm"
-                            >
-                                <Upload className="mr-2 h-3.5 w-3.5" />
-                                Upload File
-                            </Button>
-                            <button
-                                type="button"
-                                className="flex items-center gap-1.5 text-xs text-blue-600 underline underline-offset-2"
-                            >
-                                <FileDown className="h-3.5 w-3.5" />
-                                Use our template
-                            </button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

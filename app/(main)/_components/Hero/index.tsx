@@ -88,7 +88,7 @@ const Hero = () => {
           font-weight: 300;
         }
         .hero-swiper .swiper-pagination {
-          bottom: 24px !important;
+          bottom: 145px !important;
         }
         .hero-swiper .swiper-pagination-bullet {
           width: 8px;
@@ -140,7 +140,7 @@ const Hero = () => {
 
                   {/* Book spine shadow */}
                   <div
-                    className="absolute bottom-0 left-1/2 h-[8px] w-[260px] -translate-x-1/2 sm:w-[300px]"
+                    className="absolute  left-1/2 h-[8px] w-[260px] -translate-x-1/2 sm:w-[300px]"
                     style={{
                       background:
                         "radial-gradient(ellipse, rgba(0,0,0,0.25) 0%, transparent 70%)",

@@ -1,19 +1,12 @@
 "use client";
 
-import * as React from "react";
-import { MessageCircle, Minus, X, Send, MessageSquareOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-/* ------------------------------------------------------------------ */
-/*  Types                                                              */
-/* ------------------------------------------------------------------ */
+import { MessageCircle, MessageSquareOff, Minus, Send, X } from "lucide-react";
+import * as React from "react";
 
 type ChatView = "closed" | "welcome" | "chat" | "end-confirm";
 
-/* ------------------------------------------------------------------ */
-/*  Chat Widget (UI only – no real messaging logic)                   */
-/* ------------------------------------------------------------------ */
 
 export default function ChatWidget() {
     const [view, setView] = React.useState<ChatView>("closed");
@@ -34,9 +27,7 @@ export default function ChatWidget() {
 
     return (
         <div className="fixed right-6 bottom-6 z-50 flex w-[380px] flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-2xl">
-            {/* ======================================================== */}
-            {/*  HEADER (shared across welcome / chat / end-confirm)      */}
-            {/* ======================================================== */}
+
             {view !== "end-confirm" && (
                 <div className="flex items-center gap-3 bg-neutral-900 px-5 py-4 text-white">
                     {/* Logo */}
@@ -75,9 +66,6 @@ export default function ChatWidget() {
                 </div>
             )}
 
-            {/* ======================================================== */}
-            {/*  VIEW: Welcome (name + email form)                        */}
-            {/* ======================================================== */}
             {view === "welcome" && (
                 <div className="flex flex-1 flex-col px-6 py-8">
                     <h2 className="text-2xl font-bold text-neutral-900">Welcome!</h2>
@@ -122,9 +110,6 @@ export default function ChatWidget() {
                 </div>
             )}
 
-            {/* ======================================================== */}
-            {/*  VIEW: Chat window                                        */}
-            {/* ======================================================== */}
             {view === "chat" && (
                 <>
                     {/* Messages area */}
