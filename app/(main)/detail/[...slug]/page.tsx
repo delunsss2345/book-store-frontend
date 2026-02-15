@@ -58,9 +58,9 @@ export default function DetailPage() {
 
   return (
     <div className="w-full bg-white text-neutral-900">
-      <div className="mx-auto max-w-[1540px] px-6 py-3">
+      <div className="container-main py-3">
         {/* breadcrumb */}
-        <nav className="text-[1.2rem] tracking-wide text-neutral-500">
+        <nav className="text-[12px] tracking-wide text-neutral-500">
           <span>Home</span> <span className="mx-2 text-neutral-300">|</span>
           <span>Books</span> <span className="mx-2 text-neutral-300">|</span>
           <span>Architecture &amp; Design</span> <span className="mx-2 text-neutral-300">|</span>
@@ -84,7 +84,7 @@ export default function DetailPage() {
             </div>
 
             <div className="mt-4 flex items-center justify-between">
-              <p className="text-[1.2rem] text-neutral-500">
+              <p className="text-[12px] text-neutral-500">
                 {active + 1} / {gallery.length}
               </p>
 
@@ -113,19 +113,19 @@ export default function DetailPage() {
             <div className="flex items-start justify-between gap-6">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[1.2rem] font-semibold tracking-widest text-red-600">NEW</span>
-                  <span className="rounded-sm border border-neutral-200 px-2 py-1 text-[1.2rem] tracking-wide text-neutral-700">
+                  <span className="text-[12px] font-semibold tracking-widest text-red-600">NEW</span>
+                  <span className="rounded-sm border border-neutral-200 px-2 py-1 text-[12px] tracking-wide text-neutral-700">
                     XL
                   </span>
                 </div>
 
-                <h1 className="mt-4 font-serif text-[3.4rem] leading-[1.1] tracking-tight">
+                <h1 className="mt-4 font-serif text-[34px] leading-[1.1] tracking-tight">
                   Homes for Our Time.
                   <br />
                   Sustainable Living
                 </h1>
 
-                <p className="mt-4 text-[2.2rem] tracking-tight text-neutral-900">{formatPrice(80)}</p>
+                <p className="mt-4 text-[22px] tracking-tight text-neutral-900">{formatPrice(80)}</p>
               </div>
 
               <button
@@ -137,12 +137,12 @@ export default function DetailPage() {
               </button>
             </div>
 
-            <div className="mt-8 space-y-2 text-[1.3rem] leading-6 text-neutral-700">
+            <div className="mt-8 space-y-2 text-[13px] leading-6 text-neutral-700">
               <p>Edition: Multilingual (English, French, German)</p>
               <p>Availability: In Stock</p>
             </div>
 
-            <div className="mt-8 space-y-5 text-[1.5rem] leading-7 text-neutral-800">
+            <div className="mt-8 space-y-5 text-[15px] leading-7 text-neutral-800">
               <p>
                 <span className="font-semibold text-neutral-900">The future of resourceful living:</span>{" "}
                 these cutting-edge examples of <span className="font-semibold text-neutral-900">green buildings</span>{" "}
@@ -153,7 +153,7 @@ export default function DetailPage() {
 
             {/* ---- Variant selector (UI only) ---- */}
             <div className="mt-8">
-              <p className="mb-3 text-[1.3rem] font-medium text-neutral-700">Size</p>
+              <p className="mb-3 text-[13px] font-medium text-neutral-700">Size</p>
               <div className="flex flex-wrap gap-2">
                 {["36", "37", "38", "39W", "39", "40", "41", "42", "43", "44"].map(
                   (variant) => (
@@ -161,7 +161,7 @@ export default function DetailPage() {
                       key={variant}
                       type="button"
                       className={[
-                        "flex h-12 min-w-[60px] items-center justify-center rounded-sm border px-3 text-[1.3rem] transition",
+                        "flex h-12 min-w-[60px] items-center justify-center rounded-sm border px-3 text-[13px] transition",
                         variant === "43"
                           ? "border-neutral-900 bg-neutral-900 font-semibold text-white"
                           : "border-neutral-200 bg-white text-neutral-700 hover:border-neutral-400",
@@ -186,7 +186,7 @@ export default function DetailPage() {
                 </Button>
 
                 <Input
-                  className="h-10 w-14 rounded-none border-x border-neutral-200 text-center text-[1.3rem]"
+                  className="h-10 w-14 rounded-none border-x border-neutral-200 text-center text-[13px]"
                   value={qty}
                   onChange={(e) => {
                     const next = Number(e.target.value);
@@ -204,22 +204,22 @@ export default function DetailPage() {
                 </Button>
               </div>
 
-              <Button className="h-10 rounded-sm bg-neutral-900 px-6 text-[1.3rem] font-medium tracking-wide hover:bg-neutral-800">
+              <Button className="h-10 rounded-sm bg-neutral-900 px-6 text-[13px] font-medium tracking-wide hover:bg-neutral-800">
                 Add to Cart
               </Button>
             </div>
 
             <Button
               variant="outline"
-              className="mt-8 h-10 rounded-sm border-neutral-200 px-5 text-[1.3rem] tracking-wide text-neutral-900 hover:border-neutral-400"
+              className="mt-8 h-10 rounded-sm border-neutral-200 px-5 text-[13px] tracking-wide text-neutral-900 hover:border-neutral-400"
             >
               Leave a review
             </Button>
 
-            <blockquote className="mt-10 border-l border-neutral-200 pl-6 text-[1.8rem] leading-7 text-neutral-900">
+            <blockquote className="mt-10 border-l border-neutral-200 pl-6 text-[18px] leading-7 text-neutral-900">
               “Today, the term ‘sustainability’ concerns not only the environmental cost of operating a home,
               but also that of building it.”
-              <footer className="mt-3 text-[1.3rem] text-neutral-500">— Philip Jodidio</footer>
+              <footer className="mt-3 text-[13px] text-neutral-500">— Philip Jodidio</footer>
             </blockquote>
           </section>
         </div>
@@ -228,15 +228,15 @@ export default function DetailPage() {
       {/* collapsibles */}
       <section className="border-t border-neutral-200">
         <Collapsible open={readMoreOpen} onOpenChange={setReadMoreOpen}>
-          <CollapsibleTrigger className="mx-auto flex w-full max-w-[1240px] items-center justify-center gap-3 px-6 py-6 text-[1.3rem] font-medium tracking-widest text-neutral-900">
+          <CollapsibleTrigger className="mx-auto flex w-full max-w-[1240px] items-center justify-center gap-3 px-6 py-6 text-[13px] font-medium tracking-widest text-neutral-900">
             <span className="uppercase">Read more</span>
             <span className="text-neutral-500">{readMoreOpen ? "—" : "+"}</span>
           </CollapsibleTrigger>
 
           <CollapsibleContent>
             <div className="mx-auto grid max-w-[1240px] grid-cols-1 gap-10 px-6 pb-10 lg:grid-cols-2">
-              <div className="space-y-4 text-[1.5rem] leading-7 text-neutral-800">
-                <h2 className="font-serif text-[2.6rem] leading-tight">The Future of Housing</h2>
+              <div className="space-y-4 text-[15px] leading-7 text-neutral-800">
+                <h2 className="font-serif text-[26px] leading-tight">The Future of Housing</h2>
                 <p className="text-neutral-600">
                   The latest trends in green residential architecture from around the world.
                 </p>
@@ -246,7 +246,7 @@ export default function DetailPage() {
                 </p>
               </div>
 
-              <div className="space-y-5 text-[1.5rem] leading-7 text-neutral-800">
+              <div className="space-y-5 text-[15px] leading-7 text-neutral-800">
                 <div>
                   <h3 className="font-semibold">The author</h3>
                   <p className="mt-2 text-neutral-700">
@@ -269,7 +269,7 @@ export default function DetailPage() {
         </Collapsible>
 
         <Collapsible open={reviewsOpen} onOpenChange={setReviewsOpen} className="border-t border-neutral-200">
-          <CollapsibleTrigger className="mx-auto flex w-full max-w-[1240px] items-center justify-center gap-3 px-6 py-6 text-[1.3rem] font-medium tracking-widest text-neutral-900">
+          <CollapsibleTrigger className="mx-auto flex w-full max-w-[1240px] items-center justify-center gap-3 px-6 py-6 text-[13px] font-medium tracking-widest text-neutral-900">
             <span className="uppercase">Customer reviews</span>
             <span className="text-neutral-500">{reviewsOpen ? "—" : "+"}</span>
           </CollapsibleTrigger>
@@ -277,11 +277,11 @@ export default function DetailPage() {
           <CollapsibleContent>
             <div className="mx-auto max-w-[1240px] px-6 pb-10">
               <div className="space-y-3">
-                <p className="font-serif text-[2.2rem]">0 Ratings</p>
-                <p className="text-[1.4rem] text-neutral-600">
+                <p className="font-serif text-[22px]">0 Ratings</p>
+                <p className="text-[14px] text-neutral-600">
                   No reviews have been posted for this item yet. Be the first to rate this product.
                 </p>
-                <Button variant="outline" className="h-10 rounded-sm border-neutral-200 px-6 text-[1.3rem]">
+                <Button variant="outline" className="h-10 rounded-sm border-neutral-200 px-6 text-[13px]">
                   Submit a review
                 </Button>
               </div>
@@ -292,8 +292,8 @@ export default function DetailPage() {
 
       {/* related */}
       <section className="border-t border-neutral-200 py-14">
-        <div className="mx-auto max-w-[1540px] px-6">
-          <h2 className="mb-12 text-center font-serif text-[3.2rem] leading-none">
+        <div className="container-main">
+          <h2 className="mb-12 text-center font-serif text-[32px] leading-none">
             You may also like
           </h2>
 

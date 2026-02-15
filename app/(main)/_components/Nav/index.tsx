@@ -171,7 +171,7 @@ const Nav = () => {
           onMouseEnter={handleDropdownEnter}
           onMouseLeave={handleDropdownLeave}
         >
-          <div className="mx-auto grid max-w-[var(--container-main)] grid-cols-4 gap-x-12 px-6 py-8">
+          <div className="container-main grid grid-cols-4 gap-x-12 py-8">
             {activeItem.dropdown!.map((col, colIdx) => (
               <div key={colIdx} className="flex flex-col gap-3">
                 {col.items.map((link) => (

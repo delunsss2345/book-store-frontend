@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 
 const WishlistPage = () => {
   return (
-    <div className="mx-auto w-full max-w-[var(--container-main)] px-6 py-8">
+    <div className="container-main w-full py-8">
       <div className="flex flex-wrap items-center gap-3">
         <h1 className="text-3xl font-semibold tracking-tight">Your Wishlist</h1>
         <Button variant="outline" className="h-10 rounded-sm px-4 text-base">

@@ -50,7 +50,7 @@
 
 :root {
   --width-md: 1140px;
-
+  --container-px: 16px;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -123,12 +123,15 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   h1 {
     font-size: 21px !important;
   }
+
   p {
     font-size: 16px !important;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -138,7 +141,22 @@
   .text-h1-common {
     font-size: 21px !important;
   }
+
   .text-p-common {
     font-size: 16px !important;
+  }
+
+  .container-main {
+    max-width: 1440px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--container-px);
+    padding-right: var(--container-px);
+  }
+}
+
+@media (min-width: 1360px) {
+  :root {
+    --container-px: 64px;
   }
 }

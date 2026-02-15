@@ -68,7 +68,7 @@ const fmt = (n: number) =>
 
 export default function CheckoutPage() {
     return (
-        <div className="mx-auto w-full max-w-[var(--container-main)] px-6 py-10">
+        <div className="container-main w-full py-10">
             <div className="grid gap-12 lg:grid-cols-[1fr_420px]">
                 {/* ============================================================ */}
                 {/*  LEFT COLUMN – Forms                                         */}

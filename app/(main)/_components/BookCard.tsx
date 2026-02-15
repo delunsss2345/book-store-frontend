@@ -36,9 +36,9 @@ const S: Record<
     img: "h-full w-full object-contain",
     badgeWrap: "mt-6",
     badge: "inline-flex items-center justify-center rounded-sm border border-neutral-300 text-[1.2rem] tracking-widest text-neutral-700",
-    title: "mt-5 font-serif text-[2.2rem] leading-[1.15] tracking-tight text-neutral-900",
-    subtitle: "mt-1 text-[2rem] leading-[1.15] tracking-tight text-neutral-700",
-    price: "mt-6 text-[1.5rem] font-semibold tracking-widest text-neutral-600",
+    title: "mt-5 font-serif text-[20px] leading-[1.15] tracking-tight text-neutral-900",
+    subtitle: "mt-1 text-[20px] leading-[1.15] tracking-tight text-neutral-700",
+    price: "mt-6 text-[18px] font-semibold tracking-widest text-neutral-600 opacity-70",
   },
   compact: {
     wrap: "w-full ",
@@ -46,9 +46,9 @@ const S: Record<
     img: "h-full w-full object-contain",
     badgeWrap: "mt-5",
     badge: "inline-flex items-center justify-center rounded-sm border border-neutral-300 text-[1.1rem] tracking-widest text-neutral-700",
-    title: "mt-4 font-serif text-[1.8rem] leading-[1.15] tracking-tight text-neutral-900",
-    subtitle: "mt-1 text-[1.7rem] leading-[1.15] tracking-tight text-neutral-700",
-    price: "mt-5 text-[1.4rem] font-semibold tracking-widest text-neutral-600",
+    title: "mt-4 font-serif text-[20px] leading-[1.15] tracking-tight text-neutral-900",
+    subtitle: "mt-1 text-[20px] leading-[1.15] tracking-tight text-neutral-700",
+    price: "mt-5 text-[18px] font-semibold tracking-widest text-neutral-600 opacity-70",
   },
 };
 

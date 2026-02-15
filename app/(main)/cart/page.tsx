@@ -75,7 +75,7 @@ export default function ShoppingCartPage() {
     const total = subtotal;
 
     return (
-        <div className="mx-auto w-full max-w-[var(--container-main)] px-6 py-10">
+        <div className="container-main w-full py-10">
             <h1 className="text-lg font-bold tracking-tight">Your Shopping Cart</h1>
 
             <div className="mt-6 grid gap-10 lg:grid-cols-[1fr_280px]">

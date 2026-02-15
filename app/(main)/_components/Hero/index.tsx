@@ -151,7 +151,7 @@ const Hero = () => {
 
               {/* Title + CTA below banner */}
               <div className="border-t bg-white">
-                <div className="mx-auto flex max-w-[var(--container-main)] flex-col items-center justify-center gap-3 px-6 py-8">
+                <div className="container-main flex flex-col items-center justify-center gap-3 py-8">
                   <h2 className="text-center text-xl font-bold tracking-tight text-zinc-900">
                     {s.title}
                   </h2>
