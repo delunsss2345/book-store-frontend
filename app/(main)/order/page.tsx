@@ -1,3 +1,4 @@
+'use client'
 import { Calendar, MapPin, Package } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";

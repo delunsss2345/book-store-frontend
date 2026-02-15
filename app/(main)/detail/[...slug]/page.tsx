@@ -151,6 +151,29 @@ export default function DetailPage() {
               <p className="text-neutral-500">Hardcover, 24.6 × 37.2 cm, 496 pages</p>
             </div>
 
+            {/* ---- Variant selector (UI only) ---- */}
+            <div className="mt-8">
+              <p className="mb-3 text-[1.3rem] font-medium text-neutral-700">Size</p>
+              <div className="flex flex-wrap gap-2">
+                {["36", "37", "38", "39W", "39", "40", "41", "42", "43", "44"].map(
+                  (variant) => (
+                    <button
+                      key={variant}
+                      type="button"
+                      className={[
+                        "flex h-12 min-w-[60px] items-center justify-center rounded-sm border px-3 text-[1.3rem] transition",
+                        variant === "43"
+                          ? "border-neutral-900 bg-neutral-900 font-semibold text-white"
+                          : "border-neutral-200 bg-white text-neutral-700 hover:border-neutral-400",
+                      ].join(" ")}
+                    >
+                      {variant}
+                    </button>
+                  )
+                )}
+              </div>
+            </div>
+
             <div className="mt-8 flex items-center gap-4">
               <div className="inline-flex items-center rounded-sm border border-neutral-200">
                 <Button
