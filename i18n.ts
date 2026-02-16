@@ -1,34 +1,43 @@
-﻿import i18n from "i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
+import i18next, { type i18n as I18nInstance } from "i18next";
 import { initReactI18next } from "react-i18next";
 
-import vnTranslation from "./public/locales/vn/translation.json";
+import {
+  DEFAULT_LOCALE,
+  normalizeLocale,
+  SUPPORTED_LOCALES,
+  type Locale,
+} from "./lib/i18n/config";
 import enTranslation from "./public/locales/en/translation.json";
+import viTranslation from "./public/locales/vi/translation.json";
 
-i18n
-  .use(LanguageDetector)
-  .use(initReactI18next)
-  .init({
-    fallbackLng: "vn",
-    supportedLngs: ["vn", "en"],
+const resources = {
+  vi: {
+    translation: viTranslation,
+  },
+  en: {
+    translation: enTranslation,
+  },
+} as const;
+
+export function createI18nInstance(initialLocale: string = DEFAULT_LOCALE): I18nInstance {
+  const locale: Locale = normalizeLocale(initialLocale);
+  const instance = i18next.createInstance();
+
+  void instance.use(initReactI18next).init({
+    lng: locale,
+    fallbackLng: DEFAULT_LOCALE,
+    supportedLngs: [...SUPPORTED_LOCALES],
     nonExplicitSupportedLngs: true,
     debug: false,
+    initImmediate: false,
+    resources,
     interpolation: {
       escapeValue: false,
     },
-    resources: {
-      vn: {
-        translation: vnTranslation,
-      },
-      en: {
-        translation: enTranslation,
-      },
-    },
-    detection: {
-      order: ["localStorage", "navigator"],
-      caches: ["localStorage"],
-      lookupLocalStorage: "appLanguage",
+    react: {
+      useSuspense: false,
     },
   });
 
-export default i18n;
+  return instance;
+}
