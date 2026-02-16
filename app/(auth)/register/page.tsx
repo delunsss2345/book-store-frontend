@@ -15,7 +15,9 @@ const Register = () => {
     toast.promise(registerMutation.mutateAsync(values), {
       loading: t("auth.registering"),
       success: t("auth.success.register"),
-      error: t("auth.errors.requestFailed"),
+      error: (err) => {
+        return err.response.data.message;
+      },
     });
   };
 

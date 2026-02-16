@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
             console.error("Register API Error:", error);
         }
         return ResponseApi.error(
-            API_MESSAGE.SYSTEM_TRY_AGAIN, HttpStatusCode.BadRequest
+            error.message ?? API_MESSAGE.SYSTEM_TRY_AGAIN, HttpStatusCode.BadRequest
         )
     }
 }

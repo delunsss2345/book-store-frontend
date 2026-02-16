@@ -19,7 +19,9 @@ const Login = () => {
         router.push("/");
         return "Đăng nhập thành công";
       },
-      error: "Đăng nhập thất bại",
+      error: (err) => {
+        return err.response.data.message;
+      },
     });
   };
 

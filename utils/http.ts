@@ -187,7 +187,7 @@ class AxiosHttp {
 
       return response.data;
     } catch (error) {
-      throw new Error(String(error));
+      throw error;
     }
   };
 

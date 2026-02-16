@@ -13,7 +13,6 @@ export default function VerifyPage() {
 
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // TODO: gọi verify API ở đây
         router.push("/");
     };
 
