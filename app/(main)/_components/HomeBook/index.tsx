@@ -1,6 +1,5 @@
 "use client";
 
-import BookCard from "@/app/(main)/_components/BookCard";
 import { useHomeMutation } from "@/features/catalog/hooks/use-home.mutation";
 import { useCatalogStore } from "@/features/catalog/store/catalog.store";
 import { PricedBook } from "@/types/response/catalog.response";
@@ -57,76 +56,78 @@ export function HomeBook() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const newArrivals = home?.newArrivals ?? [];
-    const bestSeller = home?.bestSeller ?? [];
+    const newAndTrending = useMemo(() => home?.newAndTrending ?? [], [home]);
 
     // Map price từ bestSeller theo id (nếu BookCard cần price)
     const bestSellerPriceById = useMemo(() => {
         const m = new Map<string, number>();
-        for (const b of bestSeller) {
-            const min = toNumberPrice((b as any).minPrice);
+        for (const b of newAndTrending) {
+            const min = toNumberPrice((b as PricedBook).minPrice);
             if (min != null) m.set(b.id, min);
         }
         return m;
-    }, [bestSeller]);
+    }, [newAndTrending]);
 
     return (
-        <section className="container-main w-full pb-12">
-            <div className="mt-2">
-                <SectionHeader
-                    title="New Arrivals"
-                    count={newArrivals.length}
-                    viewAllHref="/books"
-                />
-
-                <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
-                    {newArrivals.map((b) => (
-                        <BookCard
-                            key={b.id}
-                            title={b.title}
-                            subtitle="" // newArrivals không có subtitle
-                            // nếu BookCard bắt buộc price thì lấy tạm từ bestSeller map, không có thì undefined/0
-                            price={bestSellerPriceById.get(b.id) ?? 0}
-                            badge="NEW"
-                            imageUrl={b.coverImageUrl}
-                            href={`/detail/${b.slug ?? b.id}`}
-                            variant="compact"
-                        />
-                    ))}
+        <section className="container-main py-10">
+            <div>
+                {/* Title centered giống ảnh 2 */}
+                <div className="text-center">
+                    <h2 className="text-2xl font-bold tracking-wide">New &amp; Trending</h2>
                 </div>
 
-                {!mutationHome.isPending && newArrivals.length === 0 && (
-                    <div className="mt-10 rounded border border-dashed p-8 text-center text-sm text-zinc-500">
+                <div className="mt-12 grid grid-cols-2 gap-x-10 gap-y-16 md:grid-cols-3 lg:grid-cols-4">
+                    {newAndTrending.map((b) => {
+                        const price = bestSellerPriceById.get(b.id) ?? 0;
+
+                        return (
+                            <a
+                                key={b.id}
+                                href={`/detail/${b.slug ?? b.id}`}
+                                className="group flex flex-col items-center text-center"
+                            >
+                                {/* Cover */}
+                                <div className="w-full max-w-[260px]">
+                                    <div className="relative aspect-[3/4] overflow-hidden bg-zinc-100 shadow-[0_12px_30px_rgba(0,0,0,0.12)]">
+                                        <img
+                                            src={b.coverImageUrl}
+                                            alt={b.title}
+                                            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                                            loading="lazy"
+                                        />
+                                    </div>
+
+                                    {/* Badge dưới ảnh */}
+                                    <div className="mt-4">
+                                        <span className="text-xs font-semibold tracking-[0.25em]">NEW</span>
+                                    </div>
+
+                                    {/* Title / Subtitle */}
+                                    <div className="mt-3">
+                                        <div className="font-serif text-base font-semibold leading-snug">
+                                            {b.title}
+                                        </div>
+                                        {/* nếu có subtitle/author thì thay vào đây */}
+                                        <div className="mt-1 text-sm text-zinc-500">{""}</div>
+                                    </div>
+
+                                    {/* Price */}
+                                    <div className="mt-6 text-sm tracking-wide text-zinc-700">
+                                        US$ {price.toLocaleString()}
+                                    </div>
+                                </div>
+                            </a>
+                        );
+                    })}
+                </div>
+
+                {!mutationHome.isPending && newAndTrending.length === 0 && (
+                    <div className="mt-12 rounded border border-dashed p-8 text-center text-sm text-zinc-500">
                         No new arrivals yet.
                     </div>
                 )}
             </div>
-
-            {/* ── Best Seller ── */}
-            {bestSeller.length > 0 && (
-                <div className="mt-14">
-                    <SectionHeader
-                        title="Best Seller"
-                        count={bestSeller.length}
-                        viewAllHref="/books?sort=best-seller"
-                    />
-
-                    <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
-                        {bestSeller.map((b: PricedBook) => (
-                            <BookCard
-                                key={b.id}
-                                title={b.title}
-                                subtitle="" // API chưa có
-                                price={toNumberPrice(b.minPrice) ?? 0}
-                                badge="HOT"
-                                imageUrl={b.coverImageUrl}
-                                href={`/detail/${b.slug ?? b.id}`}
-                                variant="compact"
-                            />
-                        ))}
-                    </div>
-                </div>
-            )}
         </section>
     );
+
 }

@@ -11,9 +11,8 @@ import { Input } from "@/components/ui/input";
 import { useBookMutation } from "@/features/catalog/hooks/use-book.mutation";
 import { useCatalogStore } from "@/features/catalog/store/catalog.store";
 import { useParams } from "next/navigation";
+import { Spinner } from "@/components/ui/spinner";
 
-const DEFAULT_COVER =
-  "https://images.unsplash.com/photo-1541963463532-d68292c34b19?auto=format&fit=crop&w=2400&q=85";
 
 const formatMoney = (amount: string | number, currencyCode: string) => {
   const n = typeof amount === "string" ? Number(amount) : amount;
@@ -54,7 +53,7 @@ export default function DetailPage() {
   }, [])
 
   if (!bookDetail) return;
-
+  if (bookMutation.isPending) return <Spinner />
 
 
   return (

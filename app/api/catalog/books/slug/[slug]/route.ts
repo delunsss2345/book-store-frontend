@@ -10,7 +10,6 @@ export async function GET(
 ) {
     try {
         const { slug } = await ctx.params;
-        console.log(slug);
         const response = await api.get<GetBookDetailResponse>(`catalog/books/slug/${slug}?lang=vi`);
         return ResponseApi.success(response.data);
     } catch (error) {

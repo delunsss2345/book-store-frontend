@@ -15,8 +15,6 @@ export interface BookBase {
     createdAt: ISODateString;
 }
 
-export interface NewArrivalBook extends BookBase {
-}
 
 export interface PricedBook extends BookBase {
     minPrice: DecimalString;
@@ -25,9 +23,7 @@ export interface PricedBook extends BookBase {
 }
 
 export interface HomeData {
-    newArrivals: NewArrivalBook[];
-    bestSeller: PricedBook[];
-    topRated: PricedBook[];
+    newAndTrending: PricedBook[]
 }
 
 export type BookFormat = "PAPERBACK" | "HARDCOVER" | (string & {});
