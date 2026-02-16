@@ -1,9 +1,4 @@
-export type ApiResponse<T> = {
-  error: string | null;
-  message: string;
-  statusCode: number;
-  data: T;
-};
+import { ApiResponse } from "@/types/response/base.response";
 
 export type UserLoginResponse = {
   id: number;

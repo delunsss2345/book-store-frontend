@@ -15,11 +15,9 @@ import {
 import { Separator } from "@/components/ui/separator";
 import {
     AlertCircle,
-    ChevronDown,
-    CreditCard,
     Info,
     Send,
-    Truck,
+    Truck
 } from "lucide-react";
 import Image from "next/image";
 

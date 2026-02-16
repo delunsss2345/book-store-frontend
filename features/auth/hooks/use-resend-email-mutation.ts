@@ -1,4 +1,4 @@
-import { authApi } from "@/services/authService";
+import { authApi } from "@/services/auth.service";
 import { useMutation } from "@tanstack/react-query";
 
 export const useResendEmailMutation = () =>
