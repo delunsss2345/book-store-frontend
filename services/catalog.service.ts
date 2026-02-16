@@ -8,8 +8,7 @@ export const catalogApi = {
         return response;
     },
     getBookDetail: async (slug: string) => {
-        
-        const response = await http.get<GetBookDetailResponse>(`catalog/home`);
+        const response = await http.get<GetBookDetailResponse>(`catalog/books/slug/${slug}?lang=vi`);
         return response;
     }
 };

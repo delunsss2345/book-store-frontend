@@ -102,6 +102,7 @@ export function HomeBook() {
                 )}
             </div>
 
+            {/* ── Best Seller ── */}
             {bestSeller.length > 0 && (
                 <div className="mt-14">
                     <SectionHeader

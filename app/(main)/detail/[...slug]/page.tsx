@@ -1,14 +1,16 @@
 "use client";
 
 import { Heart, Minus, Plus } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
-import Image from "next/image";
 
-import BookCard from "@/app/(main)/_components/BookCard";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Input } from "@/components/ui/input";
+import { useBookMutation } from "@/features/catalog/hooks/use-book.mutation";
+import { useCatalogStore } from "@/features/catalog/store/catalog.store";
+import { useParams } from "next/navigation";
 
 const DEFAULT_COVER =
   "https://images.unsplash.com/photo-1541963463532-d68292c34b19?auto=format&fit=crop&w=2400&q=85";
@@ -23,36 +25,6 @@ const formatMoney = (amount: string | number, currencyCode: string) => {
   }
 };
 
-const relatedTitles = [
-  {
-    title: "Modern Tree Houses",
-    subtitle: "Green Architecture",
-    price: 95,
-    imageUrl:
-      "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80",
-  },
-  {
-    title: "100 Contemporary",
-    subtitle: "Wood Houses",
-    price: 120,
-    imageUrl:
-      "https://images.unsplash.com/photo-1526243741027-444d633d7365?auto=format&fit=crop&w=600&q=80",
-  },
-  {
-    title: "Green Architecture",
-    subtitle: "Now!",
-    price: 110,
-    imageUrl:
-      "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=600&q=80",
-  },
-  {
-    title: "LO-TEK Design",
-    subtitle: "By Radical Indigenousism",
-    price: 85,
-    imageUrl:
-      "https://images.unsplash.com/photo-1531988042231-d39a9cc12a9a?auto=format&fit=crop&w=600&q=80",
-  },
-];
 
 function SeriesThumb({ src, alt }: { src: string; alt: string }) {
   return (
@@ -62,60 +34,28 @@ function SeriesThumb({ src, alt }: { src: string; alt: string }) {
   );
 }
 
-const data = {
-  id: "196",
-  title: "The Art of War",
-  slug: "the-art-of-war",
-  description: "Tác giả: Sun Tzu",
-  coverImageUrl: null,
-  publicationYear: null,
-  pageCount: 198,
-  weightGrams: 890,
-  publisherName: "Unknown",
-  ratingAvg: null,
-  ratingCount: 0,
-  variants: [
-    {
-      id: "604",
-      format: "EBOOK",
-      edition: 1,
-      isbn: null,
-      price: "119000",
-      currencyCode: "VND",
-      stock: 219,
-    },
-    {
-      id: "603",
-      format: "PAPERBACK",
-      edition: 1,
-      isbn: "9788467618174",
-      price: "276000",
-      currencyCode: "VND",
-      stock: 136,
-    },
-  ],
-  categories: [
-    { id: "10", parentId: null, sortOrder: 10, name: "Kinh điển", slug: "kinh-dien" },
-    { id: "24", parentId: null, sortOrder: 11, name: "Kinh doanh", slug: "kinh-doanh" },
-  ],
-  specs: {},
-  badges: [],
-  createdAt: "2026-02-14T12:43:03.850Z",
-} as const;
+
+
 export default function DetailPage() {
   const [qty, setQty] = React.useState(1);
   const [active, setActive] = React.useState(0);
   const [readMoreOpen, setReadMoreOpen] = React.useState(true);
   const [reviewsOpen, setReviewsOpen] = React.useState(false);
+  const { slug } = useParams<{ slug: string }>();
+  const bookMutation = useBookMutation(slug);
+  const bookDetail = useCatalogStore(state => state.bookDetail)
+
+  React.useEffect(() => {
+    const getDetail = async () => {
+      await bookMutation.mutateAsync()
+    }
+
+    getDetail();
+  }, [])
+
+  if (!bookDetail) return;
 
 
-  const gallery = React.useMemo(() => {
-    const cover = data.coverImageUrl ?? DEFAULT_COVER;
-    return [cover, cover, cover, cover];
-  }, [data.coverImageUrl]);
-
-  const primaryVariant = data.variants[0];
-  const badgeText = data.badges.length > 0 ? data.badges[0] : "NEW";
 
   return (
     <div className="w-full bg-white text-neutral-900">
@@ -124,45 +64,24 @@ export default function DetailPage() {
         <nav className="text-[12px] tracking-wide text-neutral-500">
           <span>Home</span> <span className="mx-2 text-neutral-300">|</span>
           <span>Books</span> <span className="mx-2 text-neutral-300">|</span>
-          <span>{data.categories?.[0]?.name ?? "Category"}</span>{" "}
+          <span>{bookDetail.categories?.[0]?.name ?? "Category"}</span>{" "}
           <span className="mx-2 text-neutral-300">|</span>
-          <span className="text-neutral-900">{data.title}</span>
+          <span className="text-neutral-900">{bookDetail.title}</span>
         </nav>
 
         <div className="mt-10 grid grid-cols-1 gap-12 xl:grid-cols-12">
           <section className="xl:col-span-7">
             <div className="bg-white p-6">
               <div className="relative mx-auto aspect-[3/4] w-full max-w-[520px] overflow-hidden rounded-sm">
-                <Image
-                  src={gallery[active]}
-                  alt={data.title}
-                  fill
-                  priority
-                  className="object-cover"
-                  sizes="(min-width: 1280px) 55vw, 100vw"
-                />
               </div>
             </div>
 
             <div className="mt-4 flex items-center justify-between">
               <p className="text-[12px] text-neutral-500">
-                {active + 1} / {gallery.length}
+                {active + 1}
               </p>
               <div className="flex gap-2">
-                {gallery.map((src, i) => (
-                  <button
-                    key={`${src}-${i}`}
-                    type="button"
-                    onClick={() => setActive(i)}
-                    className={[
-                      "relative h-14 w-12 overflow-hidden rounded-sm border transition",
-                      i === active ? "border-neutral-900" : "border-neutral-200 hover:border-neutral-400",
-                    ].join(" ")}
-                    aria-label={`Open image ${i + 1}`}
-                  >
-                    <Image src={src} alt="" fill className="object-cover" sizes="48px" />
-                  </button>
-                ))}
+
               </div>
             </div>
           </section>
@@ -170,22 +89,17 @@ export default function DetailPage() {
           <section className="xl:col-span-5">
             <div className="flex items-center gap-2">
               <span className="text-[12px] font-semibold tracking-widest text-red-600">
-                {badgeText}
               </span>
               <span className="rounded-sm border border-neutral-200 px-2 py-1 text-[12px] tracking-wide text-neutral-700">
-                {primaryVariant?.format ?? "—"}
               </span>
             </div>
 
             <h1 className="mt-4 font-serif text-[34px] leading-[1.1] tracking-tight">
-              {data.title}
+              {bookDetail.title}
             </h1>
 
             <div className="mt-4 flex items-center justify-between">
               <p className="text-[22px] tracking-tight text-neutral-900">
-                {primaryVariant
-                  ? formatMoney(primaryVariant.price, primaryVariant.currencyCode)
-                  : "—"}
               </p>
 
               <button
@@ -198,11 +112,9 @@ export default function DetailPage() {
             </div>
 
             <div className="mt-8">
-              <p className="mb-3 text-[13px] text-neutral-500">More {data.title}</p>
+              <p className="mb-3 text-[13px] text-neutral-500">More {bookDetail.title}</p>
               <div className="flex gap-3 overflow-x-auto pb-2">
-                {relatedTitles.map((r) => (
-                  <SeriesThumb key={r.title} src={r.imageUrl} alt={r.title} />
-                ))}
+
               </div>
             </div>
 
@@ -245,35 +157,33 @@ export default function DetailPage() {
               <p>
                 Edition:{" "}
                 <span className="text-neutral-900">
-                  {data.variants.map((v) => v.format).join(", ")}
+                  {bookDetail.variants.map((v) => v.format).join(", ")}
                 </span>
               </p>
               <p>
                 Availability:{" "}
                 <span className="text-neutral-900">
-                  {primaryVariant?.stock ? "In Stock" : "Out of Stock"}
                 </span>
               </p>
             </div>
 
             <div className="mt-8 text-[15px] leading-7 text-neutral-800">
               <p>
-                <span className="font-semibold text-neutral-900">{data.description}</span>
+                <span className="font-semibold text-neutral-900">{bookDetail.description}</span>
               </p>
-              {data.categories?.length > 0 && (
+              {bookDetail.categories?.length > 0 && (
                 <p className="mt-2">
                   Categories:{" "}
                   <span className="font-semibold text-neutral-900">
-                    {data.categories.map((c) => c.name).join(", ")}
+                    {bookDetail.categories.map((c) => c.name).join(", ")}
                   </span>
                 </p>
               )}
             </div>
 
             <p className="mt-8 text-[13px] text-neutral-500">
-              {primaryVariant?.format ?? "—"},{" "}
-              {data.pageCount ? `${data.pageCount} pages` : "—"}
-              {data.weightGrams ? ` • ${(data.weightGrams / 1000).toFixed(2)} kg` : ""}
+              {bookDetail.pageCount ? `${bookDetail.pageCount} pages` : "—"}
+              {bookDetail.weightGrams ? ` • ${(bookDetail.weightGrams / 1000).toFixed(2)} kg` : ""}
             </p>
 
             <Button
@@ -305,17 +215,17 @@ export default function DetailPage() {
           <CollapsibleContent>
             <div className="mx-auto grid max-w-[1240px] grid-cols-1 gap-10 px-6 pb-10 lg:grid-cols-2">
               <div className="space-y-4 text-[15px] leading-7 text-neutral-800">
-                <h2 className="font-serif text-[26px] leading-tight">{data.title}</h2>
+                <h2 className="font-serif text-[26px] leading-tight">{bookDetail.title}</h2>
                 <p className="text-neutral-600">
                   Categories:{" "}
-                  {data.categories?.length
-                    ? data.categories.map((c) => c.name).join(" • ")
+                  {bookDetail.categories?.length
+                    ? bookDetail.categories.map((c) => c.name).join(" • ")
                     : "—"}
                 </p>
                 <p>
                   Rating:{" "}
-                  {data.ratingAvg ? `${data.ratingAvg} / 5` : "No rating yet"}{" "}
-                  ({data.ratingCount} reviews)
+                  {bookDetail.ratingAvg ? `${bookDetail.ratingAvg} / 5` : "No rating yet"}{" "}
+                  ({bookDetail.ratingCount} reviews)
                 </p>
               </div>
 
@@ -323,17 +233,17 @@ export default function DetailPage() {
                 <div>
                   <h3 className="font-semibold">Product details</h3>
                   <p className="mt-2 text-neutral-700">
-                    Page count: {data.pageCount ?? "—"}
+                    Page count: {bookDetail.pageCount ?? "—"}
                   </p>
-                  <p className="text-neutral-700">Weight: {data.weightGrams ?? "—"} g</p>
-                  <p className="text-neutral-700">Publisher: {data.publisherName ?? "—"}</p>
+                  <p className="text-neutral-700">Weight: {bookDetail.weightGrams ?? "—"} g</p>
+                  <p className="text-neutral-700">Publisher: {bookDetail.publisherName ?? "—"}</p>
                 </div>
 
                 <div>
                   <h3 className="font-semibold">ISBN</h3>
                   <p className="mt-2 text-neutral-700">
                     Paperback:{" "}
-                    {data.variants.find((v) => v.format === "PAPERBACK")?.isbn ?? "—"}
+                    {bookDetail.variants.find((v) => v.format === "PAPERBACK")?.isbn ?? "—"}
                   </p>
                   <Link href="#" className="mt-2 inline-block text-neutral-900 underline underline-offset-4">
                     Download product images here
@@ -353,7 +263,7 @@ export default function DetailPage() {
           <CollapsibleContent>
             <div className="mx-auto max-w-[1240px] px-6 pb-10">
               <div className="space-y-3">
-                <p className="font-serif text-[22px]">{data.ratingCount} Ratings</p>
+                <p className="font-serif text-[22px]">{bookDetail.ratingCount} Ratings</p>
                 <p className="text-[14px] text-neutral-600">
                   No reviews have been posted for this item yet. Be the first to rate this product.
                 </p>
@@ -372,18 +282,7 @@ export default function DetailPage() {
           <h2 className="mb-12 text-center font-serif text-[32px] leading-none">You may also like</h2>
 
           <div className="grid place-items-start gap-x-14 gap-y-16 sm:grid-cols-2 xl:grid-cols-4">
-            {relatedTitles.map((book) => (
-              <BookCard
-                key={`${book.title}-${book.subtitle}`}
-                title={book.title}
-                subtitle={book.subtitle}
-                price={book.price}
-                imageUrl={book.imageUrl}
-                badge="NEW"
-                variant="compact"
-                href="/detail/related-book"
-              />
-            ))}
+
           </div>
         </div>
       </section>
