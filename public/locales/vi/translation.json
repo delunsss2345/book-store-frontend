@@ -147,16 +147,46 @@
       "copyright": "© {{year}} TASCHEN"
     },
     "page": {
-      "contactDetailsTitle": "Chi tiết liên hệ",
-      "nameLabel": "Tên",
+      "title": "Hồ sơ của tôi",
+      "subtitle": "Cập nhật thông tin cá nhân và địa chỉ giao hàng của bạn.",
+      "overviewTag": "Tổng quan tài khoản",
+      "nameLabel": "Họ và tên",
       "emailLabel": "Email",
-      "addressesTitle": "Địa chỉ",
-      "addAddress": "+ Thêm",
-      "noAddresses": "Chưa có địa chỉ",
-      "giftCardsTitle": "Thẻ quà tặng của bạn",
-      "noGiftCards": "Bạn chưa có thẻ quà tặng",
-      "giftCardPlaceholder": "Nhập mã thẻ quà tặng",
-      "editName": "Chỉnh sửa tên"
+      "phoneLabel": "Số điện thoại",
+      "notProvided": "Chưa cập nhật",
+      "addressStatsTitle": "Trạng thái địa chỉ",
+      "addressStatsDescription": "Chọn một địa chỉ mặc định để thanh toán nhanh hơn.",
+      "totalAddresses": "Địa chỉ đã lưu",
+      "defaultAddress": "Địa chỉ mặc định",
+      "noneDefaultAddress": "Chưa có địa chỉ mặc định",
+      "addressesTitle": "Sổ địa chỉ",
+      "addressesDescription": "Quản lý danh sách địa chỉ giao hàng và chọn địa chỉ mặc định.",
+      "addAddress": "Thêm địa chỉ",
+      "hideAddressForm": "Đóng biểu mẫu",
+      "emptyAddressesTitle": "Chưa có địa chỉ nào",
+      "emptyAddressesDescription": "Thêm địa chỉ giao hàng đầu tiên để đặt hàng nhanh hơn.",
+      "defaultBadge": "Mặc định",
+      "setAsDefault": "Đặt làm mặc định",
+      "form": {
+        "title": "Địa chỉ mới",
+        "description": "Nhập thông tin người nhận và địa điểm giao hàng.",
+        "addressTypeLabel": "Loại địa chỉ",
+        "recipientNameLabel": "Tên người nhận",
+        "phoneNumberLabel": "Số điện thoại",
+        "addressDetailLabel": "Địa chỉ chi tiết",
+        "wardLabel": "Phường/Xã",
+        "districtLabel": "Quận/Huyện",
+        "cityLabel": "Tỉnh/Thành phố",
+        "setAsDefaultLabel": "Dùng địa chỉ này làm mặc định",
+        "requiredError": "Vui lòng nhập đầy đủ thông tin địa chỉ.",
+        "submit": "Lưu địa chỉ",
+        "cancel": "Hủy"
+      },
+      "addressTypes": {
+        "HOME": "Nhà",
+        "OFFICE": "Văn phòng",
+        "OTHER": "Khác"
+      }
     }
   },
   "auth": {

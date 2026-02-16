@@ -147,16 +147,46 @@
       "copyright": "\u00a9 {{year}} TASCHEN"
     },
     "page": {
-      "contactDetailsTitle": "Contact Details",
-      "nameLabel": "Name",
+      "title": "My Profile",
+      "subtitle": "Keep your personal information and delivery addresses up to date.",
+      "overviewTag": "Account Overview",
+      "nameLabel": "Full name",
       "emailLabel": "Email",
-      "addressesTitle": "Addresses",
-      "addAddress": "+ Add",
-      "noAddresses": "No addresses added",
-      "giftCardsTitle": "Your Gift Cards",
-      "noGiftCards": "You don't have any gift cards",
-      "giftCardPlaceholder": "Enter gift card code",
-      "editName": "Edit name"
+      "phoneLabel": "Phone number",
+      "notProvided": "Not provided",
+      "addressStatsTitle": "Address status",
+      "addressStatsDescription": "Choose one default address for faster checkout.",
+      "totalAddresses": "Saved addresses",
+      "defaultAddress": "Default address",
+      "noneDefaultAddress": "No default address yet",
+      "addressesTitle": "Address book",
+      "addressesDescription": "Manage shipping addresses and mark one as default.",
+      "addAddress": "Add address",
+      "hideAddressForm": "Close form",
+      "emptyAddressesTitle": "No saved addresses",
+      "emptyAddressesDescription": "Add your first shipping address to start checkout faster.",
+      "defaultBadge": "Default",
+      "setAsDefault": "Set as default",
+      "form": {
+        "title": "New address",
+        "description": "Fill in recipient and location details.",
+        "addressTypeLabel": "Address type",
+        "recipientNameLabel": "Recipient name",
+        "phoneNumberLabel": "Phone number",
+        "addressDetailLabel": "Address detail",
+        "wardLabel": "Ward",
+        "districtLabel": "District",
+        "cityLabel": "City",
+        "setAsDefaultLabel": "Use this as my default address",
+        "requiredError": "Please complete all address fields.",
+        "submit": "Save address",
+        "cancel": "Cancel"
+      },
+      "addressTypes": {
+        "HOME": "Home",
+        "OFFICE": "Office",
+        "OTHER": "Other"
+      }
     }
   },
   "auth": {
