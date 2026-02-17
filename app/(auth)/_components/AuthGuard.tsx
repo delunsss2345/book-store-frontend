@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { selectorCurrentUser } from "@/features/selector";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -10,7 +11,7 @@ type AuthGuardProps = {
 
 
 const AuthGuard = ({ children }: AuthGuardProps) => {
-    const currentUser = useAuthStore((s) => s.user);
+    const currentUser = useAuthStore(selectorCurrentUser);
     const router = useRouter();
 
     useEffect(() => {

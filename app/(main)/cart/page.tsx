@@ -2,9 +2,12 @@
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { FileDown, Minus, Plus, Upload, X } from "lucide-react";
+import { useCartMutation } from "@/features/cart/hooks";
+import { useCartStore } from "@/features/cart/store/cart.store";
+import { selectorCart } from "@/features/selector";
+import { Minus, Plus, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import * as React from "react";
+import { useEffect } from "react";
 
 type CartItem = {
     id: string;
@@ -23,67 +26,36 @@ const currency = new Intl.NumberFormat("en-US", {
     maximumFractionDigits: 0,
 });
 
-const initialItems: CartItem[] = [
-    {
-        id: "1",
-        title: "Alejandro Jodorowsky. Art Sin Fin. Art Edition No. 1–100, 'La hija del tiempo (The daughter of time)', 1972/2025",
-        edition: "English",
-        availability: "In Stock",
-        price: 3000,
-        qty: 1,
-        imageUrl:
-            "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=240&q=60",
-    },
-    {
-        id: "2",
-        title: "Ralph Gibson. Photographs 1960–2024. Art Edition No. 1–100 'Untitled, Elba, 1980'",
-        edition: "Multilingual (German, French, English)",
-        availability: "In Stock",
-        price: 1500,
-        qty: 2,
-        imageUrl:
-            "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=240&q=60",
-    },
-    {
-        id: "3",
-        title: "Sophia by Eisenstaedt",
-        edition: "English",
-        availability: "In Stock",
-        price: 1000,
-        qty: 1,
-        imageUrl:
-            "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=240&q=60",
-    },
-];
 
 export default function ShoppingCartPage() {
-    const [items, setItems] = React.useState<CartItem[]>(initialItems);
     const router = useRouter();
-
+    const cart = useCartStore(selectorCart);
+    const mutationCart = useCartMutation();
+    useEffect(() => {
+        mutationCart.mutateAsync()
+    }, [])
     const updateQty = (id: string, delta: number) => {
-        setItems((prev) =>
-            prev.map((item) =>
-                item.id === id ? { ...item, qty: Math.max(1, item.qty + delta) } : item
-            )
-        );
+        // setItems((prev) =>
+        //     prev.map((item) =>
+        //         item.id === id ? { ...item, qty: Math.max(1, item.qty + delta) } : item
+        //     )
+        // );
     };
 
     const removeItem = (id: string) => {
-        setItems((prev) => prev.filter((item) => item.id !== id));
+        // setItems((prev) => prev.filter((item) => item.id !== id));
     };
 
-    const totalItems = items.reduce((sum, item) => sum + item.qty, 0);
-    const subtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0);
-    const total = subtotal;
+    // const totalItems = cart?.items.reduce((sum, item) => sum + item.qty, 0);
+    // const subtotal = cart?.items.reduce((sum, item) => sum + item.price * item.qty, 0);
+    // const total = subtotal;
 
     return (
         <div className="container-main w-full py-10">
             <h1 className="text-lg font-bold tracking-tight">Your Shopping Cart</h1>
 
             <div className="mt-6 grid gap-10 lg:grid-cols-[1fr_280px]">
-                {/* Left: Cart items */}
                 <div>
-                    {/* Table header */}
                     <div className="grid grid-cols-[1fr_140px_100px_100px] items-center border-b pb-3 text-xs text-zinc-500">
                         <span>Title</span>
                         <span className="text-center">Price</span>
@@ -91,9 +63,8 @@ export default function ShoppingCartPage() {
                         <span className="text-right">Total</span>
                     </div>
 
-                    {/* Items */}
-                    {items.length > 0 ? (
-                        items.map((item) => (
+                    {cart?.items && cart?.items.length > 0 ? (
+                        cart?.items.map((item) => (
                             <div key={item.id}>
                                 <div className="grid grid-cols-[1fr_140px_100px_100px] items-start gap-x-4 py-6">
                                     {/* Title column */}
@@ -180,15 +151,15 @@ export default function ShoppingCartPage() {
                     )}
 
                     {/* Footer totals row */}
-                    {items.length > 0 && (
+                    {cart?.items && cart?.items.length > 0 && (
                         <div className="grid grid-cols-[1fr_140px_100px_100px] items-center py-4 text-sm font-semibold">
                             <span />
                             <span />
                             <span className="text-center">
-                                {totalItems} Item{totalItems !== 1 ? "s" : ""}
+                                {/* {totalItems} Item{totalItems !== 1 ? "s" : ""} */}
                             </span>
                             <span className="text-right">
-                                US{currency.format(total)}
+                                {/* US{currency.format(total)} */}
                             </span>
                         </div>
                     )}
@@ -202,12 +173,12 @@ export default function ShoppingCartPage() {
                         <div className="mt-4 space-y-3 text-sm">
                             <div className="flex items-center justify-between">
                                 <span className="text-zinc-600">Subtotal</span>
-                                <span>US{currency.format(subtotal)}</span>
+                                {/* <span>US{currency.format(subtotal)}</span> */}
                             </div>
                             <Separator />
                             <div className="flex items-center justify-between font-medium">
                                 <span>Total</span>
-                                <span>US{currency.format(total)}</span>
+                                {/* <span>US{currency.format(total)}</span> */}
                             </div>
                         </div>
 
@@ -215,7 +186,7 @@ export default function ShoppingCartPage() {
                             onClick={() => router.push("/checkout")}
                             variant="outline"
                             className="mt-5 w-full cursor-pointer rounded-none border-zinc-900 py-5 text-xs uppercase tracking-wider"
-                            disabled={items.length === 0}
+                            disabled={cart?.items && cart.items.length === 0}
                         >
                             Proceed to checkout
                         </Button>

@@ -1,9 +1,10 @@
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { selectorSession } from "@/features/selector";
 import { authApi } from "@/services/auth.service";
 import { useMutation } from "@tanstack/react-query";
 
 export const useRegisterMutation = () => {
-    const setSession = useAuthStore((s) => s.setSession);
+    const setSession = useAuthStore(selectorSession);
 
     return useMutation({
         mutationFn: authApi.register,

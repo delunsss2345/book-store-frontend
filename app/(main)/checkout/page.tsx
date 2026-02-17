@@ -47,9 +47,6 @@ const orderItems = [
 const fmt = (n: number) =>
     new Intl.NumberFormat("vi-VN").format(n) + " đ";
 
-/* ================================================================== */
-/*  Page Component                                                    */
-/* ================================================================== */
 
 export default function CheckoutPage() {
     return (

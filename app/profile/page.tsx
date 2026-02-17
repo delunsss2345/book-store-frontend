@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { selectorCurrentUser } from "@/features/selector";
 import useTranslator from "@/hooks/use-translator";
 import { cn } from "@/lib/utils";
 
@@ -80,10 +81,10 @@ const formatAddress = (address: AddressItem) =>
   [address.addressDetail, address.ward, address.district, address.city]
     .filter(Boolean)
     .join(", ");
-
+  
 const ProfilePage = () => {
   const { t } = useTranslator();
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useAuthStore(selectorCurrentUser);
 
   const [addresses, setAddresses] = useState<AddressItem[]>([]);
   const [isAddingAddress, setIsAddingAddress] = useState(false);

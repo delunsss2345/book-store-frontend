@@ -1,9 +1,10 @@
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { selectorClearSession } from "@/features/selector";
 import { authApi } from "@/services/auth.service";
 import { useMutation } from "@tanstack/react-query";
 
 export const useLogoutMutation = () => {
-    const clearSession = useAuthStore((s) => s.clearSession);
+    const clearSession = useAuthStore(selectorClearSession);
 
     return useMutation({
         mutationFn: authApi.logout,

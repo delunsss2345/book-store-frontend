@@ -30,7 +30,7 @@ export const useCatalogStore = create<CatalogStore>()(
         {
             name: "catalog-storage",
             storage: createJSONStorage(() =>
-                localStorage
+                sessionStorage
             ),
             partialize: (state) => ({ home: state.home }),
             onRehydrateStorage: () => (state) => {

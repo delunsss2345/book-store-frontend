@@ -13,6 +13,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { useCartStore } from "@/features/cart/store/cart.store";
+import { selectorCart } from "@/features/selector";
 import useTranslator from "@/hooks/use-translator";
 
 const currency = new Intl.NumberFormat("en-US", {
@@ -21,41 +23,12 @@ const currency = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 0,
 });
 
-// const PreviewBookCard = () => {
-//   return (
-//     <article className="mx-auto mt-6 w-full max-w-[340px] text-center">
-//       <div className="mx-auto h-[420px] w-[260px] overflow-hidden border bg-[#d6c187] shadow-md">
-//         <div className="flex h-full flex-col justify-between p-4">
-//           <p className="text-left text-xs tracking-[0.2em] text-black/70">ALEJANDRO</p>
-//           <p className="text-center text-5xl font-semibold leading-[0.9] text-black">
-//             ART
-//             <br />
-//             SIN
-//             <br />
-//             FIN
-//           </p>
-//           <div className="bg-black/80 p-3 text-center text-sm font-medium text-[#d8bf7a]">
-//             ALEJANDRO
-//             <br />
-//             ART SIN FIN
-//             <br />
-//             JODOROWSKY
-//           </div>
-//         </div>
-//       </div>
 
-//       <p className="mt-5 text-2xl font-semibold tracking-wide">NEW</p>
-//       <p className="mt-2 text-5xl font-semibold leading-tight">Alejandro Jodorowsky.</p>
-//       <p className="text-5xl leading-tight">Art Sin Fin</p>
-//       <p className="mt-5 text-4xl font-semibold">{currency.format(1500)}</p>
-//     </article>
-//   );
-// };
 
 const CartSheet = () => {
   const { t } = useTranslator();
   const [qty, setQty] = React.useState(1);
-
+  const cart = useCartStore(selectorCart);
   const price = 1000;
   const subtotal = price * qty;
 
@@ -67,8 +40,8 @@ const CartSheet = () => {
           className="inline-flex h-9 items-center justify-center gap-2 rounded-sm px-2 hover:bg-muted"
           aria-label={t("header.aria.cart")}
         >
+          <span className="text-sm">{cart?.items.length ?? 0}</span>
           <ShoppingBag className="h-5 w-5" />
-          <span className="text-sm">1</span>
         </button>
       </SheetTrigger>
 

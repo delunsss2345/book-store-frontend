@@ -2,6 +2,7 @@
 
 import { useHomeMutation } from "@/features/catalog/hooks/use-home.mutation";
 import { useCatalogStore } from "@/features/catalog/store/catalog.store";
+import { selectorHome } from "@/features/selector";
 import { PricedBook } from "@/types/response/catalog.response";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo } from "react";
@@ -44,7 +45,7 @@ function SectionHeader({
 
 export function HomeBook() {
     const mutationHome = useHomeMutation();
-    const home = useCatalogStore((s) => s.home);
+    const home = useCatalogStore(selectorHome);
 
     const getHome = useCallback(async () => {
         return mutationHome.mutateAsync();

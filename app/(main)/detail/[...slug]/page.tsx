@@ -8,10 +8,11 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 import { useBookMutation } from "@/features/catalog/hooks/use-book.mutation";
 import { useCatalogStore } from "@/features/catalog/store/catalog.store";
+import { selectorBookDetail } from "@/features/selector";
 import { useParams } from "next/navigation";
-import { Spinner } from "@/components/ui/spinner";
 
 
 const formatMoney = (amount: string | number, currencyCode: string) => {
@@ -42,7 +43,7 @@ export default function DetailPage() {
   const [reviewsOpen, setReviewsOpen] = React.useState(false);
   const { slug } = useParams<{ slug: string }>();
   const bookMutation = useBookMutation(slug);
-  const bookDetail = useCatalogStore(state => state.bookDetail)
+  const bookDetail = useCatalogStore(selectorBookDetail)
 
   React.useEffect(() => {
     const getDetail = async () => {
