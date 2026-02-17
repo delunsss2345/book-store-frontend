@@ -32,6 +32,7 @@ const WishlistPage = () => {
           title="Homes for Our Time."
           subtitle="Sustainable Living"
           price={80}
+          bookVariantId="1"
           imageUrl="https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&w=800&q=80"
           href="/detail/homes-for-our-time-sustainable-living"
         />

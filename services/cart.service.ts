@@ -9,7 +9,7 @@ export const cartApi = {
     async deleteCart() {
         return await http.del('cart');
     },
-    async addCartItem(bookVariantId: bigint) {
+    async addCartItem({ bookVariantId }: { bookVariantId: bigint }): Promise<any> {
         return await http.post('cart/items', {
             bookVariantId
         });

@@ -1,3 +1,4 @@
+import { useAddToCartMutation, useCartMutation } from "@/features/cart/hooks";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
@@ -8,11 +9,12 @@ type BookCardProps = {
   subtitle: string;
   price: number;
   currency?: string;
-  badge?: string; // e.g. "XL", "XXL", "ADULTS ONLY", "NEW"
+  badge?: string;
   imageUrl?: string;
   href?: string;
   variant?: BookCardVariant;
   className?: string;
+  bookVariantId: bigint
 };
 
 const formatPrice = (price: number, currency: string) => `${currency} ${price}`;
@@ -61,35 +63,28 @@ function CardInner({
   imageUrl,
   variant,
   className,
-}: Required<
-  Pick<BookCardProps, "title" | "subtitle" | "price" | "currency" | "variant">
-> &
-  Pick<BookCardProps, "badge" | "imageUrl" | "className">) {
-  const s = S[variant];
+  bookVariantId
+}: BookCardProps) {
+  const mutationAddToCardItem = useAddToCartMutation();
 
   return (
     <article
       className={cn(
-        "text-center bg-transparent",
+        "group/card text-center bg-transparent",
         "select-none",
-        s.wrap,
         className
       )}
     >
-      {/* IMAGE */}
       <figure
         className={cn(
           "relative",
-          "mx-auto",
-          s.figure
+          "mx-auto"
         )}
       >
         {imageUrl ? (
-          // img thường: không dính next/image domain config
           <img
             src={imageUrl}
             alt={`${title} cover`}
-            className={cn(s.img)}
             loading="lazy"
             draggable={false}
           />
@@ -100,20 +95,39 @@ function CardInner({
         )}
       </figure>
 
-      {/* BADGE */}
-      {badge && <div className={s.badgeWrap}>
-        <span className={s.badge}>{badge}</span>
+      {badge && <div className="mt-5">
+        <span className={badge}>{badge}</span>
       </div>}
 
-      {/* TEXT (khóa nhịp, để card nào cũng đều) */}
       <div className="mx-auto mt-2 max-w-[26ch]">
-        <h3 className={s.title}>
+        <h3 className="mt-4 font-serif text-[20px] leading-[1.15] tracking-tight text-neutral-900">
           <strong className="font-semibold">{title}</strong>
         </h3>
-        <p className={s.subtitle}>{subtitle}</p>
+        <p className="mt-1 text-[20px] leading-[1.15] tracking-tight text-neutral-700">{subtitle}</p>
       </div>
 
-      <p className={s.price}>{formatPrice(price, currency)}</p>
+      <p className="mt-5 text-[18px] font-semibold tracking-widest text-neutral-600 opacity-70">{formatPrice(price, currency ?? 'vi')}</p>
+
+      <div className="mt-5 opacity-0 translate-y-2 transition-all duration-300 ease-out group-hover/card:opacity-100 group-hover/card:translate-y-0">
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            mutationAddToCardItem.mutateAsync({ bookVariantId })
+          }}
+          className={cn(
+            "inline-flex items-center justify-center",
+            "rounded-sm border border-neutral-900",
+            "px-4 py-2 text-[13px] font-medium tracking-widest uppercase",
+            "text-neutral-900 bg-transparent",
+            "transition-colors duration-200",
+            "hover:bg-neutral-900 hover:text-white",
+            "cursor-pointer"
+          )}
+        >
+          Add to Cart
+        </button>
+      </div>
     </article>
   );
 }
@@ -128,6 +142,7 @@ export default function BookCard({
   href,
   variant = "default",
   className,
+  bookVariantId
 }: BookCardProps) {
   const inner = (
     <CardInner
@@ -139,6 +154,7 @@ export default function BookCard({
       imageUrl={imageUrl}
       variant={variant}
       className={className}
+      bookVariantId={bookVariantId}
     />
   );
 

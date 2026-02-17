@@ -11,8 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { useBookMutation } from "@/features/catalog/hooks/use-book.mutation";
 import { useCatalogStore } from "@/features/catalog/store/catalog.store";
-import { selectorBookDetail } from "@/features/selector";
 import { useParams } from "next/navigation";
+import { selectorBookDetail } from "@/features/catalog/selector/catalog.selector";
 
 
 const formatMoney = (amount: string | number, currencyCode: string) => {

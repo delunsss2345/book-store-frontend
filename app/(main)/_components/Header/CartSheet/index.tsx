@@ -13,8 +13,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { selectorCart } from "@/features/cart/selector/cart.selector";
 import { useCartStore } from "@/features/cart/store/cart.store";
-import { selectorCart } from "@/features/selector";
 import useTranslator from "@/hooks/use-translator";
 
 const currency = new Intl.NumberFormat("en-US", {

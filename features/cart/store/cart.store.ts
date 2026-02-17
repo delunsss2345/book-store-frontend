@@ -6,16 +6,30 @@ type CartStore = {
     cart: Cart | null,
     isLoadingCart: boolean,
     setCart: (cart: Cart) => void
+    addToCart: (bookVariantId: bigint) => void
 }
 
 export const useCartStore = create<CartStore>()(
     persist(
         (set) => ({
-            cart: null,
+            cart: {
+                userId: null,
+                guestSessionId: null,
+                items: []
+            },
             accessToken: null,
             isLoadingCart: false,
-            setCart: (cart) => set({ cart }),
-
+            setCart: (cart: Cart) => set({ cart }),
+            addToCart: (bookVariantId: bigint) => set((state) => ({
+                cart: {
+                    ...(state?.cart ? state.cart : {
+                        userId: null,
+                        guestSessionId: null,
+                        items: []
+                    }),
+                    items: [...state.cart!.items, { bookVariantId, quantity: 1 }]
+                }
+            })),
         }),
         {
             name: "cart-storage",

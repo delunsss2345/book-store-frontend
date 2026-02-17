@@ -52,11 +52,8 @@ export default function CheckoutPage() {
     return (
         <div className="container-main w-full py-10">
             <div className="grid gap-12 lg:grid-cols-[1fr_420px]">
-                {/* ============================================================ */}
-                {/*  LEFT COLUMN – Forms                                         */}
-                {/* ============================================================ */}
+
                 <div className="space-y-10">
-                    {/* ---- Liên hệ (Contact) ---- */}
                     <section>
                         <div className="flex items-center justify-between">
                             <h2 className="text-xl font-semibold">Liên hệ</h2>
@@ -83,7 +80,6 @@ export default function CheckoutPage() {
                         </div>
                     </section>
 
-                    {/* ---- Giao hàng (Shipping) ---- */}
                     <section>
                         <h2 className="text-xl font-semibold">Giao hàng</h2>
                         <p className="mt-1 text-sm text-zinc-500">
@@ -92,7 +88,6 @@ export default function CheckoutPage() {
                         </p>
 
 
-                        {/* Shipping method tabs */}
                         <div className="mt-5 overflow-hidden rounded-lg border border-zinc-200">
                             <div className="flex items-center gap-3 border-b border-zinc-200 bg-white px-4 py-3">
                                 <div className="flex h-5 w-5 items-center justify-center rounded-full bg-teal-500">
@@ -108,9 +103,7 @@ export default function CheckoutPage() {
                             </div>
                         </div>
 
-                        {/* Address form */}
                         <div className="mt-6 space-y-4">
-                            {/* Country */}
                             <Select defaultValue="vn">
                                 <SelectTrigger className="h-12 w-full rounded-md border-zinc-300 text-sm">
                                     <SelectValue placeholder="Quốc gia/ Vùng" />
@@ -121,7 +114,6 @@ export default function CheckoutPage() {
                                 </SelectContent>
                             </Select>
 
-                            {/* Name row */}
                             <div className="grid grid-cols-2 gap-4">
                                 <Input
                                     placeholder="Anh/ Chị (không bắt buộc)"
@@ -133,13 +125,11 @@ export default function CheckoutPage() {
                                 />
                             </div>
 
-                            {/* Address */}
                             <Input
                                 placeholder="Địa chỉ (Số nhà, tên, đường, phường và quận)"
                                 className="h-12 rounded-md border-zinc-300 text-sm"
                             />
 
-                            {/* City + Postal */}
                             <div className="grid grid-cols-2 gap-4">
                                 <Input
                                     placeholder="Tỉnh/ Thành phố (Ví dụ: Đà Nẵng)"
@@ -151,7 +141,6 @@ export default function CheckoutPage() {
                                 />
                             </div>
 
-                            {/* Phone */}
                             <div className="relative">
                                 <Input
                                     placeholder="Điện thoại"
@@ -160,7 +149,6 @@ export default function CheckoutPage() {
                                 <Info className="absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-zinc-400" />
                             </div>
 
-                            {/* Save info */}
                             <div className="flex items-center gap-2">
                                 <Checkbox id="save-info" />
                                 <Label htmlFor="save-info" className="text-sm text-zinc-600">
@@ -170,7 +158,6 @@ export default function CheckoutPage() {
                         </div>
                     </section>
 
-                    {/* ---- Phương thức vận chuyển (Shipping method) ---- */}
                     <section>
                         <h2 className="text-xl font-semibold">Phương thức vận chuyển</h2>
 
@@ -202,7 +189,6 @@ export default function CheckoutPage() {
                             defaultValue="vnpay"
                             className="mt-5 gap-0 overflow-hidden rounded-lg border border-zinc-200"
                         >
-                            {/* VNPAY */}
                             <label
                                 htmlFor="vnpay"
                                 className="flex cursor-pointer items-center gap-3 border-b border-zinc-200 bg-sky-50/60 px-4 py-4"
@@ -221,7 +207,6 @@ export default function CheckoutPage() {
                                     </span>
                                 </div>
                             </label>
-                            {/* COD */}
                             <label
                                 htmlFor="cod"
                                 className="flex cursor-pointer items-center gap-3 px-4 py-4"
@@ -233,7 +218,6 @@ export default function CheckoutPage() {
                             </label>
                         </RadioGroup>
 
-                        {/* Submit */}
                         <Button className="mt-6 h-14 w-full rounded-lg bg-zinc-900 text-base font-semibold text-white hover:bg-zinc-800">
                             Thanh toán ngay
                         </Button>

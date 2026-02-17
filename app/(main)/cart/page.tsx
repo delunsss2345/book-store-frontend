@@ -3,8 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useCartMutation } from "@/features/cart/hooks";
+import { selectorCart } from "@/features/cart/selector/cart.selector";
 import { useCartStore } from "@/features/cart/store/cart.store";
-import { selectorCart } from "@/features/selector";
 import { Minus, Plus, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -63,9 +63,9 @@ export default function ShoppingCartPage() {
                         <span className="text-right">Total</span>
                     </div>
 
-                    {cart?.items && cart?.items.length > 0 ? (
-                        cart?.items.map((item) => (
-                            <div key={item.id}>
+                    {cart && cart.items.length > 0 ? (
+                        cart.items.map((item) => (
+                            <div key={item.bookVariantId}>
                                 <div className="grid grid-cols-[1fr_140px_100px_100px] items-start gap-x-4 py-6">
                                     {/* Title column */}
                                     <div className="flex items-start gap-3">
@@ -151,7 +151,7 @@ export default function ShoppingCartPage() {
                     )}
 
                     {/* Footer totals row */}
-                    {cart?.items && cart?.items.length > 0 && (
+                    {cart && cart.items.length > 0 && (
                         <div className="grid grid-cols-[1fr_140px_100px_100px] items-center py-4 text-sm font-semibold">
                             <span />
                             <span />
@@ -165,9 +165,7 @@ export default function ShoppingCartPage() {
                     )}
                 </div>
 
-                {/* Right: Summary sidebar */}
                 <div className="space-y-6">
-                    {/* Summary */}
                     <div>
                         <h2 className="text-sm font-bold">Summary</h2>
                         <div className="mt-4 space-y-3 text-sm">
