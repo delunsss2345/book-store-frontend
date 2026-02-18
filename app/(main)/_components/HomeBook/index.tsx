@@ -77,9 +77,8 @@ export function HomeBook() {
                     <h2 className="text-2xl font-bold tracking-wide">New &amp; Trending</h2>
                 </div>
 
-                <div className="mt-12 grid grid-cols-2 gap-x-10 gap-y-16 md:grid-cols-3 lg:grid-cols-4">
+                <div className="mt-12 grid grid-cols-2 gap-x-10 gap-y-16 md:grid-cols-3 lg:grid-cols-4 ">
                     {newAndTrending.map((b) => {
-
                         return <BookCard
                             key={b.id}
                             title={b.title}

@@ -1,6 +1,7 @@
 import { useAddToCartMutation, useCartMutation } from "@/features/cart/hooks";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type BookCardVariant = "default" | "compact";
 
@@ -78,18 +79,20 @@ function CardInner({
       <figure
         className={cn(
           "relative",
-          "mx-auto"
+          "mx-auto",
+          "h-[350px]",
         )}
       >
         {imageUrl ? (
           <img
+            className="object-cover h-[100%] w-[100%]"
             src={imageUrl}
             alt={`${title} cover`}
             loading="lazy"
             draggable={false}
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-sm text-neutral-400">
+          <div className="flex h-full w-full items-center justify-center text-sm text-neutral-400 h-[360px]">
             No image
           </div>
         )}
@@ -113,6 +116,7 @@ function CardInner({
           type="button"
           onClick={(e) => {
             e.preventDefault();
+            
             mutationAddToCardItem.mutateAsync({ bookVariantId })
           }}
           className={cn(
@@ -144,6 +148,7 @@ export default function BookCard({
   className,
   bookVariantId
 }: BookCardProps) {
+  const router = useRouter();
   const inner = (
     <CardInner
       title={title}
@@ -161,16 +166,18 @@ export default function BookCard({
   if (!href) return inner;
 
   return (
-    <Link
-      href={href}
+    <div
+    onClick={() => setTimeout(() => {
+      router.push(href)
+    }, 700)}
       className={cn(
         "group block",
         "transition-transform duration-200 ease-out",
-        "hover:-translate-y-[2px]"
+        "hover:-translate-y-[2px] hover:scale-[1.02]"
       )}
       aria-label={`${title} ${subtitle}`}
     >
       {inner}
-    </Link>
+    </div>
   );
 }

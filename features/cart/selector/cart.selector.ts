@@ -5,3 +5,4 @@ type CartStoreState = ReturnType<typeof useCartStore.getState>;
 export const selectorCart = (state: CartStoreState) => state.cart;
 export const selectorIsLoadingCart = (state: CartStoreState) => state.isLoadingCart;
 export const selectorSetCart = (state: CartStoreState) => state.setCart;
+export const selectorAddToCart = (state: CartStoreState) => state.addToCart;

@@ -1,4 +1,4 @@
-import { Cart } from "@/types/response/cart.response";
+import {  Cart, CartItem } from "@/types/response/cart.response";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
@@ -6,7 +6,9 @@ type CartStore = {
     cart: Cart | null,
     isLoadingCart: boolean,
     setCart: (cart: Cart) => void
-    addToCart: (bookVariantId: bigint) => void
+    addToCart: (item: CartItem) => void
+    removeItem: (id: string) => void
+    updateQty: (id: string, delta: number) => void
 }
 
 export const useCartStore = create<CartStore>()(
@@ -20,14 +22,24 @@ export const useCartStore = create<CartStore>()(
             accessToken: null,
             isLoadingCart: false,
             setCart: (cart: Cart) => set({ cart }),
-            addToCart: (bookVariantId: bigint) => set((state) => ({
+            addToCart: (item: CartItem) => set((state) => ({
                 cart: {
-                    ...(state?.cart ? state.cart : {
-                        userId: null,
-                        guestSessionId: null,
-                        items: []
-                    }),
-                    items: [...state.cart!.items, { bookVariantId, quantity: 1 }]
+                    ...state.cart!,
+                    items: [...state.cart!.items, item]
+                }
+            })),
+            removeItem: (id: string) => set((state) => ({
+                cart: {
+                    ...state.cart!,
+                    items: state.cart!.items.filter((item) => item.id !== id)
+                }
+            })),
+            updateQty: (id: string, delta: number) => set((state) => ({
+                cart: {
+                    ...state.cart!,
+                    items: state.cart!.items.map((item) =>
+                        item.id === id ? { ...item, quantity: Math.max(1, item.quantity + delta) } : item
+                    )
                 }
             })),
         }),

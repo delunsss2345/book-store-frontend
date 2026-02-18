@@ -13,6 +13,7 @@ import { useBookMutation } from "@/features/catalog/hooks/use-book.mutation";
 import { useCatalogStore } from "@/features/catalog/store/catalog.store";
 import { useParams } from "next/navigation";
 import { selectorBookDetail } from "@/features/catalog/selector/catalog.selector";
+import { LoadingLazy } from "@/components/common/LoadingLazy";
 
 
 const formatMoney = (amount: string | number, currencyCode: string) => {
@@ -42,25 +43,22 @@ export default function DetailPage() {
   const [readMoreOpen, setReadMoreOpen] = React.useState(true);
   const [reviewsOpen, setReviewsOpen] = React.useState(false);
   const { slug } = useParams<{ slug: string }>();
-  const bookMutation = useBookMutation(slug);
+  const {mutateAsync} = useBookMutation(slug);
   const bookDetail = useCatalogStore(selectorBookDetail)
 
   React.useEffect(() => {
     const getDetail = async () => {
-      await bookMutation.mutateAsync()
+      await mutateAsync()
     }
 
     getDetail();
-  }, [])
-
-  if (!bookDetail) return;
-  if (bookMutation.isPending) return <Spinner />
+  }, [mutateAsync])
 
 
   return (
-    <div className="w-full bg-white text-neutral-900">
+    <>
+      { <div className="w-full bg-white text-neutral-900">
       <div className="container-main py-3">
-        {/* ── Breadcrumb ── */}
         <nav className="text-[12px] tracking-wide text-neutral-500">
           <span>Home</span> <span className="mx-2 text-neutral-300">|</span>
           <span>Books</span> <span className="mx-2 text-neutral-300">|</span>
@@ -286,6 +284,7 @@ export default function DetailPage() {
           </div>
         </div>
       </section>
-    </div>
+    </div> }
+    </>
   );
 }
