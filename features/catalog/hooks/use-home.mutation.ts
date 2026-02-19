@@ -1,18 +1,10 @@
-import { selectorSetHome } from "@/features/catalog/selector/catalog.selector";
-import { useCatalogStore } from "@/features/catalog/store/catalog.store";
 import { catalogApi } from "@/services/catalog.service";
-import { HomeResponse } from "@/types/response/catalog.response";
-import { useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
-export const useHomeMutation = () => {
-    const setHome = useCatalogStore(selectorSetHome)
-    return useMutation({
-        mutationFn: catalogApi.getHome,
-
-        onSuccess: (home: HomeResponse) => {
-
-            setHome(home.data);
-
-        }
-    })
-}
+export const useHomeQuery = () =>
+  useQuery({
+    queryKey: ["catalog", "home"],
+    queryFn: catalogApi.getHome,
+    select: (response) => response.data,
+    staleTime: 60_000,
+  });

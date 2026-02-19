@@ -2,7 +2,7 @@
 import { Footer } from "@/app/profile/_components/Footer";
 import Header from "@/app/profile/_components/Header";
 import { useAuthStore } from "@/features/auth";
-import { selectorCurrentUser, selectorIsAuthHydrated } from "@/features/selector";
+import { selectorCurrentUser, selectorIsAuthHydrated } from "@/features/auth/selector/auth.selector";
 import { useRouter } from "next/navigation";
 import React from "react";
 

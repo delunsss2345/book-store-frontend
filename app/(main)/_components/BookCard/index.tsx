@@ -1,6 +1,5 @@
-import { useAddToCartMutation, useCartMutation } from "@/features/cart/hooks";
+import { useAddToCartMutation } from "@/features/cart/hooks";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 type BookCardVariant = "default" | "compact";
@@ -15,7 +14,7 @@ type BookCardProps = {
   href?: string;
   variant?: BookCardVariant;
   className?: string;
-  bookVariantId: bigint
+  bookVariantId: number
 };
 
 const formatPrice = (price: number, currency: string) => `${currency} ${price}`;

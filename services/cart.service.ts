@@ -1,25 +1,44 @@
-import { CartResponse } from "@/types/response/cart.response";
+import {
+    AddCartItemRequest,
+    MergeCartRequest,
+    UpdateCartItemDeltaRequest,
+} from "@/types/request/cart.request";
+import {
+    AddCartItemProxyResponse,
+    ClearCartProxyResponse,
+    GetCartProxyResponse,
+    MergeCartProxyResponse,
+    RemoveCartItemProxyResponse,
+    UpdateCartItemDeltaProxyResponse,
+} from "@/types/response/cart.response";
 import { http } from "@/utils/http";
 
 
 export const cartApi = {
-    async getCart(): Promise<CartResponse> {
+    async getCart(): Promise<GetCartProxyResponse> {
         return await http.get('cart');
     },
-    async deleteCart() {
+    async deleteCart(): Promise<ClearCartProxyResponse> {
         return await http.del('cart');
     },
-    async addCartItem({ bookVariantId }: { bookVariantId: bigint }): Promise<any> {
-        return await http.post('cart/items', {
-            bookVariantId
+    async addCartItem(payload: AddCartItemRequest): Promise<AddCartItemProxyResponse> {
+        return await http.post('cart/items', payload);
+    },
+    async updateCartItemDelta({
+        itemKey,
+        quantity,
+    }: { itemKey: string } & UpdateCartItemDeltaRequest): Promise<UpdateCartItemDeltaProxyResponse> {
+        return await http.patch(`cart/items/${itemKey}/delta`, {
+            quantity,
         });
     },
-    async updateQualityCartItem(quantity: number) {
-        return await http.post('cart/items', {
-            quantity
-        });
+    async deleteCartItem(itemKey: string): Promise<RemoveCartItemProxyResponse> {
+        return await http.del(`cart/items/${itemKey}`);
     },
-    async deleteCartItem(itemKey: number) {
-        return await http.del(`cart/items/${itemKey}`)
+    async mergeCart(payload: MergeCartRequest = {}): Promise<MergeCartProxyResponse> {
+        const requestBody =
+            typeof payload === "object" && payload !== null ? payload : {};
+
+        return await http.post("cart/merge", requestBody);
     },
 };

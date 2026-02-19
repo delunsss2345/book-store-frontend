@@ -2,12 +2,9 @@
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useCartMutation } from "@/features/cart/hooks";
-import { selectorCart } from "@/features/cart/selector/cart.selector";
-import { useCartStore } from "@/features/cart/store/cart.store";
+import { useCartQuery } from "@/features/cart/hooks";
 import { Minus, Plus, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 
 const currency = new Intl.NumberFormat("en-US", {
@@ -19,13 +16,9 @@ const currency = new Intl.NumberFormat("en-US", {
 
 export default function ShoppingCartPage() {
     const router = useRouter();
-    const cart = useCartStore(selectorCart);
-    const { mutateAsync } = useCartMutation();
-    useEffect(() => {
-        mutateAsync()
-    }, [mutateAsync])
+    const { data: cart, isPending, isError } = useCartQuery();
 
-    const updateQty = (id: string, delta: number) => {
+    const updateQty = (_id: string, _delta: number) => {
         // setItems((prev) =>
         //     prev.map((item) =>
         //         item.id === id ? { ...item, qty: Math.max(1, item.qty + delta) } : item
@@ -33,11 +26,27 @@ export default function ShoppingCartPage() {
         // );
     };
 
-    const removeItem = (id: string) => {
+    const removeItem = (_id: string) => {
         // setItems((prev) => prev.filter((item) => item.id !== id));
     };
 
     const subtotal = cart?.items.reduce((sum, item) => sum + parseFloat(item.variant.price) * item.quantity, 0);
+
+    if (isPending) {
+        return (
+            <div className="container-main w-full py-10 min-h-[50vh] text-sm text-zinc-500">
+                Loading cart...
+            </div>
+        );
+    }
+
+    if (isError) {
+        return (
+            <div className="container-main w-full py-10 min-h-[50vh] text-sm text-zinc-500">
+                Failed to load cart.
+            </div>
+        );
+    }
 
     return (
         <div className="container-main w-full py-10 min-h-[50vh]">
@@ -89,7 +98,7 @@ export default function ShoppingCartPage() {
                                                 <p className="text-xs text-zinc-500">
                                                     Availability:{" "}
                                                     <span className="text-zinc-700">
-                                                        {item.variant.stock > 0 ? "In Stock" : "Out of Stock"}
+                                                        {(item.variant.stock ?? 0) > 0 ? "In Stock" : "Out of Stock"}
                                                     </span>
                                                 </p>
                                             )}
@@ -145,12 +154,12 @@ export default function ShoppingCartPage() {
                         <div className="mt-4 space-y-3 text-sm">
                             <div className="flex items-center justify-between">
                                 <span className="text-zinc-600">Subtotal</span>
-                                <span>{currency.format(parseFloat(subtotal ?? 0))} {cart?.items[0]?.variant.currencyCode ?? 'VN'}</span>
+                                <span>{currency.format(subtotal ?? 0)} {cart?.items[0]?.variant.currencyCode ?? 'VN'}</span>
                             </div>
                             <Separator />
                             <div className="flex items-center justify-between font-medium">
                                 <span>Total</span>
-                                <span>{currency.format(parseFloat(subtotal ?? 0))} {cart?.items[0]?.variant.currencyCode ?? 'VN'}</span>
+                                <span>{currency.format(subtotal ?? 0)} {cart?.items[0]?.variant.currencyCode ?? 'VN'}</span>
                             </div>
                         </div>
 

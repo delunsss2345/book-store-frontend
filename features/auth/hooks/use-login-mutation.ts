@@ -1,5 +1,5 @@
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { selectorSession } from "@/features/selector";
+import { selectorSession } from "@/features/auth/selector/auth.selector";
 import { authApi } from "@/services/auth.service";
 import { useMutation } from "@tanstack/react-query";
 

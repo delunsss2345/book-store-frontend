@@ -1,290 +1,283 @@
 "use client";
 
-import { Heart, Minus, Plus } from "lucide-react";
+import { Heart, Minus, Plus, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import * as React from "react";
 
+import { FormatAvailability } from "@/app/(main)/detail/[...slug]/_components/FormatAvailability";
+import { FormatPicker } from "@/app/(main)/detail/[...slug]/_components/FormatPicker";
+import { FormatPrice } from "@/app/(main)/detail/[...slug]/_components/FormatPrice";
+import { WishlistAction } from "@/app/(main)/detail/[...slug]/_components/WishlistAction";
+import { LoadingLazy } from "@/components/common/LoadingLazy";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Input } from "@/components/ui/input";
-import { Spinner } from "@/components/ui/spinner";
-import { useBookMutation } from "@/features/catalog/hooks/use-book.mutation";
+import { useAddToCartMutation } from "@/features/cart/hooks";
+import { useBookQuery } from "@/features/catalog/hooks/use-book.mutation";
 import { useCatalogStore } from "@/features/catalog/store/catalog.store";
-import { useParams } from "next/navigation";
-import { selectorBookDetail } from "@/features/catalog/selector/catalog.selector";
-import { LoadingLazy } from "@/components/common/LoadingLazy";
-
-
-const formatMoney = (amount: string | number, currencyCode: string) => {
-  const n = typeof amount === "string" ? Number(amount) : amount;
-  if (!Number.isFinite(n)) return `${amount} ${currencyCode}`;
-  try {
-    return new Intl.NumberFormat("vi-VN", { style: "currency", currency: currencyCode }).format(n);
-  } catch {
-    return `${n} ${currencyCode}`;
-  }
-};
-
-
-function SeriesThumb({ src, alt }: { src: string; alt: string }) {
-  return (
-    <div className="relative h-[100px] w-[76px] flex-shrink-0 overflow-hidden rounded-sm">
-      <Image src={src} alt={alt} fill className="object-cover" sizes="76px" />
-    </div>
-  );
-}
-
-
+import { useWishStore } from "@/features/wish/store/wish.store";
+import { cn } from "@/lib/utils"; 
 
 export default function DetailPage() {
+  const params = useParams<{ slug?: string | string[] }>();
+  const slug = Array.isArray(params.slug) ? params.slug[params.slug.length - 1] : params.slug ?? "";
+
+  const { data: bookDetail, isPending, isError } = useBookQuery(slug);
+
+  const setVariantDetail = useCatalogStore((state) => state.setVariantDetail);
+  const bookVariantDetail = useCatalogStore((state) => state.bookVariantDetail);
+  const setWishVariantDetail = useWishStore(state => state.setWishVariantDetail)
+
+
+  const { mutateAsync: addToCart, isPending: isAdding } = useAddToCartMutation();
+
   const [qty, setQty] = React.useState(1);
-  const [active, setActive] = React.useState(0);
   const [readMoreOpen, setReadMoreOpen] = React.useState(true);
   const [reviewsOpen, setReviewsOpen] = React.useState(false);
-  const { slug } = useParams<{ slug: string }>();
-  const {mutateAsync} = useBookMutation(slug);
-  const bookDetail = useCatalogStore(selectorBookDetail)
 
   React.useEffect(() => {
-    const getDetail = async () => {
-      await mutateAsync()
+    if (bookDetail?.variants?.length) {
+      setVariantDetail(bookDetail.variants[0]);
+      setWishVariantDetail(bookDetail.variants[0]);
     }
+  }, [bookDetail, setVariantDetail, setWishVariantDetail]);
 
-    getDetail();
-  }, [mutateAsync])
+  if (isPending) return <LoadingLazy />;
+  if (isError || !bookDetail) {
+    return <div className="container-main py-20 text-center text-zinc-500">Không tìm thấy thông tin sách.</div>;
+  }
 
+  const handleAddToCart = async (quantity: number) => {
+    if (bookVariantDetail && quantity >= 1) {
+      await addToCart({
+        bookVariantId: Number(bookVariantDetail.id),
+        quantity
+      })
+    }
+  };
 
   return (
-    <>
-      { <div className="w-full bg-white text-neutral-900">
-      <div className="container-main py-3">
-        <nav className="text-[12px] tracking-wide text-neutral-500">
-          <span>Home</span> <span className="mx-2 text-neutral-300">|</span>
-          <span>Books</span> <span className="mx-2 text-neutral-300">|</span>
-          <span>{bookDetail.categories?.[0]?.name ?? "Category"}</span>{" "}
-          <span className="mx-2 text-neutral-300">|</span>
-          <span className="text-neutral-900">{bookDetail.title}</span>
+    <main className="w-full bg-white text-neutral-900">
+      <div className="container-main py-4">
+        <nav className="flex items-center gap-2 overflow-hidden text-[11px] font-medium uppercase tracking-widest text-neutral-500 md:text-[12px]">
+          <Link href="/" className="hover:text-black transition-colors">Home</Link>
+          <span className="text-neutral-300">/</span>
+          <Link href="/catalog" className="hover:text-black transition-colors">Books</Link>
+          <span className="text-neutral-300">/</span>
+          <span className="truncate text-neutral-900">{bookDetail.title}</span>
         </nav>
 
-        <div className="mt-10 grid grid-cols-1 gap-12 xl:grid-cols-12">
-          <section className="xl:col-span-7">
-            <div className="bg-white p-6">
-              <div className="relative mx-auto aspect-[3/4] w-full max-w-[520px] overflow-hidden rounded-sm">
+        <div className="mt-6 grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+          <section className="lg:col-span-7">
+            <div className="sticky top-24 space-y-4">
+              <div className="relative aspect-[3/4] w-full overflow-hidden rounded-md bg-neutral-50 shadow-sm border border-neutral-100">
+                {
+                  bookDetail?.coverImageUrl ? <Image
+                    src={bookDetail?.coverImageUrl}
+                    alt={bookDetail.title}
+                    fill
+                    priority
+                    className="object-contain p-4 md:p-8"
+                    sizes="(max-width: 768px) 100vw, 60vw"
+                  /> : <div className="relative aspect-[3/4] w-full overflow-hidden bg-white rounded-sm border border-neutral-100 transition-shadow group-hover:shadow-md">
+                  </div>
+                }
+
               </div>
-            </div>
 
-            <div className="mt-4 flex items-center justify-between">
-              <p className="text-[12px] text-neutral-500">
-                {active + 1}
-              </p>
-              <div className="flex gap-2">
-
+              <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="relative h-24 w-18 flex-shrink-0 cursor-pointer overflow-hidden rounded border border-neutral-200 hover:border-black transition-all">
+                    {
+                      bookDetail?.coverImageUrl ? <Image
+                        src={bookDetail?.coverImageUrl}
+                        alt={bookDetail.title}
+                        fill
+                        priority
+                        className="object-contain p-4 md:p-8"
+                        sizes="(max-width: 768px) 100vw, 60vw"
+                      /> : <div className="relative aspect-[3/4] w-full overflow-hidden bg-white rounded-sm border border-neutral-100 transition-shadow group-hover:shadow-md">
+                        {/* Placeholder for similar books */}
+                      </div>
+                    }
+                  </div>
+                ))}
               </div>
             </div>
           </section>
 
-          <section className="xl:col-span-5">
-            <div className="flex items-center gap-2">
-              <span className="text-[12px] font-semibold tracking-widest text-red-600">
-              </span>
-              <span className="rounded-sm border border-neutral-200 px-2 py-1 text-[12px] tracking-wide text-neutral-700">
-              </span>
-            </div>
+          <section className="flex flex-col lg:col-span-5">
+            <div className="border-b border-neutral-100 pb-6">
+              <div className="flex items-center justify-between">
+                <span className="text-[12px] font-bold tracking-[0.2em] text-red-600 uppercase">
+                  {bookDetail.categories?.[0]?.name}
+                </span>
+                <span className="text-[12px] text-neutral-400 italic">SKU: {bookDetail.id.slice(0, 8)}</span>
+              </div>
 
-            <h1 className="mt-4 font-serif text-[34px] leading-[1.1] tracking-tight">
-              {bookDetail.title}
-            </h1>
+              <h1 className="mt-3 font-serif text-3xl leading-tight tracking-tight md:text-4xl">
+                {bookDetail.title}
+              </h1>
 
-            <div className="mt-4 flex items-center justify-between">
-              <p className="text-[22px] tracking-tight text-neutral-900">
-              </p>
-
-              <button
-                type="button"
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-neutral-200 hover:border-neutral-400"
-                aria-label="Add to wishlist"
-              >
-                <Heart className="h-5 w-5" />
-              </button>
-            </div>
-
-            <div className="mt-8">
-              <p className="mb-3 text-[13px] text-neutral-500">More {bookDetail.title}</p>
-              <div className="flex gap-3 overflow-x-auto pb-2">
-
+              <div className="mt-6 flex items-baseline justify-between">
+                <div className="scale-110 origin-left">
+                  <FormatPrice />
+                </div>
+                <WishlistAction />
               </div>
             </div>
 
-            <div className="mt-8 flex items-center gap-4">
-              <div className="inline-flex items-center rounded-sm border border-neutral-200">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  className="h-10 rounded-none px-3"
-                  onClick={() => setQty((p) => Math.max(1, p - 1))}
-                >
-                  <Minus className="h-4 w-4" />
-                </Button>
+            <div className="mt-8 space-y-8">
+              <div className="space-y-4">
+                <FormatPicker variants={bookDetail.variants} onChange={setVariantDetail} />
+                <FormatAvailability />
+              </div>
 
-                <Input
-                  className="h-10 w-14 rounded-none border-x border-neutral-200 text-center text-[13px]"
-                  value={qty}
-                  onChange={(e) => {
-                    const next = Number(e.target.value);
-                    setQty(Number.isFinite(next) && next > 0 ? next : 1);
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                <div className="flex h-12 w-full items-center justify-between rounded-md border border-neutral-200 px-2 sm:w-32">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 rounded-sm hover:bg-neutral-100"
+                    onClick={() => setQty((p) => Math.max(1, p - 1))}
+                  >
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                  <span className="text-sm font-medium">{qty}</span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 rounded-sm hover:bg-neutral-100"
+                    onClick={() => setQty((p) => p + 1)}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+
+                <Button
+                  onClick={() => {
+                    handleAddToCart(qty)
                   }}
-                />
-
-                <Button
-                  type="button"
-                  variant="ghost"
-                  className="h-10 rounded-none px-3"
-                  onClick={() => setQty((p) => p + 1)}
+                  disabled={isAdding}
+                  className="h-12 flex-1 rounded-md bg-neutral-900 text-[14px] font-bold uppercase tracking-widest text-white transition-all hover:bg-neutral-800 active:scale-[0.98]"
                 >
-                  <Plus className="h-4 w-4" />
+                  <ShoppingCart className="mr-2 h-4 w-4" />
+                  Add to Cart
                 </Button>
               </div>
-
-              <Button className="h-10 rounded-sm bg-neutral-900 px-6 text-[13px] font-medium tracking-wide hover:bg-neutral-800">
-                Add to Cart
-              </Button>
             </div>
 
-            <div className="mt-8 space-y-1 text-[13px] leading-6 text-neutral-700">
-              <p>
-                Edition:{" "}
-                <span className="text-neutral-900">
-                  {bookDetail.variants.map((v) => v.format).join(", ")}
-                </span>
-              </p>
-              <p>
-                Availability:{" "}
-                <span className="text-neutral-900">
-                </span>
-              </p>
+            <div className="mt-10 space-y-6 rounded-lg bg-neutral-50 p-6">
+              <div className="text-[14px] leading-relaxed text-neutral-700">
+                <p className="line-clamp-4">{bookDetail.description}</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 border-t border-neutral-200 pt-6 text-[12px] uppercase tracking-wider text-neutral-500">
+                <div>
+                  <p className="font-bold text-neutral-900">Pages</p>
+                  <p className="mt-1">{bookDetail.pageCount || "N/A"}</p>
+                </div>
+                <div>
+                  <p className="font-bold text-neutral-900">Weight</p>
+                  <p className="mt-1">{bookDetail.weightGrams ? `${(bookDetail.weightGrams / 1000).toFixed(2)} kg` : "N/A"}</p>
+                </div>
+              </div>
             </div>
 
-            <div className="mt-8 text-[15px] leading-7 text-neutral-800">
-              <p>
-                <span className="font-semibold text-neutral-900">{bookDetail.description}</span>
+            {/* Quote block */}
+            <div className="mt-12 border-l-2 border-neutral-900 pl-6 py-2">
+              <p className="text-lg font-serif italic text-neutral-800 leading-relaxed">
+                &ldquo;Strategy without tactics is the slowest route to victory. Tactics without strategy is the noise before defeat.&rdquo;
               </p>
-              {bookDetail.categories?.length > 0 && (
-                <p className="mt-2">
-                  Categories:{" "}
-                  <span className="font-semibold text-neutral-900">
-                    {bookDetail.categories.map((c) => c.name).join(", ")}
-                  </span>
-                </p>
-              )}
+              <cite className="mt-4 block text-[12px] font-bold uppercase tracking-widest text-neutral-500 not-italic">
+                — Sun Tzu, The Art of War
+              </cite>
             </div>
-
-            <p className="mt-8 text-[13px] text-neutral-500">
-              {bookDetail.pageCount ? `${bookDetail.pageCount} pages` : "—"}
-              {bookDetail.weightGrams ? ` • ${(bookDetail.weightGrams / 1000).toFixed(2)} kg` : ""}
-            </p>
-
-            <Button
-              variant="outline"
-              className="mt-8 h-10 rounded-sm border-neutral-200 px-5 text-[13px] tracking-wide text-neutral-900 hover:border-neutral-400"
-            >
-              Leave a review
-            </Button>
-
-            {/* 8) Quote */}
-            <blockquote className="mt-10 border-l-0 text-[20px] font-semibold italic leading-8 text-neutral-900">
-              &ldquo;Strategy without tactics is the slowest route to victory. Tactics without
-              strategy is the noise before defeat.&rdquo;
-              <footer className="mt-3 text-[13px] font-normal not-italic text-neutral-500">
-                — Sun Tzu
-              </footer>
-            </blockquote>
           </section>
         </div>
       </div>
 
-      <section className="mt-14 border-t border-neutral-200">
-        <Collapsible open={readMoreOpen} onOpenChange={setReadMoreOpen}>
-          <CollapsibleTrigger className="mx-auto flex w-full max-w-[1240px] items-center justify-center gap-3 px-6 py-6 text-[13px] font-medium tracking-widest text-neutral-900">
-            <span className="uppercase">Read more</span>
-            <span className="text-neutral-500">{readMoreOpen ? "—" : "+"}</span>
-          </CollapsibleTrigger>
-
-          <CollapsibleContent>
-            <div className="mx-auto grid max-w-[1240px] grid-cols-1 gap-10 px-6 pb-10 lg:grid-cols-2">
-              <div className="space-y-4 text-[15px] leading-7 text-neutral-800">
-                <h2 className="font-serif text-[26px] leading-tight">{bookDetail.title}</h2>
-                <p className="text-neutral-600">
-                  Categories:{" "}
-                  {bookDetail.categories?.length
-                    ? bookDetail.categories.map((c) => c.name).join(" • ")
-                    : "—"}
-                </p>
-                <p>
-                  Rating:{" "}
-                  {bookDetail.ratingAvg ? `${bookDetail.ratingAvg} / 5` : "No rating yet"}{" "}
-                  ({bookDetail.ratingCount} reviews)
-                </p>
-              </div>
-
-              <div className="space-y-5 text-[15px] leading-7 text-neutral-800">
-                <div>
-                  <h3 className="font-semibold">Product details</h3>
-                  <p className="mt-2 text-neutral-700">
-                    Page count: {bookDetail.pageCount ?? "—"}
-                  </p>
-                  <p className="text-neutral-700">Weight: {bookDetail.weightGrams ?? "—"} g</p>
-                  <p className="text-neutral-700">Publisher: {bookDetail.publisherName ?? "—"}</p>
+      <section className="mt-20 border-t border-neutral-100">
+        <div className="mx-auto max-w-5xl">
+          {/* Read More Section */}
+          <Collapsible open={readMoreOpen} onOpenChange={setReadMoreOpen} className="border-b border-neutral-100">
+            <CollapsibleTrigger className="flex w-full items-center justify-between px-6 py-8 text-[13px] font-bold uppercase tracking-[0.2em]">
+              <span>Product Description</span>
+              {readMoreOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+            </CollapsibleTrigger>
+            <CollapsibleContent className="px-6 pb-12 transition-all">
+              <div className="grid gap-12 lg:grid-cols-2">
+                <div className="prose prose-neutral max-w-none text-[15px] leading-8 text-neutral-600">
+                  <h3 className="font-serif text-2xl text-neutral-900">{bookDetail.title}</h3>
+                  <p className="mt-4">{bookDetail.description}</p>
                 </div>
-
-                <div>
-                  <h3 className="font-semibold">ISBN</h3>
-                  <p className="mt-2 text-neutral-700">
-                    Paperback:{" "}
-                    {bookDetail.variants.find((v) => v.format === "PAPERBACK")?.isbn ?? "—"}
-                  </p>
-                  <Link href="#" className="mt-2 inline-block text-neutral-900 underline underline-offset-4">
-                    Download product images here
-                  </Link>
+                <div className="space-y-6 text-[14px]">
+                  <div className="rounded-sm border border-neutral-100 p-6">
+                    <h4 className="mb-4 font-bold uppercase tracking-widest text-neutral-900">Specification</h4>
+                    <dl className="space-y-3">
+                      <div className="flex justify-between border-b border-neutral-50 pb-2">
+                        <dt className="text-neutral-500">Publisher</dt>
+                        <dd className="font-medium">{bookDetail.publisherName || "—"}</dd>
+                      </div>
+                      <div className="flex justify-between border-b border-neutral-50 pb-2">
+                        <dt className="text-neutral-500">Format</dt>
+                        <dd className="font-medium">Paperback, 6x9 inches</dd>
+                      </div>
+                      <div className="flex justify-between border-b border-neutral-50 pb-2">
+                        <dt className="text-neutral-500">ISBN-13</dt>
+                        <dd className="font-medium">978-0123456789</dd>
+                      </div>
+                    </dl>
+                  </div>
                 </div>
               </div>
-            </div>
-          </CollapsibleContent>
-        </Collapsible>
+            </CollapsibleContent>
+          </Collapsible>
 
-        <Collapsible open={reviewsOpen} onOpenChange={setReviewsOpen} className="border-t border-neutral-200">
-          <CollapsibleTrigger className="mx-auto flex w-full max-w-[1240px] items-center justify-center gap-3 px-6 py-6 text-[13px] font-medium tracking-widest text-neutral-900">
-            <span className="uppercase">Customer reviews</span>
-            <span className="text-neutral-500">{reviewsOpen ? "—" : "+"}</span>
-          </CollapsibleTrigger>
-
-          <CollapsibleContent>
-            <div className="mx-auto max-w-[1240px] px-6 pb-10">
-              <div className="space-y-3">
-                <p className="font-serif text-[22px]">{bookDetail.ratingCount} Ratings</p>
-                <p className="text-[14px] text-neutral-600">
-                  No reviews have been posted for this item yet. Be the first to rate this product.
-                </p>
-                <Button variant="outline" className="h-10 rounded-sm border-neutral-200 px-6 text-[13px]">
-                  Submit a review
+          {/* Reviews Section */}
+          <Collapsible open={reviewsOpen} onOpenChange={setReviewsOpen} className="border-b border-neutral-100">
+            <CollapsibleTrigger className="flex w-full items-center justify-between px-6 py-8 text-[13px] font-bold uppercase tracking-[0.2em]">
+              <span>Customer Reviews ({bookDetail.ratingCount})</span>
+              {reviewsOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+            </CollapsibleTrigger>
+            <CollapsibleContent className="px-6 pb-12">
+              <div className="text-center py-10">
+                <div className="mb-4 flex justify-center gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Heart key={i} className={cn("h-5 w-5", i < (bookDetail.ratingAvg || 0) ? "fill-black text-black" : "text-neutral-200")} />
+                  ))}
+                </div>
+                <p className="text-neutral-500">Chưa có đánh giá nào cho sản phẩm này.</p>
+                <Button variant="outline" className="mt-6 rounded-none px-8 uppercase tracking-widest text-[11px] font-bold">
+                  Write a review
                 </Button>
               </div>
-            </div>
-          </CollapsibleContent>
-        </Collapsible>
+            </CollapsibleContent>
+          </Collapsible>
+        </div>
       </section>
 
-      {/*  You may also like  */}
-      <section className="border-t border-neutral-200 py-14">
+      {/* RELAXED PRODUCTS */}
+      <section className="bg-neutral-50 py-20">
         <div className="container-main">
-          <h2 className="mb-12 text-center font-serif text-[32px] leading-none">You may also like</h2>
-
-          <div className="grid place-items-start gap-x-14 gap-y-16 sm:grid-cols-2 xl:grid-cols-4">
-
+          <h2 className="mb-16 text-center font-serif text-3xl md:text-4xl">You may also like</h2>
+          <div className="grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-3 lg:grid-cols-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="group cursor-pointer">
+                <div className="relative aspect-[3/4] w-full overflow-hidden bg-white rounded-sm border border-neutral-100 transition-shadow group-hover:shadow-md">
+                  {/* Placeholder for similar books */}
+                </div>
+                <div className="mt-4 space-y-1">
+                  <p className="text-[11px] uppercase tracking-widest text-neutral-400">Category</p>
+                  <h3 className="font-medium text-neutral-900 group-hover:underline">Related Book Title {i}</h3>
+                  <p className="text-sm font-bold">$25.00</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
-    </div> }
-    </>
+    </main>
   );
 }

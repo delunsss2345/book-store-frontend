@@ -3,16 +3,13 @@ import CartSheet from "@/app/(main)/_components/Header/CartSheet";
 import ProfileButton from "@/app/(main)/_components/Header/ProfileButton";
 import SearchBar from "@/app/(main)/_components/Header/Search";
 import SettingsTranslation from "@/app/(main)/_components/Header/SettingTranslation";
+import { WishlistHeader } from "@/app/(main)/_components/Header/WishlistHeader";
 import Nav from "@/app/(main)/_components/Nav";
 import { useIsMobile } from "@/hooks/use-mobile";
-import useTranslator from "@/hooks/use-translator";
-import { Heart, Menu } from "lucide-react";
-import Link from "next/link";
+import { Menu } from "lucide-react";
 
 const Header = () => {
-  const { t } = useTranslator();
   const isMobile = useIsMobile();
-
 
   return (
     <header className="relative z-50 w-full bg-white" style={{ paddingLeft: 'var(--container-px)', paddingRight: 'var(--container-px)' }}>
@@ -38,14 +35,7 @@ const Header = () => {
             </div>
           ) : null}
 
-          <Link
-            href="/wishlist"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-sm hover:bg-muted"
-            aria-label={t("header.aria.wishlist")}
-          >
-            <Heart className="h-5 w-5" />
-          </Link>
-
+          <WishlistHeader />
           <CartSheet />
         </div>
       </div>

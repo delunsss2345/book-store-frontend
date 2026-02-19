@@ -1,8 +1,8 @@
 "use client";
 
+import { Mail, MapPin, Phone, Plus, User } from "lucide-react";
 import type { ChangeEvent, FormEvent } from "react";
 import { useMemo, useState } from "react";
-import { Mail, MapPin, Phone, Plus, User } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,8 +23,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { selectorCurrentUser } from "@/features/auth/selector/auth.selector";
 import { useAuthStore } from "@/features/auth/store/auth.store";
-import { selectorCurrentUser } from "@/features/selector";
 import useTranslator from "@/hooks/use-translator";
 import { cn } from "@/lib/utils";
 
@@ -81,7 +81,7 @@ const formatAddress = (address: AddressItem) =>
   [address.addressDetail, address.ward, address.district, address.city]
     .filter(Boolean)
     .join(", ");
-  
+
 const ProfilePage = () => {
   const { t } = useTranslator();
   const currentUser = useAuthStore(selectorCurrentUser);
@@ -107,10 +107,10 @@ const ProfilePage = () => {
 
   const handleInputChange =
     (field: keyof Omit<AddressFormState, "addressType" | "isDefault">) =>
-    (event: ChangeEvent<HTMLInputElement>) => {
-      const value = event.target.value;
-      setAddressForm((prev) => ({ ...prev, [field]: value }));
-    };
+      (event: ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value;
+        setAddressForm((prev) => ({ ...prev, [field]: value }));
+      };
 
   const handleAddAddress = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

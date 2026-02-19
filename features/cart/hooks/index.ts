@@ -1,37 +1,91 @@
-import { useCartStore } from "@/features/cart/store/cart.store";
-import { selectorAddToCart, selectorSetCart } from "@/features/cart/selector/cart.selector";
 import { cartApi } from "@/services/cart.service";
-import { AddItemResponse, CartResponse } from "@/types/response/cart.response";
-import { useMutation } from "@tanstack/react-query";
+import { AddCartItemRequest } from "@/types/request/cart.request";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  selectorCart,
+  selectorRemoveItem,
+  selectorSetUpdateCart,
+  selectorUpdateQty,
+} from "../selector/cart.selector";
+import { useCartStore } from "../store/cart.store";
 
-export const useCartMutation = () => {
-    const setCart = useCartStore(selectorSetCart);
-    return useMutation({
-        mutationFn: cartApi.getCart,
-        onSuccess: (res: CartResponse) => setCart(res.data)
-    })
-}
+const cartQueryKey = ["cart"] as const;
 
-export const useAddToCartMutation = () => {
-    const addToCart = useCartStore(selectorAddToCart);
-    return useMutation({
-        mutationFn: ({ bookVariantId }: { bookVariantId: bigint }) => cartApi.addCartItem({ bookVariantId }),
-        onSuccess: (res: AddItemResponse) => addToCart(res.data.item)
-    })
-}
+export const useCartQuery = () =>
+  useQuery({
+    queryKey: cartQueryKey,
+    queryFn: cartApi.getCart,
+    select: (response) => (response.success ? response.data : null),
+    staleTime: 0,
+  });
+
 
 export const useUpdateQtyMutation = () => {
-    const updateQty = useCartStore(state => state.updateQty);
-    return useMutation({
-        mutationFn: ({ id, delta }: { id: string; delta: number }) => cartApi.updateQualityCartItem(id, delta),
-        onSuccess: (res:  any) => updateQty(res.data.item)
-    })
-}
+  const updateQty = useCartStore(selectorUpdateQty);
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, delta }: { id: string; delta: number }) => {
+      updateQty(id, delta);
+      return cartApi.updateCartItemDelta({ itemKey: id, quantity: delta });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: cartQueryKey });
+    },
+    onError: (_err, { id, delta }) => {
+      updateQty(id, -delta); // rollback
+    },
+  });
+};
 
 export const useRemoveItemMutation = () => {
-    const removeItem = useCartStore(state => state.removeItem);
-    return useMutation({
-        mutationFn: (id: string) => cartApi.deleteCartItem(id),
-        onSuccess: (res:  any) => removeItem(res.data.item)
-    })
-}
+  const removeItem = useCartStore(selectorRemoveItem);
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => {
+      removeItem(id);
+      return cartApi.deleteCartItem(id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: cartQueryKey });
+    },
+    onError: () => {
+      queryClient.invalidateQueries({ queryKey: cartQueryKey });
+    },
+  });
+};
+
+
+export const useAddToCartMutation = () => {
+  const cart = useCartStore(selectorCart);
+  const setUpdateCart = useCartStore(selectorSetUpdateCart);
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ bookVariantId, quantity }: AddCartItemRequest) => {
+      if (cart) {
+        const item = cart.items.find(
+          (item) => Number(item.bookVariantId) === Number(bookVariantId)
+        );
+        if (item) {
+          setUpdateCart(item.id, (quantity ?? 1)); // optimistic tăng qty
+        }
+      }
+      return cartApi.addCartItem({ bookVariantId, quantity: (quantity ?? 1) });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: cartQueryKey });
+    },
+    onError: (_err, { bookVariantId, quantity }) => {
+      if (cart) {
+        const item = cart.items.find(
+          (item) => Number(item.bookVariantId) === Number(bookVariantId)
+        );
+        if (item) {
+          setUpdateCart(item.id, ((quantity ?? 1) * -1));
+        }
+      }
+    },
+  });
+};

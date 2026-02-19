@@ -1,18 +1,11 @@
 import { ApiResponse } from './base.response';
-import { VariantItem } from './variant.response';
+import { BaseCollection, WishVariant as BaseWishVariant, WishLikeItem } from './variant.response';
 
-export type WishItem = {
-    id: bigint
-    bookVariantId: bigint,
-    addedAt: Date,
-    variant: VariantItem
-}
+export type WishVariant = BaseWishVariant;
 
-export type Wish<TItem = WishItem> = {
-    userId: string | null;
-    guestSessionId: string | null;
-    items: TItem[];
-};
+export interface WishItem extends WishLikeItem { }
+
+export interface Wish<TItem = WishItem> extends BaseCollection<TItem> { }
 
 export type AddWishItemResponse = ApiResponse<{
     item: WishItem;

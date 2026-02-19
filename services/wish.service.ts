@@ -9,7 +9,7 @@ export const wishApi = {
     async deleteWish() {
         return await http.del('wish');
     },
-    async addWishItem({ bookVariantId }: { bookVariantId: bigint }): Promise<AddWishItemResponse> {
+    async addWishItem({ bookVariantId }: { bookVariantId: number }): Promise<AddWishItemResponse> {
         return await http.post('wish/items', {
             bookVariantId
         });

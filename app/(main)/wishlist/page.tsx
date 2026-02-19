@@ -1,19 +1,28 @@
 "use client";
 
-import Link from "next/link";
-
 import BookCard from "@/app/(main)/_components/BookCard";
 import { Button } from "@/components/ui/button";
-import { useEffect } from "react";
-import { useWishlistMutation } from "@/features/wish/hooks";
-import { useWishStore } from "@/features/wish/store/wish.store";
+import { useWishlistQuery } from "@/features/wish/hooks";
 
 const WishlistPage = () => {
-const { mutateAsync } = useWishlistMutation();
-  const wishlist = useWishStore((state) => state.wish);
-  useEffect(() => {
-    mutateAsync();
-  }, [mutateAsync]);
+  const { data: wishlist, isPending, isError } = useWishlistQuery();
+
+  if (isPending) {
+    return (
+      <div className="container-main w-full py-8 min-h-[50vh] text-sm text-zinc-500">
+        Loading wishlist...
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="container-main w-full py-8 min-h-[50vh] text-sm text-zinc-500">
+        Failed to load wishlist.
+      </div>
+    );
+  }
+
   return (
     <div className="container-main w-full py-8 min-h-[50vh]">
       <div className="flex flex-wrap items-center gap-3">
@@ -28,9 +37,9 @@ const { mutateAsync } = useWishlistMutation();
           <BookCard
             key={item.id}
             title={item.variant.book.translations[0].title}
-            subtitle={item.variant.book.translations[0].description}
-            price={item.variant.price as unknown as number}
-            bookVariantId={item.variant.id}
+            subtitle={item.variant.book.translations[0].description ?? ""}
+            price={0}
+            bookVariantId={Number(item.variant.id)}
             imageUrl={item.variant.book.coverImageUrl}
             href={`/detail/${item.variant.book.id}`}
           />

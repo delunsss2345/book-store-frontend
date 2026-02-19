@@ -21,7 +21,6 @@ import {
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-/* ── static data (UI only) ── */
 
 const books = [
     {

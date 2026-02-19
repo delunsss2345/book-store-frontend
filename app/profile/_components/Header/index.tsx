@@ -18,7 +18,7 @@ import { toast } from "sonner";
 
 const Header = () => {
     const { t } = useTranslator();
-    const logoutMutation = useLogoutMutation();
+    const { mutateAsync } = useLogoutMutation();
     const router = useRouter();
     const countryKeys = ["germany", "france", "unitedStates", "unitedKingdom"];
     const policyLinks = [
@@ -32,11 +32,11 @@ const Header = () => {
     const activeCountryKey = "germany";
 
     const handleLogout = async () => {
-        toast.promise(logoutMutation.mutateAsync(), {
+        toast.promise(mutateAsync(), {
             loading: t("auth.registering"),
             success: t("auth.success.register"),
-            error: t("auth.errors.requestFailed"),
         });
+        console.log('logout');
         router.push("/");
     }
 
@@ -72,7 +72,7 @@ const Header = () => {
                                 </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem asChild>
-                                <Button variant='ghost' className="border-0! hover:none!" onClick={handleLogout} >{t("profile.header.menu.signOut")}</Button>
+                                <a className="border-0! hover:none!" onClick={handleLogout} >{t("profile.header.menu.signOut")}</a>
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
@@ -85,7 +85,7 @@ const Header = () => {
                         <DropdownMenuTrigger asChild>
                             <Button
                                 variant="ghost"
-                                className="h-8 px-2 text-sm text-foreground"
+                                className="h-8 px-2 text-sm text-foreground hover:none"
                             >
                                 <span>{t(`profile.header.countries.${activeCountryKey}`)}</span>
                                 <ChevronDown className="ml-1 h-4 w-4" />

@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
         return ResponseApi.success(response.data, HttpStatusCode.Created);
 
     }
-    catch (error) {
+    catch (error: ReturnType<any>) {
         if (process.env.NODE_ENV === 'development') {
             console.error("Register API Error:", error);
         }

@@ -3,13 +3,18 @@ import { api } from "@/lib/api/fetchHandler";
 import { ResponseApi } from "@/lib/api/responseHandler";
 import { AddWishItemResponse } from "@/types/response/wish.response";
 import { HttpStatusCode } from "axios";
+import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
     try {
         const payload: { bookVariantId: bigint } = await request.json();
+        const cookiesStore = await cookies();
+        const guestSessionId = cookiesStore.get("guestSessionId")?.value;
         const response = await api.post<AddWishItemResponse>("wish/items", payload, {
-            headers: { cookie: request.headers.get("cookie") || "" },
+            headers: {
+                Cookie: guestSessionId ? `guestSessionId=${guestSessionId}` : "",
+            },
         });
         return ResponseApi.success(response.data, HttpStatusCode.Ok);
     } catch (error) {

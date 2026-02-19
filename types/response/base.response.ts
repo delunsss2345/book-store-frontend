@@ -5,3 +5,16 @@ export interface ApiResponse<T> {
     data: T;
 }
 
+export type ProxySuccessResponse<T> = {
+    success: true;
+    data: T;
+};
+
+export type ProxyErrorResponse = {
+    success: false;
+    message: string;
+    details?: unknown;
+};
+
+export type ProxyResponse<T> = ProxySuccessResponse<T> | ProxyErrorResponse;
+

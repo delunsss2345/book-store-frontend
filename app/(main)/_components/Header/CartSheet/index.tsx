@@ -13,10 +13,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { selectorCart } from "@/features/cart/selector/cart.selector";
-import { useCartStore } from "@/features/cart/store/cart.store";
+import { useCartQuery, useRemoveItemMutation, useUpdateQtyMutation } from "@/features/cart/hooks";
 import useTranslator from "@/hooks/use-translator";
-import { VariantItem } from "@/types/response/variant.response";
 import { CartItem } from "@/types/response/cart.response";
 
 const currency = new Intl.NumberFormat("en-US", {
@@ -27,16 +25,14 @@ const currency = new Intl.NumberFormat("en-US", {
 
 const CartSheet = () => {
   const { t } = useTranslator();
-  const cart = useCartStore(selectorCart);
+  const { data: cart } = useCartQuery();
+  const updateQtyMutation = useUpdateQtyMutation();
+  const removeItemMutation = useRemoveItemMutation();
+  const items = cart?.items ?? [];
 
-  const updateItemQty = useCartStore((s: any) => s.updateItemQty);
-  const removeItem = useCartStore((s: any) => s.removeItem);
-
-
-  const subtotal = cart.items.reduce((sum: number, item: any) => {
-    const price = item.price ?? item.product?.price ?? 0;
-    const qty = item.qty ?? item.quantity ?? 1;
-    return sum + price * qty;
+  const subtotal = items.reduce((sum, item) => {
+    const price = Number(item.variant.price ?? 0);
+    return sum + price * item.quantity;
   }, 0);
 
   return (
@@ -47,7 +43,7 @@ const CartSheet = () => {
           className="inline-flex h-9 items-center justify-center gap-2 rounded-sm px-2 hover:bg-muted"
           aria-label={t("header.aria.cart")}
         >
-          <span className="text-sm">{cart?.items?.length ?? 0}</span>
+          <span className="text-sm">{cart?.items.length}</span>
           <ShoppingBag className="h-5 w-5" />
         </button>
       </SheetTrigger>
@@ -64,15 +60,15 @@ const CartSheet = () => {
           </SheetHeader>
 
           <div className="flex-1 overflow-y-auto px-6 py-5 sm:px-8">
-            {cart && cart.items.length === 0 ? (
+            {items.length === 0 ? (
               <p className="text-sm text-muted-foreground">Cart is empty.</p>
             ) : (
-              cart?.items?.map((item: CartItem, idx: number) => {
+              items.map((item: CartItem, idx: number) => {
                 const id = item.id ?? item.bookVariantId;
 
                 const title =
                   item.variant.book.translations[0].title;
-                const availability = item.variant.stock > 0 ? "In Stock" : "Out of Stock";
+                const availability = (item.variant.stock ?? 0) > 0 ? "In Stock" : "Out of Stock";
 
                 const price = item.variant.price;
                 const qty = item.quantity
@@ -81,7 +77,7 @@ const CartSheet = () => {
                   <React.Fragment key={id}>
                     <div className="flex gap-3 sm:gap-4">
                       <div className="h-[106px] w-[70px] shrink-0 overflow-hidden rounded-sm border bg-muted/30">
-                        <img src={item.variant.book.coverImage ?? ''} alt={title} className="h-full w-full object-cover" />
+                        <img src={item.variant.book.coverImageUrl ?? ''} alt={title} className="h-full w-full object-cover" />
                       </div>
 
                       <div className="flex-1 space-y-2">
@@ -99,9 +95,8 @@ const CartSheet = () => {
                             variant="outline"
                             size="icon"
                             className="h-8 w-8 rounded-sm"
-                            onClick={() =>
-                              updateItemQty?.(id, Math.max(1, qty - 1))
-                            }
+                            onClick={() => updateQtyMutation.mutate({ id: String(id), delta: -1 })}
+                            disabled={updateQtyMutation.isPending}
                             aria-label="Decrease quantity"
                           >
                             <Minus className="h-4 w-4" />
@@ -115,7 +110,8 @@ const CartSheet = () => {
                             variant="outline"
                             size="icon"
                             className="h-8 w-8 rounded-sm"
-                            onClick={() => updateItemQty?.(id, qty + 1)}
+                            onClick={() => updateQtyMutation.mutate({ id: String(id), delta: 1 })}
+                            disabled={updateQtyMutation.isPending}
                             aria-label="Increase quantity"
                           >
                             <Plus className="h-4 w-4" />
@@ -128,15 +124,16 @@ const CartSheet = () => {
 
                         <button
                           type="button"
-                          className="text-left text-xs underline underline-offset-4 sm:text-sm"
-                          onClick={() => removeItem?.(id)}
+                          className="text-left text-xs underline underline-offset-4 sm:text-sm cursor-pointer"
+                          onClick={() => removeItemMutation.mutate(String(id))}
+                          disabled={removeItemMutation.isPending}
                         >
                           Remove
                         </button>
                       </div>
                     </div>
 
-                    {idx !== cart.items.length - 1 && <Separator className="my-5" />}
+                    {idx !== items.length - 1 && <Separator className="my-5" />}
                   </React.Fragment>
                 );
               })
