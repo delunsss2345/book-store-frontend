@@ -14,43 +14,22 @@ type BookCardProps = {
   href?: string;
   variant?: BookCardVariant;
   className?: string;
-  bookVariantId: number
+  bookVariantId: number;
 };
 
-const formatPrice = (price: number, currency: string) => `${currency} ${price}`;
+const formatPrice = (price: number, currency: string) => 
+  new Intl.NumberFormat('vi-VN', { style: 'currency', currency: currency === 'US$' ? 'USD' : 'VND' }).format(price);
 
-const S: Record<
-  BookCardVariant,
-  {
-    wrap: string;
-    figure: string;
-    img: string;
-    badgeWrap: string;
-    badge: string;
-    title: string;
-    subtitle: string;
-    price: string;
-  }
-> = {
+const S: Record<BookCardVariant, { figure: string; title: string; subtitle: string }> = {
   default: {
-    wrap: "w-full ",
-    figure: "mx-auto w-full h-[360px]",
-    img: "h-full w-full object-contain",
-    badgeWrap: "mt-6",
-    badge: "inline-flex items-center justify-center rounded-sm border border-neutral-300 text-[1.2rem] tracking-widest text-neutral-700",
-    title: "mt-5 font-serif text-[20px] leading-[1.15] tracking-tight text-neutral-900",
-    subtitle: "mt-1 text-[20px] leading-[1.15] tracking-tight text-neutral-700",
-    price: "mt-6 text-[18px] font-semibold tracking-widest text-neutral-600 opacity-70",
+    figure: "h-[380px]",
+    title: "text-[22px]",
+    subtitle: "text-[18px]",
   },
   compact: {
-    wrap: "w-full ",
-    figure: "mx-auto w-full h-[300px]",
-    img: "h-full w-full object-contain",
-    badgeWrap: "mt-5",
-    badge: "inline-flex items-center justify-center rounded-sm border border-neutral-300 text-[1.1rem] tracking-widest text-neutral-700",
-    title: "mt-4 font-serif text-[20px] leading-[1.15] tracking-tight text-neutral-900",
-    subtitle: "mt-1 text-[20px] leading-[1.15] tracking-tight text-neutral-700",
-    price: "mt-5 text-[18px] font-semibold tracking-widest text-neutral-600 opacity-70",
+    figure: "h-[280px]",
+    title: "text-[18px]",
+    subtitle: "text-[16px]",
   },
 };
 
@@ -58,74 +37,75 @@ function CardInner({
   title,
   subtitle,
   price,
-  currency,
+  currency = "US$",
   badge,
   imageUrl,
-  variant,
+  variant = "default",
   className,
   bookVariantId
 }: BookCardProps) {
   const mutationAddToCardItem = useAddToCartMutation();
+  const style = S[variant];
 
   return (
-    <article
-      className={cn(
-        "group/card text-center bg-transparent",
-        "select-none",
-        className
-      )}
-    >
-      <figure
-        className={cn(
-          "relative",
-          "mx-auto",
-          "h-[350px]",
-        )}
-      >
+    <article className={cn("group/card flex flex-col h-full bg-white p-2 transition-all duration-300", className)}>
+      {/* Container Ảnh: Thêm shadow nhẹ và hiệu ứng zoom */}
+      <figure className={cn(
+        "relative overflow-hidden rounded-md bg-neutral-50 transition-all duration-500",
+        "group-hover/card:shadow-xl group-hover/card:shadow-neutral-200/50",
+        style.figure
+      )}>
         {imageUrl ? (
           <img
-            className="object-cover h-[100%] w-[100%]"
+            className="h-full w-full object-contain p-4 transition-transform duration-700 ease-out group-hover/card:scale-110"
             src={imageUrl}
             alt={`${title} cover`}
             loading="lazy"
             draggable={false}
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-sm text-neutral-400 h-[360px]">
+          <div className="flex h-full w-full items-center justify-center text-sm text-neutral-400">
             No image
+          </div>
+        )}
+        
+        {/* Badge: Bo góc và chỉnh lại vị trí cho sang hơn */}
+        {badge && (
+          <div className="absolute top-4 left-4 z-10">
+            <span className="bg-white/90 backdrop-blur-sm px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-900 shadow-sm border border-neutral-100 rounded-full">
+              {badge}
+            </span>
           </div>
         )}
       </figure>
 
-      {badge && <div className="mt-5">
-        <span className={badge}>{badge}</span>
-      </div>}
-
-      <div className="mx-auto mt-2 max-w-[26ch]">
-        <h3 className="mt-4 font-serif text-[20px] leading-[1.15] tracking-tight text-neutral-900">
-          <strong className="font-semibold">{title}</strong>
+      {/* Thông tin Text: Căn chỉnh lại khoảng cách */}
+      <div className="flex flex-col flex-grow mt-6 px-2 text-center">
+        <h3 className={cn("font-serif leading-tight text-neutral-900 line-clamp-2", style.title)}>
+          <strong className="font-semibold tracking-tight">{title}</strong>
         </h3>
-        <p className="mt-1 text-[20px] leading-[1.15] tracking-tight text-neutral-700">{subtitle}</p>
+        <p className={cn("mt-2 leading-relaxed text-neutral-500 line-clamp-1 italic", style.subtitle)}>
+          {subtitle}
+        </p>
+        
+        <p className="mt-4 text-[18px] font-medium tracking-tighter text-neutral-900">
+          {formatPrice(price, currency)}
+        </p>
       </div>
 
-      <p className="mt-5 text-[18px] font-semibold tracking-widest text-neutral-600 opacity-70">{formatPrice(price, currency ?? 'vi')}</p>
-
-      <div className="mt-5 opacity-0 translate-y-2 transition-all duration-300 ease-out group-hover/card:opacity-100 group-hover/card:translate-y-0">
+      {/* Nút bấm: Hiệu ứng Hover hiện đại hơn */}
+      <div className="mt-6 overflow-hidden">
         <button
           type="button"
           onClick={(e) => {
             e.preventDefault();
-            
-            mutationAddToCardItem.mutateAsync({ bookVariantId })
+            mutationAddToCardItem.mutateAsync({ bookVariantId });
           }}
           className={cn(
-            "inline-flex items-center justify-center",
-            "rounded-sm border border-neutral-900",
-            "px-4 py-2 text-[13px] font-medium tracking-widest uppercase",
-            "text-neutral-900 bg-transparent",
-            "transition-colors duration-200",
+            "w-full py-3 px-6 text-[12px] font-bold tracking-[0.15em] uppercase transition-all duration-300",
+            "border border-neutral-900 bg-transparent text-neutral-900",
             "hover:bg-neutral-900 hover:text-white",
-            "cursor-pointer"
+            "translate-y-4 opacity-0 group-hover/card:translate-y-0 group-hover/card:opacity-100"
           )}
         >
           Add to Cart
@@ -135,44 +115,20 @@ function CardInner({
   );
 }
 
-export default function BookCard({
-  title,
-  subtitle,
-  price,
-  currency = "US$",
-  badge,
-  imageUrl,
-  href,
-  variant = "default",
-  className,
-  bookVariantId
-}: BookCardProps) {
+export default function BookCard(props: BookCardProps) {
   const router = useRouter();
-  const inner = (
-    <CardInner
-      title={title}
-      subtitle={subtitle}
-      price={price}
-      currency={currency}
-      badge={badge}
-      imageUrl={imageUrl}
-      variant={variant}
-      className={className}
-      bookVariantId={bookVariantId}
-    />
-  );
+  const { href, title, subtitle } = props;
 
-  if (!href) return inner;
+  const inner = <CardInner {...props} />;
+
+  if (!href) return <div className="h-full">{inner}</div>;
 
   return (
     <div
-    onClick={() => setTimeout(() => {
-      router.push(href)
-    }, 700)}
+      onClick={() => setTimeout(() => router.push(href), 700)}
       className={cn(
-        "group block",
-        "transition-transform duration-200 ease-out",
-        "hover:-translate-y-[2px] hover:scale-[1.02]"
+        "group block h-full cursor-pointer transition-transform duration-500 ease-[cubic-bezier(0.33,1,0.68,1)]",
+        "hover:-translate-y-2"
       )}
       aria-label={`${title} ${subtitle}`}
     >

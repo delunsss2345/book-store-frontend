@@ -13,6 +13,9 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { useCartQuery } from "@/features/cart/hooks";
+import { selectorCart } from "@/features/cart/selector/cart.selector";
+import { useCartStore } from "@/features/cart/store/cart.store";
 import {
     AlertCircle,
     Info,
@@ -21,34 +24,18 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 
-
-const orderItems = [
-    {
-        id: "1",
-        title: "Sandal Platy 2 đen",
-        variant: "39W | 24.5 cm",
-        qty: 1,
-        price: 249500,
-        imageUrl:
-            "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=120&q=60",
-    },
-    {
-        id: "2",
-        title: "Clog SUKE nhựa đúc nam nữ trắng",
-        variant: "M4W6 | 36‑37",
-        qty: 2,
-        price: 678300,
-        originalPrice: 798000,
-        imageUrl:
-            "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=120&q=60"
-    }
-];
-
 const fmt = (n: number) =>
     new Intl.NumberFormat("vi-VN").format(n) + " đ";
 
 
 export default function CheckoutPage() {
+    const {data: cart, isLoading } = useCartQuery();
+    const subtotal = cart?.items.reduce(
+        (sum, item) => sum + parseFloat(item.variant.price) * item.quantity,
+        0
+    );
+
+    if (isLoading) return <div>Loading...</div>;
     return (
         <div className="container-main w-full py-10">
             <div className="grid gap-12 lg:grid-cols-[1fr_420px]">
@@ -230,57 +217,45 @@ export default function CheckoutPage() {
                 <aside className="lg:border-l lg:pl-10">
                     {/* Product list */}
                     <div className="space-y-5">
-                        {orderItems.map((item) => (
-                            <div key={item.id} className="flex items-start gap-4">
-                                {/* Thumbnail with badge */}
-                                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-100">
-                                    <Image
-                                        src={item.imageUrl}
-                                        alt={item.title}
-                                        fill
-                                        className="object-cover"
-                                    />
-                                    <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-zinc-500 text-[10px] font-bold text-white">
-                                        {item.qty}
-                                    </span>
-                                </div>
+                        {cart?.items.map((item) => {
+                            const title = item.variant.book.translations[0]?.title ?? "";
+                            const imageUrl = item.variant.book.coverImageUrl ?? "";
+                            const price = parseFloat(item.variant.price);
 
-                                {/* Info */}
-                                <div className="min-w-0 flex-1">
-                                    <p className="text-sm font-medium leading-snug">
-                                        {item.title}
-                                    </p>
-                                    {item.variant && (
-                                        <p className="mt-0.5 text-xs text-zinc-500">
-                                            {item.variant}
-                                        </p>
-                                    )}
-                                    {item.discount && (
-                                        <p className="mt-0.5 text-xs text-teal-600">
-                                            ⊘ {item.discount}
-                                        </p>
-                                    )}
-                                </div>
-
-                                {/* Price */}
-                                <div className="shrink-0 text-right">
-                                    {item.isFree ? (
-                                        <span className="text-sm font-medium text-zinc-800">
-                                            MIỄN PHÍ
+                            return (
+                                <div key={item.id} className="flex items-start gap-4">
+                                    {/* Thumbnail with badge */}
+                                    <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-100">
+                                        {imageUrl && (
+                                            <Image
+                                                src={imageUrl}
+                                                alt={title}
+                                                fill
+                                                className="object-cover"
+                                            />
+                                        )}
+                                        <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-zinc-500 text-[10px] font-bold text-white">
+                                            {item.quantity}
                                         </span>
-                                    ) : (
-                                        <>
-                                            {item.originalPrice && (
-                                                <p className="text-xs text-zinc-400 line-through">
-                                                    {fmt(item.originalPrice)}
-                                                </p>
-                                            )}
-                                            <p className="text-sm font-medium">{fmt(item.price)}</p>
-                                        </>
-                                    )}
+                                    </div>
+
+                                    {/* Info */}
+                                    <div className="min-w-0 flex-1">
+                                        <p className="text-sm font-medium leading-snug">
+                                            {title}
+                                        </p>
+                                        <p className="mt-0.5 text-xs text-zinc-500">
+                                            {item.variant.format}
+                                        </p>
+                                    </div>
+
+                                    {/* Price */}
+                                    <div className="shrink-0 text-right">
+                                        <p className="text-sm font-medium">{fmt(price * item.quantity)}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
 
                     <Separator className="my-6" />
@@ -305,9 +280,9 @@ export default function CheckoutPage() {
                     <div className="space-y-2 text-sm">
                         <div className="flex items-center justify-between">
                             <span className="text-zinc-600">
-                                Tổng phụ · 4 mặt hàng
+                                Tổng phụ · {cart?.items.length} mặt hàng
                             </span>
-                            <span>{fmt(927800)}</span>
+                            <span>{fmt(subtotal)}</span>
                         </div>
                         <div className="flex items-center justify-between">
                             <span className="text-zinc-600">
@@ -326,7 +301,7 @@ export default function CheckoutPage() {
                         <span className="text-base font-semibold">Tổng</span>
                         <div className="text-right">
                             <span className="mr-2 text-xs text-zinc-400">VND</span>
-                            <span className="text-2xl font-bold">{fmt(927800)}</span>
+                            <span className="text-2xl font-bold">{fmt(subtotal)}</span>
                         </div>
                     </div>
 
