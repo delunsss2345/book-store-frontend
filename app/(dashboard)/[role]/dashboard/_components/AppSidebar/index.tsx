@@ -7,7 +7,7 @@ import {
   SidebarHeader,
   SidebarRail
 } from '@/components/ui/sidebar'
-import { sidebarData } from '@/layouts/data/sidebar-data'
+import { sidebarData } from '@/app/(dashboard)/[role]/dashboard/data/sidebar-data'
 
 export function AppSidebar() {
   return (

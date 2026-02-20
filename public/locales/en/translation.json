@@ -189,6 +189,77 @@
       }
     }
   },
+  "dashboard": {
+    "products": {
+      "title": "Products",
+      "summary": {
+        "totalProducts": "Total products",
+        "activeProducts": "Active products",
+        "totalAuthors": "Total authors",
+        "totalPublishers": "Total publishers"
+      },
+      "table": {
+        "columns": {
+          "title": "Title",
+          "pageCount": "Pages",
+          "coverImageUrl": "Cover Image URL",
+          "status": "Status",
+          "actions": "Actions"
+        },
+        "status": {
+          "active": "Active",
+          "inactive": "Inactive"
+        },
+        "empty": "No books to display."
+      },
+      "actions": {
+        "view": "View details",
+        "edit": "Edit",
+        "delete": "Delete",
+        "addTranslation": "Add translation"
+      },
+      "pagination": {
+        "itemsPerPage": "Showing {{count}} items per page",
+        "prev": "Previous page",
+        "next": "Next page",
+        "goToPage": "Go to page"
+      }
+    },
+    "customers": {
+      "title": "Customers",
+      "summary": {
+        "totalCustomers": "Total customers",
+        "activeLastDay": "Customers active in the last 1 day"
+      },
+      "table": {
+        "columns": {
+          "firstName": "First name",
+          "lastName": "Last name",
+          "email": "Email",
+          "isEmailVerified": "Email verified",
+          "role": "Role"
+        },
+        "emailVerified": {
+          "true": "Verified",
+          "false": "Not verified"
+        },
+        "empty": "No customers to display."
+      },
+      "roles": {
+        "GUEST": "Guest",
+        "ADMIN": "Admin",
+        "STAFF": "Staff",
+        "CUSTOMER": "Customer",
+        "WAREHOUSE": "Warehouse"
+      },
+      "pagination": {
+        "itemsPerPage": "Showing {{count}} items per page",
+        "prev": "Previous page",
+        "next": "Next page",
+        "goToPage": "Go to page"
+      }
+    }
+  },
   "auth": {
     "emailLabel": "Email",
     "emailPlaceholder": "Email",

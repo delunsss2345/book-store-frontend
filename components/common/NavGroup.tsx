@@ -21,14 +21,6 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { type ReactNode } from 'react'
 import { Badge } from '../ui/badge'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '../ui/dropdown-menu'
 
 export function NavGroup({ title, items }: NavGroupProps) {
   const pathname = usePathname() ?? ''
@@ -120,51 +112,7 @@ function SidebarMenuCollapsible({
   )
 }
 
-function SidebarMenuCollapsedDropdown({
-  item,
-  href,
-}: {
-  item: NavCollapsible
-  href: string
-}) {
-  return (
-    <SidebarMenuItem>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <SidebarMenuButton
-            tooltip={item.title}
-            isActive={checkIsActive(href, item)}
-          >
-            {item.icon && <item.icon />}
-            <span>{item.title}</span>
-            {item.badge && <NavBadge>{item.badge}</NavBadge>}
-            <ChevronRight className='ms-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
-          </SidebarMenuButton>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent side='right' align='start' sideOffset={4}>
-          <DropdownMenuLabel>
-            {item.title} {item.badge ? `(${item.badge})` : ''}
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {item.items.map((sub) => (
-            <DropdownMenuItem key={`${sub.title}-${sub.url}`} asChild>
-              <Link
-                href={sub.url}
-                className={`${checkIsActive(href, sub) ? 'bg-secondary' : ''}`}
-              >
-                {sub.icon && <sub.icon />}
-                <span className='max-w-52 text-wrap'>{sub.title}</span>
-                {sub.badge && (
-                  <span className='ms-auto text-xs'>{sub.badge}</span>
-                )}
-              </Link>
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </SidebarMenuItem>
-  )
-}
+
 
 function checkIsActive(href: string, item: NavItem, mainNav = false) {
   return (

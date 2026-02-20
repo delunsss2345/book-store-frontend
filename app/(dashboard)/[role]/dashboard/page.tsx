@@ -1,7 +1,10 @@
 'use client'
-import { Overview } from '@/app/dashboard/_components/Overview'
-import { Search } from '@/components/common/Search'
+import { Header } from '@/app/(dashboard)/[role]/dashboard/_components/Header'
+import { Main } from '@/app/(dashboard)/[role]/dashboard/_components/Main'
+import { TopNav } from '@/app/(dashboard)/[role]/dashboard/_components/TopNav'
+import { Overview } from '@/app/(dashboard)/_components/Overview'
 import { ProfileDropdown } from '@/app/profile/_components/ProfileDropdown'
+import { Search } from '@/components/common/Search'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -9,8 +12,8 @@ import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
-  ArrowUpRight,
   ArrowDownRight,
+  ArrowUpRight,
   Calendar,
   ChevronLeft,
   ChevronRight,
@@ -28,26 +31,13 @@ import {
   Users,
   Wallet,
 } from 'lucide-react'
-import { Header } from './Header'
-import { Main } from './Main'
-import { TopNav } from './TopNav'
 
-// const Overview = dynamic(() => import("@/app/dashboard/_components/Overview"), {
-//   ssr: false,
-// });
-export function Dashboard() {
+
+
+export default function Dashboard() {
   return (
     <>
-      <Header>
-        <TopNav links={topNav} />
-        <div className='ms-auto flex items-center space-x-4'>
-          <Search />
-          {/* <ThemeSwitch /> */}
-          {/* <ConfigDrawer /> */}
-          <ProfileDropdown />
-        </div>
-      </Header>
-
+     
       <Main>
         <div className='mb-2 flex items-center justify-between space-y-2'>
           <h1 className='text-2xl font-bold tracking-tight'>Dashboard</h1>
@@ -664,31 +654,4 @@ export function Dashboard() {
     </>
   )
 }
-
-const topNav = [
-  {
-    title: 'Overview',
-    href: 'dashboard/overview',
-    isActive: true,
-    disabled: false,
-  },
-  {
-    title: 'Customers',
-    href: 'dashboard/customers',
-    isActive: false,
-    disabled: true,
-  },
-  {
-    title: 'Products',
-    href: 'dashboard/products',
-    isActive: false,
-    disabled: true,
-  },
-  {
-    title: 'Settings',
-    href: 'dashboard/settings',
-    isActive: false,
-    disabled: true,
-  },
-]
 

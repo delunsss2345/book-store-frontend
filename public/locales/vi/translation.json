@@ -189,6 +189,77 @@
       }
     }
   },
+  "dashboard": {
+    "products": {
+      "title": "Sản phẩm",
+      "summary": {
+        "totalProducts": "Tổng số sản phẩm",
+        "activeProducts": "Sản phẩm đang hoạt động",
+        "totalAuthors": "Tổng số tác giả",
+        "totalPublishers": "Tổng số nhà xuất bản"
+      },
+      "table": {
+        "columns": {
+          "title": "Tiêu đề",
+          "pageCount": "Số trang",
+          "coverImageUrl": "Cover Image URL",
+          "status": "Trạng thái",
+          "actions": "Thao tác"
+        },
+        "status": {
+          "active": "Active",
+          "inactive": "Inactive"
+        },
+        "empty": "Chưa có sách để hiển thị."
+      },
+      "actions": {
+        "view": "Xem chi tiết",
+        "edit": "Chỉnh sửa",
+        "delete": "Xóa",
+        "addTranslation": "Thêm bản dịch"
+      },
+      "pagination": {
+        "itemsPerPage": "Hiển thị {{count}} mục mỗi trang",
+        "prev": "Trang trước",
+        "next": "Trang sau",
+        "goToPage": "Đến trang"
+      }
+    },
+    "customers": {
+      "title": "Khách hàng",
+      "summary": {
+        "totalCustomers": "Tổng số khách hàng",
+        "activeLastDay": "Khách hàng hoạt động trong 1 ngày qua"
+      },
+      "table": {
+        "columns": {
+          "firstName": "Tên",
+          "lastName": "Họ",
+          "email": "Email",
+          "isEmailVerified": "Đã xác minh email",
+          "role": "Vai trò"
+        },
+        "emailVerified": {
+          "true": "Đã xác minh",
+          "false": "Chưa xác minh"
+        },
+        "empty": "Chưa có khách hàng để hiển thị."
+      },
+      "roles": {
+        "GUEST": "Khách",
+        "ADMIN": "Quản trị viên",
+        "STAFF": "Nhân viên",
+        "CUSTOMER": "Khách hàng",
+        "WAREHOUSE": "Kho"
+      },
+      "pagination": {
+        "itemsPerPage": "Hiển thị {{count}} mục mỗi trang",
+        "prev": "Trang trước",
+        "next": "Trang sau",
+        "goToPage": "Đến trang"
+      }
+    }
+  },
   "auth": {
     "emailLabel": "Email",
     "emailPlaceholder": "Email",
