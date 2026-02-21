@@ -8,12 +8,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CheckCircle2, CreditCard, MapPin, Plus } from "lucide-react";
 import { CheckoutHeader } from "../CheckoutHeader";
 import { ShippingMethodCard } from "../ShippingMethodCard";
-import { PaymentMethodRadio } from "../PaymentMethodRadio";
 import { CheckoutFooter } from "../CheckoutFooter";
 import { PaymentCheckout } from "../PaymentCheckout";
+import { MapPin, Plus } from "lucide-react";
 
 export default function CheckoutUser() {
   return (

@@ -11,6 +11,9 @@ import { Separator } from "@/components/ui/separator";
 import { useCartQuery } from "@/features/cart/hooks";
 
 import CheckoutUser from "./_components/CheckoutUser";
+import { selectorCurrentUser } from "@/features/auth/selector/auth.selector";
+import { useAuthStore } from "@/features/auth";
+import { CheckoutGuest } from "./_components/CheckoutGuest";
 
 const fmt = (n: number) => new Intl.NumberFormat("vi-VN").format(n) + " đ";
 
@@ -127,7 +130,7 @@ function OrderSummary({ cart, subtotal }: OrderSummaryProps) {
 export default function CheckoutPage() {
   const router = useRouter();
   const { data: cart, isLoading } = useCartQuery();
-
+  const user = useAuthStore(selectorCurrentUser);
   const subtotal =
     cart?.items.reduce((sum, item) => {
       return sum + parseFloat(item.variant.price) * item.quantity;
@@ -151,7 +154,7 @@ export default function CheckoutPage() {
     <div className="min-h-screen bg-zinc-50/50">
       <div className="container-main mx-auto w-full px-4 py-10">
         <div className="grid gap-16 lg:grid-cols-[1fr_450px]">
-          <CheckoutUser />
+          {user ? <CheckoutUser /> : <CheckoutGuest />}
           <OrderSummary cart={cart} subtotal={subtotal} />
         </div>
       </div>
