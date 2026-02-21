@@ -13,6 +13,7 @@ export async function GET(request: NextRequest) {
     try {
         const cookieStore = await cookies();
         const guestSessionId = cookieStore.get("guestSessionId")?.value || "";
+        console.log(guestSessionId) ; 
         const response = await api.get<GetCartApiResponse>("cart", {
             headers: {
                 Cookie: guestSessionId ? `guestSessionId=${guestSessionId}` : "",

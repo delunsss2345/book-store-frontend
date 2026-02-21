@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
         
         const guestSessionId = cookieStore.get("guestSessionId")?.value || "";
         const response = await api.post<AddCartItemApiResponse>("cart/items", payload, {
-            headers: { cookie: guestSessionId ? `guestSessionId=${guestSessionId}` : "" },
+            headers: { Cookie: guestSessionId ? `guestSessionId=${guestSessionId}` : "" },
         });
         
         return ResponseApi.success(response.data, HttpStatusCode.Created);

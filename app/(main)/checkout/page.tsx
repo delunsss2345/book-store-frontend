@@ -1,312 +1,160 @@
 "use client";
 
+import Image from "next/image";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Info } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useCartQuery } from "@/features/cart/hooks";
-import { selectorCart } from "@/features/cart/selector/cart.selector";
-import { useCartStore } from "@/features/cart/store/cart.store";
-import {
-    AlertCircle,
-    Info,
-    Send,
-    Truck
-} from "lucide-react";
-import Image from "next/image";
 
-const fmt = (n: number) =>
-    new Intl.NumberFormat("vi-VN").format(n) + " đ";
+import CheckoutUser from "./_components/CheckoutUser";
 
+const fmt = (n: number) => new Intl.NumberFormat("vi-VN").format(n) + " đ";
 
-export default function CheckoutPage() {
-    const {data: cart, isLoading } = useCartQuery();
-    const subtotal = cart?.items.reduce(
-        (sum, item) => sum + parseFloat(item.variant.price) * item.quantity,
-        0
-    );
+type OrderSummaryProps = {
+  cart: NonNullable<ReturnType<typeof useCartQuery>["data"]>;
+  subtotal: number;
+};
 
-    if (isLoading) return <div>Loading...</div>;
-    return (
-        <div className="container-main w-full py-10">
-            <div className="grid gap-12 lg:grid-cols-[1fr_420px]">
+function OrderSummary({ cart, subtotal }: OrderSummaryProps) {
+  return (
+    <aside className="relative">
+      <div className="sticky top-10 rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm">
+        <h3 className="mb-6 text-lg font-bold">Tóm tắt đơn hàng</h3>
 
-                <div className="space-y-10">
-                    <section>
-                        <div className="flex items-center justify-between">
-                            <h2 className="text-xl font-semibold">Liên hệ</h2>
-                            <a
-                                href="#"
-                                className="text-sm text-blue-600 underline underline-offset-2"
-                            >
-                                Đăng nhập
-                            </a>
-                        </div>
+        {/* Product list */}
+        <div className="custom-scrollbar -mr-2 max-h-[400px] space-y-4 overflow-y-auto pr-2">
+          {cart.items.map((item) => {
+            const title =
+              item.variant.book.translations[0]?.title ?? "Sản phẩm";
+            const imageUrl = item.variant.book.coverImageUrl ?? "";
+            const price = parseFloat(item.variant.price);
 
-                        <div className="mt-4">
-                            <Input
-                                placeholder="Email (Nhập để theo dõi thông tin đơn hàng)"
-                                className="h-12 rounded-md border-zinc-300 text-sm"
-                            />
-                        </div>
+            return (
+              <div key={item.id} className="flex items-center gap-4">
+                <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-md border border-zinc-100 bg-zinc-50">
+                  {imageUrl ? (
+                    <Image
+                      src={imageUrl}
+                      alt={title}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : null}
 
-                        <div className="mt-3 flex items-center gap-2">
-                            <Checkbox id="newsletter" defaultChecked />
-                            <Label htmlFor="newsletter" className="text-sm text-zinc-600">
-                                Gửi cho tôi tin tức và ưu đãi qua email
-                            </Label>
-                        </div>
-                    </section>
-
-                    <section>
-                        <h2 className="text-xl font-semibold">Giao hàng</h2>
-                        <p className="mt-1 text-sm text-zinc-500">
-                            Địa chỉ này cũng sẽ được dùng làm địa chỉ thanh toán cho đơn
-                            hàng này.
-                        </p>
-
-
-                        <div className="mt-5 overflow-hidden rounded-lg border border-zinc-200">
-                            <div className="flex items-center gap-3 border-b border-zinc-200 bg-white px-4 py-3">
-                                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-teal-500">
-                                    <Truck className="h-3 w-3 text-white" />
-                                </div>
-                                <span className="text-sm font-medium">Vận chuyển</span>
-                                <Send className="ml-auto h-4 w-4 text-teal-500" />
-                            </div>
-                            <div className="flex items-center gap-3 bg-zinc-50 px-4 py-3">
-                                <div className="flex h-5 w-5 items-center justify-center rounded-full border border-zinc-300 bg-white" />
-                                <span className="text-sm text-zinc-600">Lấy hàng</span>
-                                <span className="ml-auto text-zinc-400">🏬</span>
-                            </div>
-                        </div>
-
-                        <div className="mt-6 space-y-4">
-                            <Select defaultValue="vn">
-                                <SelectTrigger className="h-12 w-full rounded-md border-zinc-300 text-sm">
-                                    <SelectValue placeholder="Quốc gia/ Vùng" />
-                                </SelectTrigger>
-                                <SelectContent position="popper" >
-                                    <SelectItem value="vn">Việt Nam</SelectItem>
-                                    <SelectItem value="us">United States</SelectItem>
-                                </SelectContent>
-                            </Select>
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <Input
-                                    placeholder="Anh/ Chị (không bắt buộc)"
-                                    className="h-12 rounded-md border-zinc-300 text-sm"
-                                />
-                                <Input
-                                    placeholder="Tên"
-                                    className="h-12 rounded-md border-zinc-300 text-sm"
-                                />
-                            </div>
-
-                            <Input
-                                placeholder="Địa chỉ (Số nhà, tên, đường, phường và quận)"
-                                className="h-12 rounded-md border-zinc-300 text-sm"
-                            />
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <Input
-                                    placeholder="Tỉnh/ Thành phố (Ví dụ: Đà Nẵng)"
-                                    className="h-12 rounded-md border-zinc-300 text-sm"
-                                />
-                                <Input
-                                    placeholder="Mã bưu chính (không bắt buộc)"
-                                    className="h-12 rounded-md border-zinc-300 text-sm"
-                                />
-                            </div>
-
-                            <div className="relative">
-                                <Input
-                                    placeholder="Điện thoại"
-                                    className="h-12 rounded-md border-zinc-300 pr-10 text-sm"
-                                />
-                                <Info className="absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-zinc-400" />
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                                <Checkbox id="save-info" />
-                                <Label htmlFor="save-info" className="text-sm text-zinc-600">
-                                    Lưu lại thông tin này cho lần sau
-                                </Label>
-                            </div>
-                        </div>
-                    </section>
-
-                    <section>
-                        <h2 className="text-xl font-semibold">Phương thức vận chuyển</h2>
-
-                        <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-4">
-                            <div className="flex items-start gap-2">
-                                <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
-                                <div className="text-sm text-zinc-700">
-                                    <p className="font-medium">Không có dịch vụ vận chuyển</p>
-                                    <p className="mt-1 text-zinc-500">
-                                        Sản phẩm này chỉ đang có tại cửa hàng, vui lòng chọn nhận
-                                        hàng tại cửa hàng để hoàn tất đặt hàng.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <section>
-                        <h2 className="text-xl font-semibold">Thanh toán</h2>
-                        <p className="mt-1 text-sm text-zinc-500">
-                            Địa chỉ thanh toán của phương thức thanh toán phải khớp với địa
-                            chỉ giao hàng.
-                        </p>
-                        <p className="mt-0.5 text-sm text-zinc-500">
-                            Toàn bộ các giao dịch được bảo mật và mã hóa.
-                        </p>
-
-                        <RadioGroup
-                            defaultValue="vnpay"
-                            className="mt-5 gap-0 overflow-hidden rounded-lg border border-zinc-200"
-                        >
-                            <label
-                                htmlFor="vnpay"
-                                className="flex cursor-pointer items-center gap-3 border-b border-zinc-200 bg-sky-50/60 px-4 py-4"
-                            >
-                                <RadioGroupItem value="vnpay" id="vnpay" />
-                                <span className="text-sm font-medium">VNPAY</span>
-                                <div className="ml-auto flex items-center gap-1.5">
-                                    <span className="rounded bg-blue-700 px-1.5 py-0.5 text-[10px] font-bold text-white">
-                                        VISA
-                                    </span>
-                                    <span className="rounded bg-red-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
-                                        MC
-                                    </span>
-                                    <span className="rounded bg-blue-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
-                                        JCB
-                                    </span>
-                                </div>
-                            </label>
-                            <label
-                                htmlFor="cod"
-                                className="flex cursor-pointer items-center gap-3 px-4 py-4"
-                            >
-                                <RadioGroupItem value="cod" id="cod" />
-                                <span className="text-sm text-zinc-700">
-                                    Thanh toán khi nhận hàng (COD)
-                                </span>
-                            </label>
-                        </RadioGroup>
-
-                        <Button className="mt-6 h-14 w-full rounded-lg bg-zinc-900 text-base font-semibold text-white hover:bg-zinc-800">
-                            Thanh toán ngay
-                        </Button>
-                    </section>
+                  <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-zinc-800 text-[10px] font-bold text-white shadow-sm">
+                    {item.quantity}
+                  </span>
                 </div>
 
-                {/* ============================================================ */}
-                {/*  RIGHT COLUMN – Order Summary                                */}
-                {/* ============================================================ */}
-                <aside className="lg:border-l lg:pl-10">
-                    {/* Product list */}
-                    <div className="space-y-5">
-                        {cart?.items.map((item) => {
-                            const title = item.variant.book.translations[0]?.title ?? "";
-                            const imageUrl = item.variant.book.coverImageUrl ?? "";
-                            const price = parseFloat(item.variant.price);
+                <div className="min-w-0 flex-1">
+                  <p className="line-clamp-2 text-sm font-semibold leading-snug">
+                    {title}
+                  </p>
+                  <p className="mt-1 text-xs uppercase tracking-wider text-zinc-400">
+                    {item.variant.format}
+                  </p>
+                </div>
 
-                            return (
-                                <div key={item.id} className="flex items-start gap-4">
-                                    {/* Thumbnail with badge */}
-                                    <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-100">
-                                        {imageUrl && (
-                                            <Image
-                                                src={imageUrl}
-                                                alt={title}
-                                                fill
-                                                className="object-cover"
-                                            />
-                                        )}
-                                        <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-zinc-500 text-[10px] font-bold text-white">
-                                            {item.quantity}
-                                        </span>
-                                    </div>
-
-                                    {/* Info */}
-                                    <div className="min-w-0 flex-1">
-                                        <p className="text-sm font-medium leading-snug">
-                                            {title}
-                                        </p>
-                                        <p className="mt-0.5 text-xs text-zinc-500">
-                                            {item.variant.format}
-                                        </p>
-                                    </div>
-
-                                    {/* Price */}
-                                    <div className="shrink-0 text-right">
-                                        <p className="text-sm font-medium">{fmt(price * item.quantity)}</p>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-
-                    <Separator className="my-6" />
-
-                    {/* Discount code */}
-                    <div className="flex gap-3">
-                        <Input
-                            placeholder="Mã giảm giá"
-                            className="h-11 flex-1 rounded-md border-zinc-300 text-sm"
-                        />
-                        <Button
-                            variant="outline"
-                            className="h-11 rounded-md border-zinc-300 px-5 text-sm"
-                        >
-                            Áp dụng
-                        </Button>
-                    </div>
-
-                    <Separator className="my-6" />
-
-                    {/* Totals */}
-                    <div className="space-y-2 text-sm">
-                        <div className="flex items-center justify-between">
-                            <span className="text-zinc-600">
-                                Tổng phụ · {cart?.items.length} mặt hàng
-                            </span>
-                            <span>{fmt(subtotal)}</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <span className="text-zinc-600">
-                                Vận chuyển{" "}
-                                <Info className="inline h-3.5 w-3.5 text-zinc-400" />
-                            </span>
-                            <span className="text-sm text-zinc-500">
-                                Nhập địa chỉ giao hàng
-                            </span>
-                        </div>
-                    </div>
-
-                    <Separator className="my-6" />
-
-                    <div className="flex items-center justify-between">
-                        <span className="text-base font-semibold">Tổng</span>
-                        <div className="text-right">
-                            <span className="mr-2 text-xs text-zinc-400">VND</span>
-                            <span className="text-2xl font-bold">{fmt(subtotal)}</span>
-                        </div>
-                    </div>
-
-                </aside>
-            </div>
+                <div className="shrink-0 text-right">
+                  <p className="text-sm font-bold">
+                    {fmt(price * item.quantity)}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
         </div>
+
+        <Separator className="my-6 opacity-60" />
+
+        {/* Discount code */}
+        <div className="flex gap-2">
+          <Input
+            placeholder="Nhập mã giảm giá"
+            className="h-11 flex-1 rounded-lg border-zinc-200 bg-zinc-50/50 text-sm focus:bg-white"
+          />
+          <Button
+            variant="secondary"
+            className="h-11 rounded-lg bg-zinc-100 px-4 text-sm font-semibold transition-colors hover:bg-zinc-200"
+          >
+            Áp dụng
+          </Button>
+        </div>
+
+        <Separator className="my-6 opacity-60" />
+
+        {/* Totals */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-zinc-500">
+              Tạm tính ({cart.items.length} sản phẩm)
+            </span>
+            <span className="font-medium">{fmt(subtotal)}</span>
+          </div>
+
+          <div className="flex items-center justify-between text-sm">
+            <span className="flex items-center gap-1.5 text-zinc-500">
+              Phí vận chuyển
+              <Info className="h-3.5 w-3.5 text-zinc-300" />
+            </span>
+            <span className="font-medium text-zinc-900">Miễn phí</span>
+          </div>
+
+          <div className="mt-2 border-t border-zinc-100 pt-4">
+            <div className="flex items-end justify-between">
+              <span className="text-base font-bold">Tổng cộng</span>
+
+              <div className="text-right">
+                <p className="mb-1 text-[10px] font-medium text-zinc-400">
+                  Đã bao gồm VAT
+                </p>
+                <p className="text-2xl font-black leading-none text-zinc-900">
+                  {fmt(subtotal)}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+export default function CheckoutPage() {
+  const router = useRouter();
+  const { data: cart, isLoading } = useCartQuery();
+
+  const subtotal =
+    cart?.items.reduce((sum, item) => {
+      return sum + parseFloat(item.variant.price) * item.quantity;
+    }, 0) ?? 0;
+
+  useEffect(() => {
+    if (!isLoading && !cart) router.push("/cart");
+  }, [cart, isLoading, router]);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        Đang tải...
+      </div>
     );
+  }
+
+  if (!cart) return null;
+
+  return (
+    <div className="min-h-screen bg-zinc-50/50">
+      <div className="container-main mx-auto w-full px-4 py-10">
+        <div className="grid gap-16 lg:grid-cols-[1fr_450px]">
+          <CheckoutUser />
+          <OrderSummary cart={cart} subtotal={subtotal} />
+        </div>
+      </div>
+    </div>
+  );
 }
