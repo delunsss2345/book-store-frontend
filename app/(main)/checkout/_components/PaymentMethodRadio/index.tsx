@@ -3,13 +3,13 @@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 type PaymentMethodRadioProps = {
-  defaultValue?: "vnpay" | "cod";
-  onValueChange?: (value: "vnpay" | "cod") => void;
+  defaultValue?: "sepay" | "cod";
+  onValueChange?: (value: "sepay" | "cod") => void;
   variant?: "compact" | "rich";
 };
 
 export function PaymentMethodRadio({
-  defaultValue = "vnpay",
+  defaultValue = "sepay",
   onValueChange,
   variant = "compact",
 }: PaymentMethodRadioProps) {
@@ -26,18 +26,18 @@ export function PaymentMethodRadio({
   return (
     <RadioGroup
       defaultValue={defaultValue}
-      onValueChange={(v) => onValueChange?.(v as "vnpay" | "cod")}
+      onValueChange={(v) => onValueChange?.(v as "sepay" | "cod")}
       className={containerClass}
     >
-      <label htmlFor="vnpay" className={`${itemClass} border-b`}>
-        <RadioGroupItem value="vnpay" id="vnpay" />
+      <label htmlFor="sepay" className={`${itemClass} border-b`}>
+        <RadioGroupItem value="sepay" id="sepay" />
         <div className="flex-1">
           <p className="text-sm font-bold text-zinc-900">
-            {variant === "rich" ? "VNPAY" : "Thanh toán qua VNPAY"}
+            {variant === "rich" ? "sepay" : "Thanh toán qua sepay"}
           </p>
           <p className="text-xs text-zinc-500">
             {variant === "rich"
-              ? "Thanh toán an toàn qua cổng VNPAY"
+              ? "Thanh toán an toàn qua cổng sepay"
               : "Thẻ nội địa, Visa, Mastercard, JCB, QR Code"}
           </p>
         </div>

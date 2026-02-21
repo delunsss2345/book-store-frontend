@@ -34,36 +34,57 @@ import {
   CreateGuestOrdersAndPaymentSchema,
   PaymentGateway,
 } from "@/validation/order-address/orderAddressValidation";
+import {
+  selectorIsOrdering,
+  useCreateOrderGuestMutation,
+  useOrderStore,
+} from "@/features/orders";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export function CheckoutGuest() {
   const form = useForm<CreateGuestOrdersAndPaymentInput>({
     resolver: zodResolver(CreateGuestOrdersAndPaymentSchema),
     defaultValues: {
-      paymentGateway: PaymentGateway.VNPay,
+      paymentGateway: PaymentGateway.SEPAY,
       newsletter: true,
       guestEmail: "",
       note: "",
       orderAddress: {
-        country: "vn",
+        country: "vi",
         firstName: "",
         lastName: "",
-        addressLine1: "",
+        addressLine: "",
         city: "",
         postalCode: "",
-        phone: "",
+        phoneNumber: "",
       },
     },
     mode: "onSubmit",
   });
 
-  const onSubmit = async (values: CreateGuestOrdersAndPaymentInput) => {
-    console.log(values);
-    return values;
-  };
+  const { mutateAsync: createOrderGuest } = useCreateOrderGuestMutation();
+  const isOrdering = useOrderStore(selectorIsOrdering);
+  const router = useRouter();
 
+  const onSubmit = async (values: CreateGuestOrdersAndPaymentInput) => {
+    toast.promise(createOrderGuest(values), {
+      loading: "Đang xử lý đơn hàng...",
+      success: (data) => {
+        router.push(
+          `/checkout/payment?orderCode=${data.orderCode}&totalAmount=${data.totalAmount}`,
+        );
+        return "Đơn hàng đã được tạo thành công!";
+      },
+      error: (error) => error.message,
+    });
+  };
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
+      <form
+        onSubmit={form.handleSubmit(onSubmit, (errors) => console.log(errors))}
+        className="space-y-12"
+      >
         <CheckoutHeader
           title="Thông tin thanh toán"
           right={
@@ -142,7 +163,9 @@ export function CheckoutGuest() {
                         <SelectValue placeholder="Quốc gia/ Vùng" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="vn">Việt Nam</SelectItem>
+                        <SelectItem defaultChecked value="vn">
+                          Việt Nam
+                        </SelectItem>
                         <SelectItem value="us">United States</SelectItem>
                       </SelectContent>
                     </Select>
@@ -189,7 +212,7 @@ export function CheckoutGuest() {
 
             <FormField
               control={form.control}
-              name="orderAddress.addressLine1"
+              name="orderAddress.addressLine"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -242,7 +265,7 @@ export function CheckoutGuest() {
 
             <FormField
               control={form.control}
-              name="orderAddress.phone"
+              name="orderAddress.phoneNumber"
               render={({ field }) => (
                 <FormItem className="relative">
                   <FormControl>
@@ -264,7 +287,7 @@ export function CheckoutGuest() {
         <PaymentCheckout />
 
         {/* Footer submit */}
-        <CheckoutFooter buttonText="Hoàn tất đặt hàng" />
+        <CheckoutFooter buttonText="Hoàn tất đặt hàng" disabled={isOrdering} />
       </form>
     </Form>
   );

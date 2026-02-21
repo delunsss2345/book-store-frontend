@@ -9,7 +9,7 @@ export function PaymentCheckout() {
         <h2 className="text-lg font-semibold">Phương thức thanh toán</h2>
       </div>
 
-      <PaymentMethodRadio variant="compact" defaultValue="vnpay" />
+      <PaymentMethodRadio variant="compact" defaultValue="sepay" />
     </section>
   );
 }

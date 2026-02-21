@@ -7,12 +7,14 @@ type CheckoutFooterProps = {
   buttonText: string;
   secureText?: string;
   buttonClassName?: string;
+  disabled?: boolean;
 };
 
 export function CheckoutFooter({
   buttonText,
   secureText = "Thông tin của bạn luôn được bảo mật và mã hóa",
   buttonClassName,
+  disabled,
 }: CheckoutFooterProps) {
   return (
     <>

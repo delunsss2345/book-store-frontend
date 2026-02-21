@@ -104,7 +104,7 @@ function OrderSummary({ cart, subtotal }: OrderSummaryProps) {
               Phí vận chuyển
               <Info className="h-3.5 w-3.5 text-zinc-300" />
             </span>
-            <span className="font-medium text-zinc-900">Miễn phí</span>
+            <span className="font-medium text-zinc-900">20.000đ</span>
           </div>
 
           <div className="mt-2 border-t border-zinc-100 pt-4">
