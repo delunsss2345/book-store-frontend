@@ -1,7 +1,7 @@
 export type RegisterDTO = {
-  firstName: string;
-  lastName: string;
   email: string;
+  firstName?: string;
+  lastName?: string;
   password: string;
   confirmPassword: string;
 };
@@ -24,21 +24,38 @@ export type LogoutDTO = {
   refreshToken: string;
 };
 
+export type ChangePasswordDTO = {
+  oldPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+};
+
+export type VerifyEmailDTO = {
+  token: string;
+};
+
+export type RefreshTokenDTO = {
+  refreshToken: string;
+};
+
+export type ResetPasswordValidateDTO = {
+  token: string;
+};
+
+export type ResetPasswordDTO = {
+  token: string;
+  email: string;
+  password: string;
+  password_confirmation: string;
+};
+
 export type RegisterPayload = RegisterDTO;
 export type LoginPayload = LoginDTO;
 export type ForgotPasswordPayload = ForgotPasswordDTO;
 export type ResendEmailPayload = ResendEmailDTO;
 export type LogoutPayload = LogoutDTO;
-
-export type ChangePasswordPayload = {
-  oldPassword: string;
-  newPassword: string;
-};
-
-export type VerifyAccountPayload = {
-  verifyToken: string;
-};
-
-export type RefreshTokenPayload = {
-  refreshToken: string;
-};
+export type ChangePasswordPayload = ChangePasswordDTO;
+export type VerifyEmailPayload = VerifyEmailDTO;
+export type RefreshTokenPayload = RefreshTokenDTO;
+export type ResetPasswordValidatePayload = ResetPasswordValidateDTO;
+export type ResetPasswordPayload = ResetPasswordDTO;

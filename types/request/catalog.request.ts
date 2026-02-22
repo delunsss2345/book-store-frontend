@@ -1,4 +1,14 @@
-import { AddCartItemRequest } from "@/types/request/cart.request";
+export type CatalogHomeQuery = {
+  lang?: string;
+  limit?: number;
+};
 
-/** @deprecated Use AddCartItemRequest from `@/types/request/cart.request`. */
-export type AddItemRequest = AddCartItemRequest;
+export type CatalogBookListQuery = {
+  lang?: string;
+  page?: number;
+  limit?: number;
+};
+
+export type CatalogCategoriesQuery = {
+  lang?: string;
+};

@@ -1,26 +1,39 @@
 import { ApiResponse } from "@/types/response/base.response";
 
-export type UserLoginResponse = {
-  id: number;
+export type LoginUserData = {
+  id: string;
   email: string;
-  firstName: string;
-  lastName: string;
-  gender: "MALE" | "FEMALE" | string | null;
-  phoneNumber: string | null;
-  roles: string[];
+  phoneNumber?: string;
+  firstName?: string;
+  lastName?: string;
+  gender?: string;
+  avatarUrl?: string;
+  isEmailVerified: boolean;
+  status: string;
 };
 
-export type UserResponse = {
-  id: number;
+export type RegisterUserData = {
+  id: string;
   email: string;
-  verifyToken: string;
-  firstName: string;
-  lastName: string;
-  gender: string | null;
-  phoneNumber: string | null;
-  active: boolean;
-  roles: string[];
-  addresses: unknown[] | null;
+  phoneNumber?: string;
+  firstName?: string;
+  lastName?: string;
+  gender?: string;
+  avatarUrl?: string;
+  isEmailVerified: boolean;
+  status: string;
+};
+
+export type LoginResponseData = {
+  user: LoginUserData;
+  accessToken: string;
+  refreshToken: string;
+};
+
+export type RegisterResponseData = {
+  user: RegisterUserData;
+  accessToken: string;
+  refreshToken: string;
 };
 
 export type AuthTokenData = {
@@ -30,29 +43,24 @@ export type AuthTokenData = {
   expiresIn: number;
 };
 
-export type LoginResponseData = AuthTokenData & {
-  user: UserLoginResponse;
-};
-
 export type RefreshTokenResponseData = AuthTokenData & {
-  user?: UserLoginResponse;
+  user?: LoginUserData;
 };
 
 export type AuthActionResponseData = {
   success: boolean;
 };
 
-export type RegisterResponseData = LoginResponseData
+export type UserLoginResponse = LoginUserData;
+export type UserResponse = RegisterUserData;
 
 export type LoginResponse = ApiResponse<LoginResponseData>;
-export type RefreshTokenResponse = ApiResponse<RefreshTokenResponseData>;
 export type RegisterResponse = ApiResponse<RegisterResponseData>;
+export type RefreshTokenResponse = ApiResponse<RefreshTokenResponseData>;
 export type ForgotPasswordResponse = ApiResponse<AuthActionResponseData>;
 export type ResendEmailResponse = ApiResponse<AuthActionResponseData>;
 export type VerifyEmailResponse = ApiResponse<AuthActionResponseData>;
-
-export type LogoutResponse = ApiResponse<{
-  success: boolean
-}>
-export type ChangePasswordResponse = void;
-export type VerifyAccountResponse = void;
+export type ChangePasswordResponse = ApiResponse<AuthActionResponseData>;
+export type ResetPasswordResponse = ApiResponse<AuthActionResponseData>;
+export type ResetPasswordValidateResponse = ApiResponse<{ valid: boolean }>;
+export type LogoutResponse = ApiResponse<{ success: boolean }>;
