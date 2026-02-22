@@ -1,3 +1,5 @@
+"use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { TFunction } from "i18next";
 import * as React from "react";
@@ -15,11 +17,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import useTranslator from "@/hooks/use-translator";
+import { ResetPasswordSchema } from "@/validation/auth/resetPasswordValidation";
 
-const getResetPasswordSchema = (t: TFunction) =>
-  z.object({
-    verifyToken: z.string().min(1, t("auth.errors.required")),
-  });
+const getResetPasswordSchema = (t: TFunction) => ResetPasswordSchema;
 
 export type ResetPasswordValues = z.infer<
   ReturnType<typeof getResetPasswordSchema>
@@ -36,10 +36,13 @@ const ResetPasswordForm = ({
 }: ResetPasswordFormProps) => {
   const { t } = useTranslator();
   const resetSchema = React.useMemo(() => getResetPasswordSchema(t), [t]);
+
   const form = useForm<ResetPasswordValues>({
     resolver: zodResolver(resetSchema),
     defaultValues: {
-      verifyToken: "",
+      email: "",
+      password: "",
+      passwordConfirmation: "",
     },
     mode: "onSubmit",
   });
@@ -51,16 +54,17 @@ const ResetPasswordForm = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+        {/* Trường Email */}
         <FormField
           control={form.control}
-          name="verifyToken"
+          name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t("auth.verifyTokenLabel")}</FormLabel>
+              <FormLabel>{t("auth.emailLabel")}</FormLabel>
               <FormControl>
                 <Input
-                  placeholder={t("auth.verifyTokenPlaceholder")}
-                  autoComplete="one-time-code"
+                  type="email"
+                  placeholder={t("auth.emailPlaceholder")}
                   {...field}
                 />
               </FormControl>
@@ -69,8 +73,38 @@ const ResetPasswordForm = ({
           )}
         />
 
+        {/* Trường Mật khẩu mới */}
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("auth.newPasswordLabel")}</FormLabel>
+              <FormControl>
+                <Input type="password" placeholder="••••••••" {...field} />
+              </FormControl>
+              <FormMessageI18n />
+            </FormItem>
+          )}
+        />
+
+        {/* Trường Xác nhận mật khẩu */}
+        <FormField
+          control={form.control}
+          name="passwordConfirmation"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("auth.confirmPasswordLabel")}</FormLabel>
+              <FormControl>
+                <Input type="password" placeholder="••••••••" {...field} />
+              </FormControl>
+              <FormMessageI18n />
+            </FormItem>
+          )}
+        />
+
         <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? t("auth.verifying") : t("auth.verifySubmit")}
+          {isLoading ? t("auth.processing") : t("auth.resetSubmit")}
         </Button>
       </form>
     </Form>

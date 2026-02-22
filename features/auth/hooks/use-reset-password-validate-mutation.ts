@@ -3,5 +3,8 @@ import { useMutation } from "@tanstack/react-query";
 
 export const useResetPasswordValidateMutation = () =>
   useMutation({
-    mutationFn: authApi.resetPasswordValidate,
+    mutationFn: async (data: { token: string }) => {
+      const response = await authApi.resetPasswordValidate(data);
+      return response.data;
+    },
   });
