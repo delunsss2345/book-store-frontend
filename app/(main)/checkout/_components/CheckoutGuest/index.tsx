@@ -72,7 +72,7 @@ export function CheckoutGuest() {
       loading: "Đang xử lý đơn hàng...",
       success: (data) => {
         router.push(
-          `/checkout/payment?orderCode=${data.orderCode}&totalAmount=${data.totalAmount}`,
+          `/checkout/payment?orderCode=${data.orderCode}&totalAmount=${data.totalAmount}&subtotal=${data.subtotal}`,
         );
         return "Đơn hàng đã được tạo thành công!";
       },

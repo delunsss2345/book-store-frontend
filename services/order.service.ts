@@ -3,7 +3,6 @@ import { http } from "@/utils/http";
 
 export type CreateOrderGuestRequest = CreateGuestOrdersAndPaymentInput & {
   cartId: number;
-  idempotencyKey : string
 };
 
 export const orderService = {

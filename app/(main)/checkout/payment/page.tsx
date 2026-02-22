@@ -30,7 +30,9 @@ export default function PremiumPaymentPage() {
   // Lấy dữ liệu từ URL
   const amountParam = searchParams.get("totalAmount") || "0";
   const orderCode = searchParams.get("orderCode") || "PAYMENT";
+  const subtotalParam = searchParams.get("subtotal") || "0";
   const totalAmount = parseInt(amountParam);
+  const subtotal = parseInt(subtotalParam);
 
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
@@ -39,9 +41,10 @@ export default function PremiumPaymentPage() {
     fullName: "Ngân hàng Quân Đội",
     acc: "17979220797979",
     owner: "PHAM THANH HUY",
+    vaCode: "VQRQAHCEN2724",
   };
 
-  const qrUrl = `https://qr.sepay.vn/img?bank=${bankInfo.name}&acc=${bankInfo.acc}&template=compact&amount=${totalAmount}&des=${orderCode}`;
+  const qrUrl = `https://qr.sepay.vn/img?bank=${bankInfo.name}&acc=${bankInfo.vaCode}&template=compact&amount=${totalAmount}&des=${orderCode}`;
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("vi-VN").format(amount);
@@ -82,7 +85,7 @@ export default function PremiumPaymentPage() {
               <div className="space-y-4 pt-4">
                 <div className="flex justify-between text-sm">
                   <span className="text-zinc-500">Tạm tính</span>
-                  <span>{formatCurrency(totalAmount)}đ</span>
+                  <span>{formatCurrency(subtotal)}đ</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-zinc-500">Phí vận chuyển</span>
