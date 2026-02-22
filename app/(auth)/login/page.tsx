@@ -1,10 +1,13 @@
-'use client'
+"use client";
 
-import LoginForm, { type LoginValues } from "@/app/(auth)/_components/LoginForm";
+import LoginForm, {
+  type LoginValues,
+} from "@/app/(auth)/_components/LoginForm";
 import { useLoginMutation } from "@/features/auth/hooks/use-login-mutation";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import ForgotPasswordLink from "../_components/ForgotPasswordLink";
 
 const Login = () => {
   const router = useRouter();
@@ -28,7 +31,7 @@ const Login = () => {
   return (
     <>
       <LoginForm isLoading={isLoading} onSubmit={onSubmit} />
-
+      <ForgotPasswordLink />
       <p className="mt-4 text-center text-sm text-muted-foreground">
         Chưa có tài khoản?{" "}
         <Link

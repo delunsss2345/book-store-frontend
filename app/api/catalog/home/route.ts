@@ -4,9 +4,12 @@ import { api } from "@/lib/api/fetchHandler";
 import { ResponseApi } from "@/lib/api/responseHandler";
 import { HomeResponse } from "@/types/response/catalog.response";
 import { HttpStatusCode } from "axios";
+import { cookies } from "next/headers";
 export async function GET() {
     try {
-        const response = await api.get<HomeResponse>(`catalog/home?limit=${PER_PAGE}`)
+        const cookieStore = await cookies()
+        const lang = cookieStore.get('appLanguage')?.value || 'vi'
+        const response = await api.get<HomeResponse>(`catalog/home?limit=${PER_PAGE}&lang=${lang}`)
         return ResponseApi.success(response.data);
     }
     catch (error) {

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import AuthGuard from "@/app/(auth)/_components/AuthGuard";
 import { LogoAuth } from "@/app/(auth)/_components/LogoAuth";
 
@@ -16,6 +16,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       </div>
     </AuthGuard>
   );
-}
+};
 
-export default Layout; 
+export default Layout;

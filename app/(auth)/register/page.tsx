@@ -1,10 +1,13 @@
 "use client";
 
-import RegisterForm, { RegisterValues } from "@/app/(auth)/_components/RegisterForm";
+import RegisterForm, {
+  RegisterValues,
+} from "@/app/(auth)/_components/RegisterForm";
 import { useRegisterMutation } from "@/features/auth";
 import useTranslator from "@/hooks/use-translator";
 import Link from "next/link";
 import { toast } from "sonner";
+import ForgotPasswordLink from "../_components/ForgotPasswordLink";
 
 const Register = () => {
   const { t } = useTranslator();
@@ -32,6 +35,7 @@ const Register = () => {
 
       <RegisterForm isLoading={isLoading} onSubmit={onSubmit} />
 
+      <ForgotPasswordLink />
       {/* Quay lại đăng nhập */}
       <p className="text-center text-sm text-muted-foreground">
         Đã có tài khoản?{" "}

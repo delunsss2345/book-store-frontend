@@ -1,27 +1,25 @@
-'use client'
-import { NavGroup } from '@/components/common/NavGroup'
+"use client";
+import { NavGroup } from "@/components/common/NavGroup";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarRail
-} from '@/components/ui/sidebar'
-import { sidebarData } from '@/app/(dashboard)/[role]/dashboard/data/sidebar-data'
+  SidebarRail,
+} from "@/components/ui/sidebar";
+import { sidebarData } from "@/app/(dashboard)/[role]/dashboard/data/sidebar-data";
 
 export function AppSidebar() {
   return (
-      <Sidebar> 
-      <SidebarHeader>
-      </SidebarHeader>
+    <Sidebar>
+      <SidebarHeader></SidebarHeader>
       <SidebarContent>
         {sidebarData.navGroups.map((props) => (
           <NavGroup key={props.title} {...props} />
         ))}
       </SidebarContent>
-      <SidebarFooter>
-      </SidebarFooter>
+      <SidebarFooter></SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

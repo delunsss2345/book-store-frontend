@@ -5,17 +5,22 @@ import ForgotPasswordForm, {
 } from "@/app/(auth)/_components/ForgotPasswordForm";
 import { useForgotPasswordMutation } from "@/features/auth";
 import useTranslator from "@/hooks/use-translator";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 const ForgotPassword = () => {
   const { t } = useTranslator();
   const forgotPasswordMutation = useForgotPasswordMutation();
   const isLoading = forgotPasswordMutation.isPending;
+  const router = useRouter();
 
   const onSubmit = async (values: ForgotPasswordValues) => {
     toast.promise(forgotPasswordMutation.mutateAsync(values), {
       loading: t("auth.forgotSubmitting"),
-      success: t("auth.success.forgot", { email: values.email }),
+      success: () => {
+        router.push("/reset-password");
+        return t("auth.success.forgot");
+      },
       error: t("auth.errors.requestFailed"),
     });
   };

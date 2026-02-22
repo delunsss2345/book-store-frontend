@@ -1,4 +1,4 @@
-import { envConfig } from "@/config/envConfig";
+import { envConfig } from "@/config/env.config";
 import "server-only";
 const BACKEND_URL = envConfig.BACKEND_API_URL;
 

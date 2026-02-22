@@ -43,6 +43,10 @@ export type AuthTokenData = {
   expiresIn: number;
 };
 
+export type ResetPasswordValidateResponseData = {
+  valid: boolean;
+};
+
 export type RefreshTokenResponseData = AuthTokenData & {
   user?: LoginUserData;
 };
@@ -62,5 +66,5 @@ export type ResendEmailResponse = ApiResponse<AuthActionResponseData>;
 export type VerifyEmailResponse = ApiResponse<AuthActionResponseData>;
 export type ChangePasswordResponse = ApiResponse<AuthActionResponseData>;
 export type ResetPasswordResponse = ApiResponse<AuthActionResponseData>;
-export type ResetPasswordValidateResponse = ApiResponse<{ valid: boolean }>;
+export type ResetPasswordValidateResponse = ApiResponse<ResetPasswordValidateResponseData>;
 export type LogoutResponse = ApiResponse<{ success: boolean }>;

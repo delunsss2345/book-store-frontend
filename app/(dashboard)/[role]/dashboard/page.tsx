@@ -2,7 +2,6 @@
 import { Header } from '@/app/(dashboard)/[role]/dashboard/_components/Header'
 import { Main } from '@/app/(dashboard)/[role]/dashboard/_components/Main'
 import { TopNav } from '@/app/(dashboard)/[role]/dashboard/_components/TopNav'
-import { Overview } from '@/app/(dashboard)/_components/Overview'
 import { ProfileDropdown } from '@/app/profile/_components/ProfileDropdown'
 import { Search } from '@/components/common/Search'
 import { Badge } from '@/components/ui/badge'
@@ -167,7 +166,6 @@ export default function Dashboard() {
                     <CardTitle>Overview</CardTitle>
                   </CardHeader>
                   <CardContent className='ps-2'>
-                    <Overview />
                   </CardContent>
                 </Card>
                 <Card className='col-span-1 lg:col-span-3'>

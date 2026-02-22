@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { TFunction } from "i18next";
 import * as React from "react";
@@ -37,6 +37,7 @@ const ForgotPasswordForm = ({
 }: ForgotPasswordFormProps) => {
   const { t } = useTranslator();
   const forgotSchema = React.useMemo(() => getForgotPasswordSchema(t), [t]);
+
   const form = useForm<ForgotPasswordValues>({
     resolver: zodResolver(forgotSchema),
     defaultValues: {

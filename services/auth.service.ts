@@ -1,10 +1,12 @@
 import type {
-  ChangePasswordPayload,
+  ChangePasswordDTO,
   ForgotPasswordDTO,
   LoginDTO,
+  LogoutDTO,
   RegisterDTO,
   ResendEmailDTO,
-  VerifyAccountPayload
+  ResetPasswordDTO,
+  ResetPasswordValidateDTO,
 } from "@/types/request/auth.request";
 
 import type {
@@ -15,7 +17,8 @@ import type {
   RefreshTokenResponse,
   RegisterResponse,
   ResendEmailResponse,
-  VerifyAccountResponse,
+  ResetPasswordResponse,
+  ResetPasswordValidateResponse,
   VerifyEmailResponse,
 } from "@/types/response/auth.response";
 import { http } from "@/utils/http";
@@ -27,26 +30,32 @@ export const authApi = {
   register: (payload: RegisterDTO) =>
     http.post<RegisterResponse>("/auth/register", payload),
 
+  me: () =>
+    http.get<LoginResponse>("/auth/me"),
+
+  refreshToken: () =>
+    http.post<RefreshTokenResponse>("/auth/refresh-token"),
+
+  logout: () =>
+    http.post<LogoutResponse>("/auth/logout"),
+
   forgotPassword: (payload: ForgotPasswordDTO) =>
     http.post<ForgotPasswordResponse>("/auth/forgot-password", payload),
-
-  resendEmail: (payload: ResendEmailDTO) =>
-    http.post<ResendEmailResponse>("/auth/resend-email", payload),
 
   verifyEmail: (token: string) =>
     http.get<VerifyEmailResponse>("/auth/verify-email", {
       params: { token },
     }),
 
-  logout: () =>
-    http.post<LogoutResponse>("/auth/logout"),
+  resendEmail: (payload: ResendEmailDTO) =>
+    http.post<ResendEmailResponse>("/auth/resend-email", payload),
 
-  changePassword: (payload: ChangePasswordPayload) =>
+  changePassword: (payload: ChangePasswordDTO) =>
     http.post<ChangePasswordResponse>("/auth/change-password", payload),
 
-  verifyAccount: (userId: number | string, payload: VerifyAccountPayload) =>
-    http.post<VerifyAccountResponse>(`/auth/verify/${userId}`, payload),
+  resetPasswordValidate: (payload: ResetPasswordValidateDTO) =>
+    http.post<ResetPasswordValidateResponse>("/auth/reset-password/validate", payload),
 
-  refreshToken: () =>
-    http.post<RefreshTokenResponse>("/auth/refresh-token"),
+  resetPassword: (payload: ResetPasswordDTO) =>
+    http.post<ResetPasswordResponse>("/auth/reset-password", payload),
 };

@@ -1,4 +1,4 @@
-import { envConfig } from "@/config/envConfig";
+import { envConfig } from "@/config/env.config";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import type { PromiseHandlers } from "@/types/lib/axios";
 import type { RefreshTokenResponseData } from "@/types/response/auth.response";
