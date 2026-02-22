@@ -26,11 +26,13 @@ export type ResetPasswordValues = z.infer<
 >;
 
 type ResetPasswordFormProps = {
+  token?: string;
   isLoading?: boolean;
   onSubmit?: (values: ResetPasswordValues) => void | Promise<void>;
 };
 
 const ResetPasswordForm = ({
+  token,
   isLoading = false,
   onSubmit,
 }: ResetPasswordFormProps) => {
@@ -40,6 +42,7 @@ const ResetPasswordForm = ({
   const form = useForm<ResetPasswordValues>({
     resolver: zodResolver(resetSchema),
     defaultValues: {
+      token: token,
       email: "",
       password: "",
       passwordConfirmation: "",
@@ -53,7 +56,12 @@ const ResetPasswordForm = ({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+      <form
+        onSubmit={form.handleSubmit(handleSubmit, (errors) => {
+          console.log("FORM ERRORS:", errors);
+        })}
+        className="space-y-4"
+      >
         {/* Trường Email */}
         <FormField
           control={form.control}
@@ -103,7 +111,11 @@ const ResetPasswordForm = ({
           )}
         />
 
-        <Button type="submit" className="w-full" disabled={isLoading}>
+        <Button
+          type="submit"
+          className="w-full cursor-pointer"
+          disabled={isLoading}
+        >
           {isLoading ? t("auth.processing") : t("auth.resetSubmit")}
         </Button>
       </form>

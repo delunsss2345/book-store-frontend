@@ -46,7 +46,7 @@ export type ResetPasswordDTO = {
   token: string;
   email: string;
   password: string;
-  password_confirmation: string;
+  passwordConfirmation: string;
 };
 
 export type RegisterPayload = RegisterDTO;

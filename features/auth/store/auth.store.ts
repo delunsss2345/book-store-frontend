@@ -7,13 +7,13 @@ type AuthStore = {
     accessToken: string | null;
     isHydrated: boolean;
     isSendOTP: boolean;
-    isResetPassword: boolean;
+    otpResetPassword: string | null;
     setSession: (payload: { user: UserLoginResponse; accessToken: string }) => void;
     setAccessToken: (accessToken: string | null) => void;
     clearSession: () => void;
     setHydrated: (value: boolean) => void;
     setIsSendOTP: (value: boolean) => void;
-    setIsResetPassword: (value: boolean) => void;
+    setOtpResetPassword: (value: string | null) => void;
 };
 
 export const useAuthStore = create<AuthStore>()(
@@ -23,13 +23,13 @@ export const useAuthStore = create<AuthStore>()(
             accessToken: null,
             isHydrated: false,
             isSendOTP: false,
-            isResetPassword: false,
+            otpResetPassword: null,
             setSession: ({ user, accessToken }) => set({ user, accessToken }),
             setAccessToken: (accessToken) => set({ accessToken }),
             clearSession: () => set({ user: null, accessToken: null }),
             setHydrated: (value) => set({ isHydrated: value }),
             setIsSendOTP: (value) => set({ isSendOTP: value }),
-            setIsResetPassword: (value) => set({ isResetPassword: value }),
+            setOtpResetPassword: (value) => set({ otpResetPassword: value }),
         }),
         {
             name: "auth-storage",
