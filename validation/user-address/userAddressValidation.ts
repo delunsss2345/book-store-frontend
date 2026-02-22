@@ -1,7 +1,10 @@
 import { z } from "zod";
 
+
+export const ADDRESS_TYPES = ["HOME", "OFFICE", "OTHER"] as const;
+
 export const CreateUserAddressSchema = z.object({
-  addressType: z.string().optional(),
+  addressType: z.enum(ADDRESS_TYPES),
   recipientName: z.string().optional(),
   phoneNumber: z.string().min(1, "Số điện thoại không được để trống"),
   addressDetail: z.string().min(1, "Địa chỉ chi tiết không được để trống"),
