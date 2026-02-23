@@ -1,3 +1,4 @@
+import { COOKIE_OPTIONS, COOKIE_ACCESS_TOKEN_MAX_AGE, COOKIE_REFRESH_TOKEN_MAX_AGE } from "@/config/cookie.config";
 import { API_MESSAGE } from "@/constants/api/messageApi";
 import { handleError } from "@/lib/api/errorHandler";
 import { api } from "@/lib/api/fetchHandler";
@@ -7,12 +8,6 @@ import { LoginSchema } from "@/validation/auth/loginValidation";
 import { HttpStatusCode } from "axios";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
-
-const COOKIE_OPTIONS = {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax" as const,
-};
 
 export async function POST(request: NextRequest) {
     try {
@@ -29,7 +24,11 @@ export async function POST(request: NextRequest) {
 
         cookieStore.set("refreshToken", response.data.refreshToken, {
             ...COOKIE_OPTIONS,
-            maxAge: 60 * 60 * 24 * 7,
+            maxAge: COOKIE_REFRESH_TOKEN_MAX_AGE,
+        });
+        cookieStore.set("accessToken", response.data.accessToken, {
+            ...COOKIE_OPTIONS,
+            maxAge: COOKIE_ACCESS_TOKEN_MAX_AGE,
         });
         return ResponseApi.success(response.data, HttpStatusCode.Ok);
 

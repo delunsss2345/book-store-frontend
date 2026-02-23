@@ -11,7 +11,6 @@ export const useLoginMutation = () => {
         onSuccess: (res) => {
             setSession({
                 user: res.data.user,
-                accessToken: res.data.accessToken,
             });
         },
     });

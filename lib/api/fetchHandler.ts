@@ -1,5 +1,6 @@
 import { envConfig } from "@/config/env.config";
 import { HttpStatusCode } from "axios";
+import { cookies } from "next/headers";
 import "server-only";
 const BACKEND_URL = envConfig.BACKEND_API_URL;
 
@@ -45,6 +46,9 @@ async function request<T>(method: string, path: string, opt: ApiOptions = {}): P
         headers,
         ...init
     } = opt;
+    const cookieStore = await cookies();
+    const guestSessionId = cookieStore.get("guestSessionId")?.value;
+    const accessToken = cookieStore.get("accessToken")?.value;
 
     const url = buildUrl(baseURL, path, query);
     const header = new Headers(headers);
@@ -53,9 +57,16 @@ async function request<T>(method: string, path: string, opt: ApiOptions = {}): P
     const abortController = new AbortController(); //  khởi tạo controll chặn fetch gọi quá lâu
     const t = setTimeout(() => abortController.abort(), timeoutMs); // tạo timeout mốc quá time out quăng lỗi
 
+    if(guestSessionId && !header.has("cookie")){
+        header.set('cookie', `guestSessionId=${cookieStore.get('guestSessionId')?.value || ''}`)
+    }
+
+    if (accessToken && !header.has("authorization")) {
+        header.set("authorization", `Bearer ${accessToken}`);
+    }
+
     let res: Response;
     try {
-        console.log(url);
         res = await fetch(url, {
             ...init,
             method,
@@ -96,7 +107,6 @@ export const fetchApi = (defaults: Pick<ApiOptions, "baseURL" | "headers"> = {})
             return request<T>("GET", path, withDefaults(opt));
         },
         post<T>(path: string, body?: unknown, opt?: ApiOptions) {
-            console.log(path);
             return request<T>("POST", path, withDefaults({ ...opt, body }));
         },
         put<T>(path: string, body?: unknown, opt?: ApiOptions) {

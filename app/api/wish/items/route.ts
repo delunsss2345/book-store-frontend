@@ -9,13 +9,7 @@ import { NextRequest } from "next/server";
 export async function POST(request: NextRequest) {
     try {
         const payload: { bookVariantId: bigint } = await request.json();
-        const cookiesStore = await cookies();
-        const guestSessionId = cookiesStore.get("guestSessionId")?.value;
-        const response = await api.post<AddWishItemResponse>("wish/items", payload, {
-            headers: {
-                Cookie: guestSessionId ? `guestSessionId=${guestSessionId}` : "",
-            },
-        });
+        const response = await api.post<AddWishItemResponse>("wish/items", payload);
         return ResponseApi.success(response.data, HttpStatusCode.Ok);
     } catch (error) {
         if (process.env.NODE_ENV === 'development') {

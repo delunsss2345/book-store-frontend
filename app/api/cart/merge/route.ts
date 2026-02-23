@@ -18,11 +18,7 @@ export async function POST(request: NextRequest) {
 
         const requestBody =
             typeof payload === "object" && payload !== null ? payload : {};
-
-        const response = await api.post<MergeCartApiResponse>("cart/merge", requestBody, {
-            headers: { cookie: request.headers.get("guestSessionId") || "" },
-        });
-
+        const response = await api.post<MergeCartApiResponse>("cart/merge", requestBody);
         return ResponseApi.success(response.data, HttpStatusCode.Created);
     } catch (error) {
         const message =

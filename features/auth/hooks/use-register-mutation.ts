@@ -11,7 +11,6 @@ export const useRegisterMutation = () => {
         onSuccess: (res) => {
             setSession({
                 user: res.data.user,
-                accessToken: res.data.accessToken,
             });
         }
     });

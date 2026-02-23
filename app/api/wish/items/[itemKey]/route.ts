@@ -11,13 +11,7 @@ export async function DELETE(
 ) {
     try {
         const { itemKey } = await params;
-        const cookieStore = await cookies();
-        const guestSessionId = cookieStore.get("guestSessionId")?.value;
-        const response = await api.delete(`wish/items/${itemKey}`, {
-            headers: {
-                Cookie: guestSessionId ? `guestSessionId=${guestSessionId}` : "",
-            },
-        });
+        const response = await api.delete(`wish/items/${itemKey}`);
         return ResponseApi.success(response, HttpStatusCode.Ok);
     } catch (error) {
         if (process.env.NODE_ENV === 'development') {

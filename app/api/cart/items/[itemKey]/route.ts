@@ -13,13 +13,7 @@ export async function DELETE(
 ) {
     try {
         const { itemKey } = await params;
-        const cookieStore = await cookies();
-        const guestSessionId = cookieStore.get("guestSessionId")?.value || "";
-
-        const response = await api.delete<RemoveCartItemApiResponse>(`cart/items/${itemKey}`, {
-            headers: { cookie: guestSessionId ? `guestSessionId=${guestSessionId}` : "" },
-        });
-      
+        const response = await api.delete<RemoveCartItemApiResponse>(`cart/items/${itemKey}`);
         return ResponseApi.success(response.data, HttpStatusCode.Ok);
     } catch (error) {
         const message =

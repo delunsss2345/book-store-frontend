@@ -10,8 +10,8 @@ export async function POST(request: NextRequest) {
     try {
         const cookieStore = await cookies();
         const refreshToken = cookieStore.get("refreshToken")?.value;
-
         cookieStore.delete("refreshToken");
+        cookieStore.delete("accessToken");
         cookieStore.delete("guestSessionId");
 
         const response = await api.post<LogoutResponse>("auth/logout", {

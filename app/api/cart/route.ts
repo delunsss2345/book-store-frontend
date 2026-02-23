@@ -11,18 +11,7 @@ import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
     try {
-        const cookieStore = await cookies();
-        const guestSessionId = cookieStore.get("guestSessionId")?.value || "";
-        const response = await api.get<GetCartApiResponse>("cart", {
-            headers: {
-                Cookie: guestSessionId ? `guestSessionId=${guestSessionId}` : "",
-            },
-            cache: "no-store",
-            });
-
-       if(response.data.guestSessionId && !guestSessionId) {
-          cookieStore.set("guestSessionId", response.data.guestSessionId);
-       }
+        const response = await api.get<GetCartApiResponse>("cart");
         return ResponseApi.success(response.data, HttpStatusCode.Ok);
     } catch (error) {
         const message =

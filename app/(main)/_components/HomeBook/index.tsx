@@ -45,12 +45,17 @@ export function HomeBook() {
 
         {/* Danh sách sản phẩm */}
         {!isPending && !isError && (
-          <div className={cn(
-            "grid grid-cols-2 gap-x-8 gap-y-16 md:grid-cols-3 lg:grid-cols-4 transition-opacity duration-500",
-            newAndTrending.length > 0 ? "opacity-100" : "opacity-0"
-          )}>
+          <div
+            className={cn(
+              "grid grid-cols-2 gap-x-8 gap-y-16 md:grid-cols-3 lg:grid-cols-4 transition-opacity duration-500",
+              newAndTrending.length > 0 ? "opacity-100" : "opacity-0",
+            )}
+          >
             {newAndTrending.map((b) => {
-              const book = b as PricedBook & { price: number; bookVariantId: number };
+              const book = b as PricedBook & {
+                price: number;
+                bookVariantId: number;
+              };
               return (
                 <BookCard
                   key={b.id}
@@ -73,7 +78,7 @@ export function HomeBook() {
             <p className="text-sm font-medium text-neutral-600">
               Something went wrong while fetching the books.
             </p>
-            <button 
+            <button
               onClick={() => window.location.reload()}
               className="mt-4 text-xs font-bold uppercase tracking-widest text-neutral-900 underline underline-offset-4"
             >

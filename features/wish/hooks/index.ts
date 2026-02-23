@@ -44,7 +44,6 @@ export const useRemoveFromWishlistMutation = () => {
 
   return useMutation({
     mutationFn: ({ itemKey, bookVariantId }: { itemKey: number; bookVariantId: number }) => {
-      console.log(itemKey) ; 
       removeFromWish(bookVariantId); // optimistic
       return wishApi.deleteWishItem(itemKey);
     },

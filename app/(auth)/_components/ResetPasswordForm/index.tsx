@@ -56,12 +56,7 @@ const ResetPasswordForm = ({
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleSubmit, (errors) => {
-          console.log("FORM ERRORS:", errors);
-        })}
-        className="space-y-4"
-      >
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
         {/* Trường Email */}
         <FormField
           control={form.control}

@@ -17,16 +17,10 @@ export async function PATCH(
     try {
         const { itemKey } = await params;
         const payload: UpdateCartItemDeltaRequest = await request.json();
-        const cookieStore = await cookies();
-        
-        const guestSessionId = cookieStore.get("guestSessionId")?.value || "";
 
         const response = await api.patch<UpdateCartItemDeltaApiResponse>(
             `cart/items/${itemKey}/delta`,
-            payload,
-            {
-                headers: { cookie: guestSessionId ? `guestSessionId=${guestSessionId}` : "" },
-            },
+            payload
         );
 
         return ResponseApi.success(response.data, HttpStatusCode.Ok);
