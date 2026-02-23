@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
         const response = await api.get<any>("categories");
         return ResponseApi.success(response.data, HttpStatusCode.Ok);
     } catch (error: any) {
-        return ResponseApi.error(error.message, HttpStatusCode.BadRequest);
+        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
     }
 }
 
@@ -18,6 +18,6 @@ export async function POST(request: NextRequest) {
         const response = await api.post<any>("categories", payload);
         return ResponseApi.success(response.data, HttpStatusCode.Created);
     } catch (error: any) {
-        return ResponseApi.error(error.message, HttpStatusCode.BadRequest);
+        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
     }
 }

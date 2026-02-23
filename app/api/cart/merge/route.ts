@@ -20,17 +20,11 @@ export async function POST(request: NextRequest) {
             typeof payload === "object" && payload !== null ? payload : {};
         const response = await api.post<MergeCartApiResponse>("cart/merge", requestBody);
         return ResponseApi.success(response.data, HttpStatusCode.Created);
-    } catch (error) {
-        const message =
-            error instanceof Error ? error.message : API_MESSAGE.SYSTEM_TRY_AGAIN;
-
+    } catch (error: any) {
         if (process.env.NODE_ENV === "development") {
             console.error("Cart Merge POST API Error:", error);
         }
 
-        return ResponseApi.error(
-            message,
-            HttpStatusCode.BadRequest,
-        );
+        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
     }
 }

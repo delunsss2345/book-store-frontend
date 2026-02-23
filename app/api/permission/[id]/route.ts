@@ -13,7 +13,7 @@ export async function PATCH(
         const response = await api.patch<any>(`permission/${id}`, payload);
         return ResponseApi.success(response.data, HttpStatusCode.Ok);
     } catch (error: any) {
-        return ResponseApi.error(error.message, HttpStatusCode.BadRequest);
+        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
     }
 }
 
@@ -26,6 +26,6 @@ export async function DELETE(
         const response = await api.delete<any>(`permission/${id}`);
         return ResponseApi.success(response.data, HttpStatusCode.Ok);
     } catch (error: any) {
-        return ResponseApi.error(error.message, HttpStatusCode.BadRequest);
+        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
     }
 }

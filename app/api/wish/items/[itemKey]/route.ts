@@ -13,12 +13,10 @@ export async function DELETE(
         const { itemKey } = await params;
         const response = await api.delete(`wish/items/${itemKey}`);
         return ResponseApi.success(response, HttpStatusCode.Ok);
-    } catch (error) {
+    } catch (error: any) {
         if (process.env.NODE_ENV === 'development') {
             console.error("Wish Item DELETE API Error:", error);
         }
-        return ResponseApi.error(
-            error?.message ?? API_MESSAGE.SYSTEM_TRY_AGAIN, HttpStatusCode.BadRequest
-        );
+        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
     }
 }

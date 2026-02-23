@@ -24,17 +24,11 @@ export async function PATCH(
         );
 
         return ResponseApi.success(response.data, HttpStatusCode.Ok);
-    } catch (error) {
-        const message =
-            error instanceof Error ? error.message : API_MESSAGE.SYSTEM_TRY_AGAIN;
-
+    } catch (error: any) {
         if (process.env.NODE_ENV === "development") {
             console.error("Cart Item Delta PATCH API Error:", error);
         }
 
-        return ResponseApi.error(
-            message,
-            HttpStatusCode.BadRequest,
-        );
+        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
     }
 }

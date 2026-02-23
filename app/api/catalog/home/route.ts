@@ -12,12 +12,10 @@ export async function GET() {
         const response = await api.get<HomeResponse>(`catalog/home?limit=${PER_PAGE}&lang=${lang}`)
         return ResponseApi.success(response.data);
     }
-    catch (error) {
+    catch (error: any) {
         if (process.env.NODE_ENV === 'development') {
             console.error("Login API Error:", error);
         }
-        return ResponseApi.error(
-            API_MESSAGE.SYSTEM_TRY_AGAIN, HttpStatusCode.BadRequest
-        )
+        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
     }
 }

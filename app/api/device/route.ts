@@ -8,6 +8,6 @@ export async function GET(request: NextRequest) {
         const response = await api.get<any>("device");
         return ResponseApi.success(response.data, HttpStatusCode.Ok);
     } catch (error: any) {
-        return ResponseApi.error(error.message, HttpStatusCode.BadRequest);
+        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
     }
 }

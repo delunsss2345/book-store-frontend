@@ -32,12 +32,10 @@ export async function POST(request: NextRequest) {
         return ResponseApi.success(response.data, HttpStatusCode.Created);
 
     }
-    catch (error: ReturnType<any>) {
+    catch (error: any) {
         if (process.env.NODE_ENV === 'development') {
             console.error("Register API Error:", error);
         }
-        return ResponseApi.error(
-            error.message ?? API_MESSAGE.SYSTEM_TRY_AGAIN, HttpStatusCode.BadRequest
-        )
+        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
     }
 }

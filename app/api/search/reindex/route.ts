@@ -8,6 +8,6 @@ export async function POST(request: NextRequest) {
         const response = await api.post<any>("search/reindex", {});
         return ResponseApi.success(response.data, HttpStatusCode.Ok);
     } catch (error: any) {
-        return ResponseApi.error(error.message, HttpStatusCode.BadRequest);
+        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
     }
 }

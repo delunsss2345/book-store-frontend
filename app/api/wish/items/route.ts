@@ -11,12 +11,10 @@ export async function POST(request: NextRequest) {
         const payload: { bookVariantId: bigint } = await request.json();
         const response = await api.post<AddWishItemResponse>("wish/items", payload);
         return ResponseApi.success(response.data, HttpStatusCode.Ok);
-    } catch (error) {
+    } catch (error: any) {
         if (process.env.NODE_ENV === 'development') {
             console.error("Wish Items POST API Error:", error);
         }
-        return ResponseApi.error(
-            error?.message ?? API_MESSAGE.SYSTEM_TRY_AGAIN, HttpStatusCode.BadRequest
-        );
+        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
     }
 }

@@ -33,10 +33,10 @@ export async function POST(request: NextRequest) {
         return ResponseApi.success(response.data, HttpStatusCode.Ok);
 
     }
-    catch (error) {
+    catch (error: any) {
         if (process.env.NODE_ENV === 'development') {
             console.error("Login API Error:", error);
         }
-        return handleError(error);
+        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
     }
 }

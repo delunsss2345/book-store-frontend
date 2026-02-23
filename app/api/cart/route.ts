@@ -13,18 +13,12 @@ export async function GET(request: NextRequest) {
     try {
         const response = await api.get<GetCartApiResponse>("cart");
         return ResponseApi.success(response.data, HttpStatusCode.Ok);
-    } catch (error) {
-        const message =
-            error instanceof Error ? error.message : API_MESSAGE.SYSTEM_TRY_AGAIN;
-
+    } catch (error: any) {
         if (process.env.NODE_ENV === "development") {
             console.error("Cart GET API Error:", error);
         }
 
-        return ResponseApi.error(
-            message,
-            HttpStatusCode.BadRequest,
-        );
+        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
     }
 }
 
@@ -34,18 +28,12 @@ export async function DELETE(request: NextRequest) {
             headers: { cookie: request.headers.get("cookie") || "" },
         });
         return ResponseApi.success(response.data, HttpStatusCode.Ok);
-    } catch (error) {
-        const message =
-            error instanceof Error ? error.message : API_MESSAGE.SYSTEM_TRY_AGAIN;
-
+    } catch (error: any) {
         if (process.env.NODE_ENV === "development") {
             console.error("Cart DELETE API Error:", error);
         }
 
-        return ResponseApi.error(
-            message,
-            HttpStatusCode.BadRequest,
-        );
+        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
     }
 }
 

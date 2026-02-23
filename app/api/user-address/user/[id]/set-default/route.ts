@@ -12,6 +12,6 @@ export async function PATCH(
         const response = await api.patch<any>(`user-address/user/${userId}/${id}/set-default`, {});
         return ResponseApi.success(response.data, HttpStatusCode.Ok);
     } catch (error: any) {
-        return ResponseApi.error(error.message, HttpStatusCode.BadRequest);
+        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
     }
 }

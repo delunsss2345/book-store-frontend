@@ -23,12 +23,10 @@ export async function POST(request: NextRequest) {
             },
         });
         return ResponseApi.success(response.data, HttpStatusCode.Ok);
-    } catch (error) {
+    } catch (error: any) {
         if (process.env.NODE_ENV === 'development') {
-            console.error("Wish Items POST API Error:", error);
+            console.error("Orders Guest Checkout POST API Error:", error);
         }
-        return ResponseApi.error(
-            String(error), HttpStatusCode.BadRequest
-        );
+        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
     }
 }

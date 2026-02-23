@@ -24,14 +24,11 @@ export async function POST(request: NextRequest) {
     );
 
     return ResponseApi.success(response.data, HttpStatusCode.Ok);
-  } catch (error) {
+  } catch (error: any) {
     if (process.env.NODE_ENV === "development") {
       console.error("Forgot Password API Error:", error);
     }
 
-    return ResponseApi.error(
-      API_MESSAGE.SYSTEM_TRY_AGAIN,
-      HttpStatusCode.BadRequest,
-    );
+    return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
   }
 }

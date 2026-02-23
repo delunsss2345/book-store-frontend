@@ -12,10 +12,10 @@ export async function GET(
         const { slug } = await ctx.params;
         const response = await api.get<GetBookDetailResponse>(`catalog/books/slug/${slug}?lang=vi`);
         return ResponseApi.success(response.data);
-    } catch (error) {
+    } catch (error: any) {
         if (process.env.NODE_ENV === "development") {
             console.error("Get book detail API Error:", error);
         }
-        return ResponseApi.error(API_MESSAGE.SYSTEM_TRY_AGAIN, HttpStatusCode.BadRequest);
+        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
     }
 }

@@ -9,13 +9,11 @@ export async function GET(request: NextRequest) {
     try {
         const response = await api.get<WishResponse>("wish");
         return ResponseApi.success(response.data, HttpStatusCode.Ok);
-    } catch (error) {
+    } catch (error: any) {
         if (process.env.NODE_ENV === 'development') {
             console.error("Wish GET API Error:", error);
         }
-        return ResponseApi.error(
-            error?.message ?? API_MESSAGE.SYSTEM_TRY_AGAIN, HttpStatusCode.BadRequest
-        );
+        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
     }
 }
 
@@ -23,12 +21,10 @@ export async function DELETE(request: NextRequest) {
     try {
         const response = await api.delete<WishResponse>("wish");
         return ResponseApi.success(response.data, HttpStatusCode.Ok);
-    } catch (error) {
+    } catch (error: any) {
         if (process.env.NODE_ENV === 'development') {
             console.error("Wish DELETE API Error:", error);
         }
-        return ResponseApi.error(
-            error?.message ?? API_MESSAGE.SYSTEM_TRY_AGAIN, HttpStatusCode.BadRequest
-        );
+        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
     }
 }
