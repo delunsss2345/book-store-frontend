@@ -29,7 +29,7 @@ import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
-export function AddressForm() {
+export function AddressForm({ onToggle }: { onToggle: () => void }) {
   const { t } = useTranslation();
   const currentUser = useAuthStore(selectorCurrentUser);
   const form = useForm<CreateUserAddressInput>({
@@ -49,7 +49,10 @@ export function AddressForm() {
   const onSubmit = async (values: CreateUserAddressInput) => {
     toast.promise(createAddress(values), {
       loading: t("profile.page.form.loading"),
-      success: t("profile.page.form.success"),
+      success: () => {
+        form.reset();
+        return t("profile.page.form.success");
+      },
       error: t("profile.page.form.error"),
     });
   };
@@ -219,7 +222,7 @@ export function AddressForm() {
             <Button disabled={isLoadingCreateAddress} type="submit">
               {t("profile.page.form.submit")}
             </Button>
-            <Button type="button" variant="ghost">
+            <Button onClick={onToggle} type="button" variant="ghost">
               {t("profile.page.form.cancel")}
             </Button>
           </div>

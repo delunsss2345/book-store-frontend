@@ -227,7 +227,11 @@ const ProfilePage = () => {
           />
 
           <CardContent className="space-y-5 pt-6">
-            {isAddingAddress ? <AddressForm /> : null}
+            {isAddingAddress ? (
+              <AddressForm
+                onToggle={() => setIsAddingAddress(!isAddingAddress)}
+              />
+            ) : null}
 
             {addresses?.length === 0 ? (
               <AddressEmptyState t={t} />
