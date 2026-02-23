@@ -3,6 +3,5 @@ import { useMutation } from "@tanstack/react-query";
 
 export const useDeleteUserAddressMutation = () =>
   useMutation({
-    mutationFn: ({ userId, id }: { userId: string; id: string }) =>
-      userAddressApi.delete(userId, id),
+    mutationFn: ({ id }: { id: string }) => userAddressApi.delete(id),
   });

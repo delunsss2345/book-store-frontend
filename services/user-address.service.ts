@@ -9,18 +9,18 @@ import type {
 import { http } from "@/utils/http";
 
 export const userAddressApi = {
-  getByUser: (userId: string) =>
-    http.get<UserAddressListResponse>(`/user-address/user/${userId}`),
+  getByUser: () =>
+    http.get<UserAddressListResponse>(`/user-address/user`),
 
-  create: (userId: string, payload: CreateUserAddressDTO) =>
-    http.post<UserAddressItemResponse>(`/user-address/user/${userId}`, payload),
+  create: (payload: CreateUserAddressDTO) =>
+    http.post<UserAddressItemResponse>(`/user-address/user`, payload),
 
-  update: (userId: string, id: string, payload: UpdateUserAddressDTO) =>
-    http.patch<UserAddressItemResponse>(`/user-address/user/${userId}/${id}`, payload),
+  update: (id: string, payload: UpdateUserAddressDTO) =>
+    http.patch<UserAddressItemResponse>(`/user-address/user/${id}`, payload),
 
-  setDefault: (userId: string, id: string) =>
-    http.patch<UserAddressItemResponse>(`/user-address/user/${userId}/${id}/set-default`, {}),
+  setDefault: (id: string) =>
+    http.patch<UserAddressItemResponse>(`/user-address/user/${id}/set-default`, {}),
 
-  delete: (userId: string, id: string) =>
-    http.del(`/user-address/user/${userId}/${id}`),
+  delete: (id: string) =>
+    http.del(`/user-address/user/${id}`),
 };

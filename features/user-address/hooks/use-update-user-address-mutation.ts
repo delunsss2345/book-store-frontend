@@ -3,6 +3,6 @@ import { useMutation } from "@tanstack/react-query";
 
 export const useUpdateUserAddressMutation = () =>
   useMutation({
-    mutationFn: ({ userId, id, ...payload }: { userId: string; id: string } & Parameters<typeof userAddressApi.update>[2]) =>
-      userAddressApi.update(userId, id, payload),
+    mutationFn: ({ id, ...payload }: { id: string } & Parameters<typeof userAddressApi.update>[1]) =>
+      userAddressApi.update(id, payload),
   });

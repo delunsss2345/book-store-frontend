@@ -3,6 +3,5 @@ import { useMutation } from "@tanstack/react-query";
 
 export const useSetDefaultAddressMutation = () =>
   useMutation({
-    mutationFn: ({ userId, id }: { userId: string; id: string }) =>
-      userAddressApi.setDefault(userId, id),
+    mutationFn: ({ id }: { id: string }) => userAddressApi.setDefault(id),
   });

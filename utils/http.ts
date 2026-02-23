@@ -1,4 +1,5 @@
 import { envConfig } from "@/config/env.config";
+import { useAuthStore } from "@/features/auth";
 import axios,
 {
   type AxiosInstance,
@@ -54,7 +55,7 @@ axiosInstance.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      await axiosInstance.post("/auth/refresh-token");
+      await axiosInstance.post("auth/refresh-token");
       processQueue(null);
       return axiosInstance(originalRequest);
     } catch (refreshError) {
@@ -62,10 +63,6 @@ axiosInstance.interceptors.response.use(
 
       // Clear auth store & redirect to login
       if (typeof window !== "undefined") {
-        const { useAuthStore } = await import(
-          "@/features/auth/store/auth.store"
-        );
-        useAuthStore.getState().clearSession();
         window.location.href = "/login";
       }
 
@@ -76,7 +73,6 @@ axiosInstance.interceptors.response.use(
   },
 );
 
-// ─── HTTP wrapper class ──────────────────────────────────────────
 class AxiosHttp {
   private _send = async <T = unknown>(
     method: "get" | "post" | "put" | "delete" | "patch",
@@ -93,6 +89,7 @@ class AxiosHttp {
       });
       return response.data;
     } catch (error) {
+      console.log(error) ;
       throw error;
     }
   };

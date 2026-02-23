@@ -34,6 +34,7 @@ import { AddressList } from "./_components/AddressList";
 import { AddressHeader } from "./_components/AddressHeader";
 import { ProfileOverview } from "./_components/ProfileOverview";
 import { AddressStats } from "./_components/AddressStats";
+import { useQueryAddress } from "@/features/user-address/hooks/use-query-address-mutation";
 
 const ADDRESS_TYPES = ["HOME", "OFFICE", "OTHER"] as const;
 
@@ -95,9 +96,10 @@ const formatAddress = (address: AddressItem) =>
 const ProfilePage = () => {
   const { t } = useTranslator();
   const currentUser = useAuthStore(selectorCurrentUser);
+  const { data: addresses } = useQueryAddress();
+
   const { mutateAsync: createUserAddress } = useCreateUserAddressMutation();
 
-  const [addresses, setAddresses] = useState<AddressItem[]>([]);
   const [isAddingAddress, setIsAddingAddress] = useState(false);
   const [addressForm, setAddressForm] = useState<AddressFormState>(() =>
     getEmptyAddressForm(),
@@ -111,10 +113,10 @@ const ProfilePage = () => {
     return formattedName || "N/A";
   }, [currentUser]);
 
-  const defaultAddress = useMemo(
-    () => addresses.find((address) => address.isDefault) ?? null,
-    [addresses],
-  );
+  // const defaultAddress = useMemo(
+  //   () => addresses.find((address) => address.isDefault) ?? null,
+  //   [addresses],
+  // );
 
   const handleInputChange =
     (field: keyof Omit<AddressFormState, "addressType" | "isDefault">) =>
@@ -152,36 +154,36 @@ const ProfilePage = () => {
       city: addressForm.city.trim(),
     };
 
-    setAddresses((prev) => {
-      const shouldBeDefault = addressForm.isDefault || prev.length === 0;
-      const addressToInsert: AddressItem = {
-        ...nextAddress,
-        isDefault: shouldBeDefault,
-      };
+    // setAddresses((prev) => {
+    //   const shouldBeDefault = addressForm.isDefault || prev.length === 0;
+    //   const addressToInsert: AddressItem = {
+    //     ...nextAddress,
+    //     isDefault: shouldBeDefault,
+    //   };
 
-      if (!shouldBeDefault) {
-        return [...prev, addressToInsert];
-      }
+    //   if (!shouldBeDefault) {
+    //     return [...prev, addressToInsert];
+    //   }
 
-      return [
-        ...prev.map((address) => ({ ...address, isDefault: false })),
-        addressToInsert,
-      ];
-    });
+    //   return [
+    //     ...prev.map((address) => ({ ...address, isDefault: false })),
+    //     addressToInsert,
+    //   ];
+    // });
 
     setAddressForm(getEmptyAddressForm());
     setFormError(null);
     setIsAddingAddress(false);
   };
 
-  const handleSetDefaultAddress = (addressId: string) => {
-    setAddresses((prev) =>
-      prev.map((address) => ({
-        ...address,
-        isDefault: address.id === addressId,
-      })),
-    );
-  };
+  // const handleSetDefaultAddress = (addressId: string) => {
+  //   setAddresses((prev) =>
+  //     prev.map((address) => ({
+  //       ...address,
+  //       isDefault: address.id === addressId,
+  //     })),
+  //   );
+  // };
 
   const handleCancelAddAddress = () => {
     setAddressForm(getEmptyAddressForm());
@@ -210,8 +212,8 @@ const ProfilePage = () => {
           />
 
           <AddressStats
-            totalAddresses={addresses.length}
-            defaultAddress={defaultAddress}
+            totalAddresses={addresses?.length ?? 0}
+            // defaultAddress={defaultAddress}
             formatAddress={formatAddress}
             t={t}
           />
@@ -227,14 +229,14 @@ const ProfilePage = () => {
           <CardContent className="space-y-5 pt-6">
             {isAddingAddress ? <AddressForm /> : null}
 
-            {addresses.length === 0 ? (
+            {addresses?.length === 0 ? (
               <AddressEmptyState t={t} />
             ) : (
               <AddressList
                 t={t}
                 addresses={addresses}
                 formatAddress={formatAddress}
-                onSetDefault={handleSetDefaultAddress}
+                // onSetDefault={handleSetDefaultAddress}
               />
             )}
           </CardContent>

@@ -1,6 +1,7 @@
 import { FormMessageI18n } from "@/components/common/FormMessageI18n";
 import { Button } from "@/components/ui/button";
 import {
+  Form,
   FormControl,
   FormField,
   FormItem,
@@ -15,38 +16,42 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useAuthStore } from "@/features/auth";
+import { selectorCurrentUser } from "@/features/auth/selector/auth.selector";
+import { useCreateUserAddressMutation } from "@/features/user-address";
 import {
   ADDRESS_TYPES,
   CreateUserAddressInput,
   CreateUserAddressSchema,
 } from "@/validation/user-address/userAddressValidation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 
 export function AddressForm() {
   const { t } = useTranslation();
-
-  // 1. Khởi tạo form
+  const currentUser = useAuthStore(selectorCurrentUser);
   const form = useForm<CreateUserAddressInput>({
     resolver: zodResolver(CreateUserAddressSchema),
     defaultValues: {
       addressType: "HOME",
-      recipientName: "",
-      phoneNumber: "",
+      recipientName: currentUser?.firstName + " " + currentUser?.lastName,
+      phoneNumber: currentUser?.phoneNumber,
       addressDetail: "",
       ward: "",
       district: "",
       city: "",
     },
   });
-
-  // 2. Handler khi submit
-  const onSubmit = (values: CreateUserAddressInput) => {
-    console.log("Dữ liệu form:", values);
-    // Gọi hàm xử lý logic thêm địa chỉ của bạn ở đây
-    // handleAddAddress(values);
+  const { mutateAsync: createAddress, isPending: isLoadingCreateAddress } =
+    useCreateUserAddressMutation();
+  const onSubmit = async (values: CreateUserAddressInput) => {
+    toast.promise(createAddress(values), {
+      loading: t("profile.page.form.loading"),
+      success: t("profile.page.form.success"),
+      error: t("profile.page.form.error"),
+    });
   };
 
   return (
@@ -65,7 +70,6 @@ export function AddressForm() {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          {/* Address Type - Select */}
           <FormField
             control={form.control}
             name="addressType"
@@ -79,6 +83,7 @@ export function AddressForm() {
                   <FormControl>
                     <SelectTrigger className="mt-1.5 w-full">
                       <SelectValue
+                        aria-modal={false}
                         placeholder={t("profile.page.form.addressTypeLabel")}
                       />
                     </SelectTrigger>
@@ -113,7 +118,6 @@ export function AddressForm() {
             )}
           />
 
-          {/* Phone Number */}
           <FormField
             control={form.control}
             name="phoneNumber"
@@ -128,7 +132,6 @@ export function AddressForm() {
             )}
           />
 
-          {/* Address Detail */}
           <FormField
             control={form.control}
             name="addressDetail"
@@ -213,7 +216,9 @@ export function AddressForm() {
 
           {/* Buttons */}
           <div className="sm:col-span-2 flex flex-wrap gap-2">
-            <Button type="submit">{t("profile.page.form.submit")}</Button>
+            <Button disabled={isLoadingCreateAddress} type="submit">
+              {t("profile.page.form.submit")}
+            </Button>
             <Button type="button" variant="ghost">
               {t("profile.page.form.cancel")}
             </Button>

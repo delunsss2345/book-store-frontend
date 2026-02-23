@@ -14,10 +14,9 @@ export const AddressList = ({
   formatAddress,
   onSetDefault,
 }: AddressListProps) => {
-  if (addresses.length === 0) {
+  if (addresses?.length === 0 || !addresses) {
     return <AddressEmptyState t={t} />;
   }
-
   return (
     <div className="grid gap-4 lg:grid-cols-2">
       {addresses.map((address) => (
