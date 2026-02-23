@@ -49,6 +49,7 @@ async function request<T>(method: string, path: string, opt: ApiOptions = {}): P
     const cookieStore = await cookies();
     const guestSessionId = cookieStore.get("guestSessionId")?.value;
     const accessToken = cookieStore.get("accessToken")?.value;
+    const language = cookieStore.get("appLanguage")?.value ?? 'vi';
 
     const url = buildUrl(baseURL, path, query);
     const header = new Headers(headers);
@@ -63,6 +64,10 @@ async function request<T>(method: string, path: string, opt: ApiOptions = {}): P
 
     if (accessToken && !header.has("authorization")) {
         header.set("authorization", `Bearer ${accessToken}`);
+    }
+
+    if(language){
+        header.set("x-app-lang", language)
     }
 
     let res: Response;

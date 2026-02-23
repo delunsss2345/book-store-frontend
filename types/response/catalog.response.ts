@@ -136,7 +136,6 @@ export type BookVariant = CatalogBookVariantDto;
 export type BookCategory = CatalogCategoryDto;
 export type BookDetail = CatalogBookDetailDto;
 
-// --- API Responses ---
 
 export type CatalogHomeResponse = ApiResponse<CatalogHomeData>;
 export type CatalogBookListResponse = ApiResponse<CatalogBookListData>;

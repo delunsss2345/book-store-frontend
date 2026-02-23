@@ -14,8 +14,8 @@ import type {
 import { http } from "@/utils/http";
 
 export const catalogApi = {
-  getHome: (query?: CatalogHomeQuery) =>
-    http.get<CatalogHomeResponse | HomeResponse>("catalog/home", { params: query }),
+  getHome: () =>
+    http.get<HomeResponse>("catalog/home"),
 
   getBooks: (query?: CatalogBookListQuery) =>
     http.get<CatalogBookListResponse>("catalog/books", { params: query }),

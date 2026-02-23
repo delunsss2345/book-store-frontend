@@ -1,6 +1,14 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtDecode } from "jwt-decode";     
+import createMiddleware from 'next-intl/middleware';
+import { DEFAULT_LOCALE, Locale, SUPPORTED_LOCALES } from "./lib/i18n/config";
+
+export default createMiddleware({
+  locales : SUPPORTED_LOCALES,
+  defaultLocale : DEFAULT_LOCALE,
+  localePrefix: 'always'
+});
 
 type JwtPayload = {
     sub: string;
@@ -10,6 +18,10 @@ type JwtPayload = {
 
 export async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
+    const locale = pathname.split("/")[1];
+    if(!SUPPORTED_LOCALES.includes(locale as Locale)) {
+        return NextResponse.redirect(new URL("/vi", request.url));
+    }
     const token = request?.headers.get("Authorization")?.split(" ")[1] || "" ; 
     let decode : JwtPayload | null = null;
     if(token) {
@@ -30,5 +42,6 @@ export async function proxy(request: NextRequest) {
     return response;
 }
 export const config = {
-    matcher: ["/dashboard/:path*", "/admin/:path*"],
+    matcher: ["/dashboard/:path*", "/admin/:path*", '/', '/(vi|en)/:path*'],
 };
+

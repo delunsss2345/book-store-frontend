@@ -6,11 +6,11 @@ import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { useEffect } from "react";
 
-type PublicRouteProps = {
+type AuthGuardProps = {
   children: React.ReactNode;
 };
 
-const PublicRoute = ({ children }: PublicRouteProps) => {
+const AuthGuard = ({ children }: AuthGuardProps) => {
   const currentUser = useAuthStore(selectorCurrentUser);
   const router = useRouter();
   const locale = useLocale();
@@ -28,4 +28,4 @@ const PublicRoute = ({ children }: PublicRouteProps) => {
   return <>{children}</>;
 };
 
-export default PublicRoute;
+export default AuthGuard;

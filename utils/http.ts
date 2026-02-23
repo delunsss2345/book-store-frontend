@@ -1,12 +1,9 @@
 import { envConfig } from "@/config/env.config";
-import type { PromiseHandlers } from "@/types/lib/axios";
-import type { RefreshTokenResponseData } from "@/types/response/auth.response";
 import axios,
 {
-  AxiosHeaders,
   type AxiosInstance,
   type AxiosRequestConfig,
-  type AxiosResponse,
+  type InternalAxiosRequestConfig,
 } from "axios";
 
 const baseURL = envConfig.NEXT_PUBLIC_BASE_API ?? "";
@@ -15,7 +12,71 @@ export const axiosInstance: AxiosInstance = axios.create({
   baseURL,
 });
 
-// != T mặc định là any
+
+let isRefreshing = false;
+let failedQueue: { resolve: (value?: unknown) => void; reject: (reason?: unknown) => void }[] = [];
+
+const processQueue = (error: unknown | null) => {
+  failedQueue.forEach(({ resolve, reject }) => {
+    if (error) {
+      reject(error);
+    } else {
+      resolve();
+    }
+  });
+  failedQueue = [];
+};
+
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config as InternalAxiosRequestConfig & {
+      _retry?: boolean;
+    };
+
+    // Chỉ xử lý 401 và không phải request refresh-token (tránh loop)
+    if (
+      error.response?.status !== 401 ||
+      originalRequest._retry ||
+      originalRequest.url?.includes("/auth/refresh-token")
+    ) {
+      return Promise.reject(error);
+    }
+
+    // Nếu đang refresh → xếp hàng chờ
+    if (isRefreshing) {
+      return new Promise((resolve, reject) => {
+        failedQueue.push({ resolve, reject });
+      }).then(() => axiosInstance(originalRequest));
+    }
+
+    originalRequest._retry = true;
+    isRefreshing = true;
+
+    try {
+      await axiosInstance.post("/auth/refresh-token");
+      processQueue(null);
+      return axiosInstance(originalRequest);
+    } catch (refreshError) {
+      processQueue(refreshError);
+
+      // Clear auth store & redirect to login
+      if (typeof window !== "undefined") {
+        const { useAuthStore } = await import(
+          "@/features/auth/store/auth.store"
+        );
+        useAuthStore.getState().clearSession();
+        window.location.href = "/login";
+      }
+
+      return Promise.reject(refreshError);
+    } finally {
+      isRefreshing = false;
+    }
+  },
+);
+
+// ─── HTTP wrapper class ──────────────────────────────────────────
 class AxiosHttp {
   private _send = async <T = unknown>(
     method: "get" | "post" | "put" | "delete" | "patch",
