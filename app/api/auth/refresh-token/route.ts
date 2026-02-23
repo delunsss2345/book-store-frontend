@@ -27,7 +27,6 @@ export async function POST() {
       ...COOKIE_OPTIONS,
       maxAge: COOKIE_REFRESH_TOKEN_MAX_AGE,
     });
-
     return ResponseApi.success(response.data, HttpStatusCode.Ok);
   } catch (error) {
     if (process.env.NODE_ENV === "development") {
@@ -36,7 +35,7 @@ export async function POST() {
 
     return ResponseApi.error(
       API_MESSAGE.SYSTEM_TRY_AGAIN,
-      HttpStatusCode.BadRequest,
+      HttpStatusCode.Unauthorized,
     );
   }
 }

@@ -81,11 +81,10 @@ const refreshToken = async () => {
     const result = await refreshAxiosInstance.post<RefreshRouteResponse>(
       "/auth/refresh-token",
     );
-
     const authHeader =
       result.headers?.authorization ?? result.headers?.Authorization;
     const tokenFromHeader = extractBearerToken(authHeader);
-    const payload = result.data?.data ?? result.data;
+    const payload = result.data?.data ;
     const tokenFromBody = payload?.accessToken;
     const accessToken = tokenFromHeader ?? tokenFromBody ?? null;
 
@@ -184,7 +183,6 @@ class AxiosHttp {
         data,
         ...config,
       });
-
       return response.data;
     } catch (error) {
       throw error;

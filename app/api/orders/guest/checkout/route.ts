@@ -22,7 +22,6 @@ export async function POST(request: NextRequest) {
                 Cookie: guestSessionId ? `guestSessionId=${guestSessionId}` : "",
             },
         });
-        console.log(response) ;
         return ResponseApi.success(response.data, HttpStatusCode.Ok);
     } catch (error) {
         if (process.env.NODE_ENV === 'development') {

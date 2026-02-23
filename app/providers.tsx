@@ -1,11 +1,13 @@
 "use client";
 
+import { useAuthStore } from "@/features/auth";
+import { useGetMeMutation } from "@/features/auth/hooks/use-get-me-mutation";
 import { createI18nInstance } from "@/i18n";
 import { normalizeLocale, type Locale } from "@/lib/i18n/config";
 import { queryClient } from "@/lib/query-client";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { I18nextProvider } from "react-i18next";
 import { Toaster } from "sonner";
 

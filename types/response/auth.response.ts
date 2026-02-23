@@ -68,3 +68,4 @@ export type ChangePasswordResponse = ApiResponse<AuthActionResponseData>;
 export type ResetPasswordResponse = ApiResponse<AuthActionResponseData>;
 export type ResetPasswordValidateResponse = ApiResponse<ResetPasswordValidateResponseData>;
 export type LogoutResponse = ApiResponse<{ success: boolean }>;
+export type GetMeResponse = ApiResponse<UserResponse>;

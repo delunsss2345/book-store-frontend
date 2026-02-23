@@ -1,10 +1,12 @@
 import { envConfig } from "@/config/env.config";
+import { HttpStatusCode } from "axios";
 import "server-only";
 const BACKEND_URL = envConfig.BACKEND_API_URL;
 
 export class HttpError<T = unknown> extends Error {
     status: number;
     data?: T;
+    
     constructor(status: number, message: string, data?: T) {
         super(message);
         this.name = "HttpError";
@@ -70,6 +72,9 @@ async function request<T>(method: string, path: string, opt: ApiOptions = {}): P
     const isJson = contentType.includes("application/json");
     const data: { message?: string, error?: string } = isJson ? await res.json().catch(() => null) : await res.text().catch(() => "");
     if (!res.ok) {
+        if(res.status === HttpStatusCode.Unauthorized){
+            throw new HttpError(res.status, "Unauthorized", data);
+        }
         const msg =
             (isJson && data && (data.message || data.error)) ? (data.message || data.error || 'InternalServerError') : `HTTP ${res.status ?? 505}`;
         throw new HttpError(res.status, msg, data);
