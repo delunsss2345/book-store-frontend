@@ -1,3 +1,4 @@
+import { queryClient } from "@/lib/query-client";
 import { userAddressApi } from "@/services/user-address.service";
 import { useMutation } from "@tanstack/react-query";
 

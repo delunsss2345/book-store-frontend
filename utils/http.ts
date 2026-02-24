@@ -1,5 +1,6 @@
 import { envConfig } from "@/config/env.config";
 import { useAuthStore } from "@/features/auth";
+import { selectorClearSession } from "@/features/auth/selector/auth.selector";
 import axios,
 {
   type AxiosInstance,
@@ -13,6 +14,9 @@ export const axiosInstance: AxiosInstance = axios.create({
   baseURL,
 });
 
+export const refreshInstance : AxiosInstance = axios.create({
+  baseURL
+})
 
 let isRefreshing = false;
 let failedQueue: { resolve: (value?: unknown) => void; reject: (reason?: unknown) => void }[] = [];
@@ -34,6 +38,7 @@ axiosInstance.interceptors.response.use(
     const originalRequest = error.config as InternalAxiosRequestConfig & {
       _retry?: boolean;
     };
+    console.log(error) ;
 
     // Chỉ xử lý 401 và không phải request refresh-token (tránh loop)
     if (
@@ -55,14 +60,16 @@ axiosInstance.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      await axiosInstance.post("auth/refresh-token");
+      const response = await refreshInstance.post("auth/refresh-token");
+      console.log(response) ;
       processQueue(null);
       return axiosInstance(originalRequest);
     } catch (refreshError) {
       processQueue(refreshError);
 
-      // Clear auth store & redirect to login
       if (typeof window !== "undefined") {
+        localStorage.clear()
+        
         window.location.href = "/login";
       }
 

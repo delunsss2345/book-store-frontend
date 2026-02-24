@@ -1,8 +1,12 @@
+import {
+  UserAddressData,
+  UserAddressItemResponse,
+} from "@/types/response/user-address.response";
 import { AddressCard } from "../AddressCard";
 import { AddressEmptyState } from "../AddressEmptyState";
 
 interface AddressListProps {
-  addresses: any[];
+  addresses: UserAddressData[];
   t: any;
   formatAddress: (address: any) => string;
   onSetDefault: (id: string) => void;

@@ -1,33 +1,14 @@
 "use client";
 
-import { Mail, MapPin, Phone, Plus, User } from "lucide-react";
 import type { ChangeEvent, FormEvent } from "react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Card, CardContent } from "@/components/ui/card";
+
 import { selectorCurrentUser } from "@/features/auth/selector/auth.selector";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import useTranslator from "@/hooks/use-translator";
-import { cn } from "@/lib/utils";
-import { useCreateUserAddressMutation } from "@/features/user-address";
+
 import { AddressForm } from "./_components/AddressFrom";
 import { AddressEmptyState } from "./_components/AddressEmptyState";
 import { AddressList } from "./_components/AddressList";
@@ -35,6 +16,7 @@ import { AddressHeader } from "./_components/AddressHeader";
 import { ProfileOverview } from "./_components/ProfileOverview";
 import { AddressStats } from "./_components/AddressStats";
 import { useQueryAddress } from "@/features/user-address/hooks/use-query-address-mutation";
+import { useUserAddressStore } from "@/features/user-address/store/user-address.store";
 
 const ADDRESS_TYPES = ["HOME", "OFFICE", "OTHER"] as const;
 
@@ -97,8 +79,6 @@ const ProfilePage = () => {
   const { t } = useTranslator();
   const currentUser = useAuthStore(selectorCurrentUser);
   const { data: addresses } = useQueryAddress();
-
-  const { mutateAsync: createUserAddress } = useCreateUserAddressMutation();
 
   const [isAddingAddress, setIsAddingAddress] = useState(false);
   const [addressForm, setAddressForm] = useState<AddressFormState>(() =>
@@ -176,14 +156,9 @@ const ProfilePage = () => {
     setIsAddingAddress(false);
   };
 
-  // const handleSetDefaultAddress = (addressId: string) => {
-  //   setAddresses((prev) =>
-  //     prev.map((address) => ({
-  //       ...address,
-  //       isDefault: address.id === addressId,
-  //     })),
-  //   );
-  // };
+  const handleSetDefaultAddress = (addressId: string) => {
+    console.log(addressId);
+  };
 
   const handleCancelAddAddress = () => {
     setAddressForm(getEmptyAddressForm());
@@ -238,9 +213,9 @@ const ProfilePage = () => {
             ) : (
               <AddressList
                 t={t}
-                addresses={addresses}
+                addresses={addresses ?? []}
                 formatAddress={formatAddress}
-                // onSetDefault={handleSetDefaultAddress}
+                onSetDefault={handleSetDefaultAddress}
               />
             )}
           </CardContent>
