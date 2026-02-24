@@ -7,7 +7,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { sidebarData } from "../../data/sidebar-data";
+import { sidebarData } from "../../dashboard/data/sidebar-data";
 
 export function AppSidebar() {
   return (
