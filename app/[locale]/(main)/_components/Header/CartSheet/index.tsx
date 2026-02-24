@@ -1,9 +1,7 @@
 "use client";
 
 import { Minus, Plus, ShoppingBag } from "lucide-react";
-import Link from "next/link";
 import * as React from "react";
-
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -13,10 +11,15 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { useCartQuery, useRemoveItemMutation, useUpdateQtyMutation } from "@/features/cart/hooks";
+import {
+  useCartQuery,
+  useRemoveItemMutation,
+  useUpdateQtyMutation,
+} from "@/features/cart/hooks";
 import useTranslator from "@/hooks/use-translator";
 import { CartItem } from "@/types/response/cart.response";
-
+import { useLocale } from "next-intl";
+import Link from "next/link";
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
@@ -24,6 +27,7 @@ const currency = new Intl.NumberFormat("en-US", {
 });
 
 const CartSheet = () => {
+  const local = useLocale();
   const { t } = useTranslator();
   const { data: cart } = useCartQuery();
   const updateQtyMutation = useUpdateQtyMutation();
@@ -66,18 +70,22 @@ const CartSheet = () => {
               items.map((item: CartItem, idx: number) => {
                 const id = item.id ?? item.bookVariantId;
 
-                const title =
-                  item.variant.book.translations[0].title;
-                const availability = (item.variant.stock ?? 0) > 0 ? "In Stock" : "Out of Stock";
+                const title = item.variant.book.translations[0].title;
+                const availability =
+                  (item.variant.stock ?? 0) > 0 ? "In Stock" : "Out of Stock";
 
                 const price = item.variant.price;
-                const qty = item.quantity
+                const qty = item.quantity;
 
                 return (
                   <React.Fragment key={id}>
                     <div className="flex gap-3 sm:gap-4">
                       <div className="h-[106px] w-[70px] shrink-0 overflow-hidden rounded-sm border bg-muted/30">
-                        <img src={item.variant.book.coverImageUrl ?? ''} alt={title} className="h-full w-full object-cover" />
+                        <img
+                          src={item.variant.book.coverImageUrl ?? ""}
+                          alt={title}
+                          className="h-full w-full object-cover"
+                        />
                       </div>
 
                       <div className="flex-1 space-y-2">
@@ -95,7 +103,12 @@ const CartSheet = () => {
                             variant="outline"
                             size="icon"
                             className="h-8 w-8 rounded-sm"
-                            onClick={() => updateQtyMutation.mutate({ id: String(id), delta: -1 })}
+                            onClick={() =>
+                              updateQtyMutation.mutate({
+                                id: String(id),
+                                delta: -1,
+                              })
+                            }
                             disabled={updateQtyMutation.isPending}
                             aria-label="Decrease quantity"
                           >
@@ -110,7 +123,12 @@ const CartSheet = () => {
                             variant="outline"
                             size="icon"
                             className="h-8 w-8 rounded-sm"
-                            onClick={() => updateQtyMutation.mutate({ id: String(id), delta: 1 })}
+                            onClick={() =>
+                              updateQtyMutation.mutate({
+                                id: String(id),
+                                delta: 1,
+                              })
+                            }
                             disabled={updateQtyMutation.isPending}
                             aria-label="Increase quantity"
                           >
@@ -153,7 +171,7 @@ const CartSheet = () => {
               variant="outline"
               className="h-10 rounded-sm px-6 text-sm sm:text-base"
             >
-              <Link href="/cart">Go to Shopping Cart</Link>
+              <Link href={`/${local}/cart`}>Go to Shopping Cart</Link>
             </Button>
           </div>
         </div>

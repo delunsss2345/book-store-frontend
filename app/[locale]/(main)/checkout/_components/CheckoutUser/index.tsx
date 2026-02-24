@@ -13,8 +13,26 @@ import { ShippingMethodCard } from "../ShippingMethodCard";
 import { CheckoutFooter } from "../CheckoutFooter";
 import { PaymentCheckout } from "../PaymentCheckout";
 import { MapPin, Plus } from "lucide-react";
+import { useQueryAddress } from "@/features/user-address/hooks/use-query-address-mutation";
+import SelectItemAddress from "./_components/SelectItemAddress";
+import { useEffect, useMemo, useState } from "react";
 
 export default function CheckoutUser() {
+  const { data: addresses, isPending } = useQueryAddress();
+  const [selectedAddressId, setSelectedAddressId] = useState<
+    string | undefined
+  >();
+
+  const defaultAddress = useMemo(
+    () => addresses?.find((a) => a.isDefault),
+    [addresses],
+  );
+  useEffect(() => {
+    if (defaultAddress?.id) {
+      setSelectedAddressId(defaultAddress.id);
+    }
+  }, [defaultAddress]);
+
   return (
     <div className="space-y-12">
       <CheckoutHeader title="Thanh toán" />
@@ -36,35 +54,21 @@ export default function CheckoutUser() {
           </Button>
         </div>
 
-        <Select defaultValue="addr-1">
+        <Select value={selectedAddressId} onValueChange={setSelectedAddressId}>
           <SelectTrigger className="flex w-full h-auto items-center justify-between rounded-2xl border-2 border-zinc-900 bg-white px-5 py-10 text-left shadow-sm transition-all">
             <SelectValue />
           </SelectTrigger>
 
           <SelectContent className="rounded-xl border-zinc-200 shadow-xl">
-            <SelectItem
-              value="addr-1"
-              className="cursor-pointer border-b p-4 focus:bg-zinc-50 last:border-0"
-            >
-              <div className="flex flex-col gap-0.5">
-                <span className="font-bold">Nguyễn Văn A (Mặc định)</span>
-                <span className="text-xs italic text-zinc-500">
-                  Số 123 Đường ABC, Quận Tân Bình, TP. HCM
-                </span>
+            {isPending ? (
+              <div className="flex items-center justify-center">
+                Đang tải...
               </div>
-            </SelectItem>
-
-            <SelectItem
-              value="addr-2"
-              className="cursor-pointer p-4 focus:bg-zinc-50"
-            >
-              <div className="flex flex-col gap-0.5">
-                <span className="font-bold">Văn phòng Công ty</span>
-                <span className="text-xs italic text-zinc-500">
-                  Tòa nhà Landmark 81, Quận Bình Thạnh, TP. HCM
-                </span>
-              </div>
-            </SelectItem>
+            ) : (
+              addresses?.map((address) => (
+                <SelectItemAddress key={address.id} address={address} />
+              ))
+            )}
           </SelectContent>
         </Select>
       </section>

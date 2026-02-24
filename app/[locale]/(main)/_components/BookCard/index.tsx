@@ -123,10 +123,11 @@ function CardInner({
           type="button"
           onClick={(e) => {
             e.preventDefault();
+            e.stopPropagation();
             mutationAddToCardItem.mutateAsync({ bookVariantId });
           }}
           className={cn(
-            "w-full py-3 px-6 text-[12px] font-bold tracking-[0.15em] uppercase transition-all duration-300",
+            "cursor-pointer w-full py-3 px-6 text-[12px] font-bold tracking-[0.15em] uppercase transition-all duration-300",
             "border border-neutral-900 bg-transparent text-neutral-900",
             "hover:bg-neutral-900 hover:text-white",
             "translate-y-4 opacity-0 group-hover/card:translate-y-0 group-hover/card:opacity-100",

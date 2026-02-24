@@ -19,8 +19,10 @@ type JwtPayload = {
 export async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
     const locale = pathname.split("/")[1];
-    if(!SUPPORTED_LOCALES.includes(locale as Locale)) {
-        return NextResponse.redirect(new URL("/vi", request.url));
+   if (!SUPPORTED_LOCALES.includes(locale as Locale)) {
+        return NextResponse.redirect(
+            new URL(`/${DEFAULT_LOCALE}${pathname}`, request.url)
+        );
     }
     const token = request?.headers.get("Authorization")?.split(" ")[1] || "" ; 
     let decode : JwtPayload | null = null;
