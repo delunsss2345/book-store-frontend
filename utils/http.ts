@@ -35,10 +35,10 @@ const processQueue = (error: unknown | null) => {
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
+
     const originalRequest = error.config as InternalAxiosRequestConfig & {
       _retry?: boolean;
     };
-    console.log(error) ;
 
     // Chỉ xử lý 401 và không phải request refresh-token (tránh loop)
     if (
@@ -60,16 +60,15 @@ axiosInstance.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      const response = await refreshInstance.post("auth/refresh-token");
-      console.log(response) ;
+      await refreshInstance.post("auth/refresh-token");
       processQueue(null);
+      // retry request (gọi là tất cả request lỗi cũ)
       return axiosInstance(originalRequest);
     } catch (refreshError) {
       processQueue(refreshError);
 
       if (typeof window !== "undefined") {
         localStorage.clear()
-        
         window.location.href = "/login";
       }
 

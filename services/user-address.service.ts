@@ -5,6 +5,7 @@ import type {
 import type {
   UserAddressListResponse,
   UserAddressItemResponse,
+  UserDeleteAddressResponse,
 } from "@/types/response/user-address.response";
 import { http } from "@/utils/http";
 
@@ -22,5 +23,5 @@ export const userAddressApi = {
     http.patch<UserAddressItemResponse>(`/user-address/user/${id}/set-default`, {}),
 
   delete: (id: string) =>
-    http.del(`/user-address/user/${id}`),
+    http.del<UserDeleteAddressResponse>(`/user-address/user/${id}`),
 };

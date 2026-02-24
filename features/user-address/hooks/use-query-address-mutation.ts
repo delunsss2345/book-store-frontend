@@ -5,6 +5,9 @@ import { useQuery }
 export const useQueryAddress = () => {
   return useQuery({
     queryKey: ["addresses"],
-    queryFn:  userAddressApi.getByUser,
+    queryFn: async () => {
+      const response = await userAddressApi.getByUser();
+      return response.data;
+    },
   })
 }

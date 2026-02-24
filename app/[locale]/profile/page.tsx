@@ -16,7 +16,10 @@ import { AddressHeader } from "./_components/AddressHeader";
 import { ProfileOverview } from "./_components/ProfileOverview";
 import { AddressStats } from "./_components/AddressStats";
 import { useQueryAddress } from "@/features/user-address/hooks/use-query-address-mutation";
-import { useUserAddressStore } from "@/features/user-address/store/user-address.store";
+import {
+  useDeleteUserAddressMutation,
+  useSetDefaultAddressMutation,
+} from "@/features/user-address";
 
 const ADDRESS_TYPES = ["HOME", "OFFICE", "OTHER"] as const;
 
@@ -79,12 +82,9 @@ const ProfilePage = () => {
   const { t } = useTranslator();
   const currentUser = useAuthStore(selectorCurrentUser);
   const { data: addresses } = useQueryAddress();
-
+  const { mutateAsync: setDefaultAddress } = useSetDefaultAddressMutation();
+  const { mutateAsync: deleteAddress } = useDeleteUserAddressMutation();
   const [isAddingAddress, setIsAddingAddress] = useState(false);
-  const [addressForm, setAddressForm] = useState<AddressFormState>(() =>
-    getEmptyAddressForm(),
-  );
-  const [formError, setFormError] = useState<string | null>(null);
 
   const fullName = useMemo(() => {
     if (!currentUser) return "N/A";
@@ -93,76 +93,24 @@ const ProfilePage = () => {
     return formattedName || "N/A";
   }, [currentUser]);
 
-  // const defaultAddress = useMemo(
-  //   () => addresses.find((address) => address.isDefault) ?? null,
-  //   [addresses],
-  // );
-
-  const handleInputChange =
-    (field: keyof Omit<AddressFormState, "addressType" | "isDefault">) =>
-    (event: ChangeEvent<HTMLInputElement>) => {
-      const value = event.target.value;
-      setAddressForm((prev) => ({ ...prev, [field]: value }));
-    };
-
-  const handleAddAddress = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const requiredValues = [
-      addressForm.recipientName,
-      addressForm.phoneNumber,
-      addressForm.addressDetail,
-      addressForm.ward,
-      addressForm.district,
-      addressForm.city,
-    ];
-
-    const hasEmptyField = requiredValues.some((value) => !value.trim());
-    if (hasEmptyField) {
-      setFormError(t("profile.page.form.requiredError"));
-      return;
-    }
-
-    const nextAddress: Omit<AddressItem, "isDefault"> = {
-      id: generateAddressId(),
-      addressType: addressForm.addressType,
-      recipientName: addressForm.recipientName.trim(),
-      phoneNumber: addressForm.phoneNumber.trim(),
-      addressDetail: addressForm.addressDetail.trim(),
-      ward: addressForm.ward.trim(),
-      district: addressForm.district.trim(),
-      city: addressForm.city.trim(),
-    };
-
-    // setAddresses((prev) => {
-    //   const shouldBeDefault = addressForm.isDefault || prev.length === 0;
-    //   const addressToInsert: AddressItem = {
-    //     ...nextAddress,
-    //     isDefault: shouldBeDefault,
-    //   };
-
-    //   if (!shouldBeDefault) {
-    //     return [...prev, addressToInsert];
-    //   }
-
-    //   return [
-    //     ...prev.map((address) => ({ ...address, isDefault: false })),
-    //     addressToInsert,
-    //   ];
-    // });
-
-    setAddressForm(getEmptyAddressForm());
-    setFormError(null);
-    setIsAddingAddress(false);
-  };
+  const defaultAddress = useMemo(
+    () => addresses?.find((address) => address.isDefault) ?? null,
+    [addresses],
+  );
 
   const handleSetDefaultAddress = (addressId: string) => {
-    console.log(addressId);
+    setDefaultAddress(addressId);
+  };
+
+  const handleEditAddress = (address: AddressItem) => {
+    // TODO: Implement edit address
+  };
+
+  const handleDeleteAddress = (addressId: string) => {
+    deleteAddress(addressId);
   };
 
   const handleCancelAddAddress = () => {
-    setAddressForm(getEmptyAddressForm());
-    setFormError(null);
     setIsAddingAddress(false);
   };
 
@@ -188,7 +136,7 @@ const ProfilePage = () => {
 
           <AddressStats
             totalAddresses={addresses?.length ?? 0}
-            // defaultAddress={defaultAddress}
+            defaultAddress={defaultAddress}
             formatAddress={formatAddress}
             t={t}
           />
@@ -216,6 +164,8 @@ const ProfilePage = () => {
                 addresses={addresses ?? []}
                 formatAddress={formatAddress}
                 onSetDefault={handleSetDefaultAddress}
+                onEdit={handleEditAddress}
+                onDelete={handleDeleteAddress}
               />
             )}
           </CardContent>

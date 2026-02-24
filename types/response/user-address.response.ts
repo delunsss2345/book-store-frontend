@@ -13,5 +13,10 @@ export type UserAddressData = {
   isDefault: boolean;
 };
 
+export type UserDeleteAddress = {
+  success: boolean;
+  deleteId: string;
+};
 export type UserAddressListResponse = ApiResponse<UserAddressData[]>;
 export type UserAddressItemResponse = ApiResponse<UserAddressData>;
+export type UserDeleteAddressResponse = ApiResponse<UserDeleteAddress>;
