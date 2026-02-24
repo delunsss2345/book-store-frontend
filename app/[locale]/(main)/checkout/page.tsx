@@ -117,7 +117,7 @@ function OrderSummary({ cart, subtotal }: OrderSummaryProps) {
                   Đã bao gồm VAT
                 </p>
                 <p className="text-2xl font-black leading-none text-zinc-900">
-                  {fmt(subtotal)}
+                  {fmt(subtotal + 20000)}
                 </p>
               </div>
             </div>

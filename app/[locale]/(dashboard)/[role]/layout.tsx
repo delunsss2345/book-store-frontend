@@ -1,10 +1,10 @@
-import { AppSidebar } from "@/app/(dashboard)/[role]/dashboard/_components/AppSidebar";
-import { Header } from "@/app/(dashboard)/[role]/dashboard/_components/Header";
-import { TopNav } from "@/app/(dashboard)/[role]/dashboard/_components/TopNav";
-import { ProfileDropdown } from "@/app/profile/_components/ProfileDropdown";
 import { Search } from "@/components/common/Search";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import type { ReactNode } from "react";
+import { AppSidebar } from "./dashboard/_components/AppSidebar";
+import { Header } from "./dashboard/_components/Header";
+import { TopNav } from "./dashboard/_components/TopNav";
+import { ProfileDropdown } from "../../profile/_components/ProfileDropdown";
 
 const topNav = [
   {

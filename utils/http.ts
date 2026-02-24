@@ -69,7 +69,6 @@ axiosInstance.interceptors.response.use(
 
       if (typeof window !== "undefined") {
         localStorage.clear()
-        window.location.href = "/login";
       }
 
       return Promise.reject(refreshError);
