@@ -1,11 +1,10 @@
 "use client";
 
-import { useTranslation } from "react-i18next";
+import { useTranslations } from "next-intl";
 
 const useTranslator = () => {
-  const { t, i18n } = useTranslation();
-
-  return { t, i18n };
+  const t = useTranslations();
+  return { t };
 };
 
 export default useTranslator;

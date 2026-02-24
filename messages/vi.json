@@ -123,6 +123,9 @@
   "profile": {
     "header": {
       "orderHistory": "Lịch sử đơn hàng",
+      "account": "Tài khoản",
+      "myAccount": "Tài khoản của tôi",
+      "manageSettings": "Quản lý cài đặt",
       "menu": {
         "profile": "Hồ sơ",
         "orders": "Đơn hàng",
@@ -180,7 +183,10 @@
         "setAsDefaultLabel": "Dùng địa chỉ này làm mặc định",
         "requiredError": "Vui lòng nhập đầy đủ thông tin địa chỉ.",
         "submit": "Lưu địa chỉ",
-        "cancel": "Hủy"
+        "cancel": "Hủy",
+        "loading": "Đang lưu địa chỉ...",
+        "success": "Thêm địa chỉ thành công!",
+        "error": "Không thể thêm địa chỉ. Vui lòng thử lại."
       },
       "addressTypes": {
         "HOME": "Nhà",
@@ -276,6 +282,13 @@
     "verifyTokenPlaceholder": "Nhập mã xác minh",
     "registerTitle": "Tạo tài khoản",
     "registerSubtitle": "Nhập thông tin để bắt đầu.",
+    "loginTitle": "Đăng nhập",
+    "loginSubtitle": "Đăng nhập vào tài khoản của bạn.",
+    "loginLoading": "Đang đăng nhập...",
+    "noAccount": "Chưa có tài khoản?",
+    "signUp": "Đăng ký",
+    "hasAccount": "Đã có tài khoản?",
+    "signIn": "Đăng nhập",
     "forgotTitle": "Quên mật khẩu",
     "forgotSubtitle": "Chúng tôi sẽ gửi liên kết đặt lại mật khẩu.",
     "passwordResetTitle": "Đặt lại mật khẩu",
@@ -295,11 +308,18 @@
     "verifySubmit": "Xác minh",
     "verifying": "Đang xác minh...",
     "verifyingToken": "Đang xác minh email...",
+    "loggingOut": "Đang đăng xuất...",
+    "validating": "Đang xác thực...",
+    "resetting": "Đang đặt lại mật khẩu...",
     "success": {
       "register": "Đăng ký thành công. Hãy kiểm tra email để nhận mã xác minh.",
       "verify": "Xác minh thành công. Bạn có thể đăng nhập.",
       "forgot": "Nếu email tồn tại, chúng tôi sẽ gửi hướng dẫn đặt lại đến {{email}}.",
-      "resend": "Nếu email tồn tại, chúng tôi đã gửi lại email xác minh tới {{email}}."
+      "resend": "Nếu email tồn tại, chúng tôi đã gửi lại email xác minh tới {{email}}.",
+      "login": "Đăng nhập thành công!",
+      "logout": "Đăng xuất thành công!",
+      "reset": "Đặt lại mật khẩu thành công. Bạn có thể đăng nhập.",
+      "validating": "Liên kết hợp lệ."
     },
     "errors": {
       "emailInvalid": "Email không hợp lệ",
@@ -308,7 +328,8 @@
       "passwordMismatch": "Mật khẩu không khớp",
       "requestFailed": "Có lỗi xảy ra. Vui lòng thử lại.",
       "missingVerifyId": "Thiếu mã định danh xác minh.",
-      "verifyTokenInvalid": "Token xác minh không hợp lệ hoặc đã hết hạn."
+      "verifyTokenInvalid": "Token xác minh không hợp lệ hoặc đã hết hạn.",
+      "invalidLink": "Liên kết không hợp lệ!"
     }
   },
   "orders": {
@@ -327,6 +348,31 @@
       "shipping": "Đang giao",
       "processing": "Đang xử lý",
       "cancelled": "Đã hủy"
+    }
+  },
+  "checkout": {
+    "title": "Thông tin thanh toán",
+    "hasAccount": "Đã có tài khoản?",
+    "signIn": "Đăng nhập",
+    "contactEmail": "Email liên hệ",
+    "newsletter": "Nhận thông tin cập nhật về đơn hàng và ưu đãi mới nhất",
+    "shippingTitle": "Địa chỉ giao hàng",
+    "countryPlaceholder": "Quốc gia/ Vùng",
+    "countries": {
+      "vn": "Việt Nam",
+      "us": "United States"
+    },
+    "firstNamePlaceholder": "Họ và tên đệm",
+    "lastNamePlaceholder": "Tên",
+    "addressPlaceholder": "Địa chỉ chi tiết (Số nhà, tên đường...)",
+    "cityPlaceholder": "Tỉnh / Thành phố",
+    "postalCodePlaceholder": "Mã bưu chính (Tùy chọn)",
+    "phonePlaceholder": "Số điện thoại",
+    "submitButton": "Hoàn tất đặt hàng",
+    "toast": {
+      "loading": "Đang xử lý đơn hàng...",
+      "success": "Đơn hàng đã được tạo thành công!",
+      "error": "Không thể tạo đơn hàng. Vui lòng thử lại."
     }
   }
 }

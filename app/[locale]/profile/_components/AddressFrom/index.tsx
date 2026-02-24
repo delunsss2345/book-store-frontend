@@ -26,11 +26,11 @@ import {
 } from "@/validation/user-address/userAddressValidation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 export function AddressForm({ onToggle }: { onToggle: () => void }) {
-  const { t } = useTranslation();
+  const t = useTranslations();
   const currentUser = useAuthStore(selectorCurrentUser);
   const form = useForm<CreateUserAddressInput>({
     resolver: zodResolver(CreateUserAddressSchema),

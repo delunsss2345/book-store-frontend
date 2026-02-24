@@ -1,30 +1,31 @@
 "use client";
 
-import { useTransition } from "react"; // 1. Import useTransition
-import {
-  LOCALE_COOKIE_KEY,
-  normalizeLocale,
-  type Locale,
-} from "@/lib/i18n/config";
+import { useTransition } from "react";
+import { LOCALE_COOKIE_KEY, type Locale } from "@/lib/i18n/config";
 import useTranslator from "@/hooks/use-translator";
+import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 
 const SettingsTranslation = () => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const { t, i18n } = useTranslator();
+  const { t } = useTranslator();
   const pathname = usePathname();
-  const activeLanguage = normalizeLocale(
-    i18n.resolvedLanguage ?? i18n.language,
-  );
+  const currentLocale = useLocale();
 
-  const nextLanguage: Locale = activeLanguage === "vi" ? "en" : "vi";
+  const nextLanguage: Locale = currentLocale === "vi" ? "en" : "vi";
 
   const handleLanguageChange = () => {
-    startTransition(async () => {
-      await i18n.changeLanguage(nextLanguage);
+    startTransition(() => {
       const segments = pathname.split("/");
-      segments[1] = nextLanguage;
+
+      // If current locale is in URL (e.g. /en/...), replace it
+      if (segments[1] === currentLocale) {
+        segments[1] = nextLanguage;
+      } else {
+        // Default locale has no prefix, insert the new locale
+        segments.splice(1, 0, nextLanguage);
+      }
       const nextPathname = segments.join("/");
 
       try {
@@ -41,7 +42,6 @@ const SettingsTranslation = () => {
   return (
     <button
       type="button"
-      // 4. Thêm hiệu ứng visual khi đang chuyển đổi (tùy chọn)
       className={`hidden whitespace-nowrap text-sm hover:opacity-70 md:inline-flex cursor-pointer transition-opacity ${
         isPending ? "opacity-50 pointer-events-none" : "opacity-100"
       }`}
@@ -49,7 +49,6 @@ const SettingsTranslation = () => {
       onClick={handleLanguageChange}
       disabled={isPending}
     >
-      {/* Hiển thị text hoặc icon tương ứng */}
       {isPending ? "..." : t("header.languageToggle")}
     </button>
   );

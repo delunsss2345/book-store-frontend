@@ -1,9 +1,9 @@
 import { useFormField } from "@/components/ui/form";
-import { useTranslation } from "react-i18next";
+import { useTranslations } from "next-intl";
 
 export function FormMessageI18n() {
   const { error } = useFormField();
-  const { t } = useTranslation();
+  const t = useTranslations();
 
   if (!error) return null;
 

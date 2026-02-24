@@ -1,4 +1,4 @@
-import { SidebarData } from '@/types/layouts/sidebar.type'
+import { SidebarData } from "@/types/layouts/sidebar.type";
 import {
   Bell,
   HelpCircle,
@@ -11,89 +11,87 @@ import {
   Settings,
   UserCog,
   Users,
-  Wrench
-} from 'lucide-react'
-
+  Wrench,
+} from "lucide-react";
 
 export const sidebarData: SidebarData = {
   user: {
-    name: 'phamthanhhuy',
-    email: 'huydev@gmail.com',
-    avatar : ""
+    name: "phamthanhhuy",
+    email: "huydev@gmail.com",
+    avatar: "",
   },
   navGroups: [
     {
-      title: 'General',
+      title: "General",
       items: [
         {
-          title: 'Dashboard',
-          url: '/',
+          title: "Dashboard",
+          url: "/dashboard",
           icon: LayoutDashboard,
         },
         {
-          title: 'Tasks',
-          url: '/tasks',
+          title: "Products",
+          url: "products",
           icon: ListTodo,
         },
         {
-          title: 'Apps',
-          url: '/apps',
+          title: "Orders",
+          url: "orders",
           icon: Package,
         },
         {
-          title: 'Chats',
-          url: '/chats',
-          badge: '3',
+          title: "Categories",
+          url: "categories",
           icon: MessagesSquare,
         },
         {
-          title: 'Users',
-          url: '/users',
+          title: "Users",
+          url: "users",
           icon: Users,
-        }
+        },
       ],
     },
-   
+
     {
-      title: 'Other',
+      title: "Other",
       items: [
         {
-          title: 'Settings',
+          title: "Settings",
           icon: Settings,
           items: [
             {
-              title: 'Profile',
-              url: '/settings',
+              title: "Profile",
+              url: "/settings",
               icon: UserCog,
             },
             {
-              title: 'Account',
-              url: '/settings/account',
+              title: "Account",
+              url: "/settings/account",
               icon: Wrench,
             },
             {
-              title: 'Appearance',
-              url: '/settings/appearance',
+              title: "Appearance",
+              url: "/settings/appearance",
               icon: Palette,
             },
             {
-              title: 'Notifications',
-              url: '/settings/notifications',
+              title: "Notifications",
+              url: "/settings/notifications",
               icon: Bell,
             },
             {
-              title: 'Display',
-              url: '/settings/display',
+              title: "Display",
+              url: "/settings/display",
               icon: Monitor,
             },
           ],
         },
         {
-          title: 'Help Center',
-          url: '/help-center',
+          title: "Help Center",
+          url: "/help-center",
           icon: HelpCircle,
         },
       ],
     },
   ],
-}
+};

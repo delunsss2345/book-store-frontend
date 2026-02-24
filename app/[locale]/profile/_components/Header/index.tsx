@@ -26,10 +26,10 @@ const Header = () => {
 
   const handleLogout = async () => {
     toast.promise(mutateAsync(), {
-      loading: t("auth.loggingOut") || "Logging out...",
+      loading: t("auth.loggingOut"),
       success: () => {
         router.push(`/${locale}`);
-        return t("auth.success.logout") || "Logged out successfully";
+        return t("auth.success.logout");
       },
       error: t("auth.errors.requestFailed"),
     });
@@ -69,7 +69,7 @@ const Header = () => {
                   <User className="h-4 w-4" />
                 </div>
                 <span className="text-sm font-medium hidden sm:inline-block">
-                  Account
+                  {t("profile.header.account")}
                 </span>
                 <ChevronDown className="h-4 w-4 text-muted-foreground" />
               </Button>
@@ -78,9 +78,11 @@ const Header = () => {
             <DropdownMenuContent align="end" className="w-56 mt-2">
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">My Account</p>
+                  <p className="text-sm font-medium leading-none">
+                    {t("profile.header.myAccount")}
+                  </p>
                   <p className="text-xs leading-none text-muted-foreground">
-                    Manage your settings
+                    {t("profile.header.manageSettings")}
                   </p>
                 </div>
               </DropdownMenuLabel>

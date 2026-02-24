@@ -36,12 +36,12 @@ const Register = () => {
       <ForgotPasswordLink />
       {/* Quay lại đăng nhập */}
       <p className="text-center text-sm text-muted-foreground">
-        Đã có tài khoản?{" "}
+        {t("auth.hasAccount")}{" "}
         <Link
           href="/login"
           className="font-medium text-foreground underline underline-offset-4 transition-opacity hover:opacity-80"
         >
-          Đăng nhập
+          {t("auth.signIn")}
         </Link>
       </p>
     </div>

@@ -1,15 +1,12 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtDecode } from "jwt-decode";
-import createMiddleware from "next-intl/middleware";
 import { DEFAULT_LOCALE, Locale, SUPPORTED_LOCALES } from "./lib/i18n/config";
 import { cookies } from "next/headers";
+import createMiddleware from "next-intl/middleware";
+import { routing } from "./i18n/routing";
 
-export default createMiddleware({
-  locales: SUPPORTED_LOCALES,
-  defaultLocale: DEFAULT_LOCALE,
-  localePrefix: "always",
-});
+export default createMiddleware(routing);
 
 type JwtPayload = {
   sub: string;
@@ -82,5 +79,11 @@ export async function proxy(request: NextRequest) {
   return response;
 }
 export const config = {
-  matcher: ["/dashboard/:path*", "/admin/:path*", "/", "/(vi|en)/:path*"],
+  matcher: [
+    "/((?!api|_next|_vercel|.*\\..*).*)",
+    "/dashboard/:path*",
+    "/admin/:path*",
+    "/",
+    "/(vi|en)/:path*",
+  ],
 };

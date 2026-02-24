@@ -27,7 +27,7 @@ const ResetPassword = () => {
   const token = searchParams.get("verify-token");
 
   if (!token) {
-    toast.error("Liên kết không hợp lệ!");
+    toast.error(t("auth.errors.invalidLink"));
     router.replace(`/${locale}/forgot-password`);
     return;
   }
@@ -36,7 +36,7 @@ const ResetPassword = () => {
       loading: t("auth.validating"),
       success: (data) => {
         if (!data.valid) {
-          toast.error("Liên kết không hợp lệ!");
+          toast.error(t("auth.errors.invalidLink"));
           router.replace(`/${locale}/forgot-password`);
           return;
         }

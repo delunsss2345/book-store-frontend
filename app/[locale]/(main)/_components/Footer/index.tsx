@@ -48,8 +48,6 @@ const Footer = () => {
   return (
     <footer className="w-full bg-white">
       <div className="container-main w-full">
-
-
         <Separator />
 
         <div className="grid grid-cols-12 gap-y-10 py-10">

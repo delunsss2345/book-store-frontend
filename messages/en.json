@@ -123,6 +123,9 @@
   "profile": {
     "header": {
       "orderHistory": "Order History",
+      "account": "Account",
+      "myAccount": "My Account",
+      "manageSettings": "Manage your settings",
       "menu": {
         "profile": "Profile",
         "orders": "Orders",
@@ -180,7 +183,10 @@
         "setAsDefaultLabel": "Use this as my default address",
         "requiredError": "Please complete all address fields.",
         "submit": "Save address",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "loading": "Saving address...",
+        "success": "Address added successfully!",
+        "error": "Failed to add address. Please try again."
       },
       "addressTypes": {
         "HOME": "Home",
@@ -276,6 +282,13 @@
     "verifyTokenPlaceholder": "Enter your verification token",
     "registerTitle": "Create your account",
     "registerSubtitle": "Enter your details to get started.",
+    "loginTitle": "Log in",
+    "loginSubtitle": "Sign in to your account.",
+    "loginLoading": "Logging in...",
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign up",
+    "hasAccount": "Already have an account?",
+    "signIn": "Sign in",
     "forgotTitle": "Forgot password",
     "forgotSubtitle": "We will send a reset link to your email.",
     "passwordResetTitle": "Reset password",
@@ -295,11 +308,18 @@
     "verifySubmit": "Verify account",
     "verifying": "Verifying...",
     "verifyingToken": "Verifying your email...",
+    "loggingOut": "Logging out...",
+    "validating": "Validating...",
+    "resetting": "Resetting password...",
     "success": {
       "register": "Registration successful. Check your email for the verification token.",
       "verify": "Verification successful. You can log in now.",
       "forgot": "If the email exists, we will send reset instructions to {{email}}.",
-      "resend": "If the email exists, we sent a new verification email to {{email}}."
+      "resend": "If the email exists, we sent a new verification email to {{email}}.",
+      "login": "Logged in successfully!",
+      "logout": "Logged out successfully!",
+      "reset": "Password reset successfully. You can log in now.",
+      "validating": "Link is valid."
     },
     "errors": {
       "emailInvalid": "Invalid email address",
@@ -308,7 +328,33 @@
       "passwordMismatch": "Passwords do not match",
       "requestFailed": "Something went wrong. Please try again.",
       "missingVerifyId": "Verification link is missing an id.",
-      "verifyTokenInvalid": "Verification token is invalid or expired."
+      "verifyTokenInvalid": "Verification token is invalid or expired.",
+      "invalidLink": "Invalid link!"
+    }
+  },
+  "checkout": {
+    "title": "Checkout Information",
+    "hasAccount": "Already have an account?",
+    "signIn": "Sign in",
+    "contactEmail": "Contact email",
+    "newsletter": "Receive order updates and latest offers",
+    "shippingTitle": "Shipping address",
+    "countryPlaceholder": "Country / Region",
+    "countries": {
+      "vn": "Vietnam",
+      "us": "United States"
+    },
+    "firstNamePlaceholder": "First name",
+    "lastNamePlaceholder": "Last name",
+    "addressPlaceholder": "Address (Street, house number...)",
+    "cityPlaceholder": "City / Province",
+    "postalCodePlaceholder": "Postal code (Optional)",
+    "phonePlaceholder": "Phone number",
+    "submitButton": "Complete order",
+    "toast": {
+      "loading": "Processing your order...",
+      "success": "Order created successfully!",
+      "error": "Failed to create order. Please try again."
     }
   }
 }

@@ -41,7 +41,7 @@ import {
 } from "@/features/orders";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 export function CheckoutGuest() {
   const form = useForm<CreateGuestOrdersAndPaymentInput>({
@@ -68,15 +68,16 @@ export function CheckoutGuest() {
   const isOrdering = useOrderStore(selectorIsOrdering);
   const router = useRouter();
   const locale = useLocale();
+  const t = useTranslations();
 
   const onSubmit = async (values: CreateGuestOrdersAndPaymentInput) => {
     toast.promise(createOrderGuest(values), {
-      loading: "Đang xử lý đơn hàng...",
+      loading: t("checkout.toast.loading"),
       success: (data) => {
         router.push(
           `/${locale}/checkout/payment?orderCode=${data.orderCode}&totalAmount=${data.totalAmount}&subtotal=${data.subtotal}`,
         );
-        return "Đơn hàng đã được tạo thành công!";
+        return t("checkout.toast.success");
       },
       error: (error) => error.message,
     });
