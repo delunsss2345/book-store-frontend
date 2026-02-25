@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 interface ModalPortalProps {
@@ -7,7 +7,11 @@ interface ModalPortalProps {
 }
 
 export function ModalPortal({ children }: ModalPortalProps) {
-  const modalRoot = document.getElementById("modal-layer");
-  if (!modalRoot) return null;
-  return createPortal(children, modalRoot);
+  const [root, setRoot] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    setRoot(document.getElementById("modal-layer"));
+  }, []);
+
+  if (!root) return null;
+  return createPortal(children, root);
 }
