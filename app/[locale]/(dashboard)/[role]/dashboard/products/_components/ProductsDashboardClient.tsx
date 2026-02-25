@@ -48,9 +48,12 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { toast } from "sonner";
+import { ModalType, useModalStore } from "@/features/modal";
 
 export function ProductsDashboardClient() {
   const { t } = useTranslator();
+  const { onOpen, getIsOpen, setBookDetail } = useModalStore();
+
   const {
     data: books = [] as AdminBook[],
     isLoading,
@@ -132,12 +135,16 @@ export function ProductsDashboardClient() {
             {t("dashboard.products.table.columns.actions")}
           </div>
         ),
-        cell: () => (
+        cell: ({ row }) => (
           <div className="flex items-center justify-end gap-1">
             <Button
+              onClick={() => {
+                onOpen(ModalType.PRODUCT_DETAIL);
+                setBookDetail(row.original);
+              }}
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-muted-foreground hover:text-foreground"
+              className="h-8 w-8 text-muted-foreground hover:text-foreground cursor-pointer"
             >
               <Eye className="size-4" />
             </Button>
