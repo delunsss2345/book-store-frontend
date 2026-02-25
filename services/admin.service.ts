@@ -1,8 +1,9 @@
+import { AdminBookListResponse } from "@/types/response/admin.response";
 import { http } from "@/utils/http";
 
 export const adminService = {
   // Books
-  getBooks: () => http.get("admin/books"),
+  getBooks: () => http.get<AdminBookListResponse>("admin/books"),
 
   createBook: (payload: any) => http.post("admin/books", payload),
 

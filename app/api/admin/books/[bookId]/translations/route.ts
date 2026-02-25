@@ -10,10 +10,7 @@ export async function POST(request: NextRequest, { params }: Params) {
   try {
     const { bookId } = await params;
     const body = await request.json();
-    const response = await api.post(
-      `/admin/books/${bookId}/translations`,
-      body,
-    );
+    const response = await api.post(`admin/books/${bookId}/translations`, body);
     return ResponseApi.success(response.data, HttpStatusCode.Created);
   } catch (error: any) {
     if (process.env.NODE_ENV === "development") {

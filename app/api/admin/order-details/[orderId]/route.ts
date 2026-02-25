@@ -8,7 +8,7 @@ type Params = { params: Promise<{ orderId: string }> };
 export async function GET(_request: Request, { params }: Params) {
   try {
     const { orderId } = await params;
-    const response = await api.get(`/admin/order-details/${orderId}`);
+    const response = await api.get(`admin/order-details/${orderId}`);
     return ResponseApi.success(response.data, HttpStatusCode.Ok);
   } catch (error: any) {
     if (process.env.NODE_ENV === "development") {

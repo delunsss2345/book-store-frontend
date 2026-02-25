@@ -6,7 +6,7 @@ import { NextRequest } from "next/server";
 // GET /api/v1/admin/books
 export async function GET() {
   try {
-    const response = await api.get("/admin/books");
+    const response = await api.get("admin/books");
     return ResponseApi.success(response.data, HttpStatusCode.Ok);
   } catch (error: any) {
     if (process.env.NODE_ENV === "development") {
@@ -23,7 +23,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const response = await api.post("/admin/books", body);
+    const response = await api.post("admin/books", body);
     return ResponseApi.success(response.data, HttpStatusCode.Created);
   } catch (error: any) {
     if (process.env.NODE_ENV === "development") {

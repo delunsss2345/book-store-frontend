@@ -10,7 +10,7 @@ export async function PATCH(request: NextRequest, { params }: Params) {
   try {
     const { bookId } = await params;
     const body = await request.json();
-    const response = await api.patch(`/admin/books/${bookId}`, body);
+    const response = await api.patch(`admin/books/${bookId}`, body);
     return ResponseApi.success(response.data, HttpStatusCode.Ok);
   } catch (error: any) {
     if (process.env.NODE_ENV === "development") {
@@ -27,7 +27,7 @@ export async function PATCH(request: NextRequest, { params }: Params) {
 export async function DELETE(_request: NextRequest, { params }: Params) {
   try {
     const { bookId } = await params;
-    const response = await api.delete(`/admin/books/${bookId}`);
+    const response = await api.delete(`admin/books/${bookId}`);
     return ResponseApi.success(response.data, HttpStatusCode.Ok);
   } catch (error: any) {
     if (process.env.NODE_ENV === "development") {

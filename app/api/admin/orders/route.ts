@@ -5,7 +5,7 @@ import { HttpStatusCode } from "axios";
 // GET /api/v1/admin/orders
 export async function GET() {
   try {
-    const response = await api.get("/admin/orders");
+    const response = await api.get("admin/orders");
     return ResponseApi.success(response.data, HttpStatusCode.Ok);
   } catch (error: any) {
     if (process.env.NODE_ENV === "development") {
