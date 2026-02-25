@@ -51,6 +51,7 @@ import { toast } from "sonner";
 import { ModalType, useModalStore } from "@/features/modal";
 import { ActionDropdown } from "@/components/common/ActionDropdownMenu";
 import { variantMenuItems } from "./data/action-products";
+import { useRouter } from "@/i18n/navigation";
 
 export function ProductsDashboardClient() {
   const { t } = useTranslator();
@@ -62,6 +63,7 @@ export function ProductsDashboardClient() {
     error,
   } = useAdminBooksQuery();
 
+  const router = useRouter();
   useEffect(() => {
     if (error) toast.error(error.message);
   }, [error]);
@@ -151,6 +153,9 @@ export function ProductsDashboardClient() {
               <Eye className="size-4" />
             </Button>
             <Button
+              onClick={() =>
+                router.push({ pathname: `/admin/dashboard/products/edit` })
+              }
               variant="ghost"
               size="icon"
               className="h-8 w-8 text-muted-foreground hover:text-foreground"
@@ -211,7 +216,9 @@ export function ProductsDashboardClient() {
           </p>
         </div>
         <Button
-          onClick={() => onOpen(ModalType.ADD_NEW_BOOK)}
+          onClick={() =>
+            router.push({ pathname: "/admin/dashboard/products/create" })
+          }
           className="w-fit gap-2 bg-slate-950 hover:bg-slate-800 text-white shadow-md transition-all"
         >
           <Plus className="size-4" /> Add New Product

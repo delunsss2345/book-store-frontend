@@ -54,7 +54,22 @@ export const routing = defineRouting({
       vi: "/sap-ra-mat",
       en: "/coming-soon",
     },
-
+    "/admin/dashboard/products/create": {
+      vi: "/admin/bang-dieu-khien/san-pham/tao-moi",
+      en: "/admin/dashboard/products/create",
+    },
+    "/products/create": {
+      vi: "/admin/bang-dieu-khien/san-pham/tao-moi",
+      en: "/admin/dashboard/products/create",
+    },
+    "/admin/dashboard/products/edit": {
+      vi: "/admin/bang-dieu-khien/san-pham/chinh-sua",
+      en: "/admin/dashboard/products/edit",
+    },
+    create: {
+      vi: "tao-moi",
+      en: "/create",
+    },
     // ─── Auth pages ─────────────────────────────────
     "/login": {
       vi: "/dang-nhap",

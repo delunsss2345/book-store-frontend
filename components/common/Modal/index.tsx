@@ -6,7 +6,6 @@ import ModalBookDetail from "./ModalBookDetail";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { useEffect } from "react";
-import ModalCreateBook from "./ModalAddNewBook";
 import ModalAddVariant from "./ModalAddVariant";
 import ModalAddTranslateBook from "./ModalAddTranslateBook";
 
@@ -45,9 +44,6 @@ export function ModalHost() {
               <div className="p-6 md:p-8">
                 {type === ModalType.BOOK_DETAIL && (
                   <ModalBookDetail onClose={onClose} />
-                )}
-                {type === ModalType.ADD_NEW_BOOK && (
-                  <ModalCreateBook onClose={onClose} />
                 )}
                 {type === ModalType.BOOK_ADD_VARIANT && (
                   <ModalAddVariant onClose={onClose} />

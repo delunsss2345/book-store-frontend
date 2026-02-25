@@ -31,6 +31,7 @@ import {
 
 import { useModalStore } from "@/features/modal";
 import { AdminBook } from "@/types/response/admin.response";
+import { useRouter } from "@/i18n/navigation";
 
 export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
   const book = useModalStore((state) => state.bookDetail) as AdminBook;
@@ -182,9 +183,6 @@ export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
 
       {/* 4. Footer Actions */}
       <div className="flex items-center gap-3 pt-2">
-        <Button className="flex-1 gap-2 shadow-sm" variant="default">
-          <Edit3 className="w-4 h-4" /> Edit Book
-        </Button>
         <Button variant="outline" className="flex-1" onClick={onClose}>
           Cancel
         </Button>
