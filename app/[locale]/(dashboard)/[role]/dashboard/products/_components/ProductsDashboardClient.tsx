@@ -49,6 +49,8 @@ import {
 import { useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import { ModalType, useModalStore } from "@/features/modal";
+import { ActionDropdown } from "@/components/common/ActionDropdownMenu";
+import { variantMenuItems } from "./data/action-products";
 
 export function ProductsDashboardClient() {
   const { t } = useTranslator();
@@ -139,7 +141,7 @@ export function ProductsDashboardClient() {
           <div className="flex items-center justify-end gap-1">
             <Button
               onClick={() => {
-                onOpen(ModalType.PRODUCT_DETAIL);
+                onOpen(ModalType.BOOK_DETAIL);
                 setBookDetail(row.original);
               }}
               variant="ghost"
@@ -155,23 +157,7 @@ export function ProductsDashboardClient() {
             >
               <Pencil className="size-4" />
             </Button>
-            <DropdownMenu modal={false}>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8">
-                  <MoreVertical className="size-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuItem>
-                  <Languages className="mr-2 size-4" /> Translation
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-destructive">
-                  <Trash2 className="mr-2 size-4" /> Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <ActionDropdown items={variantMenuItems} />
           </div>
         ),
       },
