@@ -5,6 +5,7 @@ export enum ModalType {
   PRODUCT = "PRODUCT",
   PRODUCT_TRANSLATION = "PRODUCT:TRANSLATION",
   PRODUCT_DETAIL = "PRODUCT:DETAIL",
+  ADD_NEW_BOOK = "ADD_NEW_BOOK",
 }
 
 interface ModalStore {

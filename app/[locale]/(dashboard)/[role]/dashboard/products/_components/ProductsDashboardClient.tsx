@@ -131,7 +131,7 @@ export function ProductsDashboardClient() {
       {
         id: "actions",
         header: () => (
-          <div className="text-right">
+          <div onClick={(e) => e.stopPropagation()} className="text-right">
             {t("dashboard.products.table.columns.actions")}
           </div>
         ),
@@ -224,7 +224,10 @@ export function ProductsDashboardClient() {
             Quản lý kho sách và nội dung đa ngôn ngữ.
           </p>
         </div>
-        <Button className="w-fit gap-2 bg-slate-950 hover:bg-slate-800 text-white shadow-md transition-all">
+        <Button
+          onClick={() => onOpen(ModalType.ADD_NEW_BOOK)}
+          className="w-fit gap-2 bg-slate-950 hover:bg-slate-800 text-white shadow-md transition-all"
+        >
           <Plus className="size-4" /> Add New Product
         </Button>
       </div>

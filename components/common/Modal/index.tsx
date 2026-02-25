@@ -6,23 +6,12 @@ import ModalBookDetail from "./ModalBookDetail";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { useEffect } from "react";
+import ModalCreateBook from "./ModalAddNewBook";
 
 export function ModalHost() {
   const { getIsOpen, onClose, getType } = useModalStore();
   const isOpen = getIsOpen();
   const type = getType();
-
-  // Khóa scroll body khi modal mở
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen]);
 
   return (
     <ModalPortal>
@@ -54,6 +43,9 @@ export function ModalHost() {
               <div className="p-6 md:p-8">
                 {type === ModalType.PRODUCT_DETAIL && (
                   <ModalBookDetail onClose={onClose} />
+                )}
+                {type === ModalType.ADD_NEW_BOOK && (
+                  <ModalCreateBook onClose={onClose} />
                 )}
               </div>
             </motion.div>
