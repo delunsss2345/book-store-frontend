@@ -43,9 +43,9 @@ export type CreateAdminBookAllRequest = {
   weightGrams?: number;
   coverImageUrl?: string;
   // Badge
-  badgeCode?: string[];
+  badgeCode?: string | null;
   // Specs
-  spec?: CreateBookSpecRequest;
+  spec?: CreateBookSpecRequest | undefined;
   translations: CreateBookTranslationRequest[];
   // Authors
   authors?: CreateBookAuthorRequest[];

@@ -18,6 +18,8 @@ import { useSearchIsbnMutation } from "@/features/search/hooks/use-search-isbn";
 import HeaderCreate from "./_components/HeaderCreate";
 import { AdminBookVariant } from "@/types/response/admin.response";
 import { convertIsbnResultToBookSchema } from "@/utils/convert-book";
+import { useCreateBookAllMutation } from "@/features/admin/hooks/use-create-book-all";
+import { toast } from "sonner";
 
 export default function CreateBookPage() {
   const [variants, setVariants] = useState<AdminBookVariant[]>([]);
@@ -26,15 +28,28 @@ export default function CreateBookPage() {
   const { mutateAsync: searchIsbn, isPending: searchIsbnPending } =
     useSearchIsbnMutation();
 
+  const { mutateAsync: createBookAll, isPending: createBookAllPending } =
+    useCreateBookAllMutation();
+
   const onScanHandler = (isbn: string, lang: string) => {
     searchIsbn({ isbn, lang });
     setLanguage(lang);
   };
 
-  const onSaveHandler = () => {
-    console.log(
-      convertIsbnResultToBookSchema(isbnSearchResult, variants, language),
+  const onSaveHandler = async () => {
+    const bookData = convertIsbnResultToBookSchema(
+      isbnSearchResult,
+      variants,
+      language,
     );
+    console.log(bookData);
+
+    if (!bookData) return;
+    toast.promise(createBookAll(bookData), {
+      loading: "Đang tạo sách...",
+      success: "Tạo sách thành công",
+      error: "Tạo sách thất bại",
+    });
   };
 
   return (

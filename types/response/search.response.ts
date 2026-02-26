@@ -1,5 +1,6 @@
 import { ApiResponse } from "@/types/response/base.response";
 import { CatalogBookCardDto } from "@/types/response/catalog.response";
+import { CreateBookSpecRequest } from "../request/admin.request";
 
 export type SearchBookItemData = CatalogBookCardDto & {
   score: number;
@@ -21,7 +22,7 @@ export type QuickBookFillResponse = {
   pageCount?: number;
   weightGrams?: number;
   coverImageUrl?: string;
-  spec?: QuickBookSpecResponse;
+  spec?: CreateBookSpecRequest | undefined;
 };
 
 export type SearchBooksResponse = ApiResponse<SearchBookItemData[]>;
