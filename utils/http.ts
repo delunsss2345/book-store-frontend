@@ -1,8 +1,6 @@
 import { envConfig } from "@/config/env.config";
 import { useAuthStore } from "@/features/auth";
-import { selectorClearSession } from "@/features/auth/selector/auth.selector";
-import axios,
-{
+import axios, {
   type AxiosInstance,
   type AxiosRequestConfig,
   type InternalAxiosRequestConfig,
@@ -14,12 +12,15 @@ export const axiosInstance: AxiosInstance = axios.create({
   baseURL,
 });
 
-export const refreshInstance : AxiosInstance = axios.create({
-  baseURL
-})
+export const refreshInstance: AxiosInstance = axios.create({
+  baseURL,
+});
 
 let isRefreshing = false;
-let failedQueue: { resolve: (value?: unknown) => void; reject: (reason?: unknown) => void }[] = [];
+let failedQueue: {
+  resolve: (value?: unknown) => void;
+  reject: (reason?: unknown) => void;
+}[] = [];
 
 const processQueue = (error: unknown | null) => {
   failedQueue.forEach(({ resolve, reject }) => {
@@ -35,7 +36,6 @@ const processQueue = (error: unknown | null) => {
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
-
     const originalRequest = error.config as InternalAxiosRequestConfig & {
       _retry?: boolean;
     };
@@ -68,9 +68,10 @@ axiosInstance.interceptors.response.use(
       processQueue(refreshError);
 
       if (typeof window !== "undefined") {
-        localStorage.clear()
+        const clearSession = useAuthStore.getState().clearSession;
+        localStorage.clear();
+        clearSession();
       }
-
       return Promise.reject(refreshError);
     } finally {
       isRefreshing = false;
@@ -94,7 +95,7 @@ class AxiosHttp {
       });
       return response.data;
     } catch (error) {
-      console.log(error) ;
+      console.log(error);
       throw error;
     }
   };
