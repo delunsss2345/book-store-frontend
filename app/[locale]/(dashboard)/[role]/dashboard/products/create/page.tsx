@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Wallet, Languages } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -15,8 +15,11 @@ import { PhysicalSpecsCard } from "./_components/PhysicalSpecsCard";
 import { ImagePreviewCard } from "./_components/ImagePreviewCard";
 import { useSearchStore } from "@/features/search/store/search.store";
 import { useSearchIsbnMutation } from "@/features/search/hooks/use-search-isbn";
+import HeaderCreate from "./_components/HeaderCreate";
+import { AdminBookVariant } from "@/types/response/admin.response";
 
 export default function CreateBookPage() {
+  const [variants, setVariants] = useState<AdminBookVariant[]>([]);
   const { isbnSearchResult } = useSearchStore();
   const { mutateAsync: searchIsbn, isPending: searchIsbnPending } =
     useSearchIsbnMutation();
@@ -25,8 +28,14 @@ export default function CreateBookPage() {
     searchIsbn({ isbn, lang });
   };
 
+  const onSaveHandler = () => {
+    console.log(isbnSearchResult);
+    console.log(variants);
+  };
+
   return (
     <div className="max-w-[1600px] mx-auto p-4 space-y-8">
+      <HeaderCreate onSaveHandler={onSaveHandler} isSaving={false} />
       {/* 1. MAGIC FILL SECTION */}
       <MagicFillCard onScan={onScanHandler} isPending={searchIsbnPending} />
 
@@ -79,7 +88,7 @@ export default function CreateBookPage() {
               </div>
             </CardHeader>
             <CardContent className="p-6">
-              <VariantCreate />
+              <VariantCreate variants={variants} setVariants={setVariants} />
             </CardContent>
           </Card>
         </div>

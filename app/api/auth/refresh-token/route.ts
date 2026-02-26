@@ -1,11 +1,15 @@
-import { COOKIE_OPTIONS, COOKIE_ACCESS_TOKEN_MAX_AGE, COOKIE_REFRESH_TOKEN_MAX_AGE } from "@/config/cookie.config";
+import {
+  COOKIE_OPTIONS,
+  COOKIE_ACCESS_TOKEN_MAX_AGE,
+  COOKIE_REFRESH_TOKEN_MAX_AGE,
+} from "@/config/cookie.config";
 import { API_MESSAGE } from "@/constants/api/messageApi";
 import { api } from "@/lib/api/fetchHandler";
 import { ResponseApi } from "@/lib/api/responseHandler";
 import { RefreshTokenResponse } from "@/types/response/auth.response";
 import { HttpStatusCode } from "axios";
 import { cookies } from "next/headers";
-
+import { NextResponse } from "next/server";
 
 export async function POST() {
   try {
@@ -19,9 +23,12 @@ export async function POST() {
       );
     }
 
-    const response = await api.post<RefreshTokenResponse>("auth/refresh-token", {
-      refreshToken,
-    });
+    const response = await api.post<RefreshTokenResponse>(
+      "auth/refresh-token",
+      {
+        refreshToken,
+      },
+    );
 
     cookieStore.set("refreshToken", response.data.refreshToken, {
       ...COOKIE_OPTIONS,
@@ -31,13 +38,20 @@ export async function POST() {
       ...COOKIE_OPTIONS,
       maxAge: COOKIE_ACCESS_TOKEN_MAX_AGE,
     });
-    
+
     return ResponseApi.success(response.data, HttpStatusCode.Ok);
   } catch (error: any) {
+    const cookieStore = await cookies();
+    cookieStore.delete("accessToken");
+    cookieStore.delete("refreshToken");
+
     if (process.env.NODE_ENV === "development") {
       console.error("Refresh Token API Error:", error);
     }
 
-    return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
+    return ResponseApi.error(
+      error.message,
+      error.status ?? HttpStatusCode.BadRequest,
+    );
   }
 }

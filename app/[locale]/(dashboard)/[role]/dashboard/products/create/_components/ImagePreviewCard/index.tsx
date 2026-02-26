@@ -73,7 +73,10 @@ export const ImagePreviewCard = ({
               </div>
             </>
           ) : (
-            <div className="text-center p-6">
+            <div
+              onClick={() => console.log("Tải ảnh")}
+              className="text-center p-6"
+            >
               <div className="size-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-300">
                 <ImageIcon className="size-8" />
               </div>

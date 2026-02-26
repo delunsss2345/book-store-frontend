@@ -20,6 +20,7 @@ export async function proxy(request: NextRequest) {
   const cookieStore = await cookies();
   const language = cookieStore.get("appLanguage")?.value || "vi";
   const token = cookieStore.get("accessToken")?.value || "";
+
   if (!SUPPORTED_LOCALES.includes(locale as Locale)) {
     return NextResponse.redirect(
       new URL(`/${language}${pathname}`, request.url),
@@ -27,6 +28,7 @@ export async function proxy(request: NextRequest) {
   }
 
   let decode: JwtPayload | null = null;
+  // Đang bị bug ở trang admin mà refreshtoken lỗi là bị lag luôn
   if (token) {
     try {
       decode = jwtDecode(token);
@@ -36,13 +38,15 @@ export async function proxy(request: NextRequest) {
       }
     }
   }
+
   const base = new URL(`/${language}`, request.url);
 
   if (
     pathname.endsWith("/dashboard") &&
     !decode?.roles?.includes(
       request.nextUrl.pathname.split("/")[2]?.toUpperCase(),
-    )
+    ) &&
+    token
   ) {
     if (!decode?.isEmailVerified) {
       return NextResponse.redirect(base);
