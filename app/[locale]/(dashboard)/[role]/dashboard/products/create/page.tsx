@@ -17,20 +17,24 @@ import { useSearchStore } from "@/features/search/store/search.store";
 import { useSearchIsbnMutation } from "@/features/search/hooks/use-search-isbn";
 import HeaderCreate from "./_components/HeaderCreate";
 import { AdminBookVariant } from "@/types/response/admin.response";
+import { convertIsbnResultToBookSchema } from "@/utils/convert-book";
 
 export default function CreateBookPage() {
   const [variants, setVariants] = useState<AdminBookVariant[]>([]);
+  const [language, setLanguage] = useState<string>("vi");
   const { isbnSearchResult } = useSearchStore();
   const { mutateAsync: searchIsbn, isPending: searchIsbnPending } =
     useSearchIsbnMutation();
 
   const onScanHandler = (isbn: string, lang: string) => {
     searchIsbn({ isbn, lang });
+    setLanguage(lang);
   };
 
   const onSaveHandler = () => {
-    console.log(isbnSearchResult);
-    console.log(variants);
+    console.log(
+      convertIsbnResultToBookSchema(isbnSearchResult, variants, language),
+    );
   };
 
   return (
