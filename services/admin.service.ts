@@ -1,4 +1,9 @@
-import { AdminBookListResponse } from "@/types/response/admin.response";
+import { CreateAdminBookAllRequest } from "@/types/request/admin.request";
+import {
+  AdminBook,
+  AdminBookListResponse,
+  AdminBookResponse,
+} from "@/types/response/admin.response";
 import { http } from "@/utils/http";
 
 export const adminService = {
@@ -6,6 +11,9 @@ export const adminService = {
   getBooks: () => http.get<AdminBookListResponse>("admin/books"),
 
   createBook: (payload: any) => http.post("admin/books", payload),
+
+  createBookAll: (payload: CreateAdminBookAllRequest) =>
+    http.post<AdminBookResponse>("admin/books/all", payload),
 
   updateBook: (bookId: string, payload: any) =>
     http.patch(`admin/books/${bookId}`, payload),
