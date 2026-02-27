@@ -157,7 +157,7 @@ export function CustomersDashboardClient() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className='text-3xl font-bold tracking-tight'>{t('dashboard.customers.title')}</h1>
-          <p className="text-muted-foreground text-sm">Quản lý danh sách khách hàng và quyền hạn.</p>
+          <p className="text-muted-foreground text-sm">{t('dashboard.customers.subtitle')}</p>
         </div>
         <Button className="hidden sm:flex">Add Customer</Button>
       </div>

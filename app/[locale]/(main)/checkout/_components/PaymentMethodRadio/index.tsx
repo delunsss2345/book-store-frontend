@@ -1,6 +1,7 @@
 "use client";
 
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useTranslations } from "next-intl";
 
 type PaymentMethodRadioProps = {
   defaultValue?: "sepay" | "cod";
@@ -13,6 +14,8 @@ export function PaymentMethodRadio({
   onValueChange,
   variant = "compact",
 }: PaymentMethodRadioProps) {
+  const t = useTranslations();
+
   const containerClass =
     variant === "rich"
       ? "gap-0 rounded-2xl border border-zinc-200 bg-white overflow-hidden shadow-sm"
@@ -33,12 +36,14 @@ export function PaymentMethodRadio({
         <RadioGroupItem value="sepay" id="sepay" />
         <div className="flex-1">
           <p className="text-sm font-bold text-zinc-900">
-            {variant === "rich" ? "sepay" : "Thanh toán qua sepay"}
+            {variant === "rich"
+              ? t("checkout.paymentMethod.sepayRichTitle")
+              : t("checkout.paymentMethod.sepayCompactTitle")}
           </p>
           <p className="text-xs text-zinc-500">
             {variant === "rich"
-              ? "Thanh toán an toàn qua cổng sepay"
-              : "Thẻ nội địa, Visa, Mastercard, JCB, QR Code"}
+              ? t("checkout.paymentMethod.sepayRichDescription")
+              : t("checkout.paymentMethod.sepayCompactDescription")}
           </p>
         </div>
 
@@ -67,12 +72,12 @@ export function PaymentMethodRadio({
         <RadioGroupItem value="cod" id="cod" />
         <div className="flex flex-col gap-0.5">
           <p className="text-sm font-bold text-zinc-900">
-            Thanh toán khi nhận hàng (COD)
+            {t("checkout.paymentMethod.codTitle")}
           </p>
           <p className="text-xs text-zinc-500">
             {variant === "rich"
-              ? "Kiểm tra hàng trước khi thanh toán"
-              : "Bạn sẽ thanh toán bằng tiền mặt khi shipper giao hàng"}
+              ? t("checkout.paymentMethod.codRichDescription")
+              : t("checkout.paymentMethod.codCompactDescription")}
           </p>
         </div>
       </label>

@@ -1,6 +1,5 @@
 "use client";
 
-import React, { useMemo } from "react";
 import {
   ColumnDef,
   flexRender,
@@ -46,6 +45,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
+import useTranslator from "@/hooks/use-translator";
 
 // --- Mock Data & Types ---
 type OrderStatus =
@@ -95,10 +95,11 @@ const MOCK_ORDERS = [
 ];
 
 export default function OrdersPage() {
+  const { t } = useTranslator();
   const columns: ColumnDef<any>[] = [
     {
       accessorKey: "orderCode",
-      header: "Mã đơn hàng",
+      header: t("dashboard.orders.table.columns.orderCode"),
       cell: ({ row }) => (
         <span className="font-bold text-blue-600">
           #{row.getValue("orderCode")}
@@ -107,7 +108,7 @@ export default function OrdersPage() {
     },
     {
       accessorKey: "guestEmail",
-      header: "Khách hàng",
+      header: t("dashboard.orders.table.columns.customer"),
       cell: ({ row }) => (
         <div className="flex flex-col">
           <span className="text-sm font-medium">
@@ -121,7 +122,7 @@ export default function OrdersPage() {
     },
     {
       accessorKey: "status",
-      header: "Trạng thái",
+      header: t("dashboard.orders.table.columns.status"),
       cell: ({ row }) => {
         const status = row.getValue("status") as string;
         const variants: Record<string, any> = {
@@ -136,7 +137,7 @@ export default function OrdersPage() {
     },
     {
       accessorKey: "paymentStatus",
-      header: "Thanh toán",
+      header: t("dashboard.orders.table.columns.payment"),
       cell: ({ row }) => {
         const pStatus = row.getValue("paymentStatus") as string;
         return (
@@ -151,7 +152,7 @@ export default function OrdersPage() {
     },
     {
       accessorKey: "totalAmount",
-      header: "Tổng tiền",
+      header: t("dashboard.orders.table.columns.totalAmount"),
       cell: ({ row }) => {
         const amount = parseFloat(row.getValue("totalAmount"));
         return (
@@ -166,11 +167,11 @@ export default function OrdersPage() {
     },
     {
       accessorKey: "placedAt",
-      header: "Ngày đặt",
+      header: t("dashboard.orders.table.columns.placedAt"),
     },
     {
       id: "actions",
-      header: "Thao tác",
+      header: t("dashboard.orders.table.columns.actions"),
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
           {/* Chi tiết đơn hàng */}
@@ -183,13 +184,13 @@ export default function OrdersPage() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Hành động</DropdownMenuLabel>
+              <DropdownMenuLabel>{t("dashboard.orders.table.actions.label")}</DropdownMenuLabel>
               <DropdownMenuItem>
-                <FileDown className="mr-2 h-4 w-4" /> Xuất hóa đơn (PDF)
+                <FileDown className="mr-2 h-4 w-4" /> {t("dashboard.orders.table.actions.exportPdf")}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="text-destructive">
-                Hủy đơn hàng
+                {t("dashboard.orders.table.actions.cancelOrder")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -208,14 +209,14 @@ export default function OrdersPage() {
     <div className="p-8 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Đơn hàng</h2>
+          <h2 className="text-3xl font-bold tracking-tight">{t("dashboard.orders.title")}</h2>
           <p className="text-muted-foreground">
-            Theo dõi và quản lý các giao dịch từ khách hàng.
+            {t("dashboard.orders.subtitle")}
           </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline">
-            <FileDown className="mr-2 h-4 w-4" /> Xuất Excel
+            <FileDown className="mr-2 h-4 w-4" /> {t("dashboard.orders.exportExcel")}
           </Button>
         </div>
       </div>
@@ -224,10 +225,10 @@ export default function OrdersPage() {
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Tìm mã đơn, email..." className="pl-8" />
+          <Input placeholder={t("dashboard.orders.searchPlaceholder")} className="pl-8" />
         </div>
         <Button variant="outline" className="gap-2">
-          <Filter className="h-4 w-4" /> Lọc đơn hàng
+          <Filter className="h-4 w-4" /> {t("dashboard.orders.filterButton")}
         </Button>
       </div>
 
@@ -272,20 +273,22 @@ export default function OrdersPage() {
 
 // --- Sub-component: Order Details Sheet ---
 function OrderDetailsSheet({ order }: { order: any }) {
+  const { t } = useTranslator();
+
   return (
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="ghost" size="sm" className="h-8 gap-1">
-          <Eye className="h-4 w-4" /> Xem chi tiết
+          <Eye className="h-4 w-4" /> {t("dashboard.orders.details.view")}
         </Button>
       </SheetTrigger>
       <SheetContent className="sm:max-w-md overflow-y-auto">
         <SheetHeader>
           <SheetTitle className="flex items-center gap-2">
-            <Package className="h-5 w-5" /> Đơn hàng {order.orderCode}
+            <Package className="h-5 w-5" /> {t("dashboard.orders.details.order")}{" "}{order.orderCode}
           </SheetTitle>
           <SheetDescription>
-            Chi tiết các sản phẩm và trạng thái thanh toán.
+            {t("dashboard.orders.details.description")}
           </SheetDescription>
         </SheetHeader>
 
@@ -293,7 +296,7 @@ function OrderDetailsSheet({ order }: { order: any }) {
           {/* Thông tin khách hàng */}
           <div className="space-y-2">
             <h4 className="text-sm font-semibold uppercase text-muted-foreground tracking-widest">
-              Khách hàng
+              {t("dashboard.orders.details.customer")}
             </h4>
             <p className="text-sm">{order.guestEmail}</p>
           </div>
@@ -303,7 +306,7 @@ function OrderDetailsSheet({ order }: { order: any }) {
           {/* Danh sách OrderItems */}
           <div className="space-y-4">
             <h4 className="text-sm font-semibold uppercase text-muted-foreground tracking-widest">
-              Sản phẩm ({order.items.length})
+              {t("dashboard.orders.details.products", { count: order.items.length })}
             </h4>
             {order.items.map((item: any) => (
               <div
@@ -313,7 +316,7 @@ function OrderDetailsSheet({ order }: { order: any }) {
                 <div className="space-y-1">
                   <p className="font-medium">{item.productName}</p>
                   <p className="text-muted-foreground text-xs">
-                    SL: {item.quantity} x {item.unitPrice.toLocaleString()}đ
+                    {t("dashboard.orders.details.quantity")}: {item.quantity} x {item.unitPrice.toLocaleString()}đ
                   </p>
                 </div>
                 <p className="font-mono">{item.lineTotal.toLocaleString()}đ</p>
@@ -324,11 +327,11 @@ function OrderDetailsSheet({ order }: { order: any }) {
           {/* Tổng kết tiền */}
           <div className="bg-muted/50 p-4 rounded-lg space-y-2">
             <div className="flex justify-between text-sm italic">
-              <span>Tạm tính:</span>
+              <span>{t("dashboard.orders.details.subtotal")}:</span>
               <span>{order.totalAmount.toLocaleString()}đ</span>
             </div>
             <div className="flex justify-between font-bold text-lg border-t pt-2 mt-2">
-              <span>Tổng cộng:</span>
+              <span>{t("dashboard.orders.details.total")}:</span>
               <span className="text-blue-600">
                 {order.totalAmount.toLocaleString()}đ
               </span>

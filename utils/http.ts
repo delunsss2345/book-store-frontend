@@ -80,7 +80,7 @@ axiosInstance.interceptors.response.use(
 );
 
 class AxiosHttp {
-  private _send = async <T = unknown>(
+  private _send = async <T = any>(
     method: "get" | "post" | "put" | "delete" | "patch",
     path: string,
     data: object | undefined,
@@ -100,14 +100,14 @@ class AxiosHttp {
     }
   };
 
-  get = <T = unknown>(
+  get = <T = any>(
     path: string,
     config?: AxiosRequestConfig,
   ): Promise<T> => {
     return this._send<T>("get", path, undefined, config);
   };
 
-  post = <T = unknown>(
+  post = <T = any>(
     path: string,
     data?: object,
     config?: AxiosRequestConfig,
@@ -115,7 +115,7 @@ class AxiosHttp {
     return this._send<T>("post", path, data, config);
   };
 
-  put = <T = unknown>(
+  put = <T = any>(
     path: string,
     data: object,
     config?: AxiosRequestConfig,
@@ -123,7 +123,7 @@ class AxiosHttp {
     return this._send<T>("put", path, data, config);
   };
 
-  patch = <T = unknown>(
+  patch = <T = any>(
     path: string,
     data: object,
     config?: AxiosRequestConfig,
@@ -131,7 +131,7 @@ class AxiosHttp {
     return this._send<T>("patch", path, data, config);
   };
 
-  del = <T = unknown>(
+  del = <T = any>(
     path: string,
     config?: AxiosRequestConfig,
   ): Promise<T> => {

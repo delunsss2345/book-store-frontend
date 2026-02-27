@@ -47,6 +47,7 @@ import {
   Users,
 } from "lucide-react";
 import { useEffect, useMemo } from "react";
+import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { ModalType, useModalStore } from "@/features/modal";
 import { ActionDropdown } from "@/components/common/ActionDropdownMenu";
@@ -64,6 +65,7 @@ export function ProductsDashboardClient() {
   } = useAdminBooksQuery();
 
   const router = useRouter();
+  const { role } = useParams<{ role: string }>();
   useEffect(() => {
     if (error) toast.error(error.message);
   }, [error]);
@@ -154,7 +156,10 @@ export function ProductsDashboardClient() {
             </Button>
             <Button
               onClick={() =>
-                router.push({ pathname: `/admin/dashboard/products/edit` })
+                router.push({
+                  pathname: "/[role]/dashboard/products/edit",
+                  params: { role },
+                })
               }
               variant="ghost"
               size="icon"
@@ -217,7 +222,10 @@ export function ProductsDashboardClient() {
         </div>
         <Button
           onClick={() =>
-            router.push({ pathname: "/admin/dashboard/products/create" })
+            router.push({
+              pathname: "/[role]/dashboard/products/create",
+              params: { role },
+            })
           }
           className="w-fit gap-2 bg-slate-950 hover:bg-slate-800 text-white shadow-md transition-all"
         >
@@ -320,7 +328,7 @@ export function ProductsDashboardClient() {
         {/* Pagination Section */}
         <div className="flex flex-col items-center justify-between gap-4 border-t bg-slate-50/30 px-6 py-4 md:flex-row text-sm text-muted-foreground">
           <p>
-            Hiển thị <strong>8</strong> mục mỗi trang của 128
+            {t("dashboard.products.pagination.summary", { perPage: 8, total: 128 })}
           </p>
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1">

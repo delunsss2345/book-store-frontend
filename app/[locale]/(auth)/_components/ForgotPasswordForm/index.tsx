@@ -1,6 +1,5 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { TFunction } from "i18next";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -17,7 +16,9 @@ import {
 import { Input } from "@/components/ui/input";
 import useTranslator from "@/hooks/use-translator";
 
-const getForgotPasswordSchema = (t: TFunction) =>
+type TranslatorFn = ReturnType<typeof useTranslator>["t"];
+
+const getForgotPasswordSchema = (t: TranslatorFn) =>
   z.object({
     email: z.string().email(t("auth.errors.emailInvalid")),
   });

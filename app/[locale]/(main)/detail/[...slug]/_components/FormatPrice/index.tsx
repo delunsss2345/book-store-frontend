@@ -1,7 +1,9 @@
 import { useCatalogStore } from "@/features/catalog/store/catalog.store";
 import { useMemo } from "react";
+import { useTranslations } from "next-intl";
 
 export function FormatPrice() {
+    const t = useTranslations();
     const bookVariantDetail = useCatalogStore((state) => state.bookVariantDetail);
 
     const formatted = useMemo(() => {
@@ -33,7 +35,7 @@ export function FormatPrice() {
                 {formatted}
             </p>
 
-            <span className="text-sm text-neutral-500">/ cuốn</span>
+            <span className="text-sm text-neutral-500">{t("detail.pricePerBook")}</span>
         </div>
     );
 }

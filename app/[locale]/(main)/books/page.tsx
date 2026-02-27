@@ -366,6 +366,7 @@ export default function AllTitlesPage() {
               title={book.title}
               subtitle={book.subtitle}
               price={book.price}
+              bookVariantId={i + 1}
               badge={book.badge || undefined}
               imageUrl={book.imageUrl}
               href={`/detail/${i + 1}`}

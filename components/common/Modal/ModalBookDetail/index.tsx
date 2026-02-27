@@ -199,14 +199,14 @@ function StatBox({
   label,
   value,
 }: {
-  icon: React.ReactNode;
+  icon: React.ReactElement<{ className?: string }>;
   label: string;
-  value: any;
+  value: React.ReactNode;
 }) {
   return (
     <div className="flex flex-col gap-1 p-3 rounded-lg border bg-card text-card-foreground shadow-sm">
       <div className="flex items-center gap-2 text-muted-foreground">
-        {React.cloneElement(icon as React.ReactElement, {
+        {React.cloneElement(icon, {
           className: "w-3.5 h-3.5",
         })}
         <span className="text-[10px] font-bold uppercase tracking-tight">

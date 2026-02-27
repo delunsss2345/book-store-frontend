@@ -1,10 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { MoveLeft, Construction, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button"; // Giả sử bạn dùng shadcn/ui
+import { Button } from "@/components/ui/button";
 
 export default function DashboardNotFound() {
+  const t = useTranslations();
+
   return (
     <div className="flex min-h-[70vh] flex-col items-center justify-center px-4 text-center">
       {/* Visual Element: Một icon được bao quanh bởi vòng tròn mờ ảo */}
@@ -22,8 +25,7 @@ export default function DashboardNotFound() {
 
       <div className="max-w-md space-y-4">
         <p className="text-balance text-zinc-500 leading-relaxed">
-          Chúng tôi đang biên soạn nội dung cho mục này. Những tựa sách và bộ
-          sưu tập mới nhất sẽ sớm được cập nhật tại đây.
+          {t("notFound.description")}
         </p>
       </div>
 
@@ -35,7 +37,7 @@ export default function DashboardNotFound() {
             className="group h-12 px-8 rounded-none border-zinc-950 font-bold uppercase tracking-widest transition-all hover:bg-zinc-950 hover:text-white"
           >
             <MoveLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
-            Trở về trang chủ
+            {t("notFound.backHome")}
           </Button>
         </Link>
 
@@ -44,7 +46,7 @@ export default function DashboardNotFound() {
             variant="ghost"
             className="group h-12 px-8 rounded-none font-bold uppercase tracking-widest text-zinc-500 hover:text-zinc-950"
           >
-            Xem kho sách
+            {t("notFound.viewBooks")}
             <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Button>
         </Link>

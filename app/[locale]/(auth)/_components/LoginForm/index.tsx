@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { TFunction } from "i18next";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -16,7 +15,9 @@ import {
 import { Input } from "@/components/ui/input";
 import useTranslator from "@/hooks/use-translator";
 
-const getLoginSchema = (t: TFunction) =>
+type TranslatorFn = ReturnType<typeof useTranslator>["t"];
+
+const getLoginSchema = (t: TranslatorFn) =>
   z.object({
     email: z.string().email(t("auth.errors.emailInvalid")),
     password: z.string().min(6, t("auth.errors.passwordMin", { count: 6 })),
@@ -84,7 +85,7 @@ const LoginForm = ({ isLoading, onSubmit }: LoginFormProps) => {
         />
 
         <Button type="submit" className="w-full cursor-pointer" disabled={isLoading}>
-          {isLoading ? "Đang đăng nhập" : "Đăng nhập"}
+          {isLoading ? t("auth.loginLoading") : t("auth.signIn")}
         </Button>
 
       </form>

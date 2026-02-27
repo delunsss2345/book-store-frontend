@@ -25,7 +25,6 @@ import { ChevronRight } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { type ReactNode } from "react";
 import { Badge } from "../ui/badge";
-import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
 export function NavGroup({ title, items }: NavGroupProps) {
@@ -56,7 +55,6 @@ function NavBadge({ children }: { children: ReactNode }) {
 
 function SidebarMenuLink({ item, href }: { item: NavLink; href: string }) {
   const { setOpenMobile } = useSidebar();
-  const locale = useLocale();
   return (
     <SidebarMenuItem>
       <SidebarMenuButton
@@ -64,7 +62,7 @@ function SidebarMenuLink({ item, href }: { item: NavLink; href: string }) {
         isActive={checkIsActive(href, item)}
         tooltip={item.title}
       >
-        <Link href={`${item.url}`} onClick={() => setOpenMobile(false)}>
+        <Link href={item.url as any} onClick={() => setOpenMobile(false)}>
           {item.icon && <item.icon />}
           <span>{item.title}</span>
           {item.badge && <NavBadge>{item.badge}</NavBadge>}
@@ -105,7 +103,7 @@ function SidebarMenuCollapsible({
                   asChild
                   isActive={checkIsActive(href, subItem)}
                 >
-                  <Link href={subItem.url} onClick={() => setOpenMobile(false)}>
+                  <Link href={subItem.url as any} onClick={() => setOpenMobile(false)}>
                     {subItem.icon && <subItem.icon />}
                     <span>{subItem.title}</span>
                     {subItem.badge && <NavBadge>{subItem.badge}</NavBadge>}

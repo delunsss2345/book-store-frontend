@@ -57,13 +57,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import useTranslator from "@/hooks/use-translator";
 
 export default function EditBookPage() {
   const router = useRouter();
+  const { t } = useTranslator();
 
   const bookData = {
     id: "998877",
-    title: "Clean Code - Mã Sạch",
+    title: t("dashboard_products.edit.mockTitle"),
     isActive: true,
     isbn: "9780132350884",
   };
@@ -84,7 +86,7 @@ export default function EditBookPage() {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-2xl font-bold tracking-tight">
-                Chỉnh sửa: {bookData.title}
+                {t("dashboard_products.edit.editing")}: {bookData.title}
               </h1>
               <Badge variant="outline" className="font-mono text-[10px]">
                 ID: {bookData.id}
@@ -100,7 +102,7 @@ export default function EditBookPage() {
                 size="sm"
                 className="h-auto p-0 text-xs text-primary gap-1"
               >
-                <ExternalLink className="size-3" /> Xem thực tế
+                <ExternalLink className="size-3" /> {t("dashboard_products.edit.viewLive")}
               </Button>
             </div>
           </div>
@@ -110,17 +112,17 @@ export default function EditBookPage() {
             variant="outline"
             className="text-destructive hover:bg-destructive/5 border-destructive/20 gap-2"
           >
-            <Trash2 className="size-4" /> Xóa đầu sách
+            <Trash2 className="size-4" /> {t("dashboard_products.edit.deleteBook")}
           </Button>
           <Separator
             orientation="vertical"
             className="h-8 mx-2 hidden md:block"
           />
           <Button variant="ghost" onClick={() => router.back()}>
-            Hủy
+            {t("dashboard_products.edit.cancel")}
           </Button>
           <Button className="bg-slate-900 hover:bg-slate-800 px-8 gap-2 shadow-lg shadow-slate-200">
-            <Save className="size-4" /> Cập nhật thay đổi
+            <Save className="size-4" /> {t("dashboard_products.edit.updateChanges")}
           </Button>
         </div>
       </div>
@@ -133,25 +135,25 @@ export default function EditBookPage() {
             <CardHeader className="border-b bg-indigo-50/30 flex flex-row items-center justify-between space-y-0">
               <div className="flex items-center gap-2 text-indigo-700">
                 <Languages className="size-5" />
-                <CardTitle className="text-lg">Nội dung dịch thuật</CardTitle>
+                <CardTitle className="text-lg">{t("dashboard_products.edit.translationContent")}</CardTitle>
               </div>
               <Button
                 size="sm"
                 variant="outline"
                 className="bg-white border-indigo-200 text-indigo-600 gap-2"
               >
-                <Sparkles className="size-3.5" /> AI Dịch lại
+                <Sparkles className="size-3.5" /> {t("dashboard_products.edit.aiRewrite")}
               </Button>
             </CardHeader>
             <CardContent className="p-6 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label className="font-bold">Tiêu đề sách</Label>
+                  <Label className="font-bold">{t("dashboard_products.edit.bookTitle")}</Label>
                   <Input defaultValue={bookData.title} className="h-11" />
                 </div>
                 <div className="space-y-2">
                   <Label className="font-bold text-muted-foreground">
-                    Đường dẫn (Slug)
+                    {t("dashboard_products.edit.slug")}
                   </Label>
                   <div className="relative">
                     <Input
@@ -169,10 +171,10 @@ export default function EditBookPage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label className="font-bold">Mô tả chi tiết</Label>
+                <Label className="font-bold">{t("dashboard_products.edit.description")}</Label>
                 <Textarea
                   className="min-h-[300px] leading-relaxed italic"
-                  defaultValue="Nội dung tóm tắt cũ của cuốn sách..."
+                  defaultValue={t("dashboard_products.edit.oldSummary")}
                 />
               </div>
             </CardContent>
@@ -184,41 +186,41 @@ export default function EditBookPage() {
               <div className="flex items-center gap-2 text-emerald-700">
                 <Wallet className="size-5" />
                 <CardTitle className="text-lg">
-                  Danh sách biến thể (Variants)
+                  {t("dashboard_products.edit.variantsTitle")}
                 </CardTitle>
               </div>
               <Button
                 size="sm"
                 className="bg-emerald-600 hover:bg-emerald-700 gap-2"
               >
-                <Plus className="size-4" /> Thêm định dạng mới
+                <Plus className="size-4" /> {t("dashboard_products.edit.addFormat")}
               </Button>
             </CardHeader>
             <CardContent className="p-0">
               <Table>
                 <TableHeader>
                   <TableRow className="bg-slate-50/50">
-                    <TableHead className="w-[120px]">Định dạng</TableHead>
+                    <TableHead className="w-[120px]">{t("dashboard_products.edit.table.format")}</TableHead>
                     <TableHead>ISBN</TableHead>
-                    <TableHead className="text-right">Giá nhập</TableHead>
+                    <TableHead className="text-right">{t("dashboard_products.edit.table.costPrice")}</TableHead>
                     <TableHead className="text-right font-bold">
-                      Giá bán
+                      {t("dashboard_products.edit.table.price")}
                     </TableHead>
-                    <TableHead className="text-right">Kho</TableHead>
+                    <TableHead className="text-right">{t("dashboard_products.edit.table.stock")}</TableHead>
                     <TableHead className="w-[100px]"></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {[
                     {
-                      format: "Bìa mềm",
+                      format: t("dashboard_products.edit.formats.paperback"),
                       isbn: "9780132350884",
                       cost: "250.000",
                       price: "380.000",
                       stock: 45,
                     },
                     {
-                      format: "Bìa cứng",
+                      format: t("dashboard_products.edit.formats.hardcover"),
                       isbn: "9780132350999",
                       cost: "450.000",
                       price: "620.000",
@@ -277,10 +279,10 @@ export default function EditBookPage() {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label className="text-base font-bold italic">
-                    Trạng thái mở bán
+                    {t("dashboard_products.edit.releaseStatus")}
                   </Label>
                   <p className="text-xs text-muted-foreground italic">
-                    Cho phép sách xuất hiện trên Store
+                    {t("dashboard_products.edit.releaseStatusDescription")}
                   </p>
                 </div>
                 <Switch
@@ -290,8 +292,8 @@ export default function EditBookPage() {
               </div>
               <Separator className="my-4" />
               <div className="flex items-center gap-3 text-[11px] text-muted-foreground italic">
-                <CheckCircle2 className="size-3 text-emerald-500" /> Cập nhật
-                lần cuối: 2 phút trước
+                <CheckCircle2 className="size-3 text-emerald-500" />{" "}
+                {t("dashboard_products.edit.lastUpdated")}
               </div>
             </CardContent>
           </Card>
@@ -300,7 +302,7 @@ export default function EditBookPage() {
           <Card className="shadow-sm overflow-hidden">
             <CardHeader className="py-3 bg-slate-50 border-b">
               <CardTitle className="text-xs font-bold uppercase tracking-widest text-slate-500">
-                Ảnh bìa hiện tại
+                {t("dashboard_products.edit.currentCover")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6 space-y-4">
@@ -312,13 +314,13 @@ export default function EditBookPage() {
                 />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <Button variant="secondary" size="sm" className="gap-2">
-                    <ImageIcon className="size-4" /> Thay đổi ảnh
+                    <ImageIcon className="size-4" /> {t("dashboard_products.edit.changeImage")}
                   </Button>
                 </div>
               </div>
               <div className="space-y-1.5">
                 <Label className="text-[10px] font-bold uppercase text-muted-foreground">
-                  URL Ảnh gốc
+                  {t("dashboard_products.edit.originalImageUrl")}
                 </Label>
                 <Input
                   className="h-8 text-[11px] font-mono bg-slate-50"
@@ -332,7 +334,7 @@ export default function EditBookPage() {
           <Card className="shadow-sm">
             <CardHeader className="py-3 bg-slate-50 border-b flex flex-row items-center justify-between">
               <CardTitle className="text-xs font-bold uppercase tracking-widest text-slate-500">
-                Thông số kỹ thuật
+                {t("dashboard_products.edit.specifications")}
               </CardTitle>
               <Ruler className="size-4 text-slate-400" />
             </CardHeader>
@@ -340,7 +342,7 @@ export default function EditBookPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <Label className="text-[10px] font-bold uppercase text-muted-foreground">
-                    Cân nặng (g)
+                    {t("dashboard_products.edit.weight")}
                   </Label>
                   <Input
                     type="number"
@@ -350,7 +352,7 @@ export default function EditBookPage() {
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-[10px] font-bold uppercase text-muted-foreground">
-                    Số trang
+                    {t("dashboard_products.edit.pageCount")}
                   </Label>
                   <Input type="number" className="h-9" defaultValue={460} />
                 </div>
@@ -361,7 +363,7 @@ export default function EditBookPage() {
               <div className="space-y-4">
                 <div className="space-y-1.5">
                   <Label className="text-[10px] font-bold uppercase text-muted-foreground">
-                    Nhà xuất bản
+                    {t("dashboard_products.edit.publisher")}
                   </Label>
                   <Select defaultValue="1">
                     <SelectTrigger className="h-9 text-sm font-medium">
@@ -375,7 +377,7 @@ export default function EditBookPage() {
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-[10px] font-bold uppercase text-muted-foreground">
-                    Năm xuất bản
+                    {t("dashboard_products.edit.publicationYear")}
                   </Label>
                   <Input type="number" className="h-9" defaultValue={2025} />
                 </div>
@@ -384,18 +386,18 @@ export default function EditBookPage() {
               {/* BADGES EDIT */}
               <div className="space-y-3">
                 <Label className="text-[10px] font-bold uppercase text-muted-foreground">
-                  Nhãn đang gắn
+                  {t("dashboard_products.edit.currentLabels")}
                 </Label>
                 <div className="flex flex-wrap gap-2">
                   <Badge className="bg-amber-100 text-amber-700 border-amber-200 hover:bg-amber-200 cursor-pointer">
-                    Bán chạy <Plus className="size-2 ml-1 rotate-45" />
+                    {t("dashboard_products.edit.bestSeller")} <Plus className="size-2 ml-1 rotate-45" />
                   </Badge>
                   <Button
                     variant="ghost"
                     size="sm"
                     className="h-6 px-2 text-[10px] border-dashed border-2"
                   >
-                    <Plus className="size-3 mr-1" /> Gắn nhãn mới
+                    <Plus className="size-3 mr-1" /> {t("dashboard_products.edit.attachNewLabel")}
                   </Button>
                 </div>
               </div>

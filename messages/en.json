@@ -22,6 +22,11 @@
       "new": "NEW"
     }
   },
+  "notFound": {
+    "description": "We are preparing content for this section. The latest books and collections will be updated here soon.",
+    "backHome": "Back to home",
+    "viewBooks": "View catalog"
+  },
   "grid": {
     "title": "New & Trending"
   },
@@ -118,7 +123,7 @@
         "b2bAccess": "B2B Shop Access"
       }
     },
-    "copyright": "c {{year}} - TASCHEN GmbH, Hohenzollernring 53, D-50672 Cologne"
+    "copyright": "c {year} - TASCHEN GmbH, Hohenzollernring 53, D-50672 Cologne"
   },
   "profile": {
     "header": {
@@ -147,7 +152,7 @@
       "contactInformation": "Contact information"
     },
     "footer": {
-      "copyright": "\u00a9 {{year}} TASCHEN"
+      "copyright": "\u00a9 {year} TASCHEN"
     },
     "page": {
       "title": "My Profile",
@@ -225,14 +230,112 @@
         "addTranslation": "Add translation"
       },
       "pagination": {
-        "itemsPerPage": "Showing {{count}} items per page",
+        "itemsPerPage": "Showing {count} items per page",
+        "summary": "Showing {perPage} items per page out of {total}",
         "prev": "Previous page",
         "next": "Next page",
         "goToPage": "Go to page"
+      },
+      "create": {
+        "toast": {
+          "scanLoading": "Scanning ISBN data...",
+          "scanSuccess": "ISBN data loaded.",
+          "scanError": "Failed to scan ISBN data.",
+          "createLoading": "Creating book...",
+          "createSuccess": "Book created successfully",
+          "createError": "Failed to create book"
+        },
+        "contentTitle": "Display content",
+        "languageVietnamese": "Vietnamese",
+        "languageEnglish": "English",
+        "loadedData": "Data loaded",
+        "bookTitleLabel": "Book title *",
+        "bookTitlePlaceholder": "Book title displayed on the website...",
+        "tip": "Tip: double-check punctuation and capitalization before saving.",
+        "descriptionLabel": "Detailed description",
+        "descriptionPlaceholder": "Book introduction content...",
+        "variantPriceTitle": "Variants & Pricing",
+        "defaultBadge": "Default",
+        "variantCount": "{count} variants",
+        "creationStatus": "Creation status",
+        "creationStatusDescription": "After creation, data is set to Inactive by default and requires approval to be public.",
+        "header": {
+          "title": "Add new book",
+          "subtitle": "Fill in details to create a product in the system.",
+          "cancel": "Cancel",
+          "save": "Save book"
+        },
+        "magicFill": {
+          "title": "ENTER ISBN FOR QUICK FILL (MAGIC FILL)",
+          "scanning": "Scanning data...",
+          "languagePlaceholder": "Language",
+          "languageVietnamese": "Vietnamese",
+          "languageEnglish": "English",
+          "isbnPlaceholder": "Example: 9780135398548",
+          "scanButton": "Scan data",
+          "hint": "Data will auto-fill sections: content, cover image, specifications..."
+        },
+        "imagePreview": {
+          "title": "Cover & Preview",
+          "emptyTitle": "No cover image yet",
+          "emptyDescription": "Paste URL or use Magic Fill",
+          "urlLabel": "Image URL",
+          "tip": "<b>Tip:</b> use a <b>3:4</b> ratio image (e.g. 600x800px) for best display."
+        },
+        "physicalSpecs": {
+          "title": "Specifications & Publishing",
+          "dimensionLabel": "Dimensions",
+          "dimensionHint": "cm / g (if available)",
+          "widthLabel": "Width (cm)",
+          "heightLabel": "Height (cm)",
+          "thicknessLabel": "Thickness (cm)",
+          "weightLabel": "Weight (g)",
+          "publishLabel": "Publishing",
+          "authorLabel": "Author",
+          "authorPlaceholder": "Author name...",
+          "publisherLabel": "Publisher",
+          "publisherPlaceholder": "Publisher name...",
+          "publishYearLabel": "Publication year",
+          "pageCountLabel": "Page count",
+          "badgesLabel": "Attached badges",
+          "badges": {
+            "bestSeller": "Best seller",
+            "newArrival": "New arrival"
+          },
+          "addBadge": "Add badge",
+          "footerAlert": "After creation, data is set to <b>Inactive</b>. Approval is required before publishing."
+        },
+        "variant": {
+          "validation": {
+            "isbnRequired": "ISBN is required",
+            "costPriceRequired": "Cost price is required",
+            "priceRequired": "Price is required",
+            "currencyCodeRequired": "Currency code is required"
+          },
+          "empty": "No variants yet. Add variants to configure pricing and stock.",
+          "addNew": "Add new variant",
+          "formTitle": "Create variant",
+          "basicInfo": "Basic information",
+          "formatLabel": "Format",
+          "formats": {
+            "paperback": "Paperback",
+            "hardcover": "Hardcover"
+          },
+          "stockLabel": "Stock",
+          "stockShort": "Stock",
+          "isbnLabel": "ISBN",
+          "pricingAndEdition": "Pricing & Edition",
+          "costPriceLabel": "Cost price",
+          "priceLabel": "Price",
+          "editionLabel": "Edition",
+          "cancel": "Cancel",
+          "save": "Save variant"
+        }
       }
     },
     "customers": {
       "title": "Customers",
+      "subtitle": "Manage customer list and permissions.",
       "summary": {
         "totalCustomers": "Total customers",
         "activeLastDay": "Customers active in the last 1 day"
@@ -259,11 +362,118 @@
         "WAREHOUSE": "Warehouse"
       },
       "pagination": {
-        "itemsPerPage": "Showing {{count}} items per page",
+        "itemsPerPage": "Showing {count} items per page",
         "prev": "Previous page",
         "next": "Next page",
         "goToPage": "Go to page"
       }
+    },
+    "categories": {
+      "title": "Categories",
+      "subtitle": "Manage your product classifications.",
+      "addButton": "Add category",
+      "searchPlaceholder": "Search categories...",
+      "empty": "No data available.",
+      "pagination": {
+        "prev": "Previous",
+        "next": "Next"
+      },
+      "table": {
+        "columns": {
+          "name": "Category name",
+          "slug": "Slug",
+          "count": "Product count",
+          "status": "Status",
+          "actions": "Actions"
+        },
+        "actions": {
+          "label": "Actions",
+          "edit": "Edit category",
+          "delete": "Delete category"
+        }
+      },
+      "dialog": {
+        "title": "Add new category",
+        "description": "Enter details for the new product category here.",
+        "nameLabel": "Category name",
+        "namePlaceholder": "Example: Home Appliances",
+        "save": "Save changes"
+      }
+    },
+    "orders": {
+      "title": "Orders",
+      "subtitle": "Track and manage customer transactions.",
+      "exportExcel": "Export Excel",
+      "searchPlaceholder": "Search order code, email...",
+      "filterButton": "Filter orders",
+      "table": {
+        "columns": {
+          "orderCode": "Order code",
+          "customer": "Customer",
+          "status": "Status",
+          "payment": "Payment",
+          "totalAmount": "Total amount",
+          "placedAt": "Placed at",
+          "actions": "Actions"
+        },
+        "actions": {
+          "label": "Actions",
+          "exportPdf": "Export invoice (PDF)",
+          "cancelOrder": "Cancel order"
+        }
+      },
+      "details": {
+        "view": "View details",
+        "order": "Order",
+        "description": "Details of products and payment status.",
+        "customer": "Customer",
+        "products": "Products ({count})",
+        "quantity": "Qty",
+        "subtotal": "Subtotal",
+        "total": "Total"
+      }
+    }
+  },
+  "dashboard_products": {
+    "edit": {
+      "mockTitle": "Clean Code",
+      "editing": "Editing",
+      "viewLive": "View live",
+      "deleteBook": "Delete book",
+      "cancel": "Cancel",
+      "updateChanges": "Update changes",
+      "translationContent": "Translation content",
+      "aiRewrite": "AI rewrite",
+      "bookTitle": "Book title",
+      "slug": "Slug",
+      "description": "Detailed description",
+      "oldSummary": "Old summary content of this book...",
+      "variantsTitle": "Variant list",
+      "addFormat": "Add new format",
+      "table": {
+        "format": "Format",
+        "costPrice": "Cost price",
+        "price": "Price",
+        "stock": "Stock"
+      },
+      "formats": {
+        "paperback": "Paperback",
+        "hardcover": "Hardcover"
+      },
+      "releaseStatus": "Release status",
+      "releaseStatusDescription": "Allow this book to appear on the store",
+      "lastUpdated": "Last updated: 2 minutes ago",
+      "currentCover": "Current cover",
+      "changeImage": "Change image",
+      "originalImageUrl": "Original image URL",
+      "specifications": "Specifications",
+      "weight": "Weight (g)",
+      "pageCount": "Page count",
+      "publisher": "Publisher",
+      "publicationYear": "Publication year",
+      "currentLabels": "Current labels",
+      "bestSeller": "Best seller",
+      "attachNewLabel": "Attach new label"
     }
   },
   "auth": {
@@ -291,6 +501,7 @@
     "signIn": "Sign in",
     "forgotTitle": "Forgot password",
     "forgotSubtitle": "We will send a reset link to your email.",
+    "forgotLink": "Forgot password?",
     "passwordResetTitle": "Reset password",
     "passwordResetSubtitle": "Enter a new password for your account.",
     "verifyTitle": "Verify your account",
@@ -314,8 +525,8 @@
     "success": {
       "register": "Registration successful. Check your email for the verification token.",
       "verify": "Verification successful. You can log in now.",
-      "forgot": "If the email exists, we will send reset instructions to {{email}}.",
-      "resend": "If the email exists, we sent a new verification email to {{email}}.",
+      "forgot": "If the email exists, we will send reset instructions to {email}.",
+      "resend": "If the email exists, we sent a new verification email to {email}.",
       "login": "Logged in successfully!",
       "logout": "Logged out successfully!",
       "reset": "Password reset successfully. You can log in now.",
@@ -323,7 +534,7 @@
     },
     "errors": {
       "emailInvalid": "Invalid email address",
-      "passwordMin": "Password must be at least {{count}} characters",
+      "passwordMin": "Password must be at least {count} characters",
       "required": "This field is required",
       "passwordMismatch": "Passwords do not match",
       "requestFailed": "Something went wrong. Please try again.",
@@ -332,13 +543,45 @@
       "invalidLink": "Invalid link!"
     }
   },
+  "detail": {
+    "bookNotFound": "Book information not found.",
+    "noReviews": "There are no reviews for this product yet.",
+    "pricePerBook": "/ book",
+    "toast": {
+      "addToCartLoading": "Adding to cart...",
+      "addToCartSuccess": "Added to cart.",
+      "addToCartError": "Failed to add to cart."
+    }
+  },
+  "cart": {
+    "page": {
+      "loadError": "Failed to load cart.",
+      "empty": "Your cart is empty."
+    },
+    "toast": {
+      "addItemLoading": "Adding item...",
+      "addItemSuccess": "Item added to cart.",
+      "addItemError": "Failed to add item to cart."
+    }
+  },
+  "wishlist": {
+    "page": {
+      "title": "Your Wishlist",
+      "addAllToCart": "Add all to cart",
+      "empty": "Your wishlist is empty.",
+      "loadError": "Failed to load wishlist."
+    }
+  },
   "checkout": {
     "title": "Checkout Information",
+    "userTitle": "Checkout",
+    "backToCart": "Back to cart",
     "hasAccount": "Already have an account?",
     "signIn": "Sign in",
     "contactEmail": "Contact email",
     "newsletter": "Receive order updates and latest offers",
     "shippingTitle": "Shipping address",
+    "addNewAddress": "Add new address",
     "countryPlaceholder": "Country / Region",
     "countries": {
       "vn": "Vietnam",
@@ -350,11 +593,113 @@
     "cityPlaceholder": "City / Province",
     "postalCodePlaceholder": "Postal code (Optional)",
     "phonePlaceholder": "Phone number",
+    "paymentTitle": "Payment method",
+    "secureText": "Your information is always secured and encrypted",
+    "secureTextHigh": "Payment security follows international standards",
+    "placeOrder": "Place order now",
     "submitButton": "Complete order",
+    "orderSummary": {
+      "title": "Order summary",
+      "productFallback": "Product",
+      "discountPlaceholder": "Enter discount code",
+      "apply": "Apply",
+      "subtotalWithCount": "Subtotal ({count} items)",
+      "shippingFee": "Shipping fee",
+      "freeShipping": "Free",
+      "total": "Total",
+      "vatIncluded": "VAT included"
+    },
+    "paymentMethod": {
+      "sepayRichTitle": "sepay",
+      "sepayCompactTitle": "Pay with sepay",
+      "sepayRichDescription": "Secure payment via sepay gateway",
+      "sepayCompactDescription": "Domestic cards, Visa, Mastercard, JCB, QR Code",
+      "codTitle": "Cash on delivery (COD)",
+      "codRichDescription": "Check items before payment",
+      "codCompactDescription": "You will pay cash when the shipper delivers"
+    },
+    "shippingMethod": {
+      "title": "Shipping method",
+      "homeDelivery": "Home delivery",
+      "eta": "Estimated delivery in 2-3 days",
+      "free": "Free"
+    },
+    "paymentPage": {
+      "back": "Back",
+      "orderBadge": "Service order",
+      "title": "Order payment",
+      "subtotal": "Subtotal",
+      "shippingFee": "Shipping fee",
+      "total": "Total payment",
+      "secureNote": "Automatic payment via <strong>SePay</strong>. Transactions are secure, protected, and confirmed instantly.",
+      "waiting": "Waiting for payment",
+      "scanToComplete": "Scan to complete",
+      "waitingScan": "Waiting for scan...",
+      "bank": "Bank",
+      "bankFullName": "Military Commercial Joint Stock Bank",
+      "accountNumber": "Account number",
+      "transferContent": "Transfer content (Required)",
+      "confirmTransfer": "I have completed the transfer"
+    },
     "toast": {
       "loading": "Processing your order...",
       "success": "Order created successfully!",
       "error": "Failed to create order. Please try again."
+    }
+  },
+  "modal": {
+    "addTranslateBook": {
+      "title": "Content translation",
+      "subtitle": "Manage multilingual content for this book",
+      "languageLabel": "LANGUAGE:",
+      "languagePlaceholder": "Select language",
+      "languages": {
+        "vi": "Vietnamese",
+        "en": "English",
+        "ja": "Japanese"
+      },
+      "isbnPlaceholder": "Enter ISBN to fetch source content...",
+      "checkButton": "Check",
+      "aiButton": "AI Translation",
+      "bookTitleLabel": "Book title",
+      "bookTitlePlaceholder": "Book title after translation...",
+      "aiBookTitle": "React Programming for Beginners",
+      "descriptionLabel": "Detailed description",
+      "descriptionPlaceholder": "Book description content...",
+      "aiDescription": "This book provides a detailed guide to React from basic to advanced levels, suitable for all skill levels...",
+      "cancelButton": "Cancel",
+      "saveButton": "Save translation"
+    },
+    "addVariant": {
+      "title": "Add book variant",
+      "subtitle": "Manage format, price, and inventory",
+      "isbnPlaceholder": "Enter ISBN to quickly fill format...",
+      "checkCodeButton": "Check code",
+      "printInfo": "Print information",
+      "bookFormatLabel": "Book format",
+      "bookFormatPlaceholder": "Choose format...",
+      "formats": {
+        "paperback": "Paperback",
+        "hardcover": "Hardcover",
+        "ebook": "E-Book",
+        "audiobook": "Audiobook"
+      },
+      "editionLabel": "Edition",
+      "editionPlaceholder": "Example: 1",
+      "stockLabel": "Stock",
+      "releaseStatus": "Release status",
+      "releaseStatusDescription": "Allow customers to purchase this variant",
+      "financeAndIsbn": "Finance & ISBN",
+      "officialIsbnLabel": "Official ISBN",
+      "costPriceLabel": "Cost price",
+      "listPriceLabel": "List price",
+      "currencyLabel": "Currency code",
+      "currencies": {
+        "vnd": "VND - Vietnamese Dong",
+        "usd": "USD - US Dollar"
+      },
+      "cancelButton": "Cancel",
+      "confirmButton": "Confirm add variant"
     }
   }
 }

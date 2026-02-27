@@ -1,6 +1,5 @@
 "use client";
 
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
@@ -14,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CreditCard, Info, Truck } from "lucide-react";
+import { Info, Truck } from "lucide-react";
 
 import { CheckoutHeader } from "../CheckoutHeader";
 import { CheckoutFooter } from "../CheckoutFooter";
@@ -89,12 +88,12 @@ export function CheckoutGuest() {
         className="space-y-12"
       >
         <CheckoutHeader
-          title="Thông tin thanh toán"
+          title={t("checkout.title")}
           right={
             <p className="text-sm text-zinc-500">
-              Đã có tài khoản?{" "}
+              {t("checkout.hasAccount")}{" "}
               <a href="#" className="font-medium text-blue-600 hover:underline">
-                Đăng nhập
+                {t("checkout.signIn")}
               </a>
             </p>
           }
@@ -108,7 +107,7 @@ export function CheckoutGuest() {
             render={({ field }) => (
               <FormItem className="grid gap-2">
                 <FormLabel className="text-sm font-medium">
-                  Email liên hệ
+                  {t("checkout.contactEmail")}
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -135,7 +134,7 @@ export function CheckoutGuest() {
                   />
                 </FormControl>
                 <Label className="text-sm leading-none text-zinc-600">
-                  Nhận thông tin cập nhật về đơn hàng và ưu đãi mới nhất
+                  {t("checkout.newsletter")}
                 </Label>
               </FormItem>
             )}
@@ -146,7 +145,7 @@ export function CheckoutGuest() {
         <section className="space-y-6">
           <div className="flex items-center gap-2 border-b pb-2">
             <Truck className="h-5 w-5 text-zinc-800" />
-            <h2 className="text-lg font-semibold">Địa chỉ giao hàng</h2>
+            <h2 className="text-lg font-semibold">{t("checkout.shippingTitle")}</h2>
           </div>
 
           <div className="grid gap-4">
@@ -163,13 +162,13 @@ export function CheckoutGuest() {
                       defaultValue="vn"
                     >
                       <SelectTrigger className="h-12 border-zinc-200 shadow-sm">
-                        <SelectValue placeholder="Quốc gia/ Vùng" />
+                        <SelectValue placeholder={t("checkout.countryPlaceholder")} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem defaultChecked value="vn">
-                          Việt Nam
+                          {t("checkout.countries.vn")}
                         </SelectItem>
-                        <SelectItem value="us">United States</SelectItem>
+                        <SelectItem value="us">{t("checkout.countries.us")}</SelectItem>
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -186,7 +185,7 @@ export function CheckoutGuest() {
                   <FormItem>
                     <FormControl>
                       <Input
-                        placeholder="Họ và tên đệm"
+                        placeholder={t("checkout.firstNamePlaceholder")}
                         className="h-12 border-zinc-200 shadow-sm"
                         {...field}
                       />
@@ -202,7 +201,7 @@ export function CheckoutGuest() {
                   <FormItem>
                     <FormControl>
                       <Input
-                        placeholder="Tên"
+                        placeholder={t("checkout.lastNamePlaceholder")}
                         className="h-12 border-zinc-200 shadow-sm"
                         {...field}
                       />
@@ -220,7 +219,7 @@ export function CheckoutGuest() {
                 <FormItem>
                   <FormControl>
                     <Input
-                      placeholder="Địa chỉ chi tiết (Số nhà, tên đường...)"
+                      placeholder={t("checkout.addressPlaceholder")}
                       className="h-12 border-zinc-200 shadow-sm"
                       {...field}
                     />
@@ -238,7 +237,7 @@ export function CheckoutGuest() {
                   <FormItem>
                     <FormControl>
                       <Input
-                        placeholder="Tỉnh / Thành phố"
+                        placeholder={t("checkout.cityPlaceholder")}
                         className="h-12 border-zinc-200 shadow-sm"
                         {...field}
                       />
@@ -255,7 +254,7 @@ export function CheckoutGuest() {
                   <FormItem>
                     <FormControl>
                       <Input
-                        placeholder="Mã bưu chính (Tùy chọn)"
+                        placeholder={t("checkout.postalCodePlaceholder")}
                         className="h-12 border-zinc-200 shadow-sm"
                         {...field}
                       />
@@ -273,7 +272,7 @@ export function CheckoutGuest() {
                 <FormItem className="relative">
                   <FormControl>
                     <Input
-                      placeholder="Số điện thoại"
+                      placeholder={t("checkout.phonePlaceholder")}
                       className="h-12 border-zinc-200 pr-10 shadow-sm"
                       {...field}
                     />
@@ -290,7 +289,7 @@ export function CheckoutGuest() {
         <PaymentCheckout />
 
         {/* Footer submit */}
-        <CheckoutFooter buttonText="Hoàn tất đặt hàng" disabled={isOrdering} />
+        <CheckoutFooter buttonText={t("checkout.submitButton")} disabled={isOrdering} />
       </form>
     </Form>
   );

@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Book Store",
-  description: "Cửa hàng sách trực tuyến",
+  description: "Online bookstore",
 };
 
 export default function RootLayout({

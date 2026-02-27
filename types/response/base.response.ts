@@ -10,7 +10,7 @@ export interface PaginationResponse<T> {
   limit: number;
   total: number;
   totalPages: number;
-  items: T;
+  items: T[];
 }
 
 export type ProxySuccessResponse<T> = {

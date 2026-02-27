@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import { useMemo } from "react";
 import {
   ColumnDef,
   flexRender,
@@ -14,6 +14,7 @@ import {
   Search,
   LayoutGrid,
 } from "lucide-react";
+import useTranslator from "@/hooks/use-translator";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -56,7 +57,7 @@ type Category = {
 const data: Category[] = [
   {
     id: "1",
-    name: "Điện thoại",
+    name: "Phone",
     slug: "dien-thoai",
     count: 120,
     status: "Active",
@@ -64,7 +65,7 @@ const data: Category[] = [
   { id: "2", name: "Laptop", slug: "laptop", count: 45, status: "Active" },
   {
     id: "3",
-    name: "Phụ kiện",
+    name: "Accessories",
     slug: "phu-kien",
     count: 320,
     status: "Inactive",
@@ -72,18 +73,18 @@ const data: Category[] = [
 ];
 
 export default function CategoriesPage() {
-  // 2. Cấu hình Column cho TanStack Table
-  const columns: ColumnDef<Category>[] = [
+  const { t } = useTranslator();
+  const columns = useMemo<ColumnDef<Category>[]>(() => [
     {
       accessorKey: "name",
-      header: "Tên danh mục",
+      header: t("dashboard.categories.table.columns.name"),
       cell: ({ row }) => (
         <div className="font-medium">{row.getValue("name")}</div>
       ),
     },
     {
       accessorKey: "slug",
-      header: "Đường dẫn (Slug)",
+      header: t("dashboard.categories.table.columns.slug"),
       cell: ({ row }) => (
         <code className="rounded bg-muted px-1 py-0.5 text-xs">
           {row.getValue("slug")}
@@ -92,11 +93,11 @@ export default function CategoriesPage() {
     },
     {
       accessorKey: "count",
-      header: "Số sản phẩm",
+      header: t("dashboard.categories.table.columns.count"),
     },
     {
       accessorKey: "status",
-      header: "Trạng thái",
+      header: t("dashboard.categories.table.columns.status"),
       cell: ({ row }) => {
         const status = row.getValue("status") as string;
         return (
@@ -114,8 +115,8 @@ export default function CategoriesPage() {
     },
     {
       id: "actions",
-      header: "Thao tác",
-      cell: ({ row }) => (
+      header: t("dashboard.categories.table.columns.actions"),
+      cell: () => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
@@ -123,19 +124,19 @@ export default function CategoriesPage() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Hành động</DropdownMenuLabel>
+            <DropdownMenuLabel>{t("dashboard.categories.table.actions.label")}</DropdownMenuLabel>
             <DropdownMenuItem className="cursor-pointer">
-              <Pencil className="mr-2 h-4 w-4" /> Sửa danh mục
+              <Pencil className="mr-2 h-4 w-4" /> {t("dashboard.categories.table.actions.edit")}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive">
-              <Trash2 className="mr-2 h-4 w-4" /> Xóa danh mục
+              <Trash2 className="mr-2 h-4 w-4" /> {t("dashboard.categories.table.actions.delete")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       ),
     },
-  ];
+  ], [t]);
 
   const table = useReactTable({
     data,
@@ -149,10 +150,10 @@ export default function CategoriesPage() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <LayoutGrid className="h-8 w-8" /> Danh mục
+            <LayoutGrid className="h-8 w-8" /> {t("dashboard.categories.title")}
           </h2>
           <p className="text-muted-foreground">
-            Quản lý các phân loại sản phẩm của bạn.
+            {t("dashboard.categories.subtitle")}
           </p>
         </div>
 
@@ -160,20 +161,20 @@ export default function CategoriesPage() {
         <Dialog>
           <DialogTrigger asChild>
             <Button className="gap-2">
-              <Plus className="h-4 w-4" /> Thêm danh mục
+              <Plus className="h-4 w-4" /> {t("dashboard.categories.addButton")}
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Thêm danh mục mới</DialogTitle>
+              <DialogTitle>{t("dashboard.categories.dialog.title")}</DialogTitle>
               <DialogDescription>
-                Nhập thông tin chi tiết cho danh mục sản phẩm mới tại đây.
+                {t("dashboard.categories.dialog.description")}
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
-                <Label htmlFor="name">Tên danh mục</Label>
-                <Input id="name" placeholder="Ví dụ: Đồ gia dụng" />
+                <Label htmlFor="name">{t("dashboard.categories.dialog.nameLabel")}</Label>
+                <Input id="name" placeholder={t("dashboard.categories.dialog.namePlaceholder")} />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="slug">Slug</Label>
@@ -181,7 +182,7 @@ export default function CategoriesPage() {
               </div>
             </div>
             <DialogFooter>
-              <Button type="submit">Lưu thay đổi</Button>
+              <Button type="submit">{t("dashboard.categories.dialog.save")}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -191,7 +192,7 @@ export default function CategoriesPage() {
       <div className="flex items-center py-4">
         <div className="relative w-full max-w-sm">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Tìm kiếm danh mục..." className="pl-8" />
+          <Input placeholder={t("dashboard.categories.searchPlaceholder")} className="pl-8" />
         </div>
       </div>
 
@@ -232,7 +233,7 @@ export default function CategoriesPage() {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  Không có dữ liệu.
+                  {t("dashboard.categories.empty")}
                 </TableCell>
               </TableRow>
             )}
@@ -243,10 +244,10 @@ export default function CategoriesPage() {
       {/* Pagination UI */}
       <div className="flex items-center justify-end space-x-2 py-4">
         <Button variant="outline" size="sm" disabled>
-          Trước
+          {t("dashboard.categories.pagination.prev")}
         </Button>
         <Button variant="outline" size="sm" disabled>
-          Sau
+          {t("dashboard.categories.pagination.next")}
         </Button>
       </div>
     </div>

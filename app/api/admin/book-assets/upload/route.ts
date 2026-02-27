@@ -7,9 +7,13 @@ import { NextRequest } from "next/server";
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
-    const response = await api.post("admin/book-assets/upload", formData, {
-      headers: { "content-type": "multipart/form-data" },
-    });
+    const response = await api.post<{ data: unknown }>(
+      "admin/book-assets/upload",
+      formData,
+      {
+        headers: { "content-type": "multipart/form-data" },
+      },
+    );
     return ResponseApi.success(response.data, HttpStatusCode.Created);
   } catch (error: any) {
     if (process.env.NODE_ENV === "development") {

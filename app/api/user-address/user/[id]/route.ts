@@ -5,12 +5,12 @@ import { NextRequest } from "next/server";
 
 export async function PATCH(
     request: NextRequest,
-    { params }: { params: Promise<{ userId: string; id: string }> }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const { userId, id } = await params;
+        const { id } = await params;
         const payload = await request.json();
-        const response = await api.patch<any>(`user-address/user/${userId}/${id}`, payload);
+        const response = await api.patch<any>(`user-address/user/${id}`, payload);
         return ResponseApi.success(response.data, HttpStatusCode.Ok);
     } catch (error: any) {
         return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
@@ -19,7 +19,7 @@ export async function PATCH(
 
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: Promise<{ userId: string; id: string }> }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const { id } = await params;

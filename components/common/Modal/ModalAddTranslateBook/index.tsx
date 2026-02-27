@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useTranslations } from "next-intl";
 import {
   Languages,
   Search,
@@ -36,6 +37,7 @@ export default function ModalAddTranslateBook({
 }: {
   onClose: () => void;
 }) {
+  const t = useTranslations();
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [hasAIResult, setHasAIResult] = useState(false);
@@ -59,27 +61,27 @@ export default function ModalAddTranslateBook({
           </div>
           <div>
             <h2 className="text-xl font-bold tracking-tight">
-              Dịch thuật nội dung
+              {t("modal.addTranslateBook.title")}
             </h2>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Quản lý đa ngôn ngữ cho đầu sách
+              {t("modal.addTranslateBook.subtitle")}
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <Label className="hidden sm:block text-xs font-bold text-muted-foreground">
-            NGÔN NGỮ:
+            {t("modal.addTranslateBook.languageLabel")}
           </Label>
           <Select defaultValue="1">
             <SelectTrigger className="w-full sm:w-[140px] bg-indigo-50/50 border-indigo-100">
               <Globe2 className="w-4 h-4 mr-2 text-indigo-500" />
-              <SelectValue placeholder="Chọn ngôn ngữ" />
+              <SelectValue placeholder={t("modal.addTranslateBook.languagePlaceholder")} />
             </SelectTrigger>
             <SelectContent position="popper">
-              <SelectItem value="1">Tiếng Việt</SelectItem>
-              <SelectItem value="2">English</SelectItem>
-              <SelectItem value="3">Japanese</SelectItem>
+              <SelectItem value="1">{t("modal.addTranslateBook.languages.vi")}</SelectItem>
+              <SelectItem value="2">{t("modal.addTranslateBook.languages.en")}</SelectItem>
+              <SelectItem value="3">{t("modal.addTranslateBook.languages.ja")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -91,13 +93,13 @@ export default function ModalAddTranslateBook({
           <div className="relative flex-1">
             <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
-              placeholder="Nhập ISBN để lấy thông tin gốc..."
+              placeholder={t("modal.addTranslateBook.isbnPlaceholder")}
               className="pl-9 bg-background focus-visible:ring-indigo-500"
             />
           </div>
           <div className="flex gap-2">
             <Button variant="secondary" className="flex-1 md:flex-none">
-              <Search className="w-4 h-4 mr-2" /> Kiểm tra
+              <Search className="w-4 h-4 mr-2" /> {t("modal.addTranslateBook.checkButton")}
             </Button>
             <Button
               onClick={handleAIGenerate}
@@ -109,7 +111,7 @@ export default function ModalAddTranslateBook({
               ) : (
                 <Wand2 className="w-4 h-4 mr-2" />
               )}
-              AI Dịch thuật
+              {t("modal.addTranslateBook.aiButton")}
             </Button>
           </div>
         </div>
@@ -119,12 +121,12 @@ export default function ModalAddTranslateBook({
         {/* 3. Title & Slug Row */}
         <div className="space-y-2">
           <Label className="flex items-center gap-2">
-            <Type className="w-3.5 h-3.5 text-indigo-500" /> Tiêu đề sách
+            <Type className="w-3.5 h-3.5 text-indigo-500" /> {t("modal.addTranslateBook.bookTitleLabel")}
           </Label>
           <Input
-            placeholder="Tên sách sau khi dịch..."
+            placeholder={t("modal.addTranslateBook.bookTitlePlaceholder")}
             defaultValue={
-              hasAIResult ? "Sách Lập Trình React Cho Người Mới" : ""
+              hasAIResult ? t("modal.addTranslateBook.aiBookTitle") : ""
             }
           />
         </div>
@@ -133,8 +135,8 @@ export default function ModalAddTranslateBook({
         <div className="space-y-2">
           <div className="flex justify-between items-center">
             <Label className="flex items-center gap-2">
-              <FileText className="w-3.5 h-3.5 text-indigo-500" /> Mô tả chi
-              tiết (Description)
+              <FileText className="w-3.5 h-3.5 text-indigo-500" />{" "}
+              {t("modal.addTranslateBook.descriptionLabel")}
             </Label>
             {hasAIResult && (
               <Badge
@@ -146,11 +148,11 @@ export default function ModalAddTranslateBook({
             )}
           </div>
           <Textarea
-            placeholder="Nội dung mô tả nội dung cuốn sách..."
+            placeholder={t("modal.addTranslateBook.descriptionPlaceholder")}
             className="min-h-[180px] leading-relaxed"
             defaultValue={
               hasAIResult
-                ? "Đây là cuốn sách hướng dẫn chi tiết về React từ cơ bản đến nâng cao, phù hợp cho mọi trình độ..."
+                ? t("modal.addTranslateBook.aiDescription")
                 : ""
             }
           />
@@ -160,10 +162,10 @@ export default function ModalAddTranslateBook({
       {/* 5. Footer Actions */}
       <div className="flex gap-3 pt-4">
         <Button variant="ghost" className="flex-1" onClick={onClose}>
-          Hủy bỏ
+          {t("modal.addTranslateBook.cancelButton")}
         </Button>
         <Button className="flex-[2] bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-100 dark:shadow-none transition-all">
-          Lưu bản dịch
+          {t("modal.addTranslateBook.saveButton")}
         </Button>
       </div>
     </div>

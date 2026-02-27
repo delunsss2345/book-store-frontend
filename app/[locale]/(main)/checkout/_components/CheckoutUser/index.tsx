@@ -16,9 +16,12 @@ import { MapPin, Plus } from "lucide-react";
 import { useQueryAddress } from "@/features/user-address/hooks/use-query-address-mutation";
 import SelectItemAddress from "./_components/SelectItemAddress";
 import { useEffect, useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function CheckoutUser() {
   const { data: addresses, isPending } = useQueryAddress();
+  const t = useTranslations();
   const [selectedAddressId, setSelectedAddressId] = useState<
     string | undefined
   >();
@@ -35,14 +38,14 @@ export default function CheckoutUser() {
 
   return (
     <div className="space-y-12">
-      <CheckoutHeader title="Thanh toán" />
+      <CheckoutHeader title={t("checkout.userTitle")} />
 
       {/* Shipping Address Selection */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <MapPin className="h-5 w-5 text-zinc-800" />
-            <h3 className="text-lg font-bold">Địa chỉ nhận hàng</h3>
+            <h3 className="text-lg font-bold">{t("checkout.shippingTitle")}</h3>
           </div>
 
           <Button
@@ -50,7 +53,7 @@ export default function CheckoutUser() {
             size="sm"
             className="h-8 font-semibold text-blue-600 hover:text-blue-700"
           >
-            <Plus className="mr-1 h-4 w-4" /> Thêm địa chỉ mới
+            <Plus className="mr-1 h-4 w-4" /> {t("checkout.addNewAddress")}
           </Button>
         </div>
 
@@ -61,8 +64,13 @@ export default function CheckoutUser() {
 
           <SelectContent className="rounded-xl border-zinc-200 shadow-xl">
             {isPending ? (
-              <div className="flex items-center justify-center">
-                Đang tải...
+              <div className="space-y-2 p-3">
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <div key={index} className="space-y-1.5 rounded-md border p-3">
+                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="h-3 w-full" />
+                  </div>
+                ))}
               </div>
             ) : (
               addresses?.map((address) => (
@@ -77,8 +85,8 @@ export default function CheckoutUser() {
       <PaymentCheckout />
 
       <CheckoutFooter
-        buttonText="Đặt hàng ngay"
-        secureText="Bảo mật thanh toán theo tiêu chuẩn quốc tế"
+        buttonText={t("checkout.placeOrder")}
+        secureText={t("checkout.secureTextHigh")}
         buttonClassName="h-16 w-full rounded-2xl bg-zinc-900 text-lg font-bold text-white shadow-xl shadow-zinc-200 transition-all hover:-translate-y-0.5 hover:bg-zinc-800 active:translate-y-0"
       />
     </div>

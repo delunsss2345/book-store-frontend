@@ -1,7 +1,8 @@
 import { useAddToCartMutation } from "@/features/cart/hooks";
 import { cn } from "@/lib/utils";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type BookCardVariant = "default" | "compact";
 
@@ -53,6 +54,7 @@ function CardInner({
 }: BookCardProps) {
   const mutationAddToCardItem = useAddToCartMutation();
   const style = S[variant];
+  const t = useTranslations();
 
   return (
     <article
@@ -124,7 +126,11 @@ function CardInner({
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            mutationAddToCardItem.mutateAsync({ bookVariantId });
+            toast.promise(mutationAddToCardItem.mutateAsync({ bookVariantId }), {
+              loading: t("cart.toast.addItemLoading"),
+              success: t("cart.toast.addItemSuccess"),
+              error: t("cart.toast.addItemError"),
+            });
           }}
           className={cn(
             "cursor-pointer w-full py-3 px-6 text-[12px] font-bold tracking-[0.15em] uppercase transition-all duration-300",

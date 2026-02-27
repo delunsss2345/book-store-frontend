@@ -20,6 +20,7 @@ export const useCreateOrderGuestMutation = () => {
         const response = await orderService.createOrderGuest({
           ...values,
           cartId: Number(cart.id),
+          languageCode: "vi",
         });
         return response.data;
       } finally {

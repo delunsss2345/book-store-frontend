@@ -37,7 +37,11 @@ function buildUrl(baseURL: string, path: string, query?: Query) {
     return url.toString();
 }
 
-async function request<T>(method: string, path: string, opt: ApiOptions = {}): Promise<T> {
+async function request<T = any>(
+    method: string,
+    path: string,
+    opt: ApiOptions = {},
+): Promise<T> {
     const {
         baseURL = process.env.API_BASE_URL!,
         query,
@@ -107,20 +111,20 @@ export const fetchApi = (defaults: Pick<ApiOptions, "baseURL" | "headers"> = {})
     });
 
     return {
-        get<T>(path: string, opt?: ApiOptions) {
+        get<T = any>(path: string, opt?: ApiOptions) {
 
             return request<T>("GET", path, withDefaults(opt));
         },
-        post<T>(path: string, body?: unknown, opt?: ApiOptions) {
+        post<T = any>(path: string, body?: unknown, opt?: ApiOptions) {
             return request<T>("POST", path, withDefaults({ ...opt, body }));
         },
-        put<T>(path: string, body?: unknown, opt?: ApiOptions) {
+        put<T = any>(path: string, body?: unknown, opt?: ApiOptions) {
             return request<T>("PUT", path, withDefaults({ ...opt, body }));
         },
-        patch<T>(path: string, body?: unknown, opt?: ApiOptions) {
+        patch<T = any>(path: string, body?: unknown, opt?: ApiOptions) {
             return request<T>("PATCH", path, withDefaults({ ...opt, body }));
         },
-        delete<T>(path: string, opt?: ApiOptions) {
+        delete<T = any>(path: string, opt?: ApiOptions) {
             return request<T>("DELETE", path, withDefaults(opt));
         },
     };

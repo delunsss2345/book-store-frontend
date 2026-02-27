@@ -7,13 +7,13 @@ import {
 import useTranslator from "@/hooks/use-translator";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale } from "next-intl";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import VerifyEmailForm, { VerifyEmailValues } from "../_components/VerifyForm";
 
 type VerifyState = "idle" | "verifying" | "failed";
 
-const VerifyEmailPage = () => {
+const VerifyEmailPageContent = () => {
   const { t } = useTranslator();
   const router = useRouter();
   const locale = useLocale();
@@ -82,6 +82,14 @@ const VerifyEmailPage = () => {
         />
       ) : null}
     </div>
+  );
+};
+
+const VerifyEmailPage = () => {
+  return (
+    <Suspense fallback={<div className="h-24" />}>
+      <VerifyEmailPageContent />
+    </Suspense>
   );
 };
 

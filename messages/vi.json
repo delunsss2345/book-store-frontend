@@ -22,6 +22,11 @@
       "new": "MỚI"
     }
   },
+  "notFound": {
+    "description": "Chúng tôi đang biên soạn nội dung cho mục này. Những tựa sách và bộ sưu tập mới nhất sẽ sớm được cập nhật tại đây.",
+    "backHome": "Trở về trang chủ",
+    "viewBooks": "Xem kho sách"
+  },
   "grid": {
     "title": "Mới & Thịnh hành"
   },
@@ -118,7 +123,7 @@
         "b2bAccess": "Truy cập cửa hàng B2B"
       }
     },
-    "copyright": "c {{year}} - TASCHEN GmbH, Hohenzollernring 53, D-50672 Cologne"
+    "copyright": "c {year} - TASCHEN GmbH, Hohenzollernring 53, D-50672 Cologne"
   },
   "profile": {
     "header": {
@@ -147,7 +152,7 @@
       "contactInformation": "Thông tin liên hệ"
     },
     "footer": {
-      "copyright": "© {{year}} TASCHEN"
+      "copyright": "© {year} TASCHEN"
     },
     "page": {
       "title": "Hồ sơ của tôi",
@@ -225,14 +230,112 @@
         "addTranslation": "Thêm bản dịch"
       },
       "pagination": {
-        "itemsPerPage": "Hiển thị {{count}} mục mỗi trang",
+        "itemsPerPage": "Hiển thị {count} mục mỗi trang",
+        "summary": "Hiển thị {perPage} mục mỗi trang của {total}",
         "prev": "Trang trước",
         "next": "Trang sau",
         "goToPage": "Đến trang"
+      },
+      "create": {
+        "toast": {
+          "scanLoading": "Đang quét dữ liệu ISBN...",
+          "scanSuccess": "Đã nạp dữ liệu từ ISBN.",
+          "scanError": "Không thể quét dữ liệu ISBN.",
+          "createLoading": "Đang tạo sách...",
+          "createSuccess": "Tạo sách thành công",
+          "createError": "Tạo sách thất bại"
+        },
+        "contentTitle": "Nội dung hiển thị",
+        "languageVietnamese": "Tiếng Việt",
+        "languageEnglish": "Tiếng Anh",
+        "loadedData": "Đã nạp dữ liệu",
+        "bookTitleLabel": "Tiêu đề sách *",
+        "bookTitlePlaceholder": "Tên sách sẽ hiển thị trên web...",
+        "tip": "Mẹo: kiểm tra lại dấu câu/viết hoa trước khi lưu.",
+        "descriptionLabel": "Mô tả chi tiết",
+        "descriptionPlaceholder": "Nội dung giới thiệu về sách...",
+        "variantPriceTitle": "Biến thể & Giá bán",
+        "defaultBadge": "Mặc định",
+        "variantCount": "{count} biến thể",
+        "creationStatus": "Trạng thái tạo",
+        "creationStatusDescription": "Sau khi tạo, dữ liệu mặc định sẽ Inactive và cần phê duyệt để public.",
+        "header": {
+          "title": "Thêm sách mới",
+          "subtitle": "Điền thông tin chi tiết để tạo sản phẩm trên hệ thống.",
+          "cancel": "Hủy",
+          "save": "Lưu sách"
+        },
+        "magicFill": {
+          "title": "NHẬP ISBN ĐỂ ĐIỀN NHANH (MAGIC FILL)",
+          "scanning": "Đang quét dữ liệu...",
+          "languagePlaceholder": "Ngôn ngữ",
+          "languageVietnamese": "Tiếng Việt",
+          "languageEnglish": "English",
+          "isbnPlaceholder": "Ví dụ: 9780135398548",
+          "scanButton": "Quét dữ liệu",
+          "hint": "Dữ liệu sẽ tự fill sang các khối: nội dung, ảnh bìa, thông số,…"
+        },
+        "imagePreview": {
+          "title": "Ảnh bìa & Preview",
+          "emptyTitle": "Chưa có ảnh bìa",
+          "emptyDescription": "Dán URL hoặc dùng Magic Fill",
+          "urlLabel": "Đường dẫn ảnh (URL)",
+          "tip": "<b>Mẹo:</b> ảnh tỉ lệ <b>3:4</b> (ví dụ 600x800px) hiển thị đẹp nhất."
+        },
+        "physicalSpecs": {
+          "title": "Thông số kỹ thuật & Xuất bản",
+          "dimensionLabel": "Kích thước",
+          "dimensionHint": "cm / g (nếu có)",
+          "widthLabel": "Rộng (cm)",
+          "heightLabel": "Cao (cm)",
+          "thicknessLabel": "Dày (cm)",
+          "weightLabel": "Nặng (g)",
+          "publishLabel": "Xuất bản",
+          "authorLabel": "Tác giả",
+          "authorPlaceholder": "Tên tác giả...",
+          "publisherLabel": "Nhà xuất bản",
+          "publisherPlaceholder": "Tên nhà xuất bản...",
+          "publishYearLabel": "Năm XB",
+          "pageCountLabel": "Số trang",
+          "badgesLabel": "Nhãn gắn kèm (Badges)",
+          "badges": {
+            "bestSeller": "Bán chạy",
+            "newArrival": "Mới về"
+          },
+          "addBadge": "Thêm nhãn",
+          "footerAlert": "Dữ liệu sau khi tạo sẽ ở trạng thái <b>Inactive</b>. Bạn cần phê duyệt để công khai."
+        },
+        "variant": {
+          "validation": {
+            "isbnRequired": "ISBN không được để trống",
+            "costPriceRequired": "Giá nhập không được để trống",
+            "priceRequired": "Giá bán không được để trống",
+            "currencyCodeRequired": "Mã tiền tệ không được để trống"
+          },
+          "empty": "Chưa có biến thể. Thêm biến thể để thiết lập giá bán & tồn kho.",
+          "addNew": "Thêm biến thể mới",
+          "formTitle": "Tạo biến thể",
+          "basicInfo": "Thông tin cơ bản",
+          "formatLabel": "Định dạng",
+          "formats": {
+            "paperback": "Bìa mềm",
+            "hardcover": "Bìa cứng"
+          },
+          "stockLabel": "Tồn kho",
+          "stockShort": "Kho",
+          "isbnLabel": "Mã ISBN",
+          "pricingAndEdition": "Giá & tái bản",
+          "costPriceLabel": "Giá nhập",
+          "priceLabel": "Giá bán",
+          "editionLabel": "Tái bản lần",
+          "cancel": "Hủy",
+          "save": "Lưu biến thể"
+        }
       }
     },
     "customers": {
       "title": "Khách hàng",
+      "subtitle": "Quản lý danh sách khách hàng và quyền hạn.",
       "summary": {
         "totalCustomers": "Tổng số khách hàng",
         "activeLastDay": "Khách hàng hoạt động trong 1 ngày qua"
@@ -259,11 +362,118 @@
         "WAREHOUSE": "Kho"
       },
       "pagination": {
-        "itemsPerPage": "Hiển thị {{count}} mục mỗi trang",
+        "itemsPerPage": "Hiển thị {count} mục mỗi trang",
         "prev": "Trang trước",
         "next": "Trang sau",
         "goToPage": "Đến trang"
       }
+    },
+    "categories": {
+      "title": "Danh mục",
+      "subtitle": "Quản lý các phân loại sản phẩm của bạn.",
+      "addButton": "Thêm danh mục",
+      "searchPlaceholder": "Tìm kiếm danh mục...",
+      "empty": "Không có dữ liệu.",
+      "pagination": {
+        "prev": "Trước",
+        "next": "Sau"
+      },
+      "table": {
+        "columns": {
+          "name": "Tên danh mục",
+          "slug": "Đường dẫn (Slug)",
+          "count": "Số sản phẩm",
+          "status": "Trạng thái",
+          "actions": "Thao tác"
+        },
+        "actions": {
+          "label": "Hành động",
+          "edit": "Sửa danh mục",
+          "delete": "Xóa danh mục"
+        }
+      },
+      "dialog": {
+        "title": "Thêm danh mục mới",
+        "description": "Nhập thông tin chi tiết cho danh mục sản phẩm mới tại đây.",
+        "nameLabel": "Tên danh mục",
+        "namePlaceholder": "Ví dụ: Đồ gia dụng",
+        "save": "Lưu thay đổi"
+      }
+    },
+    "orders": {
+      "title": "Đơn hàng",
+      "subtitle": "Theo dõi và quản lý các giao dịch từ khách hàng.",
+      "exportExcel": "Xuất Excel",
+      "searchPlaceholder": "Tìm mã đơn, email...",
+      "filterButton": "Lọc đơn hàng",
+      "table": {
+        "columns": {
+          "orderCode": "Mã đơn hàng",
+          "customer": "Khách hàng",
+          "status": "Trạng thái",
+          "payment": "Thanh toán",
+          "totalAmount": "Tổng tiền",
+          "placedAt": "Ngày đặt",
+          "actions": "Thao tác"
+        },
+        "actions": {
+          "label": "Hành động",
+          "exportPdf": "Xuất hóa đơn (PDF)",
+          "cancelOrder": "Hủy đơn hàng"
+        }
+      },
+      "details": {
+        "view": "Xem chi tiết",
+        "order": "Đơn hàng",
+        "description": "Chi tiết các sản phẩm và trạng thái thanh toán.",
+        "customer": "Khách hàng",
+        "products": "Sản phẩm ({count})",
+        "quantity": "SL",
+        "subtotal": "Tạm tính",
+        "total": "Tổng cộng"
+      }
+    }
+  },
+  "dashboard_products": {
+    "edit": {
+      "mockTitle": "Clean Code - Mã Sạch",
+      "editing": "Chỉnh sửa",
+      "viewLive": "Xem thực tế",
+      "deleteBook": "Xóa đầu sách",
+      "cancel": "Hủy",
+      "updateChanges": "Cập nhật thay đổi",
+      "translationContent": "Nội dung dịch thuật",
+      "aiRewrite": "AI Dịch lại",
+      "bookTitle": "Tiêu đề sách",
+      "slug": "Đường dẫn (Slug)",
+      "description": "Mô tả chi tiết",
+      "oldSummary": "Nội dung tóm tắt cũ của cuốn sách...",
+      "variantsTitle": "Danh sách biến thể (Variants)",
+      "addFormat": "Thêm định dạng mới",
+      "table": {
+        "format": "Định dạng",
+        "costPrice": "Giá nhập",
+        "price": "Giá bán",
+        "stock": "Kho"
+      },
+      "formats": {
+        "paperback": "Bìa mềm",
+        "hardcover": "Bìa cứng"
+      },
+      "releaseStatus": "Trạng thái mở bán",
+      "releaseStatusDescription": "Cho phép sách xuất hiện trên Store",
+      "lastUpdated": "Cập nhật lần cuối: 2 phút trước",
+      "currentCover": "Ảnh bìa hiện tại",
+      "changeImage": "Thay đổi ảnh",
+      "originalImageUrl": "URL Ảnh gốc",
+      "specifications": "Thông số kỹ thuật",
+      "weight": "Cân nặng (g)",
+      "pageCount": "Số trang",
+      "publisher": "Nhà xuất bản",
+      "publicationYear": "Năm xuất bản",
+      "currentLabels": "Nhãn đang gắn",
+      "bestSeller": "Bán chạy",
+      "attachNewLabel": "Gắn nhãn mới"
     }
   },
   "auth": {
@@ -291,6 +501,7 @@
     "signIn": "Đăng nhập",
     "forgotTitle": "Quên mật khẩu",
     "forgotSubtitle": "Chúng tôi sẽ gửi liên kết đặt lại mật khẩu.",
+    "forgotLink": "Quên mật khẩu?",
     "passwordResetTitle": "Đặt lại mật khẩu",
     "passwordResetSubtitle": "Nhập mật khẩu mới cho tài khoản của bạn.",
     "verifyTitle": "Xác minh tài khoản",
@@ -314,8 +525,8 @@
     "success": {
       "register": "Đăng ký thành công. Hãy kiểm tra email để nhận mã xác minh.",
       "verify": "Xác minh thành công. Bạn có thể đăng nhập.",
-      "forgot": "Nếu email tồn tại, chúng tôi sẽ gửi hướng dẫn đặt lại đến {{email}}.",
-      "resend": "Nếu email tồn tại, chúng tôi đã gửi lại email xác minh tới {{email}}.",
+      "forgot": "Nếu email tồn tại, chúng tôi sẽ gửi hướng dẫn đặt lại đến {email}.",
+      "resend": "Nếu email tồn tại, chúng tôi đã gửi lại email xác minh tới {email}.",
       "login": "Đăng nhập thành công!",
       "logout": "Đăng xuất thành công!",
       "reset": "Đặt lại mật khẩu thành công. Bạn có thể đăng nhập.",
@@ -323,13 +534,42 @@
     },
     "errors": {
       "emailInvalid": "Email không hợp lệ",
-      "passwordMin": "Mật khẩu tối thiểu {{count}} ký tự",
+      "passwordMin": "Mật khẩu tối thiểu {count} ký tự",
       "required": "Bắt buộc",
       "passwordMismatch": "Mật khẩu không khớp",
       "requestFailed": "Có lỗi xảy ra. Vui lòng thử lại.",
       "missingVerifyId": "Thiếu mã định danh xác minh.",
       "verifyTokenInvalid": "Token xác minh không hợp lệ hoặc đã hết hạn.",
       "invalidLink": "Liên kết không hợp lệ!"
+    }
+  },
+  "detail": {
+    "bookNotFound": "Không tìm thấy thông tin sách.",
+    "noReviews": "Chưa có đánh giá nào cho sản phẩm này.",
+    "pricePerBook": "/ cuốn",
+    "toast": {
+      "addToCartLoading": "Đang thêm vào giỏ hàng...",
+      "addToCartSuccess": "Đã thêm vào giỏ hàng.",
+      "addToCartError": "Không thể thêm vào giỏ hàng."
+    }
+  },
+  "cart": {
+    "page": {
+      "loadError": "Không thể tải giỏ hàng.",
+      "empty": "Giỏ hàng của bạn đang trống."
+    },
+    "toast": {
+      "addItemLoading": "Đang thêm sản phẩm...",
+      "addItemSuccess": "Đã thêm sản phẩm vào giỏ hàng.",
+      "addItemError": "Không thể thêm sản phẩm vào giỏ hàng."
+    }
+  },
+  "wishlist": {
+    "page": {
+      "title": "Danh sách yêu thích",
+      "addAllToCart": "Thêm tất cả vào giỏ",
+      "empty": "Danh sách yêu thích đang trống.",
+      "loadError": "Không thể tải danh sách yêu thích."
     }
   },
   "orders": {
@@ -352,11 +592,14 @@
   },
   "checkout": {
     "title": "Thông tin thanh toán",
+    "userTitle": "Thanh toán",
+    "backToCart": "Quay lại giỏ hàng",
     "hasAccount": "Đã có tài khoản?",
     "signIn": "Đăng nhập",
     "contactEmail": "Email liên hệ",
     "newsletter": "Nhận thông tin cập nhật về đơn hàng và ưu đãi mới nhất",
     "shippingTitle": "Địa chỉ giao hàng",
+    "addNewAddress": "Thêm địa chỉ mới",
     "countryPlaceholder": "Quốc gia/ Vùng",
     "countries": {
       "vn": "Việt Nam",
@@ -368,11 +611,113 @@
     "cityPlaceholder": "Tỉnh / Thành phố",
     "postalCodePlaceholder": "Mã bưu chính (Tùy chọn)",
     "phonePlaceholder": "Số điện thoại",
+    "paymentTitle": "Phương thức thanh toán",
+    "secureText": "Thông tin của bạn luôn được bảo mật và mã hóa",
+    "secureTextHigh": "Bảo mật thanh toán theo tiêu chuẩn quốc tế",
+    "placeOrder": "Đặt hàng ngay",
     "submitButton": "Hoàn tất đặt hàng",
+    "orderSummary": {
+      "title": "Tóm tắt đơn hàng",
+      "productFallback": "Sản phẩm",
+      "discountPlaceholder": "Nhập mã giảm giá",
+      "apply": "Áp dụng",
+      "subtotalWithCount": "Tạm tính ({count} sản phẩm)",
+      "shippingFee": "Phí vận chuyển",
+      "freeShipping": "Miễn phí",
+      "total": "Tổng cộng",
+      "vatIncluded": "Đã bao gồm VAT"
+    },
+    "paymentMethod": {
+      "sepayRichTitle": "sepay",
+      "sepayCompactTitle": "Thanh toán qua sepay",
+      "sepayRichDescription": "Thanh toán an toàn qua cổng sepay",
+      "sepayCompactDescription": "Thẻ nội địa, Visa, Mastercard, JCB, QR Code",
+      "codTitle": "Thanh toán khi nhận hàng (COD)",
+      "codRichDescription": "Kiểm tra hàng trước khi thanh toán",
+      "codCompactDescription": "Bạn sẽ thanh toán bằng tiền mặt khi shipper giao hàng"
+    },
+    "shippingMethod": {
+      "title": "Phương thức vận chuyển",
+      "homeDelivery": "Giao hàng tận nơi",
+      "eta": "Dự kiến nhận hàng sau 2-3 ngày",
+      "free": "Miễn phí"
+    },
+    "paymentPage": {
+      "back": "Quay lại",
+      "orderBadge": "Đơn hàng dịch vụ",
+      "title": "Thanh toán đơn hàng",
+      "subtotal": "Tạm tính",
+      "shippingFee": "Phí vận chuyển",
+      "total": "Tổng thanh toán",
+      "secureNote": "Hệ thống thanh toán tự động qua <strong>SePay</strong>. Giao dịch an toàn, bảo mật và được xác nhận ngay lập tức.",
+      "waiting": "Chờ thanh toán",
+      "scanToComplete": "Quét mã để hoàn tất",
+      "waitingScan": "Đang chờ quét...",
+      "bank": "Ngân hàng",
+      "bankFullName": "Ngân hàng Quân Đội",
+      "accountNumber": "Số tài khoản",
+      "transferContent": "Nội dung chuyển khoản (Bắt buộc)",
+      "confirmTransfer": "Tôi đã chuyển khoản thành công"
+    },
     "toast": {
       "loading": "Đang xử lý đơn hàng...",
       "success": "Đơn hàng đã được tạo thành công!",
       "error": "Không thể tạo đơn hàng. Vui lòng thử lại."
+    }
+  },
+  "modal": {
+    "addTranslateBook": {
+      "title": "Dịch thuật nội dung",
+      "subtitle": "Quản lý đa ngôn ngữ cho đầu sách",
+      "languageLabel": "NGÔN NGỮ:",
+      "languagePlaceholder": "Chọn ngôn ngữ",
+      "languages": {
+        "vi": "Tiếng Việt",
+        "en": "English",
+        "ja": "Japanese"
+      },
+      "isbnPlaceholder": "Nhập ISBN để lấy thông tin gốc...",
+      "checkButton": "Kiểm tra",
+      "aiButton": "AI Dịch thuật",
+      "bookTitleLabel": "Tiêu đề sách",
+      "bookTitlePlaceholder": "Tên sách sau khi dịch...",
+      "aiBookTitle": "Sách Lập Trình React Cho Người Mới",
+      "descriptionLabel": "Mô tả chi tiết (Description)",
+      "descriptionPlaceholder": "Nội dung mô tả nội dung cuốn sách...",
+      "aiDescription": "Đây là cuốn sách hướng dẫn chi tiết về React từ cơ bản đến nâng cao, phù hợp cho mọi trình độ...",
+      "cancelButton": "Hủy bỏ",
+      "saveButton": "Lưu bản dịch"
+    },
+    "addVariant": {
+      "title": "Thêm biến thể sách",
+      "subtitle": "Quản lý định dạng, giá bán và kho vận",
+      "isbnPlaceholder": "Nhập ISBN để điền nhanh định dạng...",
+      "checkCodeButton": "Kiểm tra mã",
+      "printInfo": "Thông tin bản in",
+      "bookFormatLabel": "Định dạng sách (Format)",
+      "bookFormatPlaceholder": "Chọn định dạng...",
+      "formats": {
+        "paperback": "Bìa mềm (Paperback)",
+        "hardcover": "Bìa cứng (Hardcover)",
+        "ebook": "Sách điện tử (E-Book)",
+        "audiobook": "Sách nói (Audiobook)"
+      },
+      "editionLabel": "Lần tái bản",
+      "editionPlaceholder": "Ví dụ: 1",
+      "stockLabel": "Tồn kho",
+      "releaseStatus": "Trạng thái mở bán",
+      "releaseStatusDescription": "Cho phép khách hàng đặt mua bản này",
+      "financeAndIsbn": "Tài chính & ISBN",
+      "officialIsbnLabel": "Mã ISBN chính thức",
+      "costPriceLabel": "Giá nhập (Cost Price)",
+      "listPriceLabel": "Giá bán niêm yết (Price)",
+      "currencyLabel": "Mã tiền tệ",
+      "currencies": {
+        "vnd": "VNĐ - Việt Nam Đồng",
+        "usd": "USD - Đô la Mỹ"
+      },
+      "cancelButton": "Hủy bỏ",
+      "confirmButton": "Xác nhận thêm biến thể"
     }
   }
 }

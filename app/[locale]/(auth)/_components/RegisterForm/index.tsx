@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { TFunction } from "i18next";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -16,7 +15,9 @@ import {
 import { Input } from "@/components/ui/input";
 import useTranslator from "@/hooks/use-translator";
 
-const getRegisterSchema = (t: TFunction) =>
+type TranslatorFn = ReturnType<typeof useTranslator>["t"];
+
+const getRegisterSchema = (t: TranslatorFn) =>
   z
     .object({
       firstName: z.string().min(1, t("auth.errors.required")),

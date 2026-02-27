@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useTranslations } from "next-intl";
 import {
   Plus,
   Search,
@@ -32,6 +33,7 @@ import {
 } from "@/components/ui/select";
 
 export default function ModalAddVariant({ onClose }: { onClose: () => void }) {
+  const t = useTranslations();
   const [isSearching, setIsSearching] = useState(false);
   const [hasData, setHasData] = useState(false);
 
@@ -54,10 +56,10 @@ export default function ModalAddVariant({ onClose }: { onClose: () => void }) {
           </div>
           <div>
             <h2 className="text-xl font-bold tracking-tight">
-              Thêm biến thể sách
+              {t("modal.addVariant.title")}
             </h2>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Quản lý định dạng, giá bán và kho vận
+              {t("modal.addVariant.subtitle")}
             </p>
           </div>
         </div>
@@ -69,7 +71,7 @@ export default function ModalAddVariant({ onClose }: { onClose: () => void }) {
           <div className="relative flex-1">
             <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
-              placeholder="Nhập ISBN để điền nhanh định dạng..."
+              placeholder={t("modal.addVariant.isbnPlaceholder")}
               className="pl-9 bg-background border-none focus-visible:ring-0 shadow-none"
             />
           </div>
@@ -84,7 +86,7 @@ export default function ModalAddVariant({ onClose }: { onClose: () => void }) {
             ) : (
               <Search className="w-4 h-4 mr-2" />
             )}
-            Kiểm tra mã
+            {t("modal.addVariant.checkCodeButton")}
           </Button>
         </div>
       </Card>
@@ -95,21 +97,21 @@ export default function ModalAddVariant({ onClose }: { onClose: () => void }) {
           <div className="flex items-center gap-2 mb-1">
             <BookType className="w-4 h-4 text-primary" />
             <span className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
-              Thông tin bản in
+              {t("modal.addVariant.printInfo")}
             </span>
           </div>
 
           <div className="space-y-2">
-            <Label>Định dạng sách (Format)</Label>
+            <Label>{t("modal.addVariant.bookFormatLabel")}</Label>
             <Select defaultValue={hasData ? "PAPERBACK" : undefined}>
               <SelectTrigger>
-                <SelectValue placeholder="Chọn định dạng..." />
+                <SelectValue placeholder={t("modal.addVariant.bookFormatPlaceholder")} />
               </SelectTrigger>
               <SelectContent position="popper">
-                <SelectItem value="PAPERBACK">Bìa mềm (Paperback)</SelectItem>
-                <SelectItem value="HARDCOVER">Bìa cứng (Hardcover)</SelectItem>
-                <SelectItem value="EBOOK">Sách điện tử (E-Book)</SelectItem>
-                <SelectItem value="AUDIOBOOK">Sách nói (Audiobook)</SelectItem>
+                <SelectItem value="PAPERBACK">{t("modal.addVariant.formats.paperback")}</SelectItem>
+                <SelectItem value="HARDCOVER">{t("modal.addVariant.formats.hardcover")}</SelectItem>
+                <SelectItem value="EBOOK">{t("modal.addVariant.formats.ebook")}</SelectItem>
+                <SelectItem value="AUDIOBOOK">{t("modal.addVariant.formats.audiobook")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -117,17 +119,17 @@ export default function ModalAddVariant({ onClose }: { onClose: () => void }) {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
-                <Layers className="w-3.5 h-3.5" /> Lần tái bản
+                <Layers className="w-3.5 h-3.5" /> {t("modal.addVariant.editionLabel")}
               </Label>
               <Input
                 type="number"
-                placeholder="Ví dụ: 1"
+                placeholder={t("modal.addVariant.editionPlaceholder")}
                 defaultValue={hasData ? "2" : ""}
               />
             </div>
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
-                <Package className="w-3.5 h-3.5" /> Tồn kho
+                <Package className="w-3.5 h-3.5" /> {t("modal.addVariant.stockLabel")}
               </Label>
               <Input type="number" placeholder="0" />
             </div>
@@ -136,10 +138,10 @@ export default function ModalAddVariant({ onClose }: { onClose: () => void }) {
           <div className="flex items-center justify-between p-3 rounded-lg border bg-emerald-50/30 dark:bg-emerald-950/20 border-emerald-100 dark:border-emerald-900">
             <div className="space-y-0.5">
               <Label className="text-emerald-700 dark:text-emerald-400 font-bold">
-                Trạng thái mở bán
+                {t("modal.addVariant.releaseStatus")}
               </Label>
               <p className="text-[11px] text-emerald-600/70">
-                Cho phép khách hàng đặt mua bản này
+                {t("modal.addVariant.releaseStatusDescription")}
               </p>
             </div>
             <Switch defaultChecked />
@@ -151,13 +153,13 @@ export default function ModalAddVariant({ onClose }: { onClose: () => void }) {
           <div className="flex items-center gap-2 mb-1">
             <CircleDollarSign className="w-4 h-4 text-primary" />
             <span className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
-              Tài chính & ISBN
+              {t("modal.addVariant.financeAndIsbn")}
             </span>
           </div>
 
           <div className="space-y-2">
             <Label className="flex items-center gap-2">
-              Mã ISBN chính thức
+              {t("modal.addVariant.officialIsbnLabel")}
             </Label>
             <Input
               placeholder="978..."
@@ -166,7 +168,7 @@ export default function ModalAddVariant({ onClose }: { onClose: () => void }) {
           </div>
 
           <div className="space-y-2">
-            <Label>Giá nhập (Cost Price)</Label>
+            <Label>{t("modal.addVariant.costPriceLabel")}</Label>
             <div className="relative">
               <Wallet className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input type="number" className="pl-9" placeholder="0.00" />
@@ -174,7 +176,7 @@ export default function ModalAddVariant({ onClose }: { onClose: () => void }) {
           </div>
 
           <div className="space-y-2">
-            <Label>Giá bán niêm yết (Price)</Label>
+            <Label>{t("modal.addVariant.listPriceLabel")}</Label>
             <div className="relative">
               <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-500" />
               <Input
@@ -187,15 +189,15 @@ export default function ModalAddVariant({ onClose }: { onClose: () => void }) {
 
           <div className="space-y-2">
             <Label className="flex items-center gap-2">
-              <Globe className="w-3.5 h-3.5" /> Mã tiền tệ
+              <Globe className="w-3.5 h-3.5" /> {t("modal.addVariant.currencyLabel")}
             </Label>
             <Select defaultValue="VND">
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="VND">VNĐ - Việt Nam Đồng</SelectItem>
-                <SelectItem value="USD">USD - Đô la Mỹ</SelectItem>
+                <SelectItem value="VND">{t("modal.addVariant.currencies.vnd")}</SelectItem>
+                <SelectItem value="USD">{t("modal.addVariant.currencies.usd")}</SelectItem>
                 <SelectItem value="EUR">EUR - Euro</SelectItem>
               </SelectContent>
             </Select>
@@ -206,10 +208,10 @@ export default function ModalAddVariant({ onClose }: { onClose: () => void }) {
       {/* 3. Footer Action */}
       <div className="flex gap-3 pt-4">
         <Button variant="ghost" className="flex-1" onClick={onClose}>
-          Hủy bỏ
+          {t("modal.addVariant.cancelButton")}
         </Button>
         <Button className="flex-[2] bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-200 dark:shadow-none">
-          Xác nhận thêm biến thể
+          {t("modal.addVariant.confirmButton")}
         </Button>
       </div>
     </div>

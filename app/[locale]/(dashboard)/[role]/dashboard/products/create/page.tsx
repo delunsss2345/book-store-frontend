@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-// Import các components con
 import VariantCreate from "./_components/VariantCreate";
 import { MagicFillCard } from "./_components/MagicFillCard";
 import { PhysicalSpecsCard } from "./_components/PhysicalSpecsCard";
@@ -20,8 +19,10 @@ import { AdminBookVariant } from "@/types/response/admin.response";
 import { convertIsbnResultToBookSchema } from "@/utils/convert-book";
 import { useCreateBookAllMutation } from "@/features/admin/hooks/use-create-book-all";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export default function CreateBookPage() {
+  const t = useTranslations();
   const [variants, setVariants] = useState<AdminBookVariant[]>([]);
   const [language, setLanguage] = useState<string>("vi");
   const { isbnSearchResult } = useSearchStore();
@@ -32,7 +33,11 @@ export default function CreateBookPage() {
     useCreateBookAllMutation();
 
   const onScanHandler = (isbn: string, lang: string) => {
-    searchIsbn({ isbn, lang });
+    toast.promise(searchIsbn({ isbn, lang }), {
+      loading: t("dashboard.products.create.toast.scanLoading"),
+      success: t("dashboard.products.create.toast.scanSuccess"),
+      error: t("dashboard.products.create.toast.scanError"),
+    });
     setLanguage(lang);
   };
 
@@ -46,48 +51,72 @@ export default function CreateBookPage() {
 
     if (!bookData) return;
     toast.promise(createBookAll(bookData), {
-      loading: "Đang tạo sách...",
-      success: "Tạo sách thành công",
-      error: "Tạo sách thất bại",
+      loading: t("dashboard.products.create.toast.createLoading"),
+      success: t("dashboard.products.create.toast.createSuccess"),
+      error: t("dashboard.products.create.toast.createError"),
     });
   };
 
   return (
-    <div className="max-w-[1600px] mx-auto p-4 space-y-8">
-      <HeaderCreate onSaveHandler={onSaveHandler} isSaving={false} />
-      {/* 1. MAGIC FILL SECTION */}
+    <div className="mx-auto w-full max-w-[1600px] p-4 lg:p-6 space-y-6">
+      <HeaderCreate onSaveHandler={onSaveHandler} isSaving={createBookAllPending} />
+
+      {/* MAGIC FILL */}
       <MagicFillCard onScan={onScanHandler} isPending={searchIsbnPending} />
 
-      {/* 2. MAIN CONTENT GRID */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* LEFT COLUMN: Nội dung chính & Biến thể */}
-        <div className="lg:col-span-8 space-y-8">
-          {/* Content Card */}
+      {/* GRID */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* LEFT */}
+        <div className="lg:col-span-8 space-y-6">
+          {/* Content */}
           <Card className="shadow-sm">
-            <CardHeader className="border-b bg-slate-50/50">
-              <div className="flex items-center gap-2 text-indigo-600">
-                <Languages className="size-5" />
-                <CardTitle className="text-lg">
-                  Nội dung hiển thị (Vietnamese)
-                </CardTitle>
+            <CardHeader className="border-b bg-muted/30">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2 text-indigo-600">
+                  <Languages className="size-5" />
+                  <CardTitle className="text-base">
+                    {t("dashboard.products.create.contentTitle")}{" "}
+                    <span className="text-muted-foreground font-medium">
+                      (
+                      {language === "vi"
+                        ? t("dashboard.products.create.languageVietnamese")
+                        : t("dashboard.products.create.languageEnglish")}
+                      )
+                    </span>
+                  </CardTitle>
+                </div>
+
+                {!!isbnSearchResult && (
+                  <Badge variant="secondary" className="text-xs">
+                    {t("dashboard.products.create.loadedData")}
+                  </Badge>
+                )}
               </div>
             </CardHeader>
-            <CardContent className="p-6 space-y-6">
-              <div className="space-y-2">
-                <Label className="font-bold">Tiêu đề sách *</Label>
+
+            <CardContent className="p-5 lg:p-6 space-y-6">
+              <div className="rounded-xl border bg-background p-4 lg:p-5 space-y-2">
+                <Label className="font-bold">
+                  {t("dashboard.products.create.bookTitleLabel")}
+                </Label>
                 <Input
-                  placeholder="Tên sách sẽ hiển thị trên web..."
+                  placeholder={t("dashboard.products.create.bookTitlePlaceholder")}
                   className="h-11"
-                  // Dùng key để React render lại input khi dữ liệu store thay đổi
                   key={`title-${isbnSearchResult?.title}`}
                   defaultValue={isbnSearchResult?.title || ""}
                 />
+                <p className="text-xs text-muted-foreground">
+                  {t("dashboard.products.create.tip")}
+                </p>
               </div>
-              <div className="space-y-2">
-                <Label className="font-bold">Mô tả chi tiết</Label>
+
+              <div className="rounded-xl border bg-background p-4 lg:p-5 space-y-2">
+                <Label className="font-bold">
+                  {t("dashboard.products.create.descriptionLabel")}
+                </Label>
                 <Textarea
-                  placeholder="Nội dung giới thiệu về sách..."
-                  className="min-h-[250px] leading-relaxed text-base"
+                  placeholder={t("dashboard.products.create.descriptionPlaceholder")}
+                  className="min-h-[240px] leading-relaxed text-sm lg:text-base"
                   key={`desc-${isbnSearchResult?.description}`}
                   defaultValue={isbnSearchResult?.description || ""}
                 />
@@ -95,43 +124,69 @@ export default function CreateBookPage() {
             </CardContent>
           </Card>
 
-          {/* Pricing & Variants Card */}
+          {/* Variants */}
           <Card className="shadow-sm border-emerald-100">
             <CardHeader className="border-b bg-emerald-50/30">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-emerald-600">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2 text-emerald-700">
                   <Wallet className="size-5" />
-                  <CardTitle className="text-lg">Biến thể & Giá bán</CardTitle>
+                  <CardTitle className="text-base">
+                    {t("dashboard.products.create.variantPriceTitle")}
+                  </CardTitle>
                 </div>
-                <Badge className="bg-emerald-500">Mặc định</Badge>
+
+                <div className="flex items-center gap-2">
+                  <Badge className="bg-emerald-600 hover:bg-emerald-600">
+                    {t("dashboard.products.create.defaultBadge")}
+                  </Badge>
+                  <Badge variant="secondary" className="text-xs">
+                    {t("dashboard.products.create.variantCount", {
+                      count: variants.length,
+                    })}
+                  </Badge>
+                </div>
               </div>
             </CardHeader>
-            <CardContent className="p-6">
+
+            <CardContent className="p-5 lg:p-6">
               <VariantCreate variants={variants} setVariants={setVariants} />
             </CardContent>
           </Card>
         </div>
 
-        {/* RIGHT COLUMN: Media & Specs */}
-        <div className="lg:col-span-4 space-y-8">
-          <ImagePreviewCard
-            imageUrl={isbnSearchResult?.coverImageUrl || ""}
-            // Bạn có thể thêm prop onUrlChange để cập nhật ngược lại store nếu cần
-          />
+        {/* RIGHT */}
+        <div className="lg:col-span-4 space-y-6">
+          <div className="lg:sticky lg:top-6 space-y-6">
+            <ImagePreviewCard
+              imageUrl={isbnSearchResult?.coverImageUrl || ""}
+            />
 
-          <PhysicalSpecsCard
-            // Map chính xác các trường từ QuickBookFillResponse vào PhysicalSpecsCard
-            data={{
-              width: isbnSearchResult?.spec?.widthCm,
-              height: isbnSearchResult?.spec?.heightCm,
-              thickness: isbnSearchResult?.spec?.thicknessCm,
-              weight: isbnSearchResult?.weightGrams,
-              publisher: isbnSearchResult?.publisherName,
-              authors: isbnSearchResult?.authorName,
-              year: isbnSearchResult?.publicationYear,
-              pages: isbnSearchResult?.pageCount,
-            }}
-          />
+            <PhysicalSpecsCard
+              data={{
+                width: isbnSearchResult?.spec?.widthCm,
+                height: isbnSearchResult?.spec?.heightCm,
+                thickness: isbnSearchResult?.spec?.thicknessCm,
+                weight: isbnSearchResult?.weightGrams,
+                publisher: isbnSearchResult?.publisherName,
+                authors: isbnSearchResult?.authorName,
+                year: isbnSearchResult?.publicationYear,
+                pages: isbnSearchResult?.pageCount,
+              }}
+            />
+
+            {/* Chỉ là gợi ý UI để “đỡ quên” - không ảnh hưởng logic */}
+            <div className="rounded-xl border bg-muted/30 p-4 text-xs text-muted-foreground">
+              <div className="flex items-center justify-between">
+                <span>{t("dashboard.products.create.creationStatus")}</span>
+                <Badge variant="outline" className="text-xs">
+                  Draft
+                </Badge>
+              </div>
+              <p className="mt-2 leading-relaxed">
+                {t("dashboard.products.create.creationStatusDescription")}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

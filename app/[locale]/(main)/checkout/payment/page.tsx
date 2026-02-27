@@ -1,11 +1,8 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import {
-  CheckCircle2,
   Copy,
   ShieldCheck,
-  CreditCard,
-  Info,
   ArrowLeft,
   QrCode,
   Check,
@@ -16,8 +13,10 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
 import { useSearchParams, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
-export default function PremiumPaymentPage() {
+function PremiumPaymentContent() {
+  const t = useTranslations();
   const [timeOut, setTimeOut] = useState(10 * 60);
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -38,9 +37,8 @@ export default function PremiumPaymentPage() {
 
   const bankInfo = {
     name: "MBBank",
-    fullName: "Ngân hàng Quân Đội",
+    fullName: t("checkout.paymentPage.bankFullName"),
     acc: "17979220797979",
-    owner: "PHAM THANH HUY",
     vaCode: "VQRQAHCEN2724",
   };
 
@@ -68,32 +66,32 @@ export default function PremiumPaymentPage() {
               onClick={() => router.back()}
               className="mb-12 -ml-2 text-zinc-400 hover:text-white hover:bg-white/10"
             >
-              <ArrowLeft className="w-4 h-4 mr-2" /> Quay lại
+              <ArrowLeft className="w-4 h-4 mr-2" /> {t("checkout.paymentPage.back")}
             </Button>
 
             <div className="space-y-8">
               <div>
                 <Badge className="bg-blue-500/20 text-blue-400 border-none mb-4 px-3">
-                  Đơn hàng dịch vụ
+                  {t("checkout.paymentPage.orderBadge")}
                 </Badge>
                 <h2 className="text-3xl font-bold tracking-tight mb-2">
-                  Thanh toán đơn hàng
+                  {t("checkout.paymentPage.title")}
                 </h2>
                 <p className="text-zinc-400 font-mono text-sm">#{orderCode}</p>
               </div>
 
               <div className="space-y-4 pt-4">
                 <div className="flex justify-between text-sm">
-                  <span className="text-zinc-500">Tạm tính</span>
+                  <span className="text-zinc-500">{t("checkout.paymentPage.subtotal")}</span>
                   <span>{formatCurrency(subtotal)}đ</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-zinc-500">Phí vận chuyển</span>
+                  <span className="text-zinc-500">{t("checkout.paymentPage.shippingFee")}</span>
                   <span className="text-green-400">20.000đ</span>
                 </div>
                 <Separator className="bg-zinc-800" />
                 <div className="flex flex-col gap-1">
-                  <span className="text-zinc-500 text-sm">Tổng thanh toán</span>
+                  <span className="text-zinc-500 text-sm">{t("checkout.paymentPage.total")}</span>
                   <span className="text-4xl font-black text-white tracking-tighter">
                     {formatCurrency(totalAmount)}
                     <span className="text-xl ml-1 text-blue-500">đ</span>
@@ -107,8 +105,9 @@ export default function PremiumPaymentPage() {
             <div className="flex gap-3 items-start">
               <ShieldCheck className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
               <p className="text-[11px] text-zinc-400 leading-relaxed">
-                Hệ thống thanh toán tự động qua <strong>SePay</strong>. Giao
-                dịch an toàn, bảo mật và được xác nhận ngay lập tức.
+                {t.rich("checkout.paymentPage.secureNote", {
+                  strong: (chunks) => <strong>{chunks}</strong>,
+                })}
               </p>
             </div>
           </div>
@@ -124,12 +123,12 @@ export default function PremiumPaymentPage() {
               <div className="flex items-center justify-center gap-2 text-amber-600 bg-amber-50 dark:bg-amber-900/20 w-fit mx-auto px-4 py-1.5 rounded-full border border-amber-100 dark:border-amber-800">
                 <div className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse" />
                 <span className="text-xs font-bold uppercase tracking-wider">
-                  Chờ thanh toán | {Math.floor(timeOut / 60)}:
+                  {t("checkout.paymentPage.waiting")} | {Math.floor(timeOut / 60)}:
                   {(timeOut % 60).toString().padStart(2, "0")}
                 </span>
               </div>
               <h3 className="text-xl font-bold text-zinc-800 dark:text-zinc-200">
-                Quét mã để hoàn tất
+                {t("checkout.paymentPage.scanToComplete")}
               </h3>
             </div>
 
@@ -149,7 +148,7 @@ export default function PremiumPaymentPage() {
                 <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-zinc-900 text-white px-4 py-1.5 rounded-full shadow-xl flex items-center gap-2 min-w-[140px] justify-center">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                   <span className="text-[10px] font-bold uppercase tracking-widest">
-                    Đang chờ quét...
+                    {t("checkout.paymentPage.waitingScan")}
                   </span>
                 </div>
               </div>
@@ -159,14 +158,14 @@ export default function PremiumPaymentPage() {
             <div className="space-y-3 pt-4">
               <div className="grid grid-cols-2 gap-3">
                 <CopyCard
-                  label="Ngân hàng"
+                  label={t("checkout.paymentPage.bank")}
                   value={bankInfo.name}
                   subValue={bankInfo.fullName}
                   onCopy={() => handleCopy(bankInfo.name, "bank")}
                   isCopied={copiedField === "bank"}
                 />
                 <CopyCard
-                  label="Số tài khoản"
+                  label={t("checkout.paymentPage.accountNumber")}
                   value={bankInfo.acc}
                   onCopy={() => handleCopy(bankInfo.acc, "acc")}
                   isCopied={copiedField === "acc"}
@@ -177,7 +176,7 @@ export default function PremiumPaymentPage() {
               <div className="w-full p-4 rounded-2xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/50 flex items-center justify-between">
                 <div>
                   <span className="text-[10px] uppercase text-blue-600 dark:text-blue-400 font-bold block mb-1">
-                    Nội dung chuyển khoản (Bắt buộc)
+                    {t("checkout.paymentPage.transferContent")}
                   </span>
                   <span className="text-base font-mono font-bold text-blue-700 dark:text-blue-300">
                     {orderCode}
@@ -200,7 +199,7 @@ export default function PremiumPaymentPage() {
 
             <div className="space-y-4">
               <Button className="w-full bg-zinc-900 dark:bg-white dark:text-zinc-900 hover:scale-[1.02] active:scale-[0.98] transition-all h-14 rounded-2xl font-bold text-base shadow-xl">
-                Tôi đã chuyển khoản thành công
+                {t("checkout.paymentPage.confirmTransfer")}
               </Button>
               <div className="flex items-center justify-center gap-4 text-zinc-400">
                 <div className="flex items-center gap-1.5">
@@ -222,6 +221,14 @@ export default function PremiumPaymentPage() {
         </div>
       </Card>
     </div>
+  );
+}
+
+export default function PremiumPaymentPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#f8fafc]" />}>
+      <PremiumPaymentContent />
+    </Suspense>
   );
 }
 

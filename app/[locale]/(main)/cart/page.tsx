@@ -1,11 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { useCartQuery } from "@/features/cart/hooks";
 import { Minus, Plus, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -16,6 +17,7 @@ const currency = new Intl.NumberFormat("en-US", {
 export default function ShoppingCartPage() {
   const router = useRouter();
   const locale = useLocale();
+  const t = useTranslations();
   const { data: cart, isPending, isError } = useCartQuery();
 
   const updateQty = (_id: string, _delta: number) => {};
@@ -29,8 +31,23 @@ export default function ShoppingCartPage() {
 
   if (isPending) {
     return (
-      <div className="container-main w-full py-10 min-h-[50vh] text-sm text-zinc-500">
-        Loading cart...
+      <div className="container-main w-full py-10 min-h-[50vh] space-y-6">
+        <Skeleton className="h-8 w-48" />
+        {Array.from({ length: 3 }).map((_, index) => (
+          <div key={index} className="grid grid-cols-[1fr_140px_100px_100px] items-start gap-x-4 py-4">
+            <div className="flex items-start gap-3">
+              <Skeleton className="mt-8 h-4 w-4" />
+              <Skeleton className="h-[120px] w-[80px]" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-52" />
+                <Skeleton className="h-3 w-32" />
+              </div>
+            </div>
+            <Skeleton className="h-4 w-16 justify-self-center" />
+            <Skeleton className="h-7 w-20 justify-self-center" />
+            <Skeleton className="h-4 w-16 justify-self-end" />
+          </div>
+        ))}
       </div>
     );
   }
@@ -38,7 +55,7 @@ export default function ShoppingCartPage() {
   if (isError) {
     return (
       <div className="container-main w-full py-10 min-h-[50vh] text-sm text-zinc-500">
-        Failed to load cart.
+        {t("cart.page.loadError")}
       </div>
     );
   }
@@ -146,7 +163,7 @@ export default function ShoppingCartPage() {
             ))
           ) : (
             <div className="py-16 text-center text-sm text-zinc-400">
-              Your cart is empty.
+              {t("cart.page.empty")}
             </div>
           )}
         </div>

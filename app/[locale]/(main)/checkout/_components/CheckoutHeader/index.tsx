@@ -2,7 +2,7 @@
 
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 type CheckoutHeaderProps = {
   title: string;
@@ -14,11 +14,12 @@ type CheckoutHeaderProps = {
 export function CheckoutHeader({
   title,
   backHref = "/cart",
-  backText = "Quay lại giỏ hàng",
+  backText,
   right,
 }: CheckoutHeaderProps) {
   const router = useRouter();
   const locale = useLocale();
+  const t = useTranslations();
 
   return (
     <div>
@@ -27,7 +28,7 @@ export function CheckoutHeader({
         className="mb-4 flex items-center text-sm text-zinc-500 transition-colors hover:text-zinc-900"
       >
         <ChevronLeft className="mr-1 h-4 w-4" />
-        {backText}
+        {backText ?? t("checkout.backToCart")}
       </button>
 
       <div className="flex items-baseline justify-between gap-4">

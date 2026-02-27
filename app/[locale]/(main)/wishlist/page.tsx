@@ -1,16 +1,28 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useWishlistQuery } from "@/features/wish/hooks";
+import { useTranslations } from "next-intl";
 import BookCard from "../_components/BookCard";
 
 const WishlistPage = () => {
+  const t = useTranslations();
   const { data: wishlist, isPending, isError } = useWishlistQuery();
 
   if (isPending) {
     return (
-      <div className="container-main w-full py-8 min-h-[50vh] text-sm text-zinc-500">
-        Loading wishlist...
+      <div className="container-main w-full py-8 min-h-[50vh] space-y-6">
+        <Skeleton className="h-10 w-56" />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <div key={index} className="space-y-3 rounded-md border p-3">
+              <Skeleton className="h-64 w-full" />
+              <Skeleton className="h-5 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
@@ -18,7 +30,7 @@ const WishlistPage = () => {
   if (isError) {
     return (
       <div className="container-main w-full py-8 min-h-[50vh] text-sm text-zinc-500">
-        Failed to load wishlist.
+        {t("wishlist.page.loadError")}
       </div>
     );
   }
@@ -26,9 +38,9 @@ const WishlistPage = () => {
   return (
     <div className="container-main w-full py-8 min-h-[50vh]">
       <div className="flex flex-wrap items-center gap-3">
-        <h1 className="text-3xl font-semibold tracking-tight">Your Wishlist</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">{t("wishlist.page.title")}</h1>
         <Button variant="outline" className="h-10 rounded-sm px-4 text-base">
-          Add all to cart
+          {t("wishlist.page.addAllToCart")}
         </Button>
       </div>
 
@@ -46,7 +58,7 @@ const WishlistPage = () => {
             />
           ))}
         {wishlist?.items.length === 0 && (
-          <p className="mt-4 text-base">Your wishlist is empty.</p>
+          <p className="mt-4 text-base">{t("wishlist.page.empty")}</p>
         )}
       </div>
     </div>

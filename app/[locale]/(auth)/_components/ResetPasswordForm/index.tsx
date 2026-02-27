@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { TFunction } from "i18next";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -19,7 +18,9 @@ import { Input } from "@/components/ui/input";
 import useTranslator from "@/hooks/use-translator";
 import { ResetPasswordSchema } from "@/validation/auth/resetPasswordValidation";
 
-const getResetPasswordSchema = (t: TFunction) => ResetPasswordSchema;
+type TranslatorFn = ReturnType<typeof useTranslator>["t"];
+
+const getResetPasswordSchema = (_t: TranslatorFn) => ResetPasswordSchema;
 
 export type ResetPasswordValues = z.infer<
   ReturnType<typeof getResetPasswordSchema>

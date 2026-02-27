@@ -10,12 +10,12 @@ import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { useLocale } from "next-intl";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import ResetPasswordForm, {
   ResetPasswordValues,
 } from "../_components/ResetPasswordForm";
 
-const ResetPassword = () => {
+const ResetPasswordContent = () => {
   const { t } = useTranslator();
   const { mutateAsync: resetPasswordMutation, isPending: isResetPending } =
     useResetPasswordMutation();
@@ -29,7 +29,7 @@ const ResetPassword = () => {
   if (!token) {
     toast.error(t("auth.errors.invalidLink"));
     router.replace(`/${locale}/forgot-password`);
-    return;
+    return null;
   }
   useEffect(() => {
     toast.promise(validateResetPassword({ token }), {
@@ -80,6 +80,14 @@ const ResetPassword = () => {
         />
       )}
     </div>
+  );
+};
+
+const ResetPassword = () => {
+  return (
+    <Suspense fallback={<div className="h-24" />}>
+      <ResetPasswordContent />
+    </Suspense>
   );
 };
 

@@ -4,7 +4,9 @@ import { Heart, Minus, Plus, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import * as React from "react";
+import { toast } from "sonner";
 
 import { LoadingLazy } from "@/components/common/LoadingLazy";
 import { Button } from "@/components/ui/button";
@@ -24,6 +26,7 @@ import { FormatPicker } from "./_components/FormatPicker";
 import { FormatAvailability } from "./_components/FormatAvailability";
 
 export default function DetailPage() {
+  const t = useTranslations();
   const params = useParams<{ slug?: string | string[] }>();
   const slug = Array.isArray(params.slug)
     ? params.slug[params.slug.length - 1]
@@ -56,17 +59,24 @@ export default function DetailPage() {
   if (isError || !bookDetail) {
     return (
       <div className="container-main py-20 text-center text-zinc-500">
-        Không tìm thấy thông tin sách.
+        {t("detail.bookNotFound")}
       </div>
     );
   }
 
   const handleAddToCart = async (quantity: number) => {
     if (bookVariantDetail && quantity >= 1) {
-      await addToCart({
-        bookVariantId: Number(bookVariantDetail.id),
-        quantity,
-      });
+      await toast.promise(
+        addToCart({
+          bookVariantId: Number(bookVariantDetail.id),
+          quantity,
+        }),
+        {
+          loading: t("detail.toast.addToCartLoading"),
+          success: t("detail.toast.addToCartSuccess"),
+          error: t("detail.toast.addToCartError"),
+        },
+      );
     }
   };
 
@@ -311,7 +321,7 @@ export default function DetailPage() {
                   ))}
                 </div>
                 <p className="text-neutral-500">
-                  Chưa có đánh giá nào cho sản phẩm này.
+                  {t("detail.noReviews")}
                 </p>
                 <Button
                   variant="outline"
