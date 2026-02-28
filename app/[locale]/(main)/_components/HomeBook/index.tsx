@@ -1,10 +1,10 @@
 "use client";
 
 import { useHomeQuery } from "@/features/catalog/hooks/use-home.mutation";
+import { cn } from "@/lib/utils";
 import { PricedBook } from "@/types/response/catalog.response";
 import { useMemo } from "react";
 import BookCard from "../BookCard";
-import { cn } from "@/lib/utils";
 
 const SkeletonCard = () => (
   <div className="flex flex-col gap-4 animate-pulse">

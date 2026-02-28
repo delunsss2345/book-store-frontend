@@ -8,37 +8,40 @@ export const routing = defineRouting({
     // ─── Main pages ─────────────────────────────────
     "/": { vi: "/", en: "/" },
 
-    "/books": { vi: "/sach", en: "/books" },
-    "/detail/[...slug]": { vi: "/chi-tiet/[...slug]", en: "/detail/[...slug]" },
+    "/books": { vi: "/books", en: "/books" },
+    "/detail/[...slug]": { vi: "/detail/[...slug]", en: "/detail/[...slug]" },
 
-    "/cart": { vi: "/gio-hang", en: "/cart" },
-    "/checkout": { vi: "/thanh-toan", en: "/checkout" },
-    "/checkout/payment": {
-      vi: "/thanh-toan/thanh-toan-online",
-      en: "/checkout/payment",
+    "/cart": { vi: "/cart", en: "/cart" },
+    "/checkout": { vi: "/checkout", en: "/checkout" },
+    "/checkout/payment": { vi: "/checkout/payment", en: "/checkout/payment" },
+
+    "/orders": { vi: "/orders", en: "/orders" },
+    "/orders/[orderId]": { vi: "/orders/[orderId]", en: "/orders/[orderId]" },
+
+    "/wishlist": { vi: "/wishlist", en: "/wishlist" },
+
+    "/categories": { vi: "/categories", en: "/categories" },
+    "/categories/[slug]": {
+      vi: "/categories/[slug]",
+      en: "/categories/[slug]",
     },
 
-    "/orders": { vi: "/don-hang", en: "/orders" },
-    "/orders/[orderId]": { vi: "/don-hang/[orderId]", en: "/orders/[orderId]" },
-
-    "/wishlist": { vi: "/yeu-thich", en: "/wishlist" },
-
-    "/categories": { vi: "/danh-muc", en: "/categories" },
-    "/categories/[slug]": { vi: "/danh-muc/[slug]", en: "/categories/[slug]" },
-
-    "/coming-soon": { vi: "/sap-ra-mat", en: "/coming-soon" },
+    "/coming-soon": { vi: "/coming-soon", en: "/coming-soon" },
 
     // ─── Auth pages ─────────────────────────────────
-    "/login": { vi: "/dang-nhap", en: "/login" },
-    "/register": { vi: "/dang-ky", en: "/register" },
-    "/forgot-password": { vi: "/quen-mat-khau", en: "/forgot-password" },
-    "/reset-password": { vi: "/dat-lai-mat-khau", en: "/reset-password" },
-    "/verify-email": { vi: "/xac-thuc-email", en: "/verify-email" },
+    "/login": { vi: "/login", en: "/login" },
+    "/register": { vi: "/register", en: "/register" },
+    "/forgot-password": { vi: "/forgot-password", en: "/forgot-password" },
+    "/reset-password": { vi: "/reset-password", en: "/reset-password" },
+    "/verify-email": { vi: "/verify-email", en: "/verify-email" },
 
-    "/profile": { vi: "/ho-so", en: "/profile" },
-    "/profile/addresses": { vi: "/ho-so/dia-chi", en: "/profile/addresses" },
+    "/profile": { vi: "/profile", en: "/profile" },
+    "/profile/addresses": {
+      vi: "/profile/addresses",
+      en: "/profile/addresses",
+    },
     "/profile/change-password": {
-      vi: "/ho-so/doi-mat-khau",
+      vi: "/profile/change-password",
       en: "/profile/change-password",
     },
 
@@ -46,240 +49,241 @@ export const routing = defineRouting({
     // Role-scoped Dashboard (IMPORTANT: prefix /[role])
     // ────────────────────────────────────────────────
     "/[role]/dashboard": {
-      vi: "/[role]/bang-dieu-khien",
+      vi: "/[role]/dashboard",
       en: "/[role]/dashboard",
     },
     "/[role]/dashboard/overview": {
-      vi: "/[role]/bang-dieu-khien/tong-quan",
+      vi: "/[role]/dashboard/overview",
       en: "/[role]/dashboard/overview",
     },
     "/[role]/dashboard/statistics": {
-      vi: "/[role]/bang-dieu-khien/thong-ke",
+      vi: "/[role]/dashboard/statistics",
       en: "/[role]/dashboard/statistics",
     },
     "/[role]/dashboard/revenue": {
-      vi: "/[role]/bang-dieu-khien/doanh-thu",
+      vi: "/[role]/dashboard/revenue",
       en: "/[role]/dashboard/revenue",
     },
 
     // Products
     "/[role]/dashboard/products": {
-      vi: "/[role]/bang-dieu-khien/san-pham",
+      vi: "/[role]/dashboard/products",
       en: "/[role]/dashboard/products",
     },
     "/[role]/dashboard/products/new": {
-      vi: "/[role]/bang-dieu-khien/san-pham/tao-moi",
+      vi: "/[role]/dashboard/products/new",
       en: "/[role]/dashboard/products/new",
     },
     "/[role]/dashboard/products/[productId]": {
-      vi: "/[role]/bang-dieu-khien/san-pham/[productId]",
+      vi: "/[role]/dashboard/products/[productId]",
       en: "/[role]/dashboard/products/[productId]",
     },
     "/[role]/dashboard/products/[productId]/edit": {
-      vi: "/[role]/bang-dieu-khien/san-pham/[productId]/chinh-sua",
+      vi: "/[role]/dashboard/products/[productId]/edit",
       en: "/[role]/dashboard/products/[productId]/edit",
     },
     "/[role]/dashboard/products/create": {
-      vi: "/[role]/bang-dieu-khien/san-pham/tao-moi",
+      vi: "/[role]/dashboard/products/create",
       en: "/[role]/dashboard/products/create",
     },
     "/[role]/dashboard/products/edit": {
-      vi: "/[role]/bang-dieu-khien/san-pham/chinh-sua",
+      vi: "/[role]/dashboard/products/edit",
       en: "/[role]/dashboard/products/edit",
     },
+
     // Catalog
     "/[role]/dashboard/categories": {
-      vi: "/[role]/bang-dieu-khien/danh-muc",
+      vi: "/[role]/dashboard/categories",
       en: "/[role]/dashboard/categories",
     },
     "/[role]/dashboard/authors": {
-      vi: "/[role]/bang-dieu-khien/tac-gia",
+      vi: "/[role]/dashboard/authors",
       en: "/[role]/dashboard/authors",
     },
     "/[role]/dashboard/publishers": {
-      vi: "/[role]/bang-dieu-khien/nha-xuat-ban",
+      vi: "/[role]/dashboard/publishers",
       en: "/[role]/dashboard/publishers",
     },
 
     // Inventory & assets
     "/[role]/dashboard/inventory": {
-      vi: "/[role]/bang-dieu-khien/ton-kho",
+      vi: "/[role]/dashboard/inventory",
       en: "/[role]/dashboard/inventory",
     },
     "/[role]/dashboard/book-assets": {
-      vi: "/[role]/bang-dieu-khien/tai-nguyen-sach",
+      vi: "/[role]/dashboard/book-assets",
       en: "/[role]/dashboard/book-assets",
     },
     "/[role]/dashboard/book-snapshots": {
-      vi: "/[role]/bang-dieu-khien/lich-su-sach",
+      vi: "/[role]/dashboard/book-snapshots",
       en: "/[role]/dashboard/book-snapshots",
     },
 
     // Orders & invoices
     "/[role]/dashboard/orders": {
-      vi: "/[role]/bang-dieu-khien/don-hang",
+      vi: "/[role]/dashboard/orders",
       en: "/[role]/dashboard/orders",
     },
     "/[role]/dashboard/orders/[orderId]": {
-      vi: "/[role]/bang-dieu-khien/don-hang/[orderId]",
+      vi: "/[role]/dashboard/orders/[orderId]",
       en: "/[role]/dashboard/orders/[orderId]",
     },
     "/[role]/dashboard/invoices": {
-      vi: "/[role]/bang-dieu-khien/hoa-don",
+      vi: "/[role]/dashboard/invoices",
       en: "/[role]/dashboard/invoices",
     },
     "/[role]/dashboard/invoices/[invoiceId]": {
-      vi: "/[role]/bang-dieu-khien/hoa-don/[invoiceId]",
+      vi: "/[role]/dashboard/invoices/[invoiceId]",
       en: "/[role]/dashboard/invoices/[invoiceId]",
     },
     "/[role]/dashboard/shipping": {
-      vi: "/[role]/bang-dieu-khien/van-chuyen",
+      vi: "/[role]/dashboard/shipping",
       en: "/[role]/dashboard/shipping",
     },
 
     // Users & Access Control
     "/[role]/dashboard/customers": {
-      vi: "/[role]/bang-dieu-khien/khach-hang",
+      vi: "/[role]/dashboard/customers",
       en: "/[role]/dashboard/customers",
     },
     "/[role]/dashboard/customers/[customerId]": {
-      vi: "/[role]/bang-dieu-khien/khach-hang/[customerId]",
+      vi: "/[role]/dashboard/customers/[customerId]",
       en: "/[role]/dashboard/customers/[customerId]",
     },
     "/[role]/dashboard/users": {
-      vi: "/[role]/bang-dieu-khien/nguoi-dung",
+      vi: "/[role]/dashboard/users",
       en: "/[role]/dashboard/users",
     },
     "/[role]/dashboard/roles": {
-      vi: "/[role]/bang-dieu-khien/vai-tro",
+      vi: "/[role]/dashboard/roles",
       en: "/[role]/dashboard/roles",
     },
     "/[role]/dashboard/permissions": {
-      vi: "/[role]/bang-dieu-khien/quyen-han",
+      vi: "/[role]/dashboard/permissions",
       en: "/[role]/dashboard/permissions",
     },
     "/[role]/dashboard/guest-sessions": {
-      vi: "/[role]/bang-dieu-khien/phien-khach",
+      vi: "/[role]/dashboard/guest-sessions",
       en: "/[role]/dashboard/guest-sessions",
     },
 
     // Marketing & Engagement
     "/[role]/dashboard/coupons": {
-      vi: "/[role]/bang-dieu-khien/ma-giam-gia",
+      vi: "/[role]/dashboard/coupons",
       en: "/[role]/dashboard/coupons",
     },
     "/[role]/dashboard/reviews": {
-      vi: "/[role]/bang-dieu-khien/danh-gia",
+      vi: "/[role]/dashboard/reviews",
       en: "/[role]/dashboard/reviews",
     },
     "/[role]/dashboard/notifications": {
-      vi: "/[role]/bang-dieu-khien/thong-bao",
+      vi: "/[role]/dashboard/notifications",
       en: "/[role]/dashboard/notifications",
     },
 
     // System & Monitoring
     "/[role]/dashboard/email-outbox": {
-      vi: "/[role]/bang-dieu-khien/hop-thu-di",
+      vi: "/[role]/dashboard/email-outbox",
       en: "/[role]/dashboard/email-outbox",
     },
     "/[role]/dashboard/login-attempts": {
-      vi: "/[role]/bang-dieu-khien/lich-su-dang-nhap",
+      vi: "/[role]/dashboard/login-attempts",
       en: "/[role]/dashboard/login-attempts",
     },
     "/[role]/dashboard/devices": {
-      vi: "/[role]/bang-dieu-khien/thiet-bi",
+      vi: "/[role]/dashboard/devices",
       en: "/[role]/dashboard/devices",
     },
 
     // Settings
     "/[role]/dashboard/settings": {
-      vi: "/[role]/bang-dieu-khien/cai-dat",
+      vi: "/[role]/dashboard/settings",
       en: "/[role]/dashboard/settings",
     },
     "/[role]/dashboard/settings/account": {
-      vi: "/[role]/bang-dieu-khien/cai-dat/tai-khoan",
+      vi: "/[role]/dashboard/settings/account",
       en: "/[role]/dashboard/settings/account",
     },
     "/[role]/dashboard/settings/appearance": {
-      vi: "/[role]/bang-dieu-khien/cai-dat/giao-dien",
+      vi: "/[role]/dashboard/settings/appearance",
       en: "/[role]/dashboard/settings/appearance",
     },
     "/[role]/dashboard/settings/notifications": {
-      vi: "/[role]/bang-dieu-khien/cai-dat/thong-bao",
+      vi: "/[role]/dashboard/settings/notifications",
       en: "/[role]/dashboard/settings/notifications",
     },
     "/[role]/dashboard/settings/display": {
-      vi: "/[role]/bang-dieu-khien/cai-dat/hien-thi",
+      vi: "/[role]/dashboard/settings/display",
       en: "/[role]/dashboard/settings/display",
     },
 
     // Help
     "/[role]/dashboard/help-center": {
-      vi: "/[role]/bang-dieu-khien/tro-giup",
+      vi: "/[role]/dashboard/help-center",
       en: "/[role]/dashboard/help-center",
     },
 
-    // Staff (nếu staff là role riêng thì các route này có thể bỏ; nếu vẫn muốn keep thì để)
+    // Staff
     "/[role]/dashboard/staff/orders": {
-      vi: "/[role]/bang-dieu-khien/nhan-vien/don-hang",
+      vi: "/[role]/dashboard/staff/orders",
       en: "/[role]/dashboard/staff/orders",
     },
     "/[role]/dashboard/staff/orders/[orderId]": {
-      vi: "/[role]/bang-dieu-khien/nhan-vien/don-hang/[orderId]",
+      vi: "/[role]/dashboard/staff/orders/[orderId]",
       en: "/[role]/dashboard/staff/orders/[orderId]",
     },
     "/[role]/dashboard/staff/customers": {
-      vi: "/[role]/bang-dieu-khien/nhan-vien/khach-hang",
+      vi: "/[role]/dashboard/staff/customers",
       en: "/[role]/dashboard/staff/customers",
     },
     "/[role]/dashboard/staff/products": {
-      vi: "/[role]/bang-dieu-khien/nhan-vien/san-pham",
+      vi: "/[role]/dashboard/staff/products",
       en: "/[role]/dashboard/staff/products",
     },
     "/[role]/dashboard/staff/reviews": {
-      vi: "/[role]/bang-dieu-khien/nhan-vien/danh-gia",
+      vi: "/[role]/dashboard/staff/reviews",
       en: "/[role]/dashboard/staff/reviews",
     },
     "/[role]/dashboard/staff/coupons": {
-      vi: "/[role]/bang-dieu-khien/nhan-vien/ma-giam-gia",
+      vi: "/[role]/dashboard/staff/coupons",
       en: "/[role]/dashboard/staff/coupons",
     },
     "/[role]/dashboard/staff/shipping": {
-      vi: "/[role]/bang-dieu-khien/nhan-vien/van-chuyen",
+      vi: "/[role]/dashboard/staff/shipping",
       en: "/[role]/dashboard/staff/shipping",
     },
 
     // Warehouse
     "/[role]/dashboard/warehouse/inventory": {
-      vi: "/[role]/bang-dieu-khien/kho/ton-kho",
+      vi: "/[role]/dashboard/warehouse/inventory",
       en: "/[role]/dashboard/warehouse/inventory",
     },
     "/[role]/dashboard/warehouse/stock-in": {
-      vi: "/[role]/bang-dieu-khien/kho/nhap-kho",
+      vi: "/[role]/dashboard/warehouse/stock-in",
       en: "/[role]/dashboard/warehouse/stock-in",
     },
     "/[role]/dashboard/warehouse/stock-out": {
-      vi: "/[role]/bang-dieu-khien/kho/xuat-kho",
+      vi: "/[role]/dashboard/warehouse/stock-out",
       en: "/[role]/dashboard/warehouse/stock-out",
     },
     "/[role]/dashboard/warehouse/products": {
-      vi: "/[role]/bang-dieu-khien/kho/san-pham",
+      vi: "/[role]/dashboard/warehouse/products",
       en: "/[role]/dashboard/warehouse/products",
     },
     "/[role]/dashboard/warehouse/shipments": {
-      vi: "/[role]/bang-dieu-khien/kho/lo-hang",
+      vi: "/[role]/dashboard/warehouse/shipments",
       en: "/[role]/dashboard/warehouse/shipments",
     },
     "/[role]/dashboard/warehouse/shipments/[shipmentId]": {
-      vi: "/[role]/bang-dieu-khien/kho/lo-hang/[shipmentId]",
+      vi: "/[role]/dashboard/warehouse/shipments/[shipmentId]",
       en: "/[role]/dashboard/warehouse/shipments/[shipmentId]",
     },
     "/[role]/dashboard/warehouse/suppliers": {
-      vi: "/[role]/bang-dieu-khien/kho/nha-cung-cap",
+      vi: "/[role]/dashboard/warehouse/suppliers",
       en: "/[role]/dashboard/warehouse/suppliers",
     },
     "/[role]/dashboard/warehouse/reports": {
-      vi: "/[role]/bang-dieu-khien/kho/bao-cao",
+      vi: "/[role]/dashboard/warehouse/reports",
       en: "/[role]/dashboard/warehouse/reports",
     },
   },

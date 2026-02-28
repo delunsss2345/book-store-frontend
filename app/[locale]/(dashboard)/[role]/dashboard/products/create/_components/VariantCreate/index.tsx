@@ -36,21 +36,31 @@ const getAdminBookVariantSchema = (t: (key: string) => string) =>
       .enum(["PAPERBACK", "HARDCOVER", "EBOOK", "AUDIOBOOK"])
       .or(z.string()),
     edition: z.number(),
-    isbn: z.string().min(1, t("dashboard.products.create.variant.validation.isbnRequired")),
+    isbn: z
+      .string()
+      .min(1, t("dashboard.products.create.variant.validation.isbnRequired")),
     costPrice: z
       .string()
-      .min(1, t("dashboard.products.create.variant.validation.costPriceRequired")),
+      .min(
+        1,
+        t("dashboard.products.create.variant.validation.costPriceRequired"),
+      ),
     price: z
       .string()
       .min(1, t("dashboard.products.create.variant.validation.priceRequired")),
     currencyCode: z
       .string()
-      .min(1, t("dashboard.products.create.variant.validation.currencyCodeRequired")),
+      .min(
+        1,
+        t("dashboard.products.create.variant.validation.currencyCodeRequired"),
+      ),
     stock: z.number(),
     isActive: z.boolean(),
   });
 
-type AdminBookVariantForm = z.infer<ReturnType<typeof getAdminBookVariantSchema>>;
+type AdminBookVariantForm = z.infer<
+  ReturnType<typeof getAdminBookVariantSchema>
+>;
 
 export default function VariantCreate({
   variants,
@@ -61,7 +71,10 @@ export default function VariantCreate({
 }) {
   const t = useTranslations();
   const [isOpen, setIsOpen] = useState(false);
-  const adminBookVariantSchema = useMemo(() => getAdminBookVariantSchema(t), [t]);
+  const adminBookVariantSchema = useMemo(
+    () => getAdminBookVariantSchema(t),
+    [t],
+  );
 
   const form = useForm<AdminBookVariantForm>({
     resolver: zodResolver(adminBookVariantSchema),
@@ -116,13 +129,16 @@ export default function VariantCreate({
           className="w-full h-20 border-dashed border-2 text-muted-foreground hover:text-emerald-700 hover:border-emerald-600 transition-all"
           onClick={() => setIsOpen(true)}
         >
-          <Plus className="mr-2 size-5" /> {t("dashboard.products.create.variant.addNew")}
+          <Plus className="mr-2 size-5" />{" "}
+          {t("dashboard.products.create.variant.addNew")}
         </Button>
       ) : (
         <Card className="border-emerald-200 bg-emerald-50/10">
           <CardHeader className="pb-0">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm">{t("dashboard.products.create.variant.formTitle")}</CardTitle>
+              <CardTitle className="text-sm">
+                {t("dashboard.products.create.variant.formTitle")}
+              </CardTitle>
               <Badge variant="secondary" className="text-xs">
                 Form
               </Badge>
@@ -133,7 +149,7 @@ export default function VariantCreate({
             <Form {...form}>
               <div className="space-y-6">
                 {/* Block 1 */}
-                <div className="rounded-xl border bg-background p-4 space-y-4">
+                <div className="space-y-4 pt-2">
                   <div className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
                     {t("dashboard.products.create.variant.basicInfo")}
                   </div>
@@ -144,7 +160,9 @@ export default function VariantCreate({
                       name="format"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t("dashboard.products.create.variant.formatLabel")}</FormLabel>
+                          <FormLabel>
+                            {t("dashboard.products.create.variant.formatLabel")}
+                          </FormLabel>
                           <Select
                             onValueChange={field.onChange}
                             defaultValue={field.value}
@@ -156,10 +174,14 @@ export default function VariantCreate({
                             </FormControl>
                             <SelectContent className="bg-white">
                               <SelectItem value="PAPERBACK">
-                                {t("dashboard.products.create.variant.formats.paperback")}
+                                {t(
+                                  "dashboard.products.create.variant.formats.paperback",
+                                )}
                               </SelectItem>
                               <SelectItem value="HARDCOVER">
-                                {t("dashboard.products.create.variant.formats.hardcover")}
+                                {t(
+                                  "dashboard.products.create.variant.formats.hardcover",
+                                )}
                               </SelectItem>
                               <SelectItem value="EBOOK">E-Book</SelectItem>
                             </SelectContent>
@@ -174,7 +196,9 @@ export default function VariantCreate({
                       name="stock"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t("dashboard.products.create.variant.stockLabel")}</FormLabel>
+                          <FormLabel>
+                            {t("dashboard.products.create.variant.stockLabel")}
+                          </FormLabel>
                           <FormControl>
                             <Input type="number" className="h-10" {...field} />
                           </FormControl>
@@ -188,7 +212,9 @@ export default function VariantCreate({
                       name="isbn"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t("dashboard.products.create.variant.isbnLabel")}</FormLabel>
+                          <FormLabel>
+                            {t("dashboard.products.create.variant.isbnLabel")}
+                          </FormLabel>
                           <FormControl>
                             <Input
                               placeholder="978..."
@@ -204,7 +230,7 @@ export default function VariantCreate({
                 </div>
 
                 {/* Block 2 */}
-                <div className="rounded-xl border bg-background p-4 space-y-4">
+                <div className="space-y-4 pt-2">
                   <div className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
                     {t("dashboard.products.create.variant.pricingAndEdition")}
                   </div>
@@ -215,7 +241,11 @@ export default function VariantCreate({
                       name="costPrice"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t("dashboard.products.create.variant.costPriceLabel")}</FormLabel>
+                          <FormLabel>
+                            {t(
+                              "dashboard.products.create.variant.costPriceLabel",
+                            )}
+                          </FormLabel>
                           <FormControl>
                             <Input type="number" className="h-10" {...field} />
                           </FormControl>
@@ -249,7 +279,11 @@ export default function VariantCreate({
                       name="edition"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t("dashboard.products.create.variant.editionLabel")}</FormLabel>
+                          <FormLabel>
+                            {t(
+                              "dashboard.products.create.variant.editionLabel",
+                            )}
+                          </FormLabel>
                           <FormControl>
                             <Input type="number" className="h-10" {...field} />
                           </FormControl>
@@ -272,7 +306,8 @@ export default function VariantCreate({
                       form.reset();
                     }}
                   >
-                    <X className="mr-2 size-4" /> {t("dashboard.products.create.variant.cancel")}
+                    <X className="mr-2 size-4" />{" "}
+                    {t("dashboard.products.create.variant.cancel")}
                   </Button>
 
                   <Button
@@ -280,7 +315,8 @@ export default function VariantCreate({
                     onClick={form.handleSubmit(onSaveVariant, onError)}
                     className="bg-emerald-600 hover:bg-emerald-700"
                   >
-                    <Check className="mr-2 size-4" /> {t("dashboard.products.create.variant.save")}
+                    <Check className="mr-2 size-4" />{" "}
+                    {t("dashboard.products.create.variant.save")}
                   </Button>
                 </div>
               </div>

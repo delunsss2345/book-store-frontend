@@ -30,9 +30,9 @@ export const PhysicalSpecsCard = ({ data }: { data?: any }) => {
         </div>
       </CardHeader>
 
-      <CardContent className="p-5 lg:p-6 space-y-6">
+      <CardContent className="p-4 space-y-4">
         {/* Kích thước & Trọng lượng */}
-        <div className="rounded-xl border bg-background p-4 space-y-3">
+        <div className="rounded-xl border bg-background p-3 space-y-2">
           <div className="flex items-center justify-between">
             <Label className="text-xs font-bold">
               {t("dashboard.products.create.physicalSpecs.dimensionLabel")}
@@ -42,7 +42,7 @@ export const PhysicalSpecsCard = ({ data }: { data?: any }) => {
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <SpecInput
               label={t("dashboard.products.create.physicalSpecs.widthLabel")}
               name="width"
@@ -54,7 +54,9 @@ export const PhysicalSpecsCard = ({ data }: { data?: any }) => {
               defaultValue={data?.height}
             />
             <SpecInput
-              label={t("dashboard.products.create.physicalSpecs.thicknessLabel")}
+              label={t(
+                "dashboard.products.create.physicalSpecs.thicknessLabel",
+              )}
               name="thickness"
               defaultValue={data?.thickness}
             />
@@ -70,30 +72,38 @@ export const PhysicalSpecsCard = ({ data }: { data?: any }) => {
         <Separator />
 
         {/* Info */}
-        <div className="rounded-xl border bg-background p-4 space-y-4">
+        <div className="space-y-3 pt-1">
           <Label className="text-xs font-bold">
             {t("dashboard.products.create.physicalSpecs.publishLabel")}
           </Label>
 
           <FullWidthInput
             label={t("dashboard.products.create.physicalSpecs.authorLabel")}
-            placeholder={t("dashboard.products.create.physicalSpecs.authorPlaceholder")}
+            placeholder={t(
+              "dashboard.products.create.physicalSpecs.authorPlaceholder",
+            )}
             defaultValue={data?.authors}
           />
           <FullWidthInput
             label={t("dashboard.products.create.physicalSpecs.publisherLabel")}
-            placeholder={t("dashboard.products.create.physicalSpecs.publisherPlaceholder")}
+            placeholder={t(
+              "dashboard.products.create.physicalSpecs.publisherPlaceholder",
+            )}
             defaultValue={data?.publisher}
           />
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <FullWidthInput
-              label={t("dashboard.products.create.physicalSpecs.publishYearLabel")}
+              label={t(
+                "dashboard.products.create.physicalSpecs.publishYearLabel",
+              )}
               type="number"
               defaultValue={data?.year}
             />
             <FullWidthInput
-              label={t("dashboard.products.create.physicalSpecs.pageCountLabel")}
+              label={t(
+                "dashboard.products.create.physicalSpecs.pageCountLabel",
+              )}
               type="number"
               defaultValue={data?.pages}
             />
@@ -101,7 +111,7 @@ export const PhysicalSpecsCard = ({ data }: { data?: any }) => {
         </div>
 
         {/* Badges */}
-        <div className="rounded-xl border bg-background p-4 space-y-3">
+        <div className="space-y-3 pt-2">
           <Label className="text-xs font-bold flex items-center gap-2">
             <Tag className="size-3 text-primary" />{" "}
             {t("dashboard.products.create.physicalSpecs.badgesLabel")}
@@ -150,7 +160,7 @@ const SpecInput = ({ label, isBold, ...props }: any) => (
     <Input
       type="number"
       step="0.1"
-      className={`h-10 ${isBold ? "font-bold" : ""}`}
+      className={`h-9 ${isBold ? "font-bold" : ""}`}
       {...props}
     />
   </div>
@@ -159,13 +169,15 @@ const SpecInput = ({ label, isBold, ...props }: any) => (
 const FullWidthInput = ({ label, ...props }: any) => (
   <div className="space-y-2">
     <Label className="text-xs font-bold">{label}</Label>
-    <Input className="h-10" {...props} />
+    <Input className="h-9" {...props} />
   </div>
 );
 
 const FooterAlert = ({ text }: { text: ReactNode }) => (
   <div className="p-4 bg-amber-50 border-t flex gap-3">
     <AlertCircle className="size-4 text-amber-600 shrink-0 mt-0.5" />
-    <p className="text-[11px] text-amber-800 leading-normal font-medium">{text}</p>
+    <p className="text-[11px] text-amber-800 leading-normal font-medium">
+      {text}
+    </p>
   </div>
 );

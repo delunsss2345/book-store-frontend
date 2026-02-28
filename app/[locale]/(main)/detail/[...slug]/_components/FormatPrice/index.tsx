@@ -1,6 +1,6 @@
 import { useCatalogStore } from "@/features/catalog/store/catalog.store";
-import { useMemo } from "react";
 import { useTranslations } from "next-intl";
+import { useMemo } from "react";
 
 export function FormatPrice() {
     const t = useTranslations();

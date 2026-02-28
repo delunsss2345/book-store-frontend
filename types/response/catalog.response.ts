@@ -85,6 +85,8 @@ export type CatalogBookDetailDto = {
   specs: CatalogBookSpecDto;
   badges: string[];
   createdAt: string;
+
+  recommend?: CatalogBookCardDto[]
 };
 
 // --- Catalog Book List ---

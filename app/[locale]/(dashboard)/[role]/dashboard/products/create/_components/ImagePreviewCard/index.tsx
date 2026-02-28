@@ -42,10 +42,10 @@ export const ImagePreviewCard = ({
         </div>
       </CardHeader>
 
-      <CardContent className="p-5 space-y-4">
+      <CardContent className="p-3 space-y-3">
         {/* Preview */}
-        <div className="rounded-xl border bg-background p-3">
-          <div className="relative aspect-[3/4] rounded-xl bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center overflow-hidden group transition-all hover:border-primary/30">
+        <div className="rounded-lg border bg-background p-1.5">
+          <div className="relative h-48 w-full max-w-50 mx-auto rounded-lg bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center overflow-hidden group transition-all hover:border-primary/30">
             {hasImage ? (
               <>
                 <img
@@ -80,9 +80,9 @@ export const ImagePreviewCard = ({
               <button
                 type="button"
                 onClick={() => console.log("Upload image")}
-                className="text-center p-6 w-full h-full"
+                className="text-center p-4 w-full h-full flex flex-col items-center justify-center gap-2"
               >
-                <div className="size-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-300">
+                <div className="size-12 bg-slate-100 rounded-full flex items-center justify-center text-slate-300">
                   <ImageIcon className="size-8" />
                 </div>
                 <p className="text-xs font-medium text-slate-600">
@@ -97,7 +97,7 @@ export const ImagePreviewCard = ({
         </div>
 
         {/* URL */}
-        <div className="rounded-xl border bg-background p-4 space-y-2">
+        <div className="space-y-2">
           <Label className="text-[11px] font-bold uppercase text-muted-foreground flex items-center gap-1">
             <LinkIcon className="size-3" />{" "}
             {t("dashboard.products.create.imagePreview.urlLabel")}

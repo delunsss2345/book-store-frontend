@@ -58,16 +58,19 @@ export default function CreateBookPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[1600px] p-4 lg:p-6 space-y-6">
-      <HeaderCreate onSaveHandler={onSaveHandler} isSaving={createBookAllPending} />
+    <div className="mx-auto w-full max-w-400 p-4 lg:p-6 space-y-4">
+      <HeaderCreate
+        onSaveHandler={onSaveHandler}
+        isSaving={createBookAllPending}
+      />
 
       {/* MAGIC FILL */}
       <MagicFillCard onScan={onScanHandler} isPending={searchIsbnPending} />
 
       {/* GRID */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
         {/* LEFT */}
-        <div className="lg:col-span-8 space-y-6">
+        <div className="lg:col-span-8 space-y-4">
           {/* Content */}
           <Card className="shadow-sm">
             <CardHeader className="border-b bg-muted/30">
@@ -94,29 +97,33 @@ export default function CreateBookPage() {
               </div>
             </CardHeader>
 
-            <CardContent className="p-5 lg:p-6 space-y-6">
-              <div className="rounded-xl border bg-background p-4 lg:p-5 space-y-2">
-                <Label className="font-bold">
+            <CardContent className="p-4 space-y-4">
+              <div className="space-y-2">
+                <Label className="font-semibold text-slate-700">
                   {t("dashboard.products.create.bookTitleLabel")}
                 </Label>
                 <Input
-                  placeholder={t("dashboard.products.create.bookTitlePlaceholder")}
-                  className="h-11"
+                  placeholder={t(
+                    "dashboard.products.create.bookTitlePlaceholder",
+                  )}
+                  className="h-10 bg-slate-50/50"
                   key={`title-${isbnSearchResult?.title}`}
                   defaultValue={isbnSearchResult?.title || ""}
                 />
-                <p className="text-xs text-muted-foreground">
+                <p className="text-[11px] text-muted-foreground mt-1">
                   {t("dashboard.products.create.tip")}
                 </p>
               </div>
 
-              <div className="rounded-xl border bg-background p-4 lg:p-5 space-y-2">
-                <Label className="font-bold">
+              <div className="space-y-2">
+                <Label className="font-semibold text-slate-700">
                   {t("dashboard.products.create.descriptionLabel")}
                 </Label>
                 <Textarea
-                  placeholder={t("dashboard.products.create.descriptionPlaceholder")}
-                  className="min-h-[240px] leading-relaxed text-sm lg:text-base"
+                  placeholder={t(
+                    "dashboard.products.create.descriptionPlaceholder",
+                  )}
+                  className="min-h-28 leading-relaxed text-sm bg-slate-50/50 resize-y"
                   key={`desc-${isbnSearchResult?.description}`}
                   defaultValue={isbnSearchResult?.description || ""}
                 />
@@ -148,15 +155,15 @@ export default function CreateBookPage() {
               </div>
             </CardHeader>
 
-            <CardContent className="p-5 lg:p-6">
+            <CardContent className="p-4">
               <VariantCreate variants={variants} setVariants={setVariants} />
             </CardContent>
           </Card>
         </div>
 
         {/* RIGHT */}
-        <div className="lg:col-span-4 space-y-6">
-          <div className="lg:sticky lg:top-6 space-y-6">
+        <div className="lg:col-span-4 space-y-4">
+          <div className="lg:sticky lg:top-4 space-y-4">
             <ImagePreviewCard
               imageUrl={isbnSearchResult?.coverImageUrl || ""}
             />

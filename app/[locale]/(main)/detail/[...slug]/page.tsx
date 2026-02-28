@@ -1,13 +1,14 @@
 "use client";
 
 import { Heart, Minus, Plus, ShoppingCart } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useTranslations } from "next-intl";
 import * as React from "react";
 import { toast } from "sonner";
 
+import RecommendedSection from "@/app/[locale]/(main)/_components/RecommendSection";
 import { LoadingLazy } from "@/components/common/LoadingLazy";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,10 +21,10 @@ import { useBookQuery } from "@/features/catalog/hooks/use-book.mutation";
 import { useCatalogStore } from "@/features/catalog/store/catalog.store";
 import { useWishStore } from "@/features/wish/store/wish.store";
 import { cn } from "@/lib/utils";
+import { FormatAvailability } from "./_components/FormatAvailability";
+import { FormatPicker } from "./_components/FormatPicker";
 import { FormatPrice } from "./_components/FormatPrice";
 import { WishlistAction } from "./_components/WishlistAction";
-import { FormatPicker } from "./_components/FormatPicker";
-import { FormatAvailability } from "./_components/FormatAvailability";
 
 export default function DetailPage() {
   const t = useTranslations();
@@ -338,27 +339,7 @@ export default function DetailPage() {
       {/* RELAXED PRODUCTS */}
       <section className="bg-neutral-50 py-20">
         <div className="container-main">
-          <h2 className="mb-16 text-center font-serif text-3xl md:text-4xl">
-            You may also like
-          </h2>
-          <div className="grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-3 lg:grid-cols-4">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="group cursor-pointer">
-                <div className="relative aspect-[3/4] w-full overflow-hidden bg-white rounded-sm border border-neutral-100 transition-shadow group-hover:shadow-md">
-                  {/* Placeholder for similar books */}
-                </div>
-                <div className="mt-4 space-y-1">
-                  <p className="text-[11px] uppercase tracking-widest text-neutral-400">
-                    Category
-                  </p>
-                  <h3 className="font-medium text-neutral-900 group-hover:underline">
-                    Related Book Title {i}
-                  </h3>
-                  <p className="text-sm font-bold">$25.00</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <RecommendedSection books={bookDetail?.recommend ?? []} title="Các sản phẩm tương tự" />
         </div>
       </section>
     </main>
