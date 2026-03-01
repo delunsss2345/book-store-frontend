@@ -1,13 +1,11 @@
-import { API_MESSAGE } from "@/constants/api/messageApi";
 import { api } from "@/lib/api/fetchHandler";
-import { ResponseApi } from "@/lib/api/responseHandler";
+import { appendSetCookies, ResponseApi } from "@/lib/api/responseHandler";
 import {
     CartItemKeyParam,
     UpdateCartItemDeltaRequest,
 } from "@/types/request/cart.request";
 import { UpdateCartItemDeltaApiResponse } from "@/types/response/cart.response";
 import { HttpStatusCode } from "axios";
-import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 
 export async function PATCH(
@@ -18,12 +16,14 @@ export async function PATCH(
         const { itemKey } = await params;
         const payload: UpdateCartItemDeltaRequest = await request.json();
 
-        const response = await api.patch<UpdateCartItemDeltaApiResponse>(
+        const response = await api.raw.patch<UpdateCartItemDeltaApiResponse>(
             `cart/items/${itemKey}/delta`,
             payload
         );
 
-        return ResponseApi.success(response.data, HttpStatusCode.Ok);
+        const res = ResponseApi.success(response.data, HttpStatusCode.Ok);
+        appendSetCookies(res, response.setCookies);
+        return res;
     } catch (error: any) {
         if (process.env.NODE_ENV === "development") {
             console.error("Cart Item Delta PATCH API Error:", error);

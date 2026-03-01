@@ -3,18 +3,18 @@ import { http } from "@/utils/http";
 
 
 export const wishApi = {
-    async getWish(): Promise<WishResponse> {
-        return await http.get('wish');
+    getWish(): Promise<WishResponse> {
+        return http.get('wish');
     },
-    async deleteWish() {
-        return await http.del('wish');
+    deleteWish() {
+        return http.del('wish');
     },
-    async addWishItem({ bookVariantId }: { bookVariantId: number }): Promise<AddWishItemResponse> {
-        return await http.post('wish/items', {
+    addWishItem({ bookVariantId }: { bookVariantId: number }): Promise<AddWishItemResponse> {
+        return http.post('wish/items', {
             bookVariantId
         });
     },
     async deleteWishItem(itemKey: number) {
-        return await http.del(`wish/items/${itemKey}`)
+        return http.del(`wish/items/${itemKey}`)
     },
 };

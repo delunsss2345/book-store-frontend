@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useWishlistQuery } from "@/features/wish/hooks";
+import { WishItem } from "@/types/response/wish.response";
 import { useTranslations } from "next-intl";
 import BookCard from "../_components/BookCard";
 
@@ -46,7 +47,7 @@ const WishlistPage = () => {
 
       <div className="mt-10 grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {wishlist &&
-          wishlist.items.map((item) => (
+          wishlist?.items.map((item: WishItem) => (
             <BookCard
               key={item.id}
               title={item.variant.book.translations[0].title}

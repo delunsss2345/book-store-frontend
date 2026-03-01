@@ -1,6 +1,5 @@
-import { API_MESSAGE } from "@/constants/api/messageApi";
 import { api } from "@/lib/api/fetchHandler";
-import { ResponseApi } from "@/lib/api/responseHandler";
+import { appendSetCookies, ResponseApi } from "@/lib/api/responseHandler";
 import { MergeCartRequest } from "@/types/request/cart.request";
 import { MergeCartApiResponse } from "@/types/response/cart.response";
 import { HttpStatusCode } from "axios";
@@ -18,8 +17,10 @@ export async function POST(request: NextRequest) {
 
         const requestBody =
             typeof payload === "object" && payload !== null ? payload : {};
-        const response = await api.post<MergeCartApiResponse>("cart/merge", requestBody);
-        return ResponseApi.success(response.data, HttpStatusCode.Created);
+        const response = await api.raw.post<MergeCartApiResponse>("cart/merge", requestBody);
+        const res = ResponseApi.success(response.data, HttpStatusCode.Created);
+        appendSetCookies(res, response.setCookies);
+        return res;
     } catch (error: any) {
         if (process.env.NODE_ENV === "development") {
             console.error("Cart Merge POST API Error:", error);

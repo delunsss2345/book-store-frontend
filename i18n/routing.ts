@@ -10,7 +10,7 @@ export const routing = defineRouting({
 
     "/books": { vi: "/books", en: "/books" },
     "/detail/[...slug]": { vi: "/detail/[...slug]", en: "/detail/[...slug]" },
-
+    "/detail": { vi: "/detail", en: "/detail" },
     "/cart": { vi: "/cart", en: "/cart" },
     "/checkout": { vi: "/checkout", en: "/checkout" },
     "/checkout/payment": { vi: "/checkout/payment", en: "/checkout/payment" },

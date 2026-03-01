@@ -1,8 +1,6 @@
-import { API_MESSAGE } from "@/constants/api/messageApi";
 import { api } from "@/lib/api/fetchHandler";
-import { ResponseApi } from "@/lib/api/responseHandler";
+import { appendSetCookies, ResponseApi } from "@/lib/api/responseHandler";
 import { HttpStatusCode } from "axios";
-import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 
 export async function DELETE(
@@ -11,8 +9,10 @@ export async function DELETE(
 ) {
     try {
         const { itemKey } = await params;
-        const response = await api.delete(`wish/items/${itemKey}`);
-        return ResponseApi.success(response, HttpStatusCode.Ok);
+        const response = await api.raw.delete(`wish/items/${itemKey}`);
+        const res = ResponseApi.success(response.data, HttpStatusCode.Ok);
+        appendSetCookies(res, response.setCookies);
+        return res;
     } catch (error: any) {
         if (process.env.NODE_ENV === 'development') {
             console.error("Wish Item DELETE API Error:", error);

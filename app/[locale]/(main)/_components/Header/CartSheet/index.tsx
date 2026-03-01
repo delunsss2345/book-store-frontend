@@ -1,7 +1,5 @@
 "use client";
 
-import { Minus, Plus, ShoppingBag } from "lucide-react";
-import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -18,8 +16,10 @@ import {
 } from "@/features/cart/hooks";
 import useTranslator from "@/hooks/use-translator";
 import { CartItem } from "@/types/response/cart.response";
+import { Minus, Plus, ShoppingBag } from "lucide-react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
+import * as React from "react";
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
@@ -47,7 +47,7 @@ const CartSheet = () => {
           className="inline-flex h-9 items-center justify-center gap-2 rounded-sm px-2 hover:bg-muted"
           aria-label={t("header.aria.cart")}
         >
-          <span className="text-sm">{cart?.items.length}</span>
+          <span className="text-sm">{cart?.items?.length ?? 0}</span>
           <ShoppingBag className="h-5 w-5" />
         </button>
       </SheetTrigger>
@@ -64,7 +64,7 @@ const CartSheet = () => {
           </SheetHeader>
 
           <div className="flex-1 overflow-y-auto px-6 py-5 sm:px-8">
-            {items.length === 0 ? (
+            {items?.length === 0 ? (
               <p className="text-sm text-muted-foreground">Cart is empty.</p>
             ) : (
               items.map((item: CartItem, idx: number) => {

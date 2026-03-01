@@ -148,7 +148,7 @@ export default function CreateBookPage() {
                   </Badge>
                   <Badge variant="secondary" className="text-xs">
                     {t("dashboard.products.create.variantCount", {
-                      count: variants.length,
+                      count: variants?.length ?? 0,
                     })}
                   </Badge>
                 </div>

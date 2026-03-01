@@ -13,7 +13,7 @@ export function WishlistHeader() {
         aria-label={t("header.aria.wishlist")}
     >
         <span>
-            {wish?.items.length}
+            {wish?.items?.length ?? 0}
         </span>
         <Heart className="h-5 w-5" />
     </Link>

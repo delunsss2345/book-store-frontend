@@ -1,12 +1,13 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useCartQuery } from "@/features/cart/hooks";
 import { Minus, Plus, X } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -20,11 +21,14 @@ export default function ShoppingCartPage() {
   const t = useTranslations();
   const { data: cart, isPending, isError } = useCartQuery();
 
-  const updateQty = (_id: string, _delta: number) => {};
+  const updateQty = (_id: string, _delta: number) => { };
 
-  const removeItem = (_id: string) => {};
+  const removeItem = (_id: string) => { };
 
-  const subtotal = cart?.items.reduce(
+  useEffect(() => {
+    console.log(cart);
+  }, [])
+  const subtotal = cart?.items?.reduce(
     (sum, item) => sum + parseFloat(item.variant.price) * item.quantity,
     0,
   );
@@ -73,7 +77,7 @@ export default function ShoppingCartPage() {
             <span className="text-right">Total</span>
           </div>
 
-          {cart && cart.items.length > 0 ? (
+          {cart && cart?.items?.length > 0 ? (
             cart.items.map((item) => (
               <div key={item.bookVariantId}>
                 <div className="grid grid-cols-[1fr_140px_100px_100px] items-start gap-x-4 py-6">
@@ -176,7 +180,7 @@ export default function ShoppingCartPage() {
                 <span className="text-zinc-600">Subtotal</span>
                 <span>
                   {currency.format(subtotal ?? 0)}{" "}
-                  {cart?.items[0]?.variant.currencyCode ?? "VN"}
+                  {cart?.items?.[0]?.variant.currencyCode ?? "VN"}
                 </span>
               </div>
               <Separator />
@@ -184,7 +188,7 @@ export default function ShoppingCartPage() {
                 <span>Total</span>
                 <span>
                   {currency.format(subtotal ?? 0)}{" "}
-                  {cart?.items[0]?.variant.currencyCode ?? "VN"}
+                  {cart?.items?.[0]?.variant.currencyCode ?? "VN"}
                 </span>
               </div>
             </div>
@@ -193,7 +197,7 @@ export default function ShoppingCartPage() {
               onClick={() => router.push(`/${locale}/checkout`)}
               variant="outline"
               className="mt-5 w-full cursor-pointer rounded-none border-zinc-900 py-5 text-xs uppercase tracking-wider"
-              disabled={cart?.items && cart.items.length === 0}
+              disabled={cart?.items && cart?.items?.length === 0}
             >
               Proceed to checkout
             </Button>
