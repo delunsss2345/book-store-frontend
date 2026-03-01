@@ -7,7 +7,7 @@ import { NextRequest } from "next/server";
 export async function POST(request: NextRequest) {
     try {
         const payload: { bookVariantId: bigint } = await request.json();
-        const response = await api.raw.post<AddWishItemResponse>("wish/items", payload);
+        const response = await api.post<AddWishItemResponse>("wish/items", payload);
         const res = ResponseApi.success(response.data, HttpStatusCode.Ok);
         appendSetCookies(res, response.setCookies);
         return res;

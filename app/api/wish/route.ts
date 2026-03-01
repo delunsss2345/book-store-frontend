@@ -6,7 +6,7 @@ import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
     try {
-        const response = await api.raw.get<WishResponse>("wish");
+        const response = await api.get<WishResponse>("wish");
         const res = ResponseApi.success(response.data, HttpStatusCode.Ok);
         appendSetCookies(res, response.setCookies);
         return res;
@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
     try {
-        const response = await api.raw.delete<WishResponse>("wish");
+        const response = await api.delete<WishResponse>("wish");
         const res = ResponseApi.success(response.data, HttpStatusCode.Ok);
         appendSetCookies(res, response.setCookies);
         return res;

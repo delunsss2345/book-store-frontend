@@ -8,7 +8,7 @@ import { NextRequest } from "next/server";
 export async function POST(request: NextRequest) {
     try {
         const payload: AddCartItemRequest = await request.json();
-        const response = await api.raw.post<AddCartItemApiResponse>("cart/items", payload);
+        const response = await api.post<AddCartItemApiResponse>("cart/items", payload);
         const res = ResponseApi.success(response.data, HttpStatusCode.Created);
         appendSetCookies(res, response.setCookies);
         return res;

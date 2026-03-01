@@ -11,7 +11,7 @@ export async function DELETE(
 ) {
     try {
         const { itemKey } = await params;
-        const response = await api.raw.delete<RemoveCartItemApiResponse>(`cart/items/${itemKey}`);
+        const response = await api.delete<RemoveCartItemApiResponse>(`cart/items/${itemKey}`);
         const res = ResponseApi.success(response.data, HttpStatusCode.Ok);
         appendSetCookies(res, response.setCookies);
         return res;

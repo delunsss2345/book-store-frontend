@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
 
         const requestBody =
             typeof payload === "object" && payload !== null ? payload : {};
-        const response = await api.raw.post<MergeCartApiResponse>("cart/merge", requestBody);
+        const response = await api.post<MergeCartApiResponse>("cart/merge", requestBody);
         const res = ResponseApi.success(response.data, HttpStatusCode.Created);
         appendSetCookies(res, response.setCookies);
         return res;

@@ -16,7 +16,7 @@ export async function PATCH(
         const { itemKey } = await params;
         const payload: UpdateCartItemDeltaRequest = await request.json();
 
-        const response = await api.raw.patch<UpdateCartItemDeltaApiResponse>(
+        const response = await api.patch<UpdateCartItemDeltaApiResponse>(
             `cart/items/${itemKey}/delta`,
             payload
         );

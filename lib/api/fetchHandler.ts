@@ -60,7 +60,7 @@ function readSetCookies(res: Response): string[] { // đọc Set-Cookie từ res
 }
 
 // requestRaw: trả về cả headers/status/set-cookie để route có thể forward cho browser
-async function requestRaw<T = any>( // hàm fetch đầy đủ metadata
+async function request<T = any>( // hàm fetch đầy đủ metadata
     method: string, // HTTP method
     path: string, // path API
     opt: ApiOptions = {}, // option tùy chọn
@@ -145,19 +145,19 @@ async function requestRaw<T = any>( // hàm fetch đầy đủ metadata
 }
 
 // request: giữ hành vi cũ, chỉ trả data (để không phải sửa toàn bộ callsite)
-async function request<T = any>( // wrapper đơn giản để tương thích cũ
-    method: string, // HTTP method
-    path: string, // path API
-    opt: ApiOptions = {}, // option tùy chọn
-): Promise<ApiResponse<T>> { // chỉ trả data
-    const raw = await requestRaw<T>(method, path, opt); // gọi requestRaw để lấy đầy đủ
-    return {
-        success: raw.success,
-        data: raw.data as T,
-        statusCode: raw.status,
-        message: raw.message,
-    }; // chỉ trả data
-}
+// async function request<T = any>( // wrapper đơn giản để tương thích cũ
+//     method: string, // HTTP method
+//     path: string, // path API
+//     opt: ApiOptions = {}, // option tùy chọn
+// ): Promise<ApiResponse<T>> { // chỉ trả data
+//     const raw = await requestRaw<T>(method, path, opt); // gọi requestRaw để lấy đầy đủ
+//     return {
+//         success: raw.success,
+//         data: raw.data as T,
+//         statusCode: raw.status,
+//         message: raw.message,
+//     }; // chỉ trả data
+// }
 
 export const fetchApi = (defaults: Pick<ApiOptions, "baseURL" | "headers"> = {}) => { // factory tạo api client
     const withDefaults = (opt?: ApiOptions): ApiOptions => ({ // merge default + option
@@ -182,23 +182,23 @@ export const fetchApi = (defaults: Pick<ApiOptions, "baseURL" | "headers"> = {})
         delete<T = any>(path: string, opt?: ApiOptions) { // DELETE wrapper
             return request<T>("DELETE", path, withDefaults(opt)); // gọi request đơn giản
         },
-        raw: { // nhóm method trả về raw response
-            get<T = any>(path: string, opt?: ApiOptions) { // GET raw
-                return requestRaw<T>("GET", path, withDefaults(opt)); // gọi requestRaw
-            },
-            post<T = any>(path: string, body?: unknown, opt?: ApiOptions) { // POST raw
-                return requestRaw<T>("POST", path, withDefaults({ ...opt, body })); // gộp body + gọi requestRaw
-            },
-            put<T = any>(path: string, body?: unknown, opt?: ApiOptions) { // PUT raw
-                return requestRaw<T>("PUT", path, withDefaults({ ...opt, body })); // gộp body + gọi requestRaw
-            },
-            patch<T = any>(path: string, body?: unknown, opt?: ApiOptions) { // PATCH raw
-                return requestRaw<T>("PATCH", path, withDefaults({ ...opt, body })); // gộp body + gọi requestRaw
-            },
-            delete<T = any>(path: string, opt?: ApiOptions) { // DELETE raw
-                return requestRaw<T>("DELETE", path, withDefaults(opt)); // gọi requestRaw
-            },
-        },
+        // raw: { // nhóm method trả về raw response
+        //     get<T = any>(path: string, opt?: ApiOptions) { // GET raw
+        //         return requestRaw<T>("GET", path, withDefaults(opt)); // gọi requestRaw
+        //     },
+        //     post<T = any>(path: string, body?: unknown, opt?: ApiOptions) { // POST raw
+        //         return requestRaw<T>("POST", path, withDefaults({ ...opt, body })); // gộp body + gọi requestRaw
+        //     },
+        //     put<T = any>(path: string, body?: unknown, opt?: ApiOptions) { // PUT raw
+        //         return requestRaw<T>("PUT", path, withDefaults({ ...opt, body })); // gộp body + gọi requestRaw
+        //     },
+        //     patch<T = any>(path: string, body?: unknown, opt?: ApiOptions) { // PATCH raw
+        //         return requestRaw<T>("PATCH", path, withDefaults({ ...opt, body })); // gộp body + gọi requestRaw
+        //     },
+        //     delete<T = any>(path: string, opt?: ApiOptions) { // DELETE raw
+        //         return requestRaw<T>("DELETE", path, withDefaults(opt)); // gọi requestRaw
+        //     },
+        // },
     };
 };
 

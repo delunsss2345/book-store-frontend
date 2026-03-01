@@ -9,7 +9,7 @@ export async function DELETE(
 ) {
     try {
         const { itemKey } = await params;
-        const response = await api.raw.delete(`wish/items/${itemKey}`);
+        const response = await api.delete(`wish/items/${itemKey}`);
         const res = ResponseApi.success(response.data, HttpStatusCode.Ok);
         appendSetCookies(res, response.setCookies);
         return res;
