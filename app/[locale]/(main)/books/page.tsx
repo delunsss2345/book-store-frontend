@@ -1,5 +1,6 @@
 "use client";
 
+import BooksGridSkeletonCard from "@/app/[locale]/(main)/books/_components/BookGridSkeleton";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -9,84 +10,24 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { useBooksQuery } from "@/features/catalog/hooks/use-books.mutation";
+import {
+  selectorBooksLimit,
+  selectorBooksPage,
+  selectorBooksTotal,
+  selectorBooksTotalPages,
+  selectorSetBooksMeta,
+  selectorSetBooksPage,
+} from "@/features/catalog/selector/catalog.selector";
+import { useCatalogStore } from "@/features/catalog/store/catalog.store";
 import {
   ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
   SlidersHorizontal,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import BookCard from "../_components/BookCard";
-
-const books = [
-  {
-    title: "Homes for Our Time.",
-    subtitle: "Sustainable Living",
-    price: 80,
-    badge: "NEW",
-    imageUrl:
-      "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=600&q=80",
-  },
-  {
-    title: "Japanese Woodblock Prints",
-    subtitle: "",
-    price: 150,
-    badge: "NEW",
-    imageUrl:
-      "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80",
-  },
-  {
-    title: "Hokusai.",
-    subtitle: "Thirty-six Views of Mount Fuji",
-    price: 80,
-    badge: "NEW",
-    imageUrl:
-      "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=600&q=80",
-  },
-  {
-    title: "Valentino.",
-    subtitle: "A Grand Italian Epic",
-    price: 125,
-    badge: "",
-    imageUrl:
-      "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=600&q=80",
-  },
-  {
-    title: "Caravaggio.",
-    subtitle: "The Complete Works",
-    price: 60,
-    badge: "",
-    imageUrl:
-      "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=600&q=80",
-  },
-  {
-    title: "Sylvester Stallone.",
-    subtitle: "The Legend",
-    price: 200,
-    badge: "NEW",
-    imageUrl:
-      "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=600&q=80",
-  },
-  {
-    title: "Albert Watson.",
-    subtitle: "KAOS",
-    price: 100,
-    badge: "",
-    imageUrl:
-      "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80",
-  },
-  {
-    title: "The Gourmand's Mushroom.",
-    subtitle: "A Collection of Recipes",
-    price: 50,
-    badge: "NEW",
-    imageUrl:
-      "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=600&q=80",
-  },
-];
+import { BooksPagination } from "./_components/BooksPagiantion";
 
 const themes = [
   { label: "Architecture & Design", count: 136 },
@@ -165,9 +106,8 @@ function FilterContent({
               {sortOptions.map((opt) => (
                 <button
                   key={opt}
-                  className={`block w-full px-3 py-2 text-left text-sm hover:bg-zinc-50 ${
-                    opt === selectedSort ? "font-bold" : ""
-                  }`}
+                  className={`block w-full px-3 py-2 text-left text-sm hover:bg-zinc-50 ${opt === selectedSort ? "font-bold" : ""
+                    }`}
                   onClick={() => {
                     setSelectedSort(opt);
                     setSortOpen(false);
@@ -294,14 +234,24 @@ function FilterContent({
   );
 }
 
-const TOTAL_PAGES = 16;
+
 
 export default function AllTitlesPage() {
   const [sortOpen, setSortOpen] = useState(false);
   const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
   const [selectedPrice, setSelectedPrice] = useState("All Prices");
   const [showStickyBtn, setShowStickyBtn] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+  const booksPage = useCatalogStore(selectorBooksPage);
+  const booksLimit = useCatalogStore(selectorBooksLimit);
+  const booksTotal = useCatalogStore(selectorBooksTotal);
+  const booksTotalPages = useCatalogStore(selectorBooksTotalPages);
+  const setBooksPage = useCatalogStore(selectorSetBooksPage);
+  const setBooksMeta = useCatalogStore(selectorSetBooksMeta);
+
+  const { data: bookList, isPending } = useBooksQuery({
+    page: booksPage,
+    limit: booksLimit,
+  });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -310,6 +260,17 @@ export default function AllTitlesPage() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (bookList) {
+      setBooksMeta({
+        page: bookList.page,
+        limit: bookList.limit,
+        total: bookList.total,
+        totalPages: bookList.totalPages,
+      });
+    }
+  }, [bookList, setBooksMeta]);
 
   const filterProps = {
     sortOpen,
@@ -320,6 +281,8 @@ export default function AllTitlesPage() {
     setSelectedPrice,
   };
 
+  const books = bookList?.items ?? [];
+
   return (
     <div className="container-main w-full pb-16">
       {/* Breadcrumb */}
@@ -328,7 +291,7 @@ export default function AllTitlesPage() {
           Home
         </Link>
         <span>/</span>
-        <span className="text-zinc-700">Books (904 Items)</span>
+        <span className="text-zinc-700">Books ({booksTotal} Items)</span>
       </div>
 
       {/* Header row */}
@@ -360,57 +323,31 @@ export default function AllTitlesPage() {
       {/* Book grid */}
       <div className="mt-8">
         <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 lg:grid-cols-4 bg-transparent">
-          {books.map((book, i) => (
-            <BookCard
-              key={i}
-              title={book.title}
-              subtitle={book.subtitle}
-              price={book.price}
-              bookVariantId={i + 1}
-              badge={book.badge || undefined}
-              imageUrl={book.imageUrl}
-              href={`/detail/${i + 1}`}
-              variant="compact"
-            />
-          ))}
+          {isPending
+            ? Array.from({ length: 12 }).map((_, index) => (
+              <BooksGridSkeletonCard key={`books-skeleton-${index}`} />
+            ))
+            : books.map((book) => (
+              <BookCard
+                key={book.id}
+                title={book.title}
+                subtitle={book.format ?? book.title}
+                price={Number(book.price ?? 0)}
+                bookVariantId={Number(book.bookVariantId ?? 0)}
+                currency={book.currencyCode ?? "VND"}
+                imageUrl={book.coverImageUrl ?? undefined}
+                href={`/detail/${book.slug ?? book.id}`}
+                variant="compact"
+              />
+            ))}
         </div>
 
         {/* Pagination */}
-        <div className="mt-12 flex items-center justify-center gap-4">
-          <button
-            onClick={() => setCurrentPage(1)}
-            disabled={currentPage === 1}
-            className="text-zinc-400 transition-colors hover:text-zinc-900 disabled:opacity-30"
-          >
-            <ChevronsLeft className="h-5 w-5" />
-          </button>
-          <button
-            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-            disabled={currentPage === 1}
-            className="text-zinc-400 transition-colors hover:text-zinc-900 disabled:opacity-30"
-          >
-            <ChevronLeft className="h-5 w-5" />
-          </button>
-
-          <span className="text-sm">
-            Page {currentPage} of {TOTAL_PAGES}
-          </span>
-
-          <button
-            onClick={() => setCurrentPage((p) => Math.min(TOTAL_PAGES, p + 1))}
-            disabled={currentPage === TOTAL_PAGES}
-            className="text-zinc-400 transition-colors hover:text-zinc-900 disabled:opacity-30"
-          >
-            <ChevronRight className="h-5 w-5" />
-          </button>
-          <button
-            onClick={() => setCurrentPage(TOTAL_PAGES)}
-            disabled={currentPage === TOTAL_PAGES}
-            className="text-zinc-400 transition-colors hover:text-zinc-900 disabled:opacity-30"
-          >
-            <ChevronsRight className="h-5 w-5" />
-          </button>
-        </div>
+        <BooksPagination
+          page={booksPage}
+          totalPages={booksTotalPages}
+          onPageChange={setBooksPage}
+        />
       </div>
 
       {/* Sticky floating filter button — appears on scroll */}

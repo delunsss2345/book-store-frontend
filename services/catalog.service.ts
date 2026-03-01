@@ -24,7 +24,7 @@ export const catalogApi = {
     http.get<CatalogBookDetailResponse>(`catalog/books/${bookId}`),
 
   getBookBySlug: (slug: string) =>
-    http.get<GetBookDetailResponse>(`catalog/books/slug/${slug}?lang=vi`),
+    http.get<GetBookDetailResponse>(`catalog/books/slug/${slug}`),
 
   getCategories: (query?: CatalogCategoriesQuery) =>
     http.get<CatalogCategoriesResponse>("catalog/categories", { params: query }),

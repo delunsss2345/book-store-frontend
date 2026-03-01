@@ -1,4 +1,3 @@
-import { API_MESSAGE } from "@/constants/api/messageApi";
 import { api } from "@/lib/api/fetchHandler";
 import { ResponseApi } from "@/lib/api/responseHandler";
 import { GetBookDetailResponse } from "@/types/response/catalog.response";
@@ -10,7 +9,7 @@ export async function GET(
 ) {
     try {
         const { slug } = await ctx.params;
-        const response = await api.get<GetBookDetailResponse>(`catalog/books/slug/${slug}?lang=vi`);
+        const response = await api.get<GetBookDetailResponse>(`catalog/books/slug/${slug}`);
         return ResponseApi.success(response.data);
     } catch (error: any) {
         if (process.env.NODE_ENV === "development") {

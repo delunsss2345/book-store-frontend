@@ -4,7 +4,6 @@ export type CatalogHomeQuery = {
 };
 
 export type CatalogBookListQuery = {
-  lang?: string;
   page?: number;
   limit?: number;
 };
