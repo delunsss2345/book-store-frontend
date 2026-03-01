@@ -16,7 +16,7 @@ const buildUrl = ({ page = DEFAULT_PAGE, limit = DEFAULT_LIMIT }: UseCategoriesQ
   return `/api/categories?${params.toString()}`;
 };
 
-const fetchCategories = async (params: UseCategoriesQueryParams) => {
+const fetchCategories = async (params: UseCategoriesQueryParams): Promise<CategoryListData> => {
   const url = buildUrl(params);
   const response = await fetch(url, { cache: "no-store" });
   const payload = (await response.json()) as CategoryListResponse;
@@ -32,7 +32,7 @@ const fetchCategories = async (params: UseCategoriesQueryParams) => {
 export const useCategoriesQuery = (params: UseCategoriesQueryParams = {}) =>
   useQuery<CategoryListData>({
     queryKey: ["categories", params.page ?? DEFAULT_PAGE, params.limit ?? DEFAULT_LIMIT],
-    queryFn: () => fetchCategories(params),
+    queryFn: async () => await fetchCategories(params),
     staleTime: 60_000,
-    keepPreviousData: true,
+    placeholderData: (previousData) => previousData // khi data chạy thì data cũ vẫn được giữ lại tạm thời 
   });

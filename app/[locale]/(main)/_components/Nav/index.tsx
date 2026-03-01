@@ -1,12 +1,12 @@
 "use client";
 
+import { useCategoriesQuery } from "@/features/category/hooks/use-categories-query";
+import { useCategoryStore } from "@/features/category/store/category.store";
 import useTranslator from "@/hooks/use-translator";
+import type { CategoryItemData } from "@/types/response/category.response";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useCategoriesQuery } from "@/features/category/hooks/use-categories-query";
-import { useCategoryStore } from "@/features/category/store/category.store";
-import type { CategoryItemData } from "@/types/response/category.response";
 
 type NavItem = {
   key: string;
@@ -29,27 +29,32 @@ const Nav = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Lấy dữ liệu danh mục từ API proxy (đã bao gồm appLanguage trong cookie) và trạng thái tải
   const { data, isPending, isError } = useCategoriesQuery();
+  // Store để giữ lại danh mục khi user chuyển tab/page khác
   const storedCategories = useCategoryStore((state) => state.categories);
   const setCategories = useCategoryStore((state) => state.setCategories);
 
   const categories = data?.items ?? storedCategories ?? [];
 
+  // Khi có dữ liệu mới từ server thì cập nhật lại store để không cần fetch lại do cache
   useEffect(() => {
     if (data?.items) {
       setCategories(data.items);
     }
   }, [data?.items, setCategories]);
 
+  // Tách các parentId null để hiện ở cột đầu tiên, sắp xếp theo sortOrder backend
   const parentCategories = useMemo(() => {
     return categories
-      .filter((category) => category.parentId === null)
+      .filter((category: CategoryItemData) => category.parentId === null)
       .sort((a, b) => a.sortOrder - b.sortOrder);
   }, [categories]);
 
+  // Map để truy cập nhanh các con theo parentId
   const childrenByParent = useMemo(() => {
     const map = new Map<string, CategoryItemData[]>();
-    categories.forEach((category) => {
+    categories.forEach((category: CategoryItemData) => {
       if (!category.parentId) {
         return;
       }
@@ -61,6 +66,7 @@ const Nav = () => {
     return map;
   }, [categories]);
 
+  // Khi danh sách parent thay đổi, đảm bảo có parent đang active (mặc định parent đầu)
   useEffect(() => {
     if (!parentCategories.length) {
       setActiveParentId(null);
@@ -111,9 +117,8 @@ const Nav = () => {
             >
               <Link
                 href={item.to}
-                className={`nav-link text-[11px] font-medium tracking-[0.2em] uppercase transition-all duration-300 ${
-                  activeNav === item.key ? "opacity-100" : "opacity-60 hover:opacity-100"
-                }`}
+                className={`nav-link text-[11px] font-medium tracking-[0.2em] uppercase transition-all duration-300 ${activeNav === item.key ? "opacity-100" : "opacity-60 hover:opacity-100"
+                  }`}
               >
                 {t(`nav.${item.key}`)}
               </Link>
@@ -129,6 +134,10 @@ const Nav = () => {
         </button>
       </div>
 
+      {/*
+        Mega menu desktop: hiển thị parent ở cột trái, con ở cột phải.
+        Khi hover vào parent, thay activeParentId để show con tương ứng.
+      */}
       {showDropdown && (
         <div
           className="fixed left-0 right-0 z-50 hidden border-b border-zinc-100 bg-white shadow-xl lg:block"
@@ -137,6 +146,7 @@ const Nav = () => {
         >
           <div className="container-main mx-auto max-w-7xl px-6 py-10">
             {isDropdownLoading ? (
+              // loading skeleton khi chưa có data
               <div className="grid grid-cols-[240px_1fr] gap-8">
                 <div className="space-y-3">
                   {Array.from({ length: PARENT_PLACEHOLDER_COUNT }).map((_, index) => (
@@ -156,8 +166,10 @@ const Nav = () => {
                 </div>
               </div>
             ) : isDropdownError ? (
+              // lỗi fetch
               <div className="py-10 text-sm text-rose-600">Unable to load categories.</div>
             ) : parentCategories.length === 0 ? (
+              // mặc định khi backend trả danh sách rỗng
               <div className="py-10 text-sm text-zinc-500">No categories available.</div>
             ) : (
               <div className="grid grid-cols-[240px_1fr] gap-8">
@@ -168,9 +180,8 @@ const Nav = () => {
                       href={`/books/${parent.slug ?? parent.id}`}
                       onMouseEnter={() => handleParentHover(parent.id)}
                       onClick={() => setActiveNav(null)}
-                      className={`text-sm transition-colors ${
-                        activeParent?.id === parent.id ? "text-black font-semibold" : "text-zinc-500 hover:text-black"
-                      }`}
+                      className={`text-sm transition-colors ${activeParent?.id === parent.id ? "text-black font-semibold" : "text-zinc-500 hover:text-black"
+                        }`}
                     >
                       {parent.name}
                     </Link>
@@ -184,6 +195,7 @@ const Nav = () => {
                     </h3>
                   </div>
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    {/* Hiển thị subcategories của parent đang hover */}
                     {childrenForActiveParent.length > 0 ? (
                       childrenForActiveParent.map((child) => (
                         <Link
@@ -206,6 +218,10 @@ const Nav = () => {
         </div>
       )}
 
+      {/*
+        Mobile menu: danh sách parents + children ngay bên dưới mỗi parent.
+        Dữ liệu dùng chung với desktop nên chỉ cần check status (loading/error/empty).
+      */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 top-[60px] z-[100] bg-white lg:hidden overflow-y-auto">
           <div className="flex flex-col p-6 gap-6">
