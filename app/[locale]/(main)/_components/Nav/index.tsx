@@ -1,128 +1,82 @@
 "use client";
+
 import useTranslator from "@/hooks/use-translator";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCategoriesQuery } from "@/features/category/hooks/use-categories-query";
+import { useCategoryStore } from "@/features/category/store/category.store";
+import type { CategoryItemData } from "@/types/response/category.response";
 
-interface DropdownColumn {
-  items: { label: string; href: string }[];
-}
-
-interface NavItem {
+type NavItem = {
   key: string;
   to: string;
-  dropdown?: DropdownColumn[];
-}
+};
 
-const nav: NavItem[] = [
+const navItems: NavItem[] = [
   {
     key: "books",
     to: "/books",
-    dropdown: [
-      {
-        items: [
-          { label: "All Titles", href: "/books" },
-          { label: "New & Upcoming", href: "/books?sort=new" },
-          { label: "Bestsellers", href: "/books?sort=bestseller" },
-        ],
-      },
-      {
-        items: [
-          {
-            label: "Architecture & Design",
-            href: "/books/architecture-design",
-          },
-          { label: "Art", href: "/books/art" },
-          { label: "Classics", href: "/books/classics" },
-          { label: "Comics", href: "/books/comics" },
-          { label: "Esoterica", href: "/books/esoterica" },
-          { label: "Fashion", href: "/books/fashion" },
-          { label: "Film", href: "/books/film" },
-          { label: "Graphic Design", href: "/books/graphic-design" },
-        ],
-      },
-      {
-        items: [
-          { label: "Kids", href: "/books/kids" },
-          { label: "Music", href: "/books/music" },
-          { label: "Photography", href: "/books/photography" },
-          { label: "Pop Culture", href: "/books/pop-culture" },
-          { label: "Sexy Books", href: "/books/sexy-books" },
-          { label: "Style, Food & Travel", href: "/books/style-food-travel" },
-          { label: "Sports", href: "/books/sports" },
-        ],
-      },
-      {
-        items: [
-          { label: "45th Edition Series", href: "/books/45th-edition" },
-          { label: "Basic Art Series", href: "/books/basic-art" },
-          {
-            label: "Bibliotheca Universalis",
-            href: "/books/bibliotheca-universalis",
-          },
-          { label: "Clothbound Classics", href: "/books/clothbound-classics" },
-          { label: "Fantastic Price", href: "/books/fantastic-price" },
-          { label: "Icons", href: "/books/icons" },
-          { label: "Source Books", href: "/books/source-books" },
-          { label: "XL Books", href: "/books/xl-books" },
-        ],
-      },
-    ],
   },
-  {
-    key: "limitedEditions",
-    to: "/limited-editions",
-    dropdown: [
-      {
-        items: [
-          { label: "All Limited Editions", href: "/limited-editions" },
-          { label: "New Releases", href: "/limited-editions?sort=new" },
-          {
-            label: "Collector's Editions",
-            href: "/limited-editions/collectors",
-          },
-        ],
-      },
-      {
-        items: [
-          { label: "Art Editions", href: "/limited-editions/art" },
-          { label: "Photography", href: "/limited-editions/photography" },
-          { label: "SUMO", href: "/limited-editions/sumo" },
-        ],
-      },
-    ],
-  },
-  {
-    key: "gifts",
-    to: "/gifts",
-    dropdown: [
-      {
-        items: [
-          { label: "All Gifts", href: "/gifts" },
-          { label: "Gift Cards", href: "/gifts/cards" },
-          { label: "Under $25", href: "/gifts?price=under-25" },
-          { label: "Under $50", href: "/gifts?price=under-50" },
-        ],
-      },
-      {
-        items: [
-          { label: "For Him", href: "/gifts/for-him" },
-          { label: "For Her", href: "/gifts/for-her" },
-          { label: "For Kids", href: "/gifts/for-kids" },
-          { label: "For Couples", href: "/gifts/for-couples" },
-        ],
-      },
-    ],
-  },
-  { key: "stores", to: "/stores" },
-  { key: "about", to: "/about" },
 ];
+
+const PARENT_PLACEHOLDER_COUNT = 6;
 
 const Nav = () => {
   const { t } = useTranslator();
   const [activeNav, setActiveNav] = useState<string | null>(null);
+  const [activeParentId, setActiveParentId] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const { data, isPending, isError } = useCategoriesQuery();
+  const storedCategories = useCategoryStore((state) => state.categories);
+  const setCategories = useCategoryStore((state) => state.setCategories);
+
+  const categories = data?.items ?? storedCategories ?? [];
+
+  useEffect(() => {
+    if (data?.items) {
+      setCategories(data.items);
+    }
+  }, [data?.items, setCategories]);
+
+  const parentCategories = useMemo(() => {
+    return categories
+      .filter((category) => category.parentId === null)
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+  }, [categories]);
+
+  const childrenByParent = useMemo(() => {
+    const map = new Map<string, CategoryItemData[]>();
+    categories.forEach((category) => {
+      if (!category.parentId) {
+        return;
+      }
+      const list = map.get(category.parentId) ?? [];
+      list.push(category);
+      map.set(category.parentId, list);
+    });
+    map.forEach((list) => list.sort((a, b) => a.sortOrder - b.sortOrder));
+    return map;
+  }, [categories]);
+
+  useEffect(() => {
+    if (!parentCategories.length) {
+      setActiveParentId(null);
+      return;
+    }
+    if (!activeParentId || !parentCategories.some((parent) => parent.id === activeParentId)) {
+      setActiveParentId(parentCategories[0].id);
+    }
+  }, [parentCategories, activeParentId]);
+
+  const activeParent =
+    parentCategories.find((parent) => parent.id === activeParentId) ?? parentCategories[0];
+  const childrenForActiveParent = activeParent ? childrenByParent.get(activeParent.id) ?? [] : [];
+  const isDropdownLoading = isPending && categories.length === 0;
+  const isDropdownError = isError && categories.length === 0;
+  const showDropdown = activeNav === "books";
 
   const clearHideTimeout = useCallback(() => {
     if (timeoutRef.current) {
@@ -140,15 +94,15 @@ const Nav = () => {
     timeoutRef.current = setTimeout(() => setActiveNav(null), 150);
   };
 
-  const activeItem = nav.find((item) => item.key === activeNav);
-  const showDropdown = activeItem?.dropdown && activeItem.dropdown.length > 0;
+  const handleParentHover = (parentId: string) => {
+    setActiveParentId(parentId);
+  };
 
   return (
     <div className="relative w-full">
       <div className="flex items-center justify-between py-4">
-        {/* Desktop Navigation */}
         <nav className="hidden lg:flex items-center gap-8">
-          {nav.map((item) => (
+          {navItems.map((item) => (
             <div
               key={item.key}
               onMouseEnter={() => handleMouseEnter(item.key)}
@@ -158,9 +112,7 @@ const Nav = () => {
               <Link
                 href={item.to}
                 className={`nav-link text-[11px] font-medium tracking-[0.2em] uppercase transition-all duration-300 ${
-                  activeNav === item.key
-                    ? "opacity-100"
-                    : "opacity-60 hover:opacity-100"
+                  activeNav === item.key ? "opacity-100" : "opacity-60 hover:opacity-100"
                 }`}
               >
                 {t(`nav.${item.key}`)}
@@ -169,7 +121,6 @@ const Nav = () => {
           ))}
         </nav>
 
-        {/* Mobile Toggle Button */}
         <button
           className="lg:hidden p-2 text-zinc-800"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -178,7 +129,6 @@ const Nav = () => {
         </button>
       </div>
 
-      {/* Desktop Mega Menu Dropdown */}
       {showDropdown && (
         <div
           className="fixed left-0 right-0 z-50 hidden border-b border-zinc-100 bg-white shadow-xl lg:block"
@@ -186,31 +136,80 @@ const Nav = () => {
           onMouseLeave={handleMouseLeave}
         >
           <div className="container-main mx-auto max-w-7xl px-6 py-10">
-            <div className="grid grid-cols-2 gap-x-8 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
-              {activeItem.dropdown!.map((col, colIdx) => (
-                <div key={colIdx} className="flex flex-col gap-3">
-                  {col.items.map((link) => (
+            {isDropdownLoading ? (
+              <div className="grid grid-cols-[240px_1fr] gap-8">
+                <div className="space-y-3">
+                  {Array.from({ length: PARENT_PLACEHOLDER_COUNT }).map((_, index) => (
+                    <div
+                      key={`parent-loading-${index}`}
+                      className="h-4 w-32 animate-pulse rounded-md bg-zinc-100"
+                    />
+                  ))}
+                </div>
+                <div className="space-y-3">
+                  {Array.from({ length: 6 }).map((_, index) => (
+                    <div
+                      key={`child-loading-${index}`}
+                      className="h-3 w-full animate-pulse rounded-md bg-zinc-100"
+                    />
+                  ))}
+                </div>
+              </div>
+            ) : isDropdownError ? (
+              <div className="py-10 text-sm text-rose-600">Unable to load categories.</div>
+            ) : parentCategories.length === 0 ? (
+              <div className="py-10 text-sm text-zinc-500">No categories available.</div>
+            ) : (
+              <div className="grid grid-cols-[240px_1fr] gap-8">
+                <div className="flex flex-col gap-3 border-r border-zinc-100 pr-4">
+                  {parentCategories.map((parent) => (
                     <Link
-                      key={link.href}
-                      href={link.href}
-                      className="text-[13px] text-zinc-500 transition-colors duration-200 hover:text-black hover:underline underline-offset-4"
+                      key={parent.id}
+                      href={`/books/${parent.slug ?? parent.id}`}
+                      onMouseEnter={() => handleParentHover(parent.id)}
                       onClick={() => setActiveNav(null)}
+                      className={`text-sm transition-colors ${
+                        activeParent?.id === parent.id ? "text-black font-semibold" : "text-zinc-500 hover:text-black"
+                      }`}
                     >
-                      {link.label}
+                      {parent.name}
                     </Link>
                   ))}
                 </div>
-              ))}
-            </div>
+                <div className="flex flex-col gap-4">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.3em] text-zinc-400">Subcategories</p>
+                    <h3 className="text-lg font-semibold text-neutral-900">
+                      {activeParent?.name ?? "Explore topics"}
+                    </h3>
+                  </div>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    {childrenForActiveParent.length > 0 ? (
+                      childrenForActiveParent.map((child) => (
+                        <Link
+                          key={child.id}
+                          href={`/books/${child.slug ?? child.id}`}
+                          onClick={() => setActiveNav(null)}
+                          className="text-sm font-medium text-zinc-600 transition-colors hover:text-black"
+                        >
+                          {child.name}
+                        </Link>
+                      ))
+                    ) : (
+                      <p className="text-sm text-zinc-500">No subcategories yet.</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
 
-      {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 top-[60px] z-[100] bg-white lg:hidden overflow-y-auto">
           <div className="flex flex-col p-6 gap-6">
-            {nav.map((item) => (
+            {navItems.map((item) => (
               <div key={item.key} className="border-b border-zinc-100 pb-4">
                 <div className="flex justify-between items-center mb-4">
                   <Link
@@ -221,28 +220,38 @@ const Nav = () => {
                     {t(`nav.${item.key}`)}
                   </Link>
                 </div>
-                {item.dropdown && (
-                  <div className="grid grid-cols-1 gap-4 pl-4">
-                    {item.dropdown
-                      .flatMap((d) => d.items)
-                      .slice(0, 6)
-                      .map((link) => (
-                        <Link
-                          key={link.href}
-                          href={link.href}
-                          className="text-sm text-zinc-500"
-                          onClick={() => setIsMobileMenuOpen(false)}
-                        >
-                          {link.label}
-                        </Link>
-                      ))}
-                    {item.dropdown.flatMap((d) => d.items).length > 6 && (
-                      <Link
-                        href={item.to}
-                        className="text-xs font-bold underline"
-                      >
-                        View All
-                      </Link>
+                {item.key === "books" && (
+                  <div className="space-y-6">
+                    {isPending && categories.length === 0 ? (
+                      <p className="text-sm text-zinc-500">Loading categories…</p>
+                    ) : isError && categories.length === 0 ? (
+                      <p className="text-sm text-rose-600">Unable to load categories.</p>
+                    ) : parentCategories.length === 0 ? (
+                      <p className="text-sm text-zinc-500">No categories available.</p>
+                    ) : (
+                      parentCategories.map((parent) => (
+                        <div key={parent.id} className="space-y-2">
+                          <Link
+                            href={`/books/${parent.slug ?? parent.id}`}
+                            className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-800"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                          >
+                            {parent.name}
+                          </Link>
+                          <div className="space-y-1 pl-4 text-sm text-zinc-500">
+                            {(childrenByParent.get(parent.id) ?? []).map((child) => (
+                              <Link
+                                key={child.id}
+                                href={`/books/${child.slug ?? child.id}`}
+                                className="block text-sm text-zinc-500 transition-colors hover:text-zinc-900"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                              >
+                                {child.name}
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      ))
                     )}
                   </div>
                 )}
