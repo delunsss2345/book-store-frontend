@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 import { jwtDecode } from "jwt-decode";
-import { DEFAULT_LOCALE, Locale, SUPPORTED_LOCALES } from "./lib/i18n/config";
-import { cookies } from "next/headers";
 import createMiddleware from "next-intl/middleware";
+import { cookies } from "next/headers";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { routing } from "./i18n/routing";
+import { Locale, SUPPORTED_LOCALES } from "./lib/i18n/config";
 
 export default createMiddleware(routing);
 
@@ -25,6 +25,10 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(
       new URL(`/${language}${pathname}`, request.url),
     );
+  }
+
+  if (!token && pathname.includes("/profile")) {
+    return NextResponse.redirect(new URL(`/${language}/login`, request.url));
   }
 
   let decode: JwtPayload | null = null;

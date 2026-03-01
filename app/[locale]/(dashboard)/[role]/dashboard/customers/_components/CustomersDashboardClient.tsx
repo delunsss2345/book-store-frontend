@@ -21,6 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { useAdminUsersQuery } from '@/features/admin'
 import useTranslator from '@/hooks/use-translator'
 import type { ColumnDef } from '@tanstack/react-table'
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
@@ -35,20 +36,13 @@ import {
   Users
 } from 'lucide-react'
 import { useMemo } from 'react'
+import type { AdminUser } from '@/types/response/admin.response'
+import CustomersTableSkeleton from './CustomersTableSkeleton'
 
-type RoleCode = 'GUEST' | 'ADMIN' | 'STAFF' | 'CUSTOMER' | 'WAREHOUSE'
-
-type CustomerRow = {
-  id: string
-  firstName: string
-  lastName: string
-  email: string
-  isEmailVerified: boolean
-  role: RoleCode
-}
+type RoleCode = 'GUEST' | 'ADMIN' | 'STAFF' | 'CUSTOMER' | 'WAREHOUSE' | (string & {})
 
 // Helper để map màu cho Role
-const roleConfig: Record<RoleCode, { color: string }> = {
+const roleConfig: Record<string, { color: string }> = {
   ADMIN: { color: 'bg-purple-100 text-purple-700 border-purple-200' },
   STAFF: { color: 'bg-blue-100 text-blue-700 border-blue-200' },
   WAREHOUSE: { color: 'bg-amber-100 text-amber-700 border-amber-200' },
@@ -56,30 +50,38 @@ const roleConfig: Record<RoleCode, { color: string }> = {
   GUEST: { color: 'bg-zinc-100 text-zinc-500 border-zinc-200' },
 }
 
+const getDisplayName = (user: AdminUser) => {
+  const name = [user.firstName, user.lastName].filter(Boolean).join(' ').trim()
+  return name || user.email || 'Unknown'
+}
+
+const getInitials = (user: AdminUser) => {
+  const first = user.firstName?.[0] ?? ''
+  const last = user.lastName?.[0] ?? ''
+  if (first || last) return `${first}${last}`.toUpperCase()
+  return user.email?.[0]?.toUpperCase() ?? '?'
+}
+
+const getRoleKey = (role?: string) => {
+  if (role && roleConfig[role]) return role
+  return 'CUSTOMER'
+}
+
 export function CustomersDashboardClient() {
   const { t } = useTranslator()
+  const { data: users = [], isPending: isPendingUsers } = useAdminUsersQuery()
 
-  const data = useMemo<CustomerRow[]>(
-    () => [
-      { id: '1', firstName: 'An', lastName: 'Nguyen', email: 'an.nguyen@example.com', isEmailVerified: true, role: 'CUSTOMER' },
-      { id: '2', firstName: 'Binh', lastName: 'Tran', email: 'binh.tran@example.com', isEmailVerified: true, role: 'CUSTOMER' },
-      { id: '3', firstName: 'Chau', lastName: 'Le', email: 'chau.le@example.com', isEmailVerified: false, role: 'GUEST' },
-      { id: '4', firstName: 'Dung', lastName: 'Pham', email: 'dung.pham@example.com', isEmailVerified: true, role: 'STAFF' },
-      { id: '5', firstName: 'Giang', lastName: 'Vo', email: 'giang.vo@example.com', isEmailVerified: true, role: 'CUSTOMER' },
-      { id: '6', firstName: 'Hieu', lastName: 'Do', email: 'hieu.do@example.com', isEmailVerified: false, role: 'WAREHOUSE' },
-      { id: '7', firstName: 'Khanh', lastName: 'Hoang', email: 'khanh.hoang@example.com', isEmailVerified: true, role: 'ADMIN' },
-    ],
-    []
-  )
+  const totalUsers = users.length
 
-  const columns = useMemo<ColumnDef<CustomerRow>[]>(
+  const columns = useMemo<ColumnDef<AdminUser>[]>(
     () => [
       {
-        accessorKey: 'customer',
+        id: 'customer',
         header: () => t('dashboard.customers.table.columns.customer') || 'Customer',
         cell: ({ row }) => {
-          const { firstName, lastName, email } = row.original
-          const initials = `${firstName[0]}${lastName[0]}`
+          const { email } = row.original
+          const initials = getInitials(row.original)
+          const displayName = getDisplayName(row.original)
           return (
             <div className="flex items-center gap-3">
               <Avatar className="h-9 w-9">
@@ -88,8 +90,12 @@ export function CustomersDashboardClient() {
                 </AvatarFallback>
               </Avatar>
               <div className="flex flex-col">
-                <span className="font-semibold text-foreground line-clamp-1">{`${firstName} ${lastName}`}</span>
-                <span className="text-xs text-muted-foreground line-clamp-1">{email}</span>
+                <span className="font-semibold text-foreground line-clamp-1">
+                  {displayName}
+                </span>
+                <span className="text-xs text-muted-foreground line-clamp-1">
+                  {email ?? '-'}
+                </span>
               </div>
             </div>
           )
@@ -115,10 +121,10 @@ export function CustomersDashboardClient() {
         accessorKey: 'role',
         header: () => t('dashboard.customers.table.columns.role'),
         cell: ({ row }) => {
-          const role = row.original.role
+          const roleKey = getRoleKey(row.original.role)
           return (
-            <Badge variant="secondary" className={`${roleConfig[role].color} border font-medium`}>
-              {t(`dashboard.customers.roles.${role}`)}
+            <Badge variant="secondary" className={`${roleConfig[roleKey].color} border font-medium`}>
+              {t(`dashboard.customers.roles.${roleKey}`)}
             </Badge>
           )
         },
@@ -147,7 +153,7 @@ export function CustomersDashboardClient() {
   )
 
   const table = useReactTable({
-    data,
+    data: users,
     columns,
     getCoreRowModel: getCoreRowModel(),
   })
@@ -172,7 +178,7 @@ export function CustomersDashboardClient() {
             <Users className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <p className='text-3xl font-bold'>312</p>
+            <p className='text-3xl font-bold'>{totalUsers}</p>
             <p className="text-xs text-emerald-600 font-medium mt-1">+12% from last month</p>
           </CardContent>
         </Card>
@@ -223,7 +229,9 @@ export function CustomersDashboardClient() {
               ))}
             </TableHeader>
             <TableBody>
-              {table.getRowModel().rows.length ? (
+              {isPendingUsers ? (
+                <CustomersTableSkeleton />
+              ) : table.getRowModel().rows.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow key={row.id} className="hover:bg-muted/50 transition-colors cursor-pointer">
                     {row.getVisibleCells().map((cell) => (

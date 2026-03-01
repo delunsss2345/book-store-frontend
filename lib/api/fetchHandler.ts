@@ -21,7 +21,7 @@ type Query = Record<string, string | number | boolean | null | undefined>; // ki
 
 // Kết quả trả về dạng "raw" để caller có thể đọc header (vd: set-cookie)
 export type ApiRawResponse<T = unknown> = { // wrapper trả về đủ dữ liệu + header
-    data: T; // body sau khi parse
+    data: any; // body sau khi parse
     headers: Headers; // header response từ BE
     status: number; // status code từ BE
     setCookies: string[]; // danh sách Set-Cookie để forward
@@ -135,7 +135,7 @@ async function request<T = any>( // hàm fetch đầy đủ metadata
     // console.log(response); // api gốc BE sẽ có success , statusCode , message , data 
     // Trả về data kèm headers/status/set-cookie để route có thể forward cookie
     return {
-        data: response.data as T, // data đã parse
+        data: response.data, // data đã parse
         headers: res.headers, // headers gốc từ BE
         status: res.status, // status code từ BE
         setCookies: readSetCookies(res), // danh sách Set-Cookie để forward

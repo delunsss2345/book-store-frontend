@@ -53,6 +53,7 @@ import { ModalType, useModalStore } from "@/features/modal";
 import { ActionDropdown } from "@/components/common/ActionDropdownMenu";
 import { variantMenuItems } from "./data/action-products";
 import { useRouter } from "@/i18n/navigation";
+import ProductsTableSkeleton from "./ProductsTableSkeleton";
 
 export function ProductsDashboardClient() {
   const { t } = useTranslator();
@@ -62,6 +63,7 @@ export function ProductsDashboardClient() {
     data: books = [] as AdminBook[],
     isLoading,
     error,
+    isPending,
   } = useAdminBooksQuery();
 
   const router = useRouter();
@@ -295,7 +297,9 @@ export function ProductsDashboardClient() {
               ))}
             </TableHeader>
             <TableBody>
-              {table && table.getRowModel().rows.length ? (
+              {isPending ? (
+                <ProductsTableSkeleton />
+              ) : table && table.getRowModel().rows.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}

@@ -1,6 +1,5 @@
-import { COOKIE_OPTIONS, COOKIE_ACCESS_TOKEN_MAX_AGE, COOKIE_REFRESH_TOKEN_MAX_AGE } from "@/config/cookie.config";
+import { COOKIE_ACCESS_TOKEN_MAX_AGE, COOKIE_OPTIONS, COOKIE_REFRESH_TOKEN_MAX_AGE } from "@/config/cookie.config";
 import { API_MESSAGE } from "@/constants/api/messageApi";
-import { handleError } from "@/lib/api/errorHandler";
 import { api } from "@/lib/api/fetchHandler";
 import { ResponseApi } from "@/lib/api/responseHandler";
 import { LoginResponse } from "@/types/response/auth.response";

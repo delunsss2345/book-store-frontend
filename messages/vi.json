@@ -342,6 +342,7 @@
       },
       "table": {
         "columns": {
+          "customer": "Khách hàng",
           "firstName": "Tên",
           "lastName": "Họ",
           "email": "Email",
@@ -371,6 +372,10 @@
     "categories": {
       "title": "Danh mục",
       "subtitle": "Quản lý các phân loại sản phẩm của bạn.",
+      "summary": {
+        "totalCategories": "Tổng số danh mục",
+        "activeCategories": "Danh mục đang hoạt động"
+      },
       "addButton": "Thêm danh mục",
       "searchPlaceholder": "Tìm kiếm danh mục...",
       "empty": "Không có dữ liệu.",
@@ -378,11 +383,16 @@
         "prev": "Trước",
         "next": "Sau"
       },
+      "status": {
+        "active": "Hoạt động",
+        "inactive": "Tạm ẩn"
+      },
       "table": {
         "columns": {
           "name": "Tên danh mục",
           "slug": "Đường dẫn (Slug)",
           "count": "Số sản phẩm",
+          "sortOrder": "Thứ tự",
           "status": "Trạng thái",
           "actions": "Thao tác"
         },
@@ -416,6 +426,7 @@
           "placedAt": "Ngày đặt",
           "actions": "Thao tác"
         },
+        "empty": "Chưa có đơn hàng để hiển thị.",
         "actions": {
           "label": "Hành động",
           "exportPdf": "Xuất hóa đơn (PDF)",

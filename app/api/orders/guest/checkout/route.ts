@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
             );
         }
         const guestSessionId = cookiesStore.get("guestSessionId")?.value;
-        const response = await api.raw.post<any>("orders/guest/checkout", { ...payload, languageCode }, {
+        const response = await api.post<any>("orders/guest/checkout", { ...payload, languageCode }, {
             headers: {
                 Cookie: guestSessionId ? `guestSessionId=${guestSessionId}` : "",
             },

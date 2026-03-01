@@ -342,6 +342,7 @@
       },
       "table": {
         "columns": {
+          "customer": "Customer",
           "firstName": "First name",
           "lastName": "Last name",
           "email": "Email",
@@ -371,6 +372,10 @@
     "categories": {
       "title": "Categories",
       "subtitle": "Manage your product classifications.",
+      "summary": {
+        "totalCategories": "Total categories",
+        "activeCategories": "Active categories"
+      },
       "addButton": "Add category",
       "searchPlaceholder": "Search categories...",
       "empty": "No data available.",
@@ -378,11 +383,16 @@
         "prev": "Previous",
         "next": "Next"
       },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
       "table": {
         "columns": {
           "name": "Category name",
           "slug": "Slug",
           "count": "Product count",
+          "sortOrder": "Sort order",
           "status": "Status",
           "actions": "Actions"
         },
@@ -416,6 +426,7 @@
           "placedAt": "Placed at",
           "actions": "Actions"
         },
+        "empty": "No orders to display.",
         "actions": {
           "label": "Actions",
           "exportPdf": "Export invoice (PDF)",

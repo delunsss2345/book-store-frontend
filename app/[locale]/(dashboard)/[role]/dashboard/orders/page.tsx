@@ -46,57 +46,19 @@ import {
 } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import useTranslator from "@/hooks/use-translator";
-
-// --- Mock Data & Types ---
-type OrderStatus =
-  | "PENDING"
-  | "PROCESSING"
-  | "SHIPPED"
-  | "DELIVERED"
-  | "CANCELLED";
-type PaymentStatus = "UNPAID" | "PAID" | "REFUNDED";
-
-const MOCK_ORDERS = [
-  {
-    id: "1",
-    orderCode: "ORD-2024-001",
-    guestEmail: "customer@example.com",
-    status: "PROCESSING",
-    paymentStatus: "PAID",
-    totalAmount: 1250000,
-    placedAt: "2024-03-20 10:30",
-    items: [
-      {
-        id: "i1",
-        productName: "Clean Code (Book)",
-        quantity: 1,
-        unitPrice: 500000,
-        lineTotal: 500000,
-      },
-      {
-        id: "i2",
-        productName: "Refactoring (Book)",
-        quantity: 2,
-        unitPrice: 375000,
-        lineTotal: 750000,
-      },
-    ],
-  },
-  {
-    id: "2",
-    orderCode: "ORD-2024-002",
-    guestEmail: "guest_user_99@gmail.com",
-    status: "PENDING",
-    paymentStatus: "UNPAID",
-    totalAmount: 450000,
-    placedAt: "2024-03-21 14:15",
-    items: [],
-  },
-];
+import { useAdminOrdersQuery } from "@/features/admin";
+import type {
+  AdminOrder,
+  AdminOrderItem,
+} from "@/types/response/admin.response";
+import OrdersTableSkeleton from "./_components/OrdersTableSkeleton";
 
 export default function OrdersPage() {
   const { t } = useTranslator();
-  const columns: ColumnDef<any>[] = [
+  const { data: orders = [], isPending: isPendingOrders } =
+    useAdminOrdersQuery();
+
+  const columns: ColumnDef<AdminOrder>[] = [
     {
       accessorKey: "orderCode",
       header: t("dashboard.orders.table.columns.orderCode"),
@@ -125,7 +87,10 @@ export default function OrdersPage() {
       header: t("dashboard.orders.table.columns.status"),
       cell: ({ row }) => {
         const status = row.getValue("status") as string;
-        const variants: Record<string, any> = {
+        const variants: Record<
+          string,
+          "outline" | "secondary" | "default" | "success" | "destructive"
+        > = {
           PENDING: "outline",
           PROCESSING: "secondary",
           SHIPPED: "default",
@@ -154,7 +119,8 @@ export default function OrdersPage() {
       accessorKey: "totalAmount",
       header: t("dashboard.orders.table.columns.totalAmount"),
       cell: ({ row }) => {
-        const amount = parseFloat(row.getValue("totalAmount"));
+        const amountValue = Number(row.getValue("totalAmount") ?? 0);
+        const amount = Number.isFinite(amountValue) ? amountValue : 0;
         return (
           <div className="font-medium text-right font-mono tracking-tighter">
             {new Intl.NumberFormat("vi-VN", {
@@ -168,6 +134,10 @@ export default function OrdersPage() {
     {
       accessorKey: "placedAt",
       header: t("dashboard.orders.table.columns.placedAt"),
+      cell: ({ row }) => {
+        const placedAt = row.original.placedAt ?? row.original.createdAt ?? "-";
+        return <span>{placedAt}</span>;
+      },
     },
     {
       id: "actions",
@@ -200,7 +170,7 @@ export default function OrdersPage() {
   ];
 
   const table = useReactTable({
-    data: MOCK_ORDERS,
+    data: orders,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -255,15 +225,31 @@ export default function OrdersPage() {
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+            {isPendingOrders ? (
+              <OrdersTableSkeleton />
+            ) : table.getRowModel().rows.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center text-muted-foreground"
+                >
+                  {t("dashboard.orders.table.empty")}
+                </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </div>
@@ -272,8 +258,10 @@ export default function OrdersPage() {
 }
 
 // --- Sub-component: Order Details Sheet ---
-function OrderDetailsSheet({ order }: { order: any }) {
+function OrderDetailsSheet({ order }: { order: AdminOrder }) {
   const { t } = useTranslator();
+  const items = order.items ?? [];
+  const customerEmail = order.guestEmail ?? "-";
 
   return (
     <Sheet>
@@ -298,7 +286,7 @@ function OrderDetailsSheet({ order }: { order: any }) {
             <h4 className="text-sm font-semibold uppercase text-muted-foreground tracking-widest">
               {t("dashboard.orders.details.customer")}
             </h4>
-            <p className="text-sm">{order.guestEmail}</p>
+            <p className="text-sm">{customerEmail}</p>
           </div>
 
           <Separator />
@@ -306,34 +294,53 @@ function OrderDetailsSheet({ order }: { order: any }) {
           {/* Danh sách OrderItems */}
           <div className="space-y-4">
             <h4 className="text-sm font-semibold uppercase text-muted-foreground tracking-widest">
-              {t("dashboard.orders.details.products", { count: order.items.length })}
+              {t("dashboard.orders.details.products", { count: items.length })}
             </h4>
-            {order.items.map((item: any) => (
-              <div
-                key={item.id}
-                className="flex justify-between items-start text-sm border-b pb-3 last:border-0"
-              >
-                <div className="space-y-1">
-                  <p className="font-medium">{item.productName}</p>
-                  <p className="text-muted-foreground text-xs">
-                    {t("dashboard.orders.details.quantity")}: {item.quantity} x {item.unitPrice.toLocaleString()}đ
-                  </p>
+            {items.map((item: AdminOrderItem) => {
+              const unitPriceValue = Number(item.unitPrice ?? 0);
+              const lineTotalValue = Number(item.lineTotal ?? 0);
+              const unitPrice = Number.isFinite(unitPriceValue)
+                ? unitPriceValue
+                : 0;
+              const lineTotal = Number.isFinite(lineTotalValue)
+                ? lineTotalValue
+                : 0;
+              return (
+                <div
+                  key={item.id}
+                  className="flex justify-between items-start text-sm border-b pb-3 last:border-0"
+                >
+                  <div className="space-y-1">
+                    <p className="font-medium">{item.productName ?? "-"}</p>
+                    <p className="text-muted-foreground text-xs">
+                      {t("dashboard.orders.details.quantity")}: {item.quantity} x{" "}
+                      {unitPrice.toLocaleString()}đ
+                    </p>
+                  </div>
+                  <p className="font-mono">{lineTotal.toLocaleString()}đ</p>
                 </div>
-                <p className="font-mono">{item.lineTotal.toLocaleString()}đ</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Tổng kết tiền */}
           <div className="bg-muted/50 p-4 rounded-lg space-y-2">
             <div className="flex justify-between text-sm italic">
               <span>{t("dashboard.orders.details.subtotal")}:</span>
-              <span>{order.totalAmount.toLocaleString()}đ</span>
+              <span>
+                {Number.isFinite(Number(order.totalAmount ?? 0))
+                  ? Number(order.totalAmount ?? 0).toLocaleString()
+                  : "0"}
+                đ
+              </span>
             </div>
             <div className="flex justify-between font-bold text-lg border-t pt-2 mt-2">
               <span>{t("dashboard.orders.details.total")}:</span>
               <span className="text-blue-600">
-                {order.totalAmount.toLocaleString()}đ
+                {Number.isFinite(Number(order.totalAmount ?? 0))
+                  ? Number(order.totalAmount ?? 0).toLocaleString()
+                  : "0"}
+                đ
               </span>
             </div>
           </div>
