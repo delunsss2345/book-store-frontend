@@ -1,16 +1,13 @@
 import { api } from "@/lib/api/fetchHandler";
 import { ResponseApi } from "@/lib/api/responseHandler";
-import { OrderStatusResponse } from "@/types/response/order.response";
 import { HttpStatusCode } from "axios";
 import { NextRequest } from "next/server";
 
 export async function GET(
-    request: NextRequest,
-    { params }: { params: Promise<{ orderId: string }> }
+    request: NextRequest
 ) {
     try {
-        const { orderId } = await params;
-        const response = await api.get<OrderStatusResponse>(`hooks/${orderId}/status`);
+        const response = await api.get<any>(`orders`);
         return ResponseApi.success(response.data, HttpStatusCode.Ok);
     } catch (error: any) {
         return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);

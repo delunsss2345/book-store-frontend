@@ -14,7 +14,7 @@ export function PaymentCheckout() {
         <h2 className="text-lg font-semibold">{t("checkout.paymentTitle")}</h2>
       </div>
 
-      <PaymentMethodRadio variant="compact" defaultValue="sepay" />
+      <PaymentMethodRadio variant="compact" />
     </section>
   );
 }

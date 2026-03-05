@@ -1,83 +1,70 @@
 "use client";
 
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useOrderStore } from "@/features/orders";
+import { PaymentGateway } from "@/validation/order-address/orderAddressValidation";
+import { Banknote, Landmark } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-type PaymentMethodRadioProps = {
-  defaultValue?: "sepay" | "cod";
-  onValueChange?: (value: "sepay" | "cod") => void;
-  variant?: "compact" | "rich";
+type Props = {
+  variant?: "rich" | "compact";
 };
 
-export function PaymentMethodRadio({
-  defaultValue = "sepay",
-  onValueChange,
-  variant = "compact",
-}: PaymentMethodRadioProps) {
+export function PaymentMethodRadio({ variant = "rich" }: Props) {
   const t = useTranslations();
-
-  const containerClass =
-    variant === "rich"
-      ? "gap-0 rounded-2xl border border-zinc-200 bg-white overflow-hidden shadow-sm"
-      : "gap-0 overflow-hidden rounded-xl border border-zinc-200 shadow-sm bg-white";
+  const gateway = useOrderStore((s) => s.paymentGateway);
+  const setPaymentGateway = useOrderStore((s) => s.setPaymentGateway);
 
   const itemClass =
     variant === "rich"
-      ? "flex cursor-pointer items-center gap-4 p-5 transition-colors hover:bg-zinc-50"
-      : "flex cursor-pointer items-center gap-4 p-4 transition-colors hover:bg-zinc-50";
+      ? "flex cursor-pointer items-center gap-4 p-5 hover:bg-zinc-50"
+      : "flex cursor-pointer items-center gap-4 p-4 hover:bg-zinc-50";
+
+  const iconSize = variant === "rich" ? 20 : 18;
 
   return (
     <RadioGroup
-      defaultValue={defaultValue}
-      onValueChange={(v) => onValueChange?.(v as "sepay" | "cod")}
-      className={containerClass}
+      value={gateway}
+      onValueChange={(v) => setPaymentGateway(v as PaymentGateway)}
+      className="gap-0 overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm"
     >
-      <label htmlFor="sepay" className={`${itemClass} border-b`}>
-        <RadioGroupItem value="sepay" id="sepay" />
-        <div className="flex-1">
+      {/* SEPAY - MB Bank style */}
+      <label
+        htmlFor={PaymentGateway.SEPAY}
+        className={`${itemClass} border-b`}
+      >
+        <RadioGroupItem
+          value={PaymentGateway.SEPAY}
+          id={PaymentGateway.SEPAY}
+        />
+
+        <div className="flex items-center gap-3 flex-1">
+          <div className="flex h-9 w-9 items-center justify-center rounded-md bg-[#005BAC] text-white">
+            <Landmark size={iconSize} strokeWidth={2} />
+          </div>
+
           <p className="text-sm font-bold text-zinc-900">
             {variant === "rich"
               ? t("checkout.paymentMethod.sepayRichTitle")
               : t("checkout.paymentMethod.sepayCompactTitle")}
           </p>
-          <p className="text-xs text-zinc-500">
-            {variant === "rich"
-              ? t("checkout.paymentMethod.sepayRichDescription")
-              : t("checkout.paymentMethod.sepayCompactDescription")}
-          </p>
         </div>
-
-        {variant === "rich" ? (
-          <div className="flex gap-1">
-            <div className="rounded border border-zinc-200 bg-zinc-100 px-2 py-1 text-[9px] font-black text-zinc-400">
-              VISA
-            </div>
-            <div className="rounded border border-zinc-200 bg-zinc-100 px-2 py-1 text-[9px] font-black text-zinc-400">
-              MASTERCARD
-            </div>
-          </div>
-        ) : (
-          <div className="ml-auto flex items-center gap-1">
-            <div className="flex h-5 w-8 items-center justify-center rounded bg-blue-600 text-[8px] font-bold uppercase italic text-white">
-              Visa
-            </div>
-            <div className="flex h-5 w-8 items-center justify-center rounded bg-red-500 text-[8px] font-bold uppercase italic text-white">
-              MC
-            </div>
-          </div>
-        )}
       </label>
 
-      <label htmlFor="cod" className={itemClass}>
-        <RadioGroupItem value="cod" id="cod" />
-        <div className="flex flex-col gap-0.5">
+      {/* COD */}
+      <label htmlFor={PaymentGateway.COD} className={itemClass}>
+        <RadioGroupItem
+          value={PaymentGateway.COD}
+          id={PaymentGateway.COD}
+        />
+
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-md bg-zinc-100 text-zinc-700">
+            <Banknote size={iconSize} strokeWidth={2} />
+          </div>
+
           <p className="text-sm font-bold text-zinc-900">
             {t("checkout.paymentMethod.codTitle")}
-          </p>
-          <p className="text-xs text-zinc-500">
-            {variant === "rich"
-              ? t("checkout.paymentMethod.codRichDescription")
-              : t("checkout.paymentMethod.codCompactDescription")}
           </p>
         </div>
       </label>

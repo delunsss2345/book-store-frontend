@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export  enum PaymentGateway {
+export enum PaymentGateway {
   COD = "COD",
   SEPAY = "SEPAY",
 }

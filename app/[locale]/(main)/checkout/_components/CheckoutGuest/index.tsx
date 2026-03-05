@@ -15,8 +15,8 @@ import {
 } from "@/components/ui/select";
 import { Info, Truck } from "lucide-react";
 
-import { CheckoutHeader } from "../CheckoutHeader";
 import { CheckoutFooter } from "../CheckoutFooter";
+import { CheckoutHeader } from "../CheckoutHeader";
 import { PaymentCheckout } from "../PaymentCheckout";
 
 import {
@@ -29,24 +29,25 @@ import {
 } from "@/components/ui/form";
 
 import {
-  CreateGuestOrdersAndPaymentInput,
-  CreateGuestOrdersAndPaymentSchema,
-  PaymentGateway,
-} from "@/validation/order-address/orderAddressValidation";
-import {
   selectorIsOrdering,
   useCreateOrderGuestMutation,
   useOrderStore,
 } from "@/features/orders";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import {
+  CreateGuestOrdersAndPaymentInput,
+  CreateGuestOrdersAndPaymentSchema,
+  PaymentGateway,
+} from "@/validation/order-address/orderAddressValidation";
 import { useLocale, useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export function CheckoutGuest() {
+  const paymentGateway = useOrderStore((state) => state.paymentGateway);
   const form = useForm<CreateGuestOrdersAndPaymentInput>({
     resolver: zodResolver(CreateGuestOrdersAndPaymentSchema),
     defaultValues: {
-      paymentGateway: PaymentGateway.SEPAY,
+      paymentGateway,
       newsletter: true,
       guestEmail: "",
       note: "",
@@ -73,6 +74,12 @@ export function CheckoutGuest() {
     toast.promise(createOrderGuest(values), {
       loading: t("checkout.toast.loading"),
       success: (data) => {
+        if (paymentGateway === PaymentGateway.COD) {
+          router.push(
+            `/${locale}/orders`,
+          );
+          return t("checkout.toast.success");
+        }
         router.push(
           `/${locale}/checkout/payment?orderCode=${data.orderCode}&totalAmount=${data.totalAmount}&subtotal=${data.subtotal}`,
         );

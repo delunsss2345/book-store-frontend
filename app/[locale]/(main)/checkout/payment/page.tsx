@@ -1,37 +1,58 @@
 "use client";
-import React, { Suspense, useEffect, useState } from "react";
-import {
-  Copy,
-  ShieldCheck,
-  ArrowLeft,
-  QrCode,
-  Check,
-} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import {
+  ArrowLeft,
+  Check,
+  Copy,
+  QrCode,
+  ShieldCheck,
+} from "lucide-react";
+import { Suspense, useEffect, useState } from "react";
 
-import { useSearchParams, useRouter } from "next/navigation";
+import { useQueryOrderStatus } from "@/features/hooks/hooks/use-get-order-status";
 import { useTranslations } from "next-intl";
+import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 
 function PremiumPaymentContent() {
   const t = useTranslations();
-  const [timeOut, setTimeOut] = useState(10 * 60);
+  const [timeOut, setTimeOut] = useState(5 * 60);
   const searchParams = useSearchParams();
   const router = useRouter();
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeOut((prev) => prev - 1);
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-  // Lấy dữ liệu từ URL
   const amountParam = searchParams.get("totalAmount") || "0";
   const orderCode = searchParams.get("orderCode") || "PAYMENT";
   const subtotalParam = searchParams.get("subtotal") || "0";
   const totalAmount = parseInt(amountParam);
   const subtotal = parseInt(subtotalParam);
+  const { data: orderStatus } = useQueryOrderStatus(orderCode, {
+    refetchInterval: (query) => {
+      const status = query.state.data?.data?.status;
+      return status === "PAID" ? false : 5000; // polling 2s, PAID thì dừng
+    },
+    enabled: !!orderCode,
+  });
+
+  useEffect(() => {
+    if (timeOut <= 0) router.push(`/orders`);
+    const timer = setInterval(() => {
+      setTimeOut((prev) => prev - 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [timeOut])
+
+  // Lấy dữ liệu từ URL
+  useEffect(() => {
+    if (orderStatus?.data.status === "PAID") {
+      router.push(`/orders`);
+      toast.success(t("checkout.toast.paymentSuccess"), { duration: 5000 });
+    }
+  }, [orderStatus]);
 
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
