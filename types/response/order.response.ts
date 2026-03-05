@@ -1,5 +1,5 @@
 import { ApiResponse } from "@/types/response/base.response";
-import type { OrderStatus, PaymentStatus } from "@prisma/client";
+import type { OrderStatus, PaymentStatus } from "@/constants/enums/order";
 
 export type OrderSummary = {
   id: string;

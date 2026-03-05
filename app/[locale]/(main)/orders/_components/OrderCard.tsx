@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import type { OrderSummary } from "@/types/response/order.response";
-import type { OrderStatus } from "@prisma/client";
+import { OrderStatus } from "@/constants/enums/order";
 import { ArrowUpRight, ChevronRight, Package } from "lucide-react";
 
 type OrderCardProps = {
@@ -12,52 +12,52 @@ type OrderCardProps = {
 };
 
 const ORDER_STATUS_STYLES: Record<OrderStatus, { label: string; tone: string; dot: string }> = {
-  PENDING_PAYMENT: {
+  [OrderStatus.PENDING_PAYMENT]: {
     label: "Pending payment",
     tone: "bg-amber-50 text-amber-700",
     dot: "bg-amber-500",
   },
-  PAID: {
+  [OrderStatus.PAID]: {
     label: "Paid",
     tone: "bg-blue-50 text-blue-700",
     dot: "bg-blue-500",
   },
-  CONFIRMED: {
+  [OrderStatus.CONFIRMED]: {
     label: "Confirmed",
     tone: "bg-sky-50 text-sky-700",
     dot: "bg-sky-500",
   },
-  PACKING: {
+  [OrderStatus.PACKING]: {
     label: "Packing",
     tone: "bg-slate-50 text-slate-700",
     dot: "bg-slate-500",
   },
-  SHIPPING: {
+  [OrderStatus.SHIPPING]: {
     label: "Shipping",
     tone: "bg-sky-50 text-sky-700",
     dot: "bg-sky-500",
   },
-  DELIVERED: {
+  [OrderStatus.DELIVERED]: {
     label: "Delivered",
     tone: "bg-emerald-50 text-emerald-700",
     dot: "bg-emerald-500",
   },
-  CANCELLED: {
+  [OrderStatus.CANCELLED]: {
     label: "Cancelled",
     tone: "bg-red-50 text-red-700",
     dot: "bg-red-500",
   },
-  RETURN_REQUESTED: {
+  [OrderStatus.RETURN_REQUESTED]: {
     label: "Return requested",
     tone: "bg-purple-50 text-purple-700",
     dot: "bg-purple-500",
   },
-  RETURNED: {
+  [OrderStatus.RETURNED]: {
     label: "Returned",
     tone: "bg-purple-50 text-purple-700",
     dot: "bg-purple-500",
   },
-  REFUNDED: {
+  [OrderStatus.REFUNDED]: {
     label: "Refunded",
     tone: "bg-purple-50 text-purple-700",
     dot: "bg-purple-500",
@@ -96,7 +96,7 @@ const formatLabel = (value: string | null | undefined) => {
 
 export function OrderCard({ order }: OrderCardProps) {
   const currency = order.currencyCode ?? "VND";
-  const statusKey = (order.status ?? "PENDING_PAYMENT") as OrderStatus;
+  const statusKey = order.status ?? OrderStatus.PENDING_PAYMENT;
   const status = ORDER_STATUS_STYLES[statusKey];
   const placedAt = order.placedAt ?? order.createdAt;
   const total = Number(order.totalAmount ?? order.subtotal ?? 0);

@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import type { OrderStatus } from "@prisma/client";
+import { OrderStatus } from "@/constants/enums/order";
 import { OrderCard } from "./_components/OrderCard";
 import { OrdersSkeleton } from "./_components/OrdersSkeleton";
 import { useQueryOrder } from "@/features/orders/hooks/use-query-orders";
@@ -20,14 +20,19 @@ const tabs: { label: string; value: TabValue }[] = [
 const STATUS_FILTERS: Record<TabValue, OrderStatus[] | null> = {
   all: null,
   "in-progress": [
-    "PENDING_PAYMENT",
-    "PAID",
-    "CONFIRMED",
-    "PACKING",
-    "SHIPPING",
+    OrderStatus.PENDING_PAYMENT,
+    OrderStatus.PAID,
+    OrderStatus.CONFIRMED,
+    OrderStatus.PACKING,
+    OrderStatus.SHIPPING,
   ],
-  delivered: ["DELIVERED"],
-  returns: ["RETURN_REQUESTED", "RETURNED", "REFUNDED", "CANCELLED"],
+  delivered: [OrderStatus.DELIVERED],
+  returns: [
+    OrderStatus.RETURN_REQUESTED,
+    OrderStatus.RETURNED,
+    OrderStatus.REFUNDED,
+    OrderStatus.CANCELLED,
+  ],
 };
 
 export default function OrdersPage() {
