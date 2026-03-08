@@ -21,7 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { useAdminUsersQuery } from '@/features/admin'
+import { useAdminUsersQuery, useAdminUsersStatsQuery } from '@/features/admin'
 import useTranslator from '@/hooks/use-translator'
 import type { ColumnDef } from '@tanstack/react-table'
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
@@ -38,8 +38,6 @@ import {
 import { useMemo } from 'react'
 import type { AdminUser } from '@/types/response/admin.response'
 import CustomersTableSkeleton from './CustomersTableSkeleton'
-
-type RoleCode = 'GUEST' | 'ADMIN' | 'STAFF' | 'CUSTOMER' | 'WAREHOUSE' | (string & {})
 
 // Helper để map màu cho Role
 const roleConfig: Record<string, { color: string }> = {
@@ -70,8 +68,11 @@ const getRoleKey = (role?: string) => {
 export function CustomersDashboardClient() {
   const { t } = useTranslator()
   const { data: users = [], isPending: isPendingUsers } = useAdminUsersQuery()
+  const { data: userStats } = useAdminUsersStatsQuery()
 
-  const totalUsers = users.length
+  const totalUsers = userStats?.totalUsers ?? 0
+  const customersLoggedInLast24Hours =
+    userStats?.customersLoggedInLast24Hours ?? 0
 
   const columns = useMemo<ColumnDef<AdminUser>[]>(
     () => [
@@ -179,7 +180,6 @@ export function CustomersDashboardClient() {
           </CardHeader>
           <CardContent>
             <p className='text-3xl font-bold'>{totalUsers}</p>
-            <p className="text-xs text-emerald-600 font-medium mt-1">+12% from last month</p>
           </CardContent>
         </Card>
         <Card className="hover:border-primary/50 transition-colors">
@@ -190,8 +190,7 @@ export function CustomersDashboardClient() {
             <Mail className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <p className='text-3xl font-bold'>47</p>
-            <p className="text-xs text-muted-foreground mt-1">Users engaged today</p>
+            <p className='text-3xl font-bold'>{customersLoggedInLast24Hours}</p>
           </CardContent>
         </Card>
       </div>

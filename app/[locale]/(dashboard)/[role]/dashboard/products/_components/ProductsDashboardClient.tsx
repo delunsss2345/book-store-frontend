@@ -3,14 +3,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -20,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useAdminBooksQuery } from "@/features/admin";
+import { useAdminBooksQuery, useAdminBooksStatsQuery } from "@/features/admin";
 import type { AdminBook } from "@/types/response/admin.response";
 import useTranslator from "@/hooks/use-translator";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -38,12 +30,9 @@ import {
   Eye,
   Filter,
   ImageIcon,
-  Languages,
-  MoreVertical,
   Pencil,
   Plus,
   Search,
-  Trash2,
   Users,
 } from "lucide-react";
 import { useEffect, useMemo } from "react";
@@ -57,20 +46,22 @@ import ProductsTableSkeleton from "./ProductsTableSkeleton";
 
 export function ProductsDashboardClient() {
   const { t } = useTranslator();
-  const { onOpen, getIsOpen, setBookDetail } = useModalStore();
+  const { onOpen, setBookDetail } = useModalStore();
 
   const {
     data: books = [] as AdminBook[],
-    isLoading,
-    error,
+    error: booksError,
     isPending,
   } = useAdminBooksQuery();
+  const { data: bookStats, error: bookStatsError } = useAdminBooksStatsQuery();
 
   const router = useRouter();
   const { role } = useParams<{ role: string }>();
+
   useEffect(() => {
-    if (error) toast.error(error.message);
-  }, [error]);
+    const nextError = bookStatsError ?? booksError;
+    if (nextError) toast.error(nextError.message);
+  }, [bookStatsError, booksError]);
 
   const columns = useMemo<ColumnDef<AdminBook>[]>(
     () => [
@@ -174,7 +165,7 @@ export function ProductsDashboardClient() {
         ),
       },
     ],
-    [t],
+    [onOpen, role, router, setBookDetail, t],
   );
 
   const table = useReactTable({
@@ -186,25 +177,25 @@ export function ProductsDashboardClient() {
   const summaryCards = [
     {
       label: t("dashboard.products.summary.totalProducts"),
-      value: 128,
+      value: bookStats?.totalBooks ?? 0,
       icon: BookOpen,
       color: "text-blue-600",
     },
     {
       label: t("dashboard.products.summary.activeProducts"),
-      value: 96,
+      value: bookStats?.activeBooks ?? 0,
       icon: CheckCircle2,
       color: "text-emerald-600",
     },
     {
       label: t("dashboard.products.summary.totalAuthors"),
-      value: 54,
+      value: bookStats?.totalAuthors ?? 0,
       icon: Users,
       color: "text-purple-600",
     },
     {
       label: t("dashboard.products.summary.totalPublishers"),
-      value: 27,
+      value: bookStats?.totalPublishers ?? 0,
       icon: Building2,
       color: "text-orange-600",
     },

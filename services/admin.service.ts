@@ -1,27 +1,42 @@
 import { CreateAdminBookAllRequest } from "@/types/request/admin.request";
 import {
-  AdminBook,
   AdminBookListResponse,
   AdminBookResponse,
+  AdminBookStatsProxyResponse,
+  AdminCategoryStatsProxyResponse,
+  AdminUserStatsProxyResponse,
 } from "@/types/response/admin.response";
 import { http } from "@/utils/http";
 
+type AdminMutationPayload = Record<string, unknown>;
+
 export const adminService = {
+  // Stats
+  getBooksStats: () =>
+    http.get<AdminBookStatsProxyResponse>("admin/books/stats"),
+
+  getCategoriesStats: () =>
+    http.get<AdminCategoryStatsProxyResponse>("admin/categories/stats"),
+
+  getUsersStats: () =>
+    http.get<AdminUserStatsProxyResponse>("admin/users/stats"),
+
   // Books
   getBooks: () => http.get<AdminBookListResponse>("admin/books"),
 
-  createBook: (payload: any) => http.post("admin/books", payload),
+  createBook: (payload: AdminMutationPayload) =>
+    http.post("admin/books", payload),
 
   createBookAll: (payload: CreateAdminBookAllRequest) =>
     http.post<AdminBookResponse>("admin/books/all", payload),
 
-  updateBook: (bookId: string, payload: any) =>
+  updateBook: (bookId: string, payload: AdminMutationPayload) =>
     http.patch(`admin/books/${bookId}`, payload),
 
   deleteBook: (bookId: string) => http.del(`admin/books/${bookId}`),
 
   // Book Translations
-  createBookTranslation: (bookId: string, payload: any) =>
+  createBookTranslation: (bookId: string, payload: AdminMutationPayload) =>
     http.post(`admin/books/${bookId}/translations`, payload),
 
   // Book Snapshots

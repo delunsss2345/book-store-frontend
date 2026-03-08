@@ -1,10 +1,10 @@
 import {
   ApiResponse,
   PaginationResponse,
+  ProxySuccessResponse,
 } from "@/types/response/base.response";
 
 // --- Admin Book Translation ---
-
 export type AdminBookTranslation = {
   id: string;
   languageId: number;
@@ -48,10 +48,18 @@ export type AdminBook = {
 
 export type AdminBookListData = PaginationResponse<AdminBook>;
 
+export type AdminBookStats = {
+  totalBooks: number;
+  activeBooks: number;
+  totalAuthors: number;
+  totalPublishers: number;
+};
+
 // --- API Response Types ---
 
 export type AdminBookListResponse = ApiResponse<AdminBookListData>;
 export type AdminBookResponse = ApiResponse<AdminBook>;
+export type AdminBookStatsProxyResponse = ProxySuccessResponse<AdminBookStats>;
 
 // --- Admin User ---
 
@@ -70,6 +78,23 @@ export type AdminUser = {
 
 export type AdminUserListData = PaginationResponse<AdminUser>;
 export type AdminUserListResponse = ApiResponse<AdminUserListData>;
+
+export type AdminUserStats = {
+  totalUsers: number;
+  customersLoggedInLast24Hours: number;
+};
+
+export type AdminUserStatsProxyResponse = ProxySuccessResponse<AdminUserStats>;
+
+// --- Admin Category ---
+
+export type AdminCategoryStats = {
+  totalCategories: number;
+  activeCategories: number;
+};
+
+export type AdminCategoryStatsProxyResponse =
+  ProxySuccessResponse<AdminCategoryStats>;
 
 // --- Admin Order ---
 

@@ -20,6 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useAdminCategoriesStatsQuery } from "@/features/admin";
 import useTranslator from "@/hooks/use-translator";
 import { useCategoriesQuery } from "@/features/category";
 import type { CategoryItemData } from "@/types/response/category.response";
@@ -45,10 +46,11 @@ import CategoriesTableSkeleton from "./CategoriesTableSkeleton";
 export function CategoriesDashboardClient() {
   const { t } = useTranslator();
   const { data, isPending: isPendingCategories } = useCategoriesQuery();
+  const { data: categoryStats } = useAdminCategoriesStatsQuery();
 
   const categories = data?.items ?? [];
-  const totalCategories = data?.total ?? categories.length;
-  const activeCategories = categories.filter((item) => item.isActive).length;
+  const totalCategories = categoryStats?.totalCategories ?? 0;
+  const activeCategories = categoryStats?.activeCategories ?? 0;
 
   const columns = useMemo<ColumnDef<CategoryItemData>[]>(
     () => [
