@@ -5,6 +5,13 @@ export interface ApiResponse<T> {
   data: T;
 }
 
+export interface ApiError {
+  success: "false";
+  statusCode: number;
+  message: string;
+  path: string;
+}
+
 export interface PaginationResponse<T> {
   page: number;
   limit: number;

@@ -14,21 +14,17 @@ export type AdminBookTranslation = {
 };
 
 // --- Admin Book Variant ---
-
 export type AdminBookVariant = {
   id: string;
   format: "PAPERBACK" | "HARDCOVER" | "EBOOK" | "AUDIOBOOK" | (string & {});
   edition: number;
   isbn: string;
-  costPrice: string;
   price: string;
   currencyCode: string;
-  stock: number;
   isActive: boolean;
 };
 
 // --- Admin Book ---
-
 export type AdminBook = {
   id: string;
   publisherId: string;
@@ -106,11 +102,7 @@ export type AdminOrderStatus =
   | "CANCELLED"
   | (string & {});
 
-export type AdminPaymentStatus =
-  | "UNPAID"
-  | "PAID"
-  | "REFUNDED"
-  | (string & {});
+export type AdminPaymentStatus = "UNPAID" | "PAID" | "REFUNDED" | (string & {});
 
 export type AdminOrderItem = {
   id: string;

@@ -39,12 +39,6 @@ const getAdminBookVariantSchema = (t: (key: string) => string) =>
     isbn: z
       .string()
       .min(1, t("dashboard.products.create.variant.validation.isbnRequired")),
-    costPrice: z
-      .string()
-      .min(
-        1,
-        t("dashboard.products.create.variant.validation.costPriceRequired"),
-      ),
     price: z
       .string()
       .min(1, t("dashboard.products.create.variant.validation.priceRequired")),
@@ -54,7 +48,6 @@ const getAdminBookVariantSchema = (t: (key: string) => string) =>
         1,
         t("dashboard.products.create.variant.validation.currencyCodeRequired"),
       ),
-    stock: z.number(),
     isActive: z.boolean(),
   });
 
@@ -81,7 +74,6 @@ export default function VariantCreate({
     defaultValues: {
       format: "PAPERBACK",
       edition: 1,
-      stock: 50,
       isActive: true,
       currencyCode: "VND",
     },
@@ -99,8 +91,8 @@ export default function VariantCreate({
     }
   };
 
-  const onError = (errors: any) => {
-    console.log(errors);
+  const onError = (error) => {
+    console.log(error);
   };
 
   return (
@@ -193,22 +185,6 @@ export default function VariantCreate({
 
                     <FormField
                       control={form.control}
-                      name="stock"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>
-                            {t("dashboard.products.create.variant.stockLabel")}
-                          </FormLabel>
-                          <FormControl>
-                            <Input type="number" className="h-10" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
                       name="isbn"
                       render={({ field }) => (
                         <FormItem>
@@ -236,24 +212,6 @@ export default function VariantCreate({
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="costPrice"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>
-                            {t(
-                              "dashboard.products.create.variant.costPriceLabel",
-                            )}
-                          </FormLabel>
-                          <FormControl>
-                            <Input type="number" className="h-10" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
                     <FormField
                       control={form.control}
                       name="price"

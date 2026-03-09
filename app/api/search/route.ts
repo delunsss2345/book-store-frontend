@@ -4,11 +4,14 @@ import { HttpStatusCode } from "axios";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
-    try {
-        const { searchParams } = new URL(request.url);
-        const response = await api.get<any>(`search?${searchParams.toString()}`);
-        return ResponseApi.success(response.data, HttpStatusCode.Ok);
-    } catch (error: any) {
-        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
-    }
+  try {
+    const { searchParams } = new URL(request.url);
+    const response = await api.get<any>(`search?${searchParams.toString()}`);
+    return ResponseApi.success(response.data, HttpStatusCode.Ok);
+  } catch (error: any) {
+    return ResponseApi.error(
+      error.message,
+      error.status ?? HttpStatusCode.BadRequest,
+    );
+  }
 }
