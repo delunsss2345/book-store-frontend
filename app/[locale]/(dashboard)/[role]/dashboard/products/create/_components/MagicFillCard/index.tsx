@@ -27,27 +27,27 @@ export const MagicFillCard = ({
   const [lang, setLang] = useState("vi");
 
   return (
-    <Card className="border-primary/15 bg-primary/[0.03] shadow-none border border-dashed">
-      <CardContent className="p-3">
-        <div className="flex flex-col gap-2.5">
+    <Card className="border-primary/15 bg-primary/[0.03] shadow-none border border-dashed text-sm">
+      <CardContent className="p-2.5">
+        <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between gap-2">
-            <Label className="text-primary font-semibold text-sm flex items-center gap-1.5">
+            <Label className="text-primary font-semibold text-xs flex items-center gap-1.5">
               <Sparkles className="size-3.5" />
               {t("dashboard.products.create.magicFill.title")}
             </Label>
 
             {isPending && (
-              <span className="text-[11px] text-muted-foreground">
+              <span className="text-[10px] text-muted-foreground font-medium">
                 {t("dashboard.products.create.magicFill.scanning")}
               </span>
             )}
           </div>
 
-          <div className="flex flex-col md:flex-row gap-2 items-stretch">
-            <div className="w-full md:w-[140px]">
+          <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
+            <div className="w-full sm:w-[130px]">
               <Select value={lang} onValueChange={setLang} disabled={isPending}>
-                <SelectTrigger className="h-8 px-2.5 bg-white border-primary/10 text-xs">
-                  <Languages className="size-3.5 mr-2 text-muted-foreground" />
+                <SelectTrigger className="h-7 px-2 bg-white border-primary/10 text-xs shadow-sm">
+                  <Languages className="size-3 mr-1.5 text-muted-foreground" />
                   <SelectValue
                     placeholder={t(
                       "dashboard.products.create.magicFill.languagePlaceholder",
@@ -55,12 +55,12 @@ export const MagicFillCard = ({
                   />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="vi">
+                  <SelectItem value="vi" className="text-xs">
                     {t(
                       "dashboard.products.create.magicFill.languageVietnamese",
                     )}
                   </SelectItem>
-                  <SelectItem value="en">
+                  <SelectItem value="en" className="text-xs">
                     {t("dashboard.products.create.magicFill.languageEnglish")}
                   </SelectItem>
                 </SelectContent>
@@ -68,7 +68,7 @@ export const MagicFillCard = ({
             </div>
 
             <div className="relative flex-1">
-              <Hash className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
+              <Hash className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3 text-muted-foreground" />
               <Input
                 value={isbn}
                 disabled={isPending}
@@ -76,7 +76,7 @@ export const MagicFillCard = ({
                 placeholder={t(
                   "dashboard.products.create.magicFill.isbnPlaceholder",
                 )}
-                className="pl-8 h-8 bg-white text-xs font-mono shadow-none"
+                className="pl-7 h-7 bg-white text-xs font-mono shadow-sm"
               />
             </div>
 
@@ -84,16 +84,16 @@ export const MagicFillCard = ({
               disabled={isPending || !isbn.trim()}
               onClick={() => onScan(isbn.trim(), lang)}
               size="sm"
-              className="h-8 px-3.5 shadow-none group"
+              className="h-7 px-3 shadow-none group"
             >
-              <Search className="size-3.5 mr-1.5 group-hover:scale-110 transition-transform" />
+              <Search className="size-3 mr-1.5 group-hover:scale-110 transition-transform" />
               <span className="text-xs">
                 {t("dashboard.products.create.magicFill.scanButton")}
               </span>
             </Button>
           </div>
 
-          <div className="text-[10px] leading-4 text-muted-foreground">
+          <div className="text-[9px] leading-relaxed text-muted-foreground mt-0.5">
             {t("dashboard.products.create.magicFill.hint")}
           </div>
         </div>

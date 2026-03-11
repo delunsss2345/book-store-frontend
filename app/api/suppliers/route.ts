@@ -1,4 +1,4 @@
-import { api, HttpError } from "@/lib/api/fetchHandler";
+import { api } from "@/lib/api/fetchHandler";
 import { ResponseApi } from "@/lib/api/responseHandler";
 import { wrapperHandler } from "@/lib/api/wrapperHandler";
 import {
@@ -9,7 +9,7 @@ import { HttpStatusCode } from "axios";
 import { NextRequest } from "next/server";
 
 export const GET = wrapperHandler(async () => {
-  const response = await api.get<SupplierListResponse>("/suppliers");
+  const response = await api.get<SupplierListResponse>("suppliers");
   return ResponseApi.success(response.data, HttpStatusCode.Ok);
 });
 

@@ -20,6 +20,8 @@ export type AdminBookVariant = {
   edition: number;
   isbn: string;
   price: string;
+  costPrice?: string | number;
+  stock?: number;
   currencyCode: string;
   isActive: boolean;
 };

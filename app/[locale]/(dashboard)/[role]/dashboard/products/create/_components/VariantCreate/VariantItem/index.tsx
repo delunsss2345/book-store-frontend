@@ -28,7 +28,7 @@ export default function VariantItem({
 
         <div className="min-w-0">
           <p className="text-sm font-bold truncate">
-            {v.price} {v.currencyCode}
+            Giá bán: {v.price} {v.currencyCode} - Giá nhập: {v.costPrice} {v.currencyCode}
           </p>
           <p className="text-xs text-muted-foreground truncate">
             ISBN: {v.isbn} • {t("dashboard.products.create.variant.stockShort")}: {v.stock}

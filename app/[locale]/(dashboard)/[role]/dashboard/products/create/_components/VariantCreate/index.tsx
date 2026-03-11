@@ -42,12 +42,18 @@ const getAdminBookVariantSchema = (t: (key: string) => string) =>
     price: z
       .string()
       .min(1, t("dashboard.products.create.variant.validation.priceRequired")),
+    costPrice: z
+      .string()
+      .min(1, "Vui lòng nhập giá nhập"),
     currencyCode: z
       .string()
       .min(
         1,
         t("dashboard.products.create.variant.validation.currencyCodeRequired"),
       ),
+    stock: z
+      .number()
+      .min(0, "Số lượng không hợp lệ"),
     isActive: z.boolean(),
   });
 
@@ -74,6 +80,9 @@ export default function VariantCreate({
     defaultValues: {
       format: "PAPERBACK",
       edition: 1,
+      stock: 0,
+      price: "",
+      costPrice: "",
       isActive: true,
       currencyCode: "VND",
     },
@@ -91,7 +100,7 @@ export default function VariantCreate({
     }
   };
 
-  const onError = (error) => {
+  const onError = (error: any) => {
     console.log(error);
   };
 
@@ -211,7 +220,27 @@ export default function VariantCreate({
                     {t("dashboard.products.create.variant.pricingAndEdition")}
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="costPrice"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-emerald-700 font-bold">
+                            Giá nhập
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              className="h-10 border-emerald-200"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
                     <FormField
                       control={form.control}
                       name="price"
@@ -243,7 +272,34 @@ export default function VariantCreate({
                             )}
                           </FormLabel>
                           <FormControl>
-                            <Input type="number" className="h-10" {...field} />
+                            <Input
+                              type="number"
+                              className="h-10"
+                              {...field}
+                              onChange={(e) => field.onChange(Number(e.target.value))}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="stock"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            Số lượng nhập
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              min={0}
+                              className="h-10"
+                              {...field}
+                              onChange={(e) => field.onChange(Number(e.target.value))}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
