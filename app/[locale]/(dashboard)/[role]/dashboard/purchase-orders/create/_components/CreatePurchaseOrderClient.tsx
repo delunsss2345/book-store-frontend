@@ -45,6 +45,27 @@ import {
   FileText,
   Truck,
 } from "lucide-react";
+import { useBookQuery } from "@/features/catalog/hooks/use-book.mutation";
+import { useBooksQuery } from "@/features/catalog/hooks/use-books.mutation";
+import { useAdminBooksQuery } from "@/features/admin";
+import {
+  purchaseOrderSchema,
+  PurchaseOrderSchemaType,
+} from "@/validation/supplier/supplier.validation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  PurchaseItem,
+  usePurchaseStore,
+} from "@/features/purchaser-orders/store";
 
 // ================================================================
 // Types (UI only)
@@ -121,12 +142,20 @@ function todayISO() {
 // ================================================================
 export function CreatePurchaseOrderClient() {
   const router = useRouter();
+  const { data: books, isPending: booksPending } = useAdminBooksQuery();
+  const form = useForm<PurchaseOrderSchemaType>({
+    resolver: zodResolver(purchaseOrderSchema),
+    defaultValues: {
+      supplierId: "",
+      orderCode: generateOrderCode(),
+      orderDate: "",
+      notes: "",
+    },
+  });
+  useEffect(() => {}, [books]);
 
-  // --- General Info state ---
-  const [supplierId, setSupplierId] = useState("");
-  const [orderCode] = useState(generateOrderCode);
-  const [orderDate, setOrderDate] = useState(todayISO);
-  const [notes, setNotes] = useState("");
+  const { purchaseItems, addItem, deleteItem, clearItems, updateItem } =
+    usePurchaseStore();
 
   // --- Items state ---
   const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
@@ -146,16 +175,18 @@ export function CreatePurchaseOrderClient() {
   const [quickCreatePrice, setQuickCreatePrice] = useState("");
 
   // --- Validation ---
-  const [errors, setErrors] = useState<{ supplier?: string; items?: string }>({});
+  const [errors, setErrors] = useState<{ supplier?: string; items?: string }>(
+    {},
+  );
   const [isSaving, setIsSaving] = useState(false);
 
   // --- Search filtering ---
-  const filteredBooks = MOCK_BOOKS.filter((book) => {
+  const filteredBooks = books?.filter((book) => {
     if (!searchQuery.trim()) return true;
     const q = searchQuery.toLowerCase();
     return (
-      book.title.toLowerCase().includes(q) ||
-      book.isbn.toLowerCase().includes(q)
+      book.translation.title.toLowerCase().includes(q) ||
+      book.translation.title.toLowerCase().includes(q)
     );
   });
 
@@ -186,7 +217,6 @@ export function CreatePurchaseOrderClient() {
   const handleAddItem = useCallback(
     (book: BookSearchResult) => {
       if (selectedItems.some((i) => i.id === book.id)) {
-        // Already in list — increment qty
         setSelectedItems((prev) =>
           prev.map((i) =>
             i.id === book.id ? { ...i, quantity: i.quantity + 1 } : i,
@@ -224,21 +254,9 @@ export function CreatePurchaseOrderClient() {
     [],
   );
 
-  const handleQuickCreate = useCallback(() => {
-    const newItem: SelectedItem = {
-      id: `quick-${Date.now()}`,
-      title: quickCreateName || "Sản phẩm mới",
-      isbn: quickCreateIsbn || "N/A",
-      quantity: 1,
-      unitPrice: Number(quickCreatePrice) || 0,
-    };
-    setSelectedItems((prev) => [...prev, newItem]);
-    setQuickCreateOpen(false);
-    setQuickCreateName("");
-    setQuickCreateIsbn("");
-    setQuickCreatePrice("");
-    setErrors((e) => ({ ...e, items: undefined }));
-  }, [quickCreateName, quickCreateIsbn, quickCreatePrice]);
+  const handleQuickCreate = (newItem: PurchaseItem) => {
+    addItem(newItem);
+  };
 
   const handleOpenQuickCreate = useCallback(() => {
     setQuickCreateName(searchQuery);
@@ -249,20 +267,23 @@ export function CreatePurchaseOrderClient() {
     setQuickCreateOpen(true);
   }, [searchQuery]);
 
-  const handleConfirm = useCallback(() => {
-    const newErrors: typeof errors = {};
-    if (!supplierId) newErrors.supplier = "Vui lòng chọn nhà cung cấp";
-    if (selectedItems.length === 0)
+  const onSubmit = (values: PurchaseOrderSchemaType) => {
+    const newErrors: { items?: string } = {};
+
+    if (selectedItems.length === 0) {
       newErrors.items = "Vui lòng thêm ít nhất một sản phẩm";
+    }
+
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
 
-    // Mock save
+    console.log("Form values:", values);
+    console.log("Selected items:", selectedItems);
+
     setIsSaving(true);
     setTimeout(() => setIsSaving(false), 1500);
-  }, [supplierId, selectedItems]);
+  };
 
-  // --- Computed ---
   const subtotal = selectedItems.reduce(
     (sum, i) => sum + i.quantity * i.unitPrice,
     0,
@@ -273,9 +294,6 @@ export function CreatePurchaseOrderClient() {
 
   return (
     <div className="max-w-400 mx-auto p-4 lg:p-6 space-y-6">
-      {/* ============================================================ */}
-      {/* STICKY HEADER */}
-      {/* ============================================================ */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-950 p-4 rounded-xl border shadow-sm sticky top-0 z-20">
         <div className="flex items-center gap-3">
           <Button
@@ -302,7 +320,7 @@ export function CreatePurchaseOrderClient() {
           </Button>
           <Button
             className="gap-2 bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer min-w-35"
-            onClick={handleConfirm}
+            onClick={onSubmit}
             disabled={isSaving}
           >
             {isSaving ? (
@@ -314,90 +332,122 @@ export function CreatePurchaseOrderClient() {
           </Button>
         </div>
       </div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <Card className="shadow-sm border-slate-200 dark:border-slate-800">
+            <CardHeader className="bg-slate-50/50 dark:bg-slate-900/50 border-b py-3 px-4">
+              <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                <ClipboardList className="size-4 text-indigo-500" />
+                <CardTitle className="text-sm font-semibold">
+                  Thông tin chung
+                </CardTitle>
+              </div>
+            </CardHeader>
 
+            <CardContent className="p-4 md:p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+                <FormField
+                  control={form.control}
+                  name="supplierId"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1.5">
+                      <FormLabel className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                        Nhà cung cấp <span className="text-red-500">*</span>
+                      </FormLabel>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="h-9 text-sm">
+                            <SelectValue placeholder="Chọn nhà cung cấp..." />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {MOCK_SUPPLIERS.map((s) => (
+                            <SelectItem
+                              key={s.id}
+                              value={s.id}
+                              className="text-sm"
+                            >
+                              <div className="flex items-center gap-2">
+                                <Truck className="size-3.5 text-muted-foreground" />
+                                {s.name}
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="orderCode"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1.5">
+                      <FormLabel className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                        Mã đơn hàng
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          readOnly
+                          className="h-9 text-sm bg-slate-50 dark:bg-slate-900 font-mono cursor-not-allowed"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="orderDate"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1.5">
+                      <FormLabel className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                        <CalendarDays className="size-3.5" />
+                        Ngày nhập hàng
+                      </FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} className="h-9 text-sm" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="notes"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1.5 md:col-span-2">
+                      <FormLabel className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                        <FileText className="size-3.5" />
+                        Ghi chú
+                      </FormLabel>
+                      <FormControl>
+                        <Textarea
+                          {...field}
+                          placeholder="Nhập ghi chú cho đơn nhập hàng..."
+                          className="min-h-20 text-sm resize-y"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </CardContent>
+          </Card>{" "}
+        </form>
+      </Form>
       {/* ============================================================ */}
       {/* GENERAL INFO */}
       {/* ============================================================ */}
-      <Card className="shadow-sm border-slate-200 dark:border-slate-800">
-        <CardHeader className="bg-slate-50/50 dark:bg-slate-900/50 border-b py-3 px-4">
-          <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-            <ClipboardList className="size-4 text-indigo-500" />
-            <CardTitle className="text-sm font-semibold">
-              Thông tin chung
-            </CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent className="p-4 md:p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
-            {/* Supplier */}
-            <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                Nhà cung cấp <span className="text-red-500">*</span>
-              </Label>
-              <Select value={supplierId} onValueChange={(v) => { setSupplierId(v); setErrors((e) => ({ ...e, supplier: undefined })); }}>
-                <SelectTrigger
-                  className={`h-9 text-sm ${errors.supplier ? "border-red-500 ring-red-500/20 ring-2" : ""}`}
-                >
-                  <SelectValue placeholder="Chọn nhà cung cấp..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {MOCK_SUPPLIERS.map((s) => (
-                    <SelectItem key={s.id} value={s.id} className="text-sm">
-                      <div className="flex items-center gap-2">
-                        <Truck className="size-3.5 text-muted-foreground" />
-                        {s.name}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.supplier && (
-                <p className="text-xs text-red-500 mt-1">{errors.supplier}</p>
-              )}
-            </div>
-
-            {/* Order code */}
-            <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                Mã đơn hàng
-              </Label>
-              <Input
-                value={orderCode}
-                readOnly
-                className="h-9 text-sm bg-slate-50 dark:bg-slate-900 font-mono cursor-not-allowed"
-              />
-            </div>
-
-            {/* Date */}
-            <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                <CalendarDays className="size-3.5" />
-                Ngày nhập hàng
-              </Label>
-              <Input
-                type="date"
-                value={orderDate}
-                onChange={(e) => setOrderDate(e.target.value)}
-                className="h-9 text-sm"
-              />
-            </div>
-
-            {/* Notes */}
-            <div className="space-y-1.5 md:col-span-2">
-              <Label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                <FileText className="size-3.5" />
-                Ghi chú
-              </Label>
-              <Textarea
-                placeholder="Nhập ghi chú cho đơn nhập hàng..."
-                className="min-h-20 text-sm resize-y"
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-              />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* ============================================================ */}
       {/* PRODUCT SEARCH + TABLE */}
@@ -447,7 +497,9 @@ export function CreatePurchaseOrderClient() {
                     <Loader2 className="size-4 animate-spin" />
                     Đang tìm kiếm...
                   </div>
-                ) : filteredBooks.length > 0 ? (
+                ) : !booksPending &&
+                  filteredBooks &&
+                  filteredBooks.length > 0 ? (
                   <div className="py-1">
                     {filteredBooks.map((book) => {
                       const alreadyAdded = selectedItems.some(
@@ -464,10 +516,10 @@ export function CreatePurchaseOrderClient() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium text-foreground truncate">
-                              {book.title}
+                              {book.translation.title}
                             </p>
                             <p className="text-xs text-muted-foreground font-mono">
-                              {book.isbn}
+                              {book.translation.slug}
                             </p>
                           </div>
                           {alreadyAdded && (
@@ -706,7 +758,10 @@ export function CreatePurchaseOrderClient() {
                         placeholder="0"
                         onChange={(e) =>
                           setTaxPercent(
-                            Math.min(100, Math.max(0, Number(e.target.value) || 0)),
+                            Math.min(
+                              100,
+                              Math.max(0, Number(e.target.value) || 0),
+                            ),
                           )
                         }
                         className="h-8 w-20 text-sm text-center"
@@ -756,8 +811,8 @@ export function CreatePurchaseOrderClient() {
                 Chưa có sản phẩm nào
               </p>
               <p className="text-sm text-muted-foreground max-w-sm">
-                Sử dụng thanh tìm kiếm phía trên để bắt đầu thêm sản phẩm
-                vào đơn nhập hàng
+                Sử dụng thanh tìm kiếm phía trên để bắt đầu thêm sản phẩm vào
+                đơn nhập hàng
               </p>
             </div>
           )}
@@ -768,7 +823,7 @@ export function CreatePurchaseOrderClient() {
       <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-white dark:bg-slate-950 border-t shadow-lg z-20">
         <Button
           className="w-full gap-2 bg-indigo-600 hover:bg-indigo-700 text-white h-11 cursor-pointer"
-          onClick={handleConfirm}
+          onClick={onSubmit}
           disabled={isSaving}
         >
           {isSaving ? (

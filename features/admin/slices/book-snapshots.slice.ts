@@ -10,8 +10,8 @@ type BookSnapshotsSliceActions = {
   setIsLoadingBookSnapshots: (isLoading: boolean) => void;
 };
 
-export type BookSnapshotsSlice =
-  BookSnapshotsSliceState & BookSnapshotsSliceActions;
+export type BookSnapshotsSlice = BookSnapshotsSliceState &
+  BookSnapshotsSliceActions;
 
 export const createBookSnapshotsSlice: StateCreator<BookSnapshotsSlice> = (
   set,
