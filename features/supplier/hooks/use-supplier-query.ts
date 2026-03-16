@@ -4,5 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 export const useSupplierQuery = () =>
   useQuery({
     queryKey: ["suppliers"],
-    queryFn: async () => await supplierApi.getSupplier,
+    queryFn: supplierApi.getSupplier,
+    select: (response) => response.data,
   });

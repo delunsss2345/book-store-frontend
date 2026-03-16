@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 export type PurchaseItem = {
   id: string;
   bookVariantName: string;
+  format: string;
   bookVariantId: string;
   quantity: number;
   unitPrice: number;
@@ -14,7 +15,8 @@ type PurchaseStore = {
   purchaseItems: PurchaseItem[];
 
   addItem: (item: PurchaseItem) => void;
-  updateItem: (item: PurchaseItem) => void;
+  updateItem: (id: string, field: string, value: number) => void;
+  updateQuantityItem: (id: string) => void;
   deleteItem: (id: string) => void;
   clearItems: () => void;
 };
@@ -29,13 +31,18 @@ export const usePurchaseStore = create<PurchaseStore>()(
           purchaseItems: [...state.purchaseItems, item],
         })),
 
-      updateItem: (item) =>
+      updateItem: (id: string, field: string, value: number) =>
         set((state) => ({
           purchaseItems: state.purchaseItems.map((i) =>
-            i.id === item.id ? item : i,
+            i.id === id ? { ...i, [field]: value } : i,
           ),
         })),
-
+      updateQuantityItem: (id: string) =>
+        set((state) => ({
+          purchaseItems: state.purchaseItems.map((i) =>
+            i.id === id ? { ...i, quantity: i.quantity + 1 } : i,
+          ),
+        })),
       deleteItem: (id) =>
         set((state) => ({
           purchaseItems: state.purchaseItems.filter((i) => i.id !== id),

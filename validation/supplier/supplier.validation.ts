@@ -1,10 +1,28 @@
 import { z } from "zod";
 
+export const purchaseOrderItemSchema = z.object({
+  bookVariantId: z.coerce.number(),
+  quantity: z.number().min(1, "Số lượng phải lớn hơn 0"),
+  unitPrice: z.number().min(0, "Giá không hợp lệ"),
+  totalPrice: z.number().min(0, "Tổng tiền không hợp lệ"),
+});
+
 export const purchaseOrderSchema = z.object({
-  supplierId: z.string().min(1, "Vui lòng chọn nhà cung cấp"),
-  orderCode: z.string().min(1, "Mã đơn hàng không được để trống"),
-  orderDate: z.string().min(1, "Ngày đặt hàng không được để trống"),
-  notes: z.string().optional(),
+  supplierId: z.string("Vui lòng chọn nhà cung cấp"),
+  code: z.string().min(1, "Mã đơn nhập không được để trống"),
+  createdAt: z.string().min(1, "Ngày tạo đơn không được để trống"),
+  note: z.string().optional(),
+  totalAmount: z.number().min(0, "Tổng tiền không hợp lệ"),
+  taxAmount: z.number().optional(),
+});
+
+export const createPurchaseOrderSchema = purchaseOrderSchema.extend({
+  items: z
+    .array(purchaseOrderItemSchema)
+    .min(1, "Danh sách sản phẩm không được để trống"),
 });
 
 export type PurchaseOrderSchemaType = z.infer<typeof purchaseOrderSchema>;
+export type CreatePurchaseOrderSchemaType = z.infer<
+  typeof createPurchaseOrderSchema
+>;
