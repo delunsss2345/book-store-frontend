@@ -4,7 +4,10 @@ import { http } from "@/utils/http";
 
 export const purchaserService = {
   create: (data: CreatePurchaseOrderSchemaType) => {
-    console.log(data);
     return http.post("/purchase-orders", data);
+  },
+
+  getAll: () => {
+    return http.get("/purchase-orders");
   },
 };
