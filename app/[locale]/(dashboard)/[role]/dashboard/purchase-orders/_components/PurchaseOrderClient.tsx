@@ -30,72 +30,11 @@ import {
 import Link from "next/link";
 import { useMemo } from "react";
 import PurchaseOrderSkeleton from "./PurchaseOrderSkeleton";
+import { useGetPurchaseOrdersQuery } from "@/features/purchaser-orders/hooks/create-purchaser-orders.mutation";
+import type { PurchaseOrderItem } from "@/types/response/purchase-order.response";
 
-// ---------- Types ----------
 type PurchaseOrderStatus = "PENDING" | "APPROVED" | "RECEIVED" | "CANCELLED";
 
-type PurchaseOrder = {
-  id: string;
-  code: string;
-  supplierName: string;
-  createdAt: string;
-  status: PurchaseOrderStatus;
-  totalPrice: number;
-};
-
-// ---------- Mock data ----------
-const MOCK_PURCHASE_ORDERS: PurchaseOrder[] = [
-  {
-    id: "1",
-    code: "PO-20260301",
-    supplierName: "Nhà xuất bản Kim Đồng",
-    createdAt: "2026-03-01T10:30:00Z",
-    status: "APPROVED",
-    totalPrice: 15_500_000,
-  },
-  {
-    id: "2",
-    code: "PO-20260302",
-    supplierName: "Alpha Books",
-    createdAt: "2026-03-02T08:00:00Z",
-    status: "PENDING",
-    totalPrice: 8_200_000,
-  },
-  {
-    id: "3",
-    code: "PO-20260303",
-    supplierName: "NXB Trẻ",
-    createdAt: "2026-03-03T14:15:00Z",
-    status: "RECEIVED",
-    totalPrice: 22_000_000,
-  },
-  {
-    id: "4",
-    code: "PO-20260304",
-    supplierName: "Nhã Nam",
-    createdAt: "2026-03-04T09:45:00Z",
-    status: "CANCELLED",
-    totalPrice: 5_600_000,
-  },
-  {
-    id: "5",
-    code: "PO-20260305",
-    supplierName: "Fahasa Distribution",
-    createdAt: "2026-03-05T11:20:00Z",
-    status: "PENDING",
-    totalPrice: 12_350_000,
-  },
-  {
-    id: "6",
-    code: "PO-20260306",
-    supplierName: "Minh Long Books",
-    createdAt: "2026-03-06T16:00:00Z",
-    status: "APPROVED",
-    totalPrice: 9_800_000,
-  },
-];
-
-// ---------- Helpers ----------
 const STATUS_CONFIG: Record<
   PurchaseOrderStatus,
   { label: string; className: string; dotClassName: string }
@@ -126,11 +65,12 @@ const STATUS_CONFIG: Record<
   },
 };
 
-function formatCurrency(value: number) {
+function formatCurrency(value: number | string) {
+  const numValue = typeof value === "string" ? parseFloat(value) : value;
   return new Intl.NumberFormat("vi-VN", {
     style: "currency",
     currency: "VND",
-  }).format(value);
+  }).format(numValue || 0);
 }
 
 function formatDate(dateStr: string) {
@@ -143,13 +83,10 @@ function formatDate(dateStr: string) {
   }).format(new Date(dateStr));
 }
 
-// ---------- Component ----------
 export function PurchaseOrderClient() {
-  // TODO: Replace with real query
-  const isPending = false;
-  const data = MOCK_PURCHASE_ORDERS;
+  const { data: purchaseOrders, isPending } = useGetPurchaseOrdersQuery();
 
-  const columns = useMemo<ColumnDef<PurchaseOrder>[]>(
+  const columns = useMemo<ColumnDef<PurchaseOrderItem>[]>(
     () => [
       {
         accessorKey: "code",
@@ -161,7 +98,7 @@ export function PurchaseOrderClient() {
         ),
       },
       {
-        accessorKey: "supplierName",
+        id: "supplierName",
         header: () => "Nhà cung cấp",
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
@@ -169,7 +106,7 @@ export function PurchaseOrderClient() {
               <Package className="size-3.5 text-muted-foreground" />
             </div>
             <span className="font-medium text-foreground">
-              {row.original.supplierName}
+              {row.original.supplier?.name || "N/A"}
             </span>
           </div>
         ),
@@ -191,22 +128,22 @@ export function PurchaseOrderClient() {
           return (
             <Badge
               variant="outline"
-              className={`gap-1.5 font-medium ${config.className}`}
+              className={`gap-1.5 font-medium ${config?.className}`}
             >
               <span
-                className={`h-1.5 w-1.5 rounded-full ${config.dotClassName}`}
+                className={`h-1.5 w-1.5 rounded-full ${config?.dotClassName}`}
               />
-              {config.label}
+              {config?.label || row.original.status}
             </Badge>
           );
         },
       },
       {
-        accessorKey: "totalPrice",
+        accessorKey: "totalAmount",
         header: () => <div className="text-right">Tổng giá</div>,
         cell: ({ row }) => (
           <div className="text-right font-semibold tabular-nums text-foreground">
-            {formatCurrency(row.original.totalPrice)}
+            {formatCurrency(row.original.totalAmount)}
           </div>
         ),
       },
@@ -230,7 +167,7 @@ export function PurchaseOrderClient() {
   );
 
   const table = useReactTable({
-    data,
+    data: purchaseOrders?.items || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -281,10 +218,7 @@ export function PurchaseOrderClient() {
           <Table>
             <TableHeader className="bg-slate-50/50 dark:bg-slate-900/30">
               {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow
-                  key={headerGroup.id}
-                  className="hover:bg-transparent"
-                >
+                <TableRow key={headerGroup.id} className="hover:bg-transparent">
                   {headerGroup.headers.map((header) => (
                     <TableHead
                       key={header.id}
@@ -339,7 +273,12 @@ export function PurchaseOrderClient() {
           <p>Hiển thị 6 / 6 đơn nhập hàng</p>
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1">
-              <Button variant="outline" size="icon" className="h-8 w-8" disabled>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-8 w-8"
+                disabled
+              >
                 <ChevronLeft className="size-4" />
               </Button>
               <Button
@@ -348,7 +287,12 @@ export function PurchaseOrderClient() {
               >
                 1
               </Button>
-              <Button variant="outline" size="icon" className="h-8 w-8" disabled>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-8 w-8"
+                disabled
+              >
                 <ChevronRight className="size-4" />
               </Button>
             </div>

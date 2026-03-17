@@ -1,13 +1,13 @@
-import axios from "axios";
-import { CreatePurchaseOrderSchemaType } from "@/validation/supplier/supplier.validation";
 import { http } from "@/utils/http";
+import { PurchaseOrderListResponse } from "@/types/response/purchase-order.response";
+import { CreatePurchaseOrderRequest } from "@/types/request/purchase-order.request";
 
 export const purchaserService = {
-  create: (data: CreatePurchaseOrderSchemaType) => {
+  create: (data: CreatePurchaseOrderRequest) => {
     return http.post("/purchase-orders", data);
   },
 
   getAll: () => {
-    return http.get("/purchase-orders");
+    return http.get<PurchaseOrderListResponse>("/purchase-orders");
   },
 };

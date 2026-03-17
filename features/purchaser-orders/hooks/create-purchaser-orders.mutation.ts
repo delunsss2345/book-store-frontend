@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { CreatePurchaseOrderSchemaType } from "@/validation/supplier/supplier.validation";
+import { CreatePurchaseOrderRequest } from "@/types/request/purchase-order.request";
 import { purchaserService } from "@/services/purchase-order.service";
 
 const purchase_key = {
@@ -9,7 +9,7 @@ const purchase_key = {
 
 export const useCreatePurchaseOrderMutation = () => {
   return useMutation({
-    mutationFn: (data: CreatePurchaseOrderSchemaType) => {
+    mutationFn: (data: CreatePurchaseOrderRequest) => {
       return purchaserService.create(data);
     },
   });
@@ -19,5 +19,6 @@ export const useGetPurchaseOrdersQuery = () => {
   return useQuery({
     queryKey: purchase_key.all,
     queryFn: () => purchaserService.getAll(),
+    select: (response) => response.data,
   });
 };
