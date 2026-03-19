@@ -26,3 +26,11 @@ export type PurchaseOrderSchemaType = z.infer<typeof purchaseOrderSchema>;
 export type CreatePurchaseOrderSchemaType = z.infer<
   typeof createPurchaseOrderSchema
 >;
+
+export const createSupplierSchema = z.object({
+  name: z.string().min(1, "Tên nhà cung cấp không được để trống"),
+  code: z.string().min(1, "Mã nhà cung cấp không được để trống"),
+  isActive: z.boolean().default(true).optional(),
+});
+
+export type CreateSupplierValues = z.infer<typeof createSupplierSchema>;

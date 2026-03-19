@@ -8,6 +8,7 @@ import { X } from "lucide-react";
 import { useEffect } from "react";
 import ModalAddVariant from "./ModalAddVariant";
 import ModalAddTranslateBook from "./ModalAddTranslateBook";
+import ModalAddSupplier from "./ModalAddSupplier";
 
 export function ModalHost() {
   const { getIsOpen, onClose, getType } = useModalStore();
@@ -50,6 +51,9 @@ export function ModalHost() {
                 )}
                 {type === ModalType.BOOK_TRANSLATION && (
                   <ModalAddTranslateBook onClose={onClose} />
+                )}
+                {type === ModalType.ADD_SUPPLIER && (
+                  <ModalAddSupplier onClose={onClose} />
                 )}
               </div>
             </motion.div>

@@ -21,6 +21,7 @@ export interface PaginationResponse<T> {
 }
 
 export type ProxySuccessResponse<T> = {
+  message?: string;
   success: true;
   data: T;
 };

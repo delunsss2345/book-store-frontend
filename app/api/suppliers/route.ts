@@ -15,6 +15,6 @@ export const GET = wrapperHandler(async () => {
 
 export const POST = wrapperHandler(async (request: NextRequest) => {
   const body = await request.json();
-  const response = await api.post<SupplierItemResponse>("/suppliers", body);
+  const response = await api.post<SupplierItemResponse>("suppliers", body);
   return ResponseApi.success(response.data, HttpStatusCode.Ok);
 });
