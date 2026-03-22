@@ -1,8 +1,11 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { CreatePurchaseOrderRequest } from "@/types/request/purchase-order.request";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  ApprovePurchaseOrderRequest,
+  CreatePurchaseOrderRequest,
+} from "@/types/request/purchase-order.request";
 import { purchaserService } from "@/services/purchase-order.service";
 
-const purchase_key = {
+export const purchase_key = {
   all: ["purchase-orders"],
   list: () => [...purchase_key.all, "list"],
 };
@@ -20,5 +23,22 @@ export const useGetPurchaseOrdersQuery = () => {
     queryKey: purchase_key.all,
     queryFn: () => purchaserService.getAll(),
     select: (response) => response.data,
+  });
+};
+
+export const useApprovePurchaseOrderMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      purchaseOrderId,
+      data,
+    }: {
+      purchaseOrderId: string;
+      data: ApprovePurchaseOrderRequest;
+    }) => purchaserService.approve(purchaseOrderId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: purchase_key.all });
+    },
   });
 };

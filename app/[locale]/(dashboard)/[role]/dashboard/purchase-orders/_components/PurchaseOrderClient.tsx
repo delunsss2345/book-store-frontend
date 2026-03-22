@@ -30,7 +30,11 @@ import {
 import Link from "next/link";
 import { useMemo } from "react";
 import PurchaseOrderSkeleton from "./PurchaseOrderSkeleton";
-import { useGetPurchaseOrdersQuery } from "@/features/purchaser-orders/hooks/create-purchaser-orders.mutation";
+import {
+  useApprovePurchaseOrderMutation,
+  useGetPurchaseOrdersQuery,
+} from "@/features/purchaser-orders/hooks/create-purchaser-orders.mutation";
+import { PurchaseOrderStatus } from "@/types/request/purchase-order.request";
 import type { PurchaseOrderItem } from "@/types/response/purchase-order.response";
 import {
   Select,
@@ -47,10 +51,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ModalType, useModalStore } from "@/features/modal";
 
-type PurchaseOrderStatus = "PENDING" | "APPROVED" | "RECEIVED" | "CANCELLED";
+type PurchaseOrderDisplayStatus = "PENDING" | "APPROVED" | "RECEIVED" | "CANCELLED";
 
 const STATUS_CONFIG: Record<
-  PurchaseOrderStatus,
+  PurchaseOrderDisplayStatus,
   { label: string; className: string; dotClassName: string }
 > = {
   PENDING: {
@@ -100,6 +104,7 @@ function formatDate(dateStr: string) {
 export function PurchaseOrderClient() {
   const { data: purchaseOrders, isPending } = useGetPurchaseOrdersQuery();
   const { setPurchaseOrderId, onOpen } = useModalStore();
+  const { mutate: approvePurchaseOrder } = useApprovePurchaseOrderMutation();
 
   const columns = useMemo<ColumnDef<PurchaseOrderItem>[]>(
     () => [
@@ -191,12 +196,22 @@ export function PurchaseOrderClient() {
                     Xem chi tiết
                   </DropdownMenuItem>
                   <DropdownMenuItem
-                    onClick={() => console.log("accept", request)}
+                    onClick={() =>
+                      approvePurchaseOrder({
+                        purchaseOrderId: request.id,
+                        data: { status: PurchaseOrderStatus.APPROVED },
+                      })
+                    }
                   >
                     Chấp nhận đơn
                   </DropdownMenuItem>
                   <DropdownMenuItem
-                    onClick={() => console.log("reject", request)}
+                    onClick={() =>
+                      approvePurchaseOrder({
+                        purchaseOrderId: request.id,
+                        data: { status: PurchaseOrderStatus.REJECTED },
+                      })
+                    }
                   >
                     Từ chối đơn
                   </DropdownMenuItem>
@@ -207,7 +222,7 @@ export function PurchaseOrderClient() {
         },
       },
     ],
-    [],
+    [approvePurchaseOrder, onOpen, setPurchaseOrderId],
   );
 
   const table = useReactTable({
