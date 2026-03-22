@@ -70,6 +70,7 @@ import { AdminBookVariantDetail } from "@/types/response/admin-book-variant.resp
 import { Book } from "@/types/response/variant.response";
 import { useSupplierQuery } from "@/features/supplier/hooks/use-supplier-query";
 import { useCreatePurchaseOrderMutation } from "@/features/purchaser-orders/hooks/create-purchaser-orders.mutation";
+import { useModalStore } from "@/features/modal";
 
 function generateOrderCode() {
   const now = new Date();
@@ -160,6 +161,10 @@ export function CreatePurchaseOrderClient() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleShowDetail = (purchaseOrderId: string) => {
+    setPurchaseOrderId(purchaseOrderId);
+  };
 
   const handleAddItem = (variant: AdminBookVariantDetail, book: Book) => {
     if (purchaseItems.some((i) => i.id === variant.id)) {

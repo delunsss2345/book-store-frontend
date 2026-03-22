@@ -5,10 +5,10 @@ import { ModalPortal } from "../ModalPortal";
 import ModalBookDetail from "./ModalBookDetail";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import { useEffect } from "react";
 import ModalAddVariant from "./ModalAddVariant";
 import ModalAddTranslateBook from "./ModalAddTranslateBook";
 import ModalAddSupplier from "./ModalAddSupplier";
+import ModalPurchaseOrderDetail from "./ModelPurchaseOrderDetail";
 
 export function ModalHost() {
   const { getIsOpen, onClose, getType } = useModalStore();
@@ -54,6 +54,9 @@ export function ModalHost() {
                 )}
                 {type === ModalType.ADD_SUPPLIER && (
                   <ModalAddSupplier onClose={onClose} />
+                )}
+                {type === ModalType.DETAIL_PURCHASE_ORDER && (
+                  <ModalPurchaseOrderDetail onClose={onClose} />
                 )}
               </div>
             </motion.div>

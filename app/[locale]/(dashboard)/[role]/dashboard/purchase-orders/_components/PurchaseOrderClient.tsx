@@ -45,6 +45,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ModalType, useModalStore } from "@/features/modal";
 
 type PurchaseOrderStatus = "PENDING" | "APPROVED" | "RECEIVED" | "CANCELLED";
 
@@ -98,6 +99,7 @@ function formatDate(dateStr: string) {
 
 export function PurchaseOrderClient() {
   const { data: purchaseOrders, isPending } = useGetPurchaseOrdersQuery();
+  const { setPurchaseOrderId, onOpen } = useModalStore();
 
   const columns = useMemo<ColumnDef<PurchaseOrderItem>[]>(
     () => [
@@ -181,7 +183,10 @@ export function PurchaseOrderClient() {
 
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem
-                    onClick={() => console.log("view", request)}
+                    onClick={() => {
+                      setPurchaseOrderId(request.id);
+                      onOpen(ModalType.DETAIL_PURCHASE_ORDER);
+                    }}
                   >
                     Xem chi tiết
                   </DropdownMenuItem>

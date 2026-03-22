@@ -1,5 +1,8 @@
 import { http } from "@/utils/http";
-import { PurchaseOrderListResponse } from "@/types/response/purchase-order.response";
+import {
+  PurchaseOrderDetailResponse,
+  PurchaseOrderListResponse,
+} from "@/types/response/purchase-order.response";
 import { CreatePurchaseOrderRequest } from "@/types/request/purchase-order.request";
 
 export const purchaserService = {
@@ -9,5 +12,9 @@ export const purchaserService = {
 
   getAll: () => {
     return http.get<PurchaseOrderListResponse>("/purchase-orders");
+  },
+
+  getById: (id: string) => {
+    return http.get<PurchaseOrderDetailResponse>(`/purchase-orders/${id}`);
   },
 };
