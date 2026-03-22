@@ -22,9 +22,29 @@ type PurchaseOrderItem = {
   supplier: PurchaseOrderSupplier;
 };
 
+type PurchaseOrderDetailItem = {
+  id: string;
+  purchaseOrderId: string;
+  bookVariantId: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+  createdAt: string;
+  updatedAt: string;
+  title: string;
+  format: string;
+};
+
+type PurchaseOrderDetail = {
+  items: PurchaseOrderDetailItem[];
+};
+
 type PurchaseOrderListData = PaginationResponse<PurchaseOrderItem>;
+type PurchaseOrderDetailData = PaginationResponse<PurchaseOrderDetailItem>;
 
 type PurchaseOrderListResponse = ProxySuccessResponse<PurchaseOrderListData>;
+type PurchaseOrderDetailResponse =
+  ProxySuccessResponse<PurchaseOrderDetailData>;
 type PurchaseOrderResponse = ProxySuccessResponse<PurchaseOrderItem>;
 
 export type {
@@ -33,4 +53,8 @@ export type {
   PurchaseOrderListData,
   PurchaseOrderListResponse,
   PurchaseOrderResponse,
+  PurchaseOrderDetail,
+  PurchaseOrderDetailData,
+  PurchaseOrderDetailItem,
+  PurchaseOrderDetailResponse,
 };

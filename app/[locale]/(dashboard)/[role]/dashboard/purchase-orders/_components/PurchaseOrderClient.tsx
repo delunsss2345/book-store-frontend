@@ -32,6 +32,19 @@ import { useMemo } from "react";
 import PurchaseOrderSkeleton from "./PurchaseOrderSkeleton";
 import { useGetPurchaseOrdersQuery } from "@/features/purchaser-orders/hooks/create-purchaser-orders.mutation";
 import type { PurchaseOrderItem } from "@/types/response/purchase-order.response";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+} from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 type PurchaseOrderStatus = "PENDING" | "APPROVED" | "RECEIVED" | "CANCELLED";
 
@@ -150,17 +163,43 @@ export function PurchaseOrderClient() {
       {
         id: "actions",
         header: () => <div className="text-right">Thao tác</div>,
-        cell: () => (
-          <div className="flex items-center justify-end">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-muted-foreground hover:text-foreground cursor-pointer"
-            >
-              <Eye className="size-4" />
-            </Button>
-          </div>
-        ),
+        cell: ({ row }) => {
+          const request = row.original;
+
+          return (
+            <div className="flex items-center justify-end">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                  >
+                    <Eye className="size-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem
+                    onClick={() => console.log("view", request)}
+                  >
+                    Xem chi tiết
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => console.log("accept", request)}
+                  >
+                    Chấp nhận đơn
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => console.log("reject", request)}
+                  >
+                    Từ chối đơn
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          );
+        },
       },
     ],
     [],
