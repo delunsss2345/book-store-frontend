@@ -1,6 +1,6 @@
 import { jwtDecode } from "jwt-decode";
 import createMiddleware from "next-intl/middleware";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { routing } from "./i18n/routing";
@@ -20,7 +20,7 @@ export async function proxy(request: NextRequest) {
   const cookieStore = await cookies();
   const language = cookieStore.get("appLanguage")?.value || "vi";
   const token = cookieStore.get("accessToken")?.value || "";
-
+  const header = await headers();
   if (!SUPPORTED_LOCALES.includes(locale as Locale)) {
     return NextResponse.redirect(
       new URL(`/${language}${pathname}`, request.url),
@@ -30,7 +30,6 @@ export async function proxy(request: NextRequest) {
   if (!token && pathname.includes("/profile")) {
     return NextResponse.redirect(new URL(`/${language}/login`, request.url));
   }
-  console.log(token);
   let decode: JwtPayload | null = null;
   // Đang bị bug ở trang admin mà refreshtoken lỗi là bị lag luôn
   if (token) {
@@ -39,6 +38,8 @@ export async function proxy(request: NextRequest) {
     } catch (error) {
       if (process.env.NODE_ENV === "development") {
         console.log(error);
+        header.delete("authorization");
+        cookieStore.delete("accessToken");
       }
     }
   }

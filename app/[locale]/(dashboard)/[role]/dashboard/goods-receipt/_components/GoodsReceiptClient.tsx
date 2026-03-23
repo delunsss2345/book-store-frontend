@@ -1,6 +1,5 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -24,25 +23,13 @@ import {
   Eye,
   Filter,
   Package,
-  Plus,
   Search,
+  UserRound,
 } from "lucide-react";
-import Link from "next/link";
 import { useMemo } from "react";
-import PurchaseOrderSkeleton from "./PurchaseOrderSkeleton";
-import {
-  useApprovePurchaseOrderMutation,
-  useGetPurchaseOrdersQuery,
-} from "@/features/purchaser-orders/hooks/create-purchaser-orders.mutation";
-import { PurchaseOrderStatus } from "@/types/request/purchase-order.request";
-import type { PurchaseOrderItem } from "@/types/response/purchase-order.response";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-} from "@/components/ui/select";
+import GoodsReceiptSkeleton from "./GoodsReceiptSkeleton";
+import { useGetGoodsReceiptsQuery } from "@/features/goods-receipt/hooks/goods-receipt.query";
+import type { GoodsReceiptItem } from "@/types/response/goods-receipt.response";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -50,42 +37,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ModalType, useModalStore } from "@/features/modal";
-
-type PurchaseOrderDisplayStatus =
-  | "PENDING"
-  | "APPROVED"
-  | "RECEIVED"
-  | "REJECTED";
-
-const STATUS_CONFIG: Record<
-  PurchaseOrderDisplayStatus,
-  { label: string; className: string; dotClassName: string }
-> = {
-  PENDING: {
-    label: "Chờ duyệt",
-    className:
-      "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800",
-    dotClassName: "bg-amber-500",
-  },
-  APPROVED: {
-    label: "Đã duyệt",
-    className:
-      "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800",
-    dotClassName: "bg-blue-500",
-  },
-  RECEIVED: {
-    label: "Đã nhận",
-    className:
-      "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800",
-    dotClassName: "bg-emerald-500",
-  },
-  REJECTED: {
-    label: "Đã từ chối",
-    className:
-      "bg-red-50 text-red-700 border-red-200 dark:bg-red-950/30 dark:text-red-400 dark:border-red-800",
-    dotClassName: "bg-red-500",
-  },
-};
 
 function formatCurrency(value: number | string) {
   const numValue = typeof value === "string" ? parseFloat(value) : value;
@@ -105,19 +56,18 @@ function formatDate(dateStr: string) {
   }).format(new Date(dateStr));
 }
 
-export function PurchaseOrderClient() {
-  const { data: purchaseOrders, isPending } = useGetPurchaseOrdersQuery();
-  const { setPurchaseOrderId, onOpen } = useModalStore();
-  const { mutate: approvePurchaseOrder } = useApprovePurchaseOrderMutation();
+export function GoodsReceiptClient() {
+  const { data: goodsReceipts, isPending } = useGetGoodsReceiptsQuery();
+  const { setGoodsReceiptId, onOpen } = useModalStore();
 
-  const columns = useMemo<ColumnDef<PurchaseOrderItem>[]>(
+  const columns = useMemo<ColumnDef<GoodsReceiptItem>[]>(
     () => [
       {
-        accessorKey: "code",
-        header: () => "Mã đơn",
+        accessorKey: "id",
+        header: () => "Mã phiếu",
         cell: ({ row }) => (
           <span className="font-mono text-sm font-semibold text-foreground">
-            {row.original.code}
+            {row.original.id.slice(0, 8)}...
           </span>
         ),
       },
@@ -136,6 +86,20 @@ export function PurchaseOrderClient() {
         ),
       },
       {
+        id: "creatorName",
+        header: () => "Người tạo",
+        cell: ({ row }) => (
+          <div className="flex items-center gap-2">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-indigo-50 dark:bg-indigo-950/30">
+              <UserRound className="size-3.5 text-indigo-500" />
+            </div>
+            <span className="text-sm text-foreground">
+              {row.original.creator?.name || "N/A"}
+            </span>
+          </div>
+        ),
+      },
+      {
         accessorKey: "createdAt",
         header: () => "Ngày tạo",
         cell: ({ row }) => (
@@ -145,26 +109,8 @@ export function PurchaseOrderClient() {
         ),
       },
       {
-        accessorKey: "status",
-        header: () => "Trạng thái",
-        cell: ({ row }) => {
-          const config = STATUS_CONFIG[row.original.status];
-          return (
-            <Badge
-              variant="outline"
-              className={`gap-1.5 font-medium ${config?.className}`}
-            >
-              <span
-                className={`h-1.5 w-1.5 rounded-full ${config?.dotClassName}`}
-              />
-              {config?.label || row.original.status}
-            </Badge>
-          );
-        },
-      },
-      {
         accessorKey: "totalAmount",
-        header: () => <div className="text-right">Tổng giá</div>,
+        header: () => <div className="text-right">Tổng tiền</div>,
         cell: ({ row }) => (
           <div className="text-right font-semibold tabular-nums text-foreground">
             {formatCurrency(row.original.totalAmount)}
@@ -175,7 +121,7 @@ export function PurchaseOrderClient() {
         id: "actions",
         header: () => <div className="text-right">Thao tác</div>,
         cell: ({ row }) => {
-          const request = row.original;
+          const record = row.original;
 
           return (
             <div className="flex items-center justify-end">
@@ -193,36 +139,12 @@ export function PurchaseOrderClient() {
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem
                     onClick={() => {
-                      setPurchaseOrderId(request.id);
-                      onOpen(ModalType.DETAIL_PURCHASE_ORDER);
+                      setGoodsReceiptId(record.id);
+                      onOpen(ModalType.DETAIL_GOODS_RECEIPT);
                     }}
                   >
                     Xem chi tiết
                   </DropdownMenuItem>
-                  {request.status === "PENDING" && (
-                    <>
-                      <DropdownMenuItem
-                        onClick={() =>
-                          approvePurchaseOrder({
-                            purchaseOrderId: request.id,
-                            data: { status: PurchaseOrderStatus.APPROVED },
-                          })
-                        }
-                      >
-                        Chấp nhận đơn
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() =>
-                          approvePurchaseOrder({
-                            purchaseOrderId: request.id,
-                            data: { status: PurchaseOrderStatus.REJECTED },
-                          })
-                        }
-                      >
-                        Từ chối đơn
-                      </DropdownMenuItem>
-                    </>
-                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -230,11 +152,11 @@ export function PurchaseOrderClient() {
         },
       },
     ],
-    [approvePurchaseOrder, onOpen, setPurchaseOrderId],
+    [onOpen, setGoodsReceiptId],
   );
 
   const table = useReactTable({
-    data: purchaseOrders?.items || [],
+    data: goodsReceipts?.items || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -245,18 +167,12 @@ export function PurchaseOrderClient() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            Đơn nhập hàng
+            Phiếu nhập kho
           </h1>
           <p className="text-sm text-muted-foreground">
-            Quản lý đơn nhập hàng từ nhà cung cấp.
+            Xem danh sách phiếu nhập kho từ nhà cung cấp.
           </p>
         </div>
-        <Link href="./purchase-orders/create">
-          <Button className="gap-2 bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer">
-            <Plus className="size-4" />
-            Thêm đơn hàng mới
-          </Button>
-        </Link>
       </div>
 
       {/* Table Card */}
@@ -264,7 +180,7 @@ export function PurchaseOrderClient() {
         <CardHeader className="bg-slate-50/50 dark:bg-slate-900/50 border-b py-4">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <CardTitle className="text-lg font-semibold">
-              Danh sách đơn nhập
+              Danh sách phiếu nhập
             </CardTitle>
             <div className="flex items-center gap-2">
               <div className="relative">
@@ -304,7 +220,7 @@ export function PurchaseOrderClient() {
             </TableHeader>
             <TableBody>
               {isPending ? (
-                <PurchaseOrderSkeleton />
+                <GoodsReceiptSkeleton />
               ) : table && table.getRowModel().rows.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow
@@ -327,7 +243,7 @@ export function PurchaseOrderClient() {
                     colSpan={columns.length}
                     className="h-32 text-center text-muted-foreground"
                   >
-                    Không có đơn nhập hàng nào.
+                    Không có phiếu nhập kho nào.
                   </TableCell>
                 </TableRow>
               )}
@@ -337,7 +253,10 @@ export function PurchaseOrderClient() {
 
         {/* Pagination */}
         <div className="flex flex-col items-center justify-between gap-4 border-t bg-slate-50/30 dark:bg-slate-900/20 px-6 py-4 md:flex-row text-sm text-muted-foreground">
-          <p>Hiển thị 6 / 6 đơn nhập hàng</p>
+          <p>
+            Hiển thị {goodsReceipts?.items?.length ?? 0} /{" "}
+            {goodsReceipts?.total ?? 0} phiếu nhập kho
+          </p>
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1">
               <Button

@@ -9,6 +9,7 @@ import ModalAddVariant from "./ModalAddVariant";
 import ModalAddTranslateBook from "./ModalAddTranslateBook";
 import ModalAddSupplier from "./ModalAddSupplier";
 import ModalPurchaseOrderDetail from "./ModelPurchaseOrderDetail";
+import ModalGoodsReceiptDetail from "./ModalGoodsReceiptDetail";
 
 export function ModalHost() {
   const { getIsOpen, onClose, getType } = useModalStore();
@@ -58,6 +59,9 @@ export function ModalHost() {
                 {type === ModalType.DETAIL_PURCHASE_ORDER && (
                   <ModalPurchaseOrderDetail onClose={onClose} />
                 )}
+                {type === ModalType.DETAIL_GOODS_RECEIPT && (
+                  <ModalGoodsReceiptDetail onClose={onClose} />
+                )}
               </div>
             </motion.div>
           </div>
@@ -66,3 +70,4 @@ export function ModalHost() {
     </ModalPortal>
   );
 }
+

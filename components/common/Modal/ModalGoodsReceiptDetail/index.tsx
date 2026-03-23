@@ -1,29 +1,30 @@
 "use client";
 
 import { useModalStore } from "@/features/modal";
-import { useQueryPurchaserOrderDetail } from "@/features/purchaser-orders/hooks/get-purchaser-orders-detail.mutation";
+import { useQueryGoodsReceiptDetail } from "@/features/goods-receipt/hooks/goods-receipt.query";
 import { LoadingLazy } from "../../LoadingLazy";
-import { PurchaseOrderDetailItem } from "@/types/response/purchase-order.response";
+import { GoodsReceiptDetailItem } from "@/types/response/goods-receipt.response";
 
-export default function ModalPurchaseOrderDetail({
-  onClose,
-}: {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default function ModalGoodsReceiptDetail(_props: {
   onClose: () => void;
 }) {
-  const purchaseOrderId = useModalStore((state) => state.purchaseOrderId);
-  const { data: purchaseOrderDetail, isLoading } = useQueryPurchaserOrderDetail(
-    purchaseOrderId as string,
+  const goodsReceiptId = useModalStore((state) => state.goodsReceiptId);
+  const { data: goodsReceiptDetail, isLoading } = useQueryGoodsReceiptDetail(
+    goodsReceiptId as string,
   );
 
-  if (isLoading || !purchaseOrderId || !purchaseOrderDetail)
+  if (isLoading || !goodsReceiptId || !goodsReceiptDetail)
     return <LoadingLazy />;
 
   return (
-    <div className="flex flex-col gap-4 ">
+    <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-slate-800">Chi tiết đơn hàng</h2>
+        <h2 className="text-xl font-bold text-slate-800">
+          Chi tiết phiếu nhập kho
+        </h2>
         <span className="text-sm text-slate-500 font-medium">
-          Mã đơn: <span className="text-blue-600">#{purchaseOrderId}</span>
+          Mã phiếu: <span className="text-blue-600">#{goodsReceiptId}</span>
         </span>
       </div>
 
@@ -34,14 +35,13 @@ export default function ModalPurchaseOrderDetail({
               <th className="px-4 py-3">Sản phẩm</th>
               <th className="px-4 py-3">Định dạng</th>
               <th className="px-4 py-3 text-right">Số lượng</th>
-              <th className="px-4 py-3 text-right">Đơn giá</th>
+              <th className="px-4 py-3 text-right">Giá nhập</th>
               <th className="px-4 py-3 text-right">Thành tiền</th>
-              <th className="px-4 py-3 text-center">Ngày tạo</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200 bg-white">
-            {purchaseOrderDetail.items.map((item) => (
-              <TableRow key={item.id} item={item} />
+            {goodsReceiptDetail.items.map((item) => (
+              <DetailTableRow key={item.id} item={item} />
             ))}
           </tbody>
           <tfoot className="bg-slate-50 font-semibold text-slate-900">
@@ -50,12 +50,11 @@ export default function ModalPurchaseOrderDetail({
                 Tổng cộng:
               </td>
               <td className="px-4 py-3 text-right text-blue-600 text-base">
-                {calculateTotal(purchaseOrderDetail.items).toLocaleString(
+                {calculateTotal(goodsReceiptDetail.items).toLocaleString(
                   "vi-VN",
                 )}{" "}
                 đ
               </td>
-              <td></td>
             </tr>
           </tfoot>
         </table>
@@ -64,7 +63,7 @@ export default function ModalPurchaseOrderDetail({
   );
 }
 
-function TableRow({ item }: { item: PurchaseOrderDetailItem }) {
+function DetailTableRow({ item }: { item: GoodsReceiptDetailItem }) {
   return (
     <tr className="hover:bg-slate-50 transition-colors">
       <td className="px-4 py-4">
@@ -78,18 +77,15 @@ function TableRow({ item }: { item: PurchaseOrderDetailItem }) {
       </td>
       <td className="px-4 py-4 text-right font-medium">{item.quantity}</td>
       <td className="px-4 py-4 text-right text-slate-600">
-        {item.unitPrice.toLocaleString("vi-VN")} đ
+        {item.importPrice.toLocaleString("vi-VN")} đ
       </td>
       <td className="px-4 py-4 text-right font-semibold text-slate-900">
-        {item.totalPrice.toLocaleString("vi-VN")} đ
-      </td>
-      <td className="px-4 py-4 text-center text-slate-500 text-xs">
-        {new Date(item.createdAt).toLocaleDateString("vi-VN")}
+        {(item.quantity * item.importPrice).toLocaleString("vi-VN")} đ
       </td>
     </tr>
   );
 }
 
-const calculateTotal = (items: PurchaseOrderDetailItem[]) => {
-  return items.reduce((sum, item) => sum + item.totalPrice, 0);
+const calculateTotal = (items: GoodsReceiptDetailItem[]) => {
+  return items.reduce((sum, item) => sum + item.quantity * item.importPrice, 0);
 };

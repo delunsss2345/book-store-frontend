@@ -1,9 +1,10 @@
 import { envConfig } from "@/config/env.config"; // import cấu hình môi trường để lấy URL BE
-import { ApiError, ApiResponse } from "@/types/response/base.response";
+import { ApiResponse } from "@/types/response/base.response";
 import { HttpStatusCode } from "axios"; // dùng enum status code để so sánh HTTP status
 import { cookies } from "next/headers"; // lấy cookies server-side từ Next
 import "server-only"; // đảm bảo file chỉ chạy ở server
 const BACKEND_URL = envConfig.BACKEND_API_URL; // URL BE mặc định cho mọi request
+import jwtDecode from "jwt-decode";
 
 export class HttpError<T = unknown> extends Error {
   // custom error để gắn status + data

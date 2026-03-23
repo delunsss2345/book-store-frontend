@@ -10,6 +10,7 @@ export enum ModalType {
   BOOK_VARIANT_TRANSLATION = "BOOK:VARIANT_TRANSLATION",
   ADD_SUPPLIER = "ADD_SUPPLIER",
   DETAIL_PURCHASE_ORDER = "DETAIL_PURCHASE_ORDER",
+  DETAIL_GOODS_RECEIPT = "DETAIL_GOODS_RECEIPT",
 }
 
 interface ModalStore {
@@ -17,8 +18,10 @@ interface ModalStore {
   type: ModalType;
   isOpen: boolean;
   purchaseOrderId: string | null;
+  goodsReceiptId: string | null;
   setBookDetail: (bookDetail: AdminBook | null) => void;
   setPurchaseOrderId: (purchaseOrderId: string | null) => void;
+  setGoodsReceiptId: (goodsReceiptId: string | null) => void;
   getIsOpen: () => boolean;
   getType: () => ModalType;
   onOpen: (type: ModalType) => void;
@@ -32,6 +35,9 @@ export const useModalStore = create<ModalStore>((set, get) => ({
   purchaseOrderId: null,
   setPurchaseOrderId: (purchaseOrderId: string | null) =>
     set({ purchaseOrderId }),
+  goodsReceiptId: null,
+  setGoodsReceiptId: (goodsReceiptId: string | null) =>
+    set({ goodsReceiptId }),
 
   isOpen: false,
   getType: () => get().type,

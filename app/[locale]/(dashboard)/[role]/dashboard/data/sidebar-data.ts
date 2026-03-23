@@ -56,16 +56,6 @@ export const sidebarData: SidebarData = {
           icon: Tags,
         },
         {
-          title: "Quản lý Định dạng",
-          url: "formats",
-          icon: FileText,
-        },
-        {
-          title: "Quản lý Tài khoản",
-          url: "accounts",
-          icon: Users,
-        },
-        {
           title: "Quản lý Đơn hàng",
           url: "orders",
           icon: ShoppingCart,
@@ -104,16 +94,6 @@ export const sidebarData: SidebarData = {
           title: "Yêu cầu Hoàn/Đổi",
           url: "return-requests",
           icon: RefreshCcw,
-        },
-        {
-          title: "Trả về Kho",
-          url: "returns",
-          icon: RotateCcw,
-        },
-        {
-          title: "Yêu cầu Nhập kho",
-          url: "stock-requests",
-          icon: Inbox,
         },
       ],
     },
