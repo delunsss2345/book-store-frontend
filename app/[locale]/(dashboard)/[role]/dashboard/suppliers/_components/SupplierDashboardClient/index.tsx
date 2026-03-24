@@ -32,9 +32,6 @@ import { ModalType, useModalStore } from "@/features/modal";
 export default function SupplierDashboardClient() {
   const { data: items, isPending: isSupplierPending } = useSupplierQuery();
   const onOpen = useModalStore((state) => state.onOpen);
-  useEffect(() => {
-    console.log(items);
-  }, [items]);
   if (isSupplierPending) return <LoadingLazy />;
   return (
     <div className="min-h-screen p-6 md:p-10">

@@ -49,7 +49,7 @@ const Header = () => {
 
           <nav className="hidden md:flex items-center gap-6">
             <Link
-              href="/account/orders"
+              href={`/${locale}/orders`}
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               {t("profile.header.orderHistory")}
@@ -89,20 +89,14 @@ const Header = () => {
               <DropdownMenuSeparator />
 
               <DropdownMenuItem asChild className="cursor-pointer">
-                <Link
-                  href="/account/profile"
-                  className="flex w-full items-center"
-                >
+                <Link href="/profile" className="flex w-full items-center">
                   <Settings className="mr-2 h-4 w-4" />
                   <span>{t("profile.header.menu.profile")}</span>
                 </Link>
               </DropdownMenuItem>
 
               <DropdownMenuItem asChild className="cursor-pointer">
-                <Link
-                  href="/account/orders"
-                  className="flex w-full items-center"
-                >
+                <Link href="/orders" className="flex w-full items-center">
                   <Package className="mr-2 h-4 w-4" />
                   <span>{t("profile.header.menu.orders")}</span>
                 </Link>

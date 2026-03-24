@@ -28,3 +28,13 @@ export const CreateGuestOrdersAndPaymentSchema = z.object({
 export type CreateGuestOrdersAndPaymentInput = z.infer<
   typeof CreateGuestOrdersAndPaymentSchema
 >;
+
+export const CreateUserOrdersAndPaymentSchema = z.object({
+  paymentGateway: PaymentGatewaySchema,
+  note: z.string().optional(),
+  addressId: z.string().min(1, "orderAddressId is required"),
+});
+
+export type CreateUserOrdersAndPaymentInput = z.infer<
+  typeof CreateUserOrdersAndPaymentSchema
+>;

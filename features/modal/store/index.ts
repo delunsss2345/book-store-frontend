@@ -11,6 +11,7 @@ export enum ModalType {
   ADD_SUPPLIER = "ADD_SUPPLIER",
   DETAIL_PURCHASE_ORDER = "DETAIL_PURCHASE_ORDER",
   DETAIL_GOODS_RECEIPT = "DETAIL_GOODS_RECEIPT",
+  CREATE_ADDRESS = "CREATE_ADDRESS",
 }
 
 interface ModalStore {
@@ -36,8 +37,7 @@ export const useModalStore = create<ModalStore>((set, get) => ({
   setPurchaseOrderId: (purchaseOrderId: string | null) =>
     set({ purchaseOrderId }),
   goodsReceiptId: null,
-  setGoodsReceiptId: (goodsReceiptId: string | null) =>
-    set({ goodsReceiptId }),
+  setGoodsReceiptId: (goodsReceiptId: string | null) => set({ goodsReceiptId }),
 
   isOpen: false,
   getType: () => get().type,

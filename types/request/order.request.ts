@@ -22,3 +22,11 @@ export type CreateGuestOrdersAndPaymentDTO = {
   languageCode: string;
   orderAddress: CreateOrderAddressDTO;
 };
+
+export type CreateUserOrdersAndPaymentDTO = {
+  cartId: number;
+  paymentGateway: string;
+  note?: string;
+  languageCode: string;
+  addressId: number;
+};

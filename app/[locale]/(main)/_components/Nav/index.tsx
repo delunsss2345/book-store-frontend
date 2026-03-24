@@ -222,7 +222,7 @@ const Nav = () => {
                       childrenForActiveParent.map((child) => (
                         <Link
                           key={child.id}
-                          href={`${locale}/books?search=${child.slug}`}
+                          href={`/${locale}/books?search=${child.slug}`}
                           onClick={() => setActiveNav(null)}
                           className="text-sm font-medium text-zinc-600 transition-colors hover:text-black"
                         >
@@ -278,7 +278,7 @@ const Nav = () => {
                       parentCategories.map((parent) => (
                         <div key={parent.id} className="space-y-2">
                           <Link
-                            href={`${locale}/books/${parent.slug ?? parent.id}`}
+                            href={`/${locale}/books/${parent.slug ?? parent.id}`}
                             className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-800"
                             onClick={() => setIsMobileMenuOpen(false)}
                           >
@@ -289,7 +289,7 @@ const Nav = () => {
                               (child) => (
                                 <Link
                                   key={child.id}
-                                  href={`${locale}/books/${child.slug ?? child.id}`}
+                                  href={`/${locale}/books/${child.slug ?? child.id}`}
                                   className="block text-sm text-zinc-500 transition-colors hover:text-zinc-900"
                                   onClick={() => setIsMobileMenuOpen(false)}
                                 >
