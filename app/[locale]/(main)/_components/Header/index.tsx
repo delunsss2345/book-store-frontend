@@ -56,26 +56,6 @@ const Header = () => {
                     label="Books"
                     onClick={() => setOpen(false)}
                   />
-                  {/* <MobileNavLink
-                    href="/limited-editions"
-                    label="Limited Editions"
-                    onClick={() => setOpen(false)}
-                  />
-                  <MobileNavLink
-                    href="/gifts"
-                    label="Gifts"
-                    onClick={() => setOpen(false)}
-                  />
-                  <MobileNavLink
-                    href="/stores"
-                    label="Stores"
-                    onClick={() => setOpen(false)}
-                  />
-                  <MobileNavLink
-                    href="/about"
-                    label="About"
-                    onClick={() => setOpen(false)}
-                  /> */}
 
                   <div className="mt-8 px-6 pt-8 border-t border-zinc-100 flex flex-col gap-6">
                     <div className="flex items-center gap-4">

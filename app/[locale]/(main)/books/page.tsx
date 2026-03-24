@@ -20,14 +20,12 @@ import {
   selectorSetBooksPage,
 } from "@/features/catalog/selector/catalog.selector";
 import { useCatalogStore } from "@/features/catalog/store/catalog.store";
-import {
-  ChevronDown,
-  SlidersHorizontal,
-} from "lucide-react";
+import { ChevronDown, SlidersHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import BookCard from "../_components/BookCard";
 import { BooksPagination } from "./_components/BooksPagiantion";
+import { useSearchParams } from "next/navigation";
 
 const themes = [
   { label: "Architecture & Design", count: 136 },
@@ -106,8 +104,9 @@ function FilterContent({
               {sortOptions.map((opt) => (
                 <button
                   key={opt}
-                  className={`block w-full px-3 py-2 text-left text-sm hover:bg-zinc-50 ${opt === selectedSort ? "font-bold" : ""
-                    }`}
+                  className={`block w-full px-3 py-2 text-left text-sm hover:bg-zinc-50 ${
+                    opt === selectedSort ? "font-bold" : ""
+                  }`}
                   onClick={() => {
                     setSelectedSort(opt);
                     setSortOpen(false);
@@ -234,8 +233,6 @@ function FilterContent({
   );
 }
 
-
-
 export default function AllTitlesPage() {
   const [sortOpen, setSortOpen] = useState(false);
   const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
@@ -247,10 +244,11 @@ export default function AllTitlesPage() {
   const booksTotalPages = useCatalogStore(selectorBooksTotalPages);
   const setBooksPage = useCatalogStore(selectorSetBooksPage);
   const setBooksMeta = useCatalogStore(selectorSetBooksMeta);
-
+  const slugCategory = useSearchParams().get("search");
   const { data: bookList, isPending } = useBooksQuery({
     page: booksPage,
     limit: booksLimit,
+    ...(slugCategory && { slugCategory }),
   });
 
   useEffect(() => {
@@ -325,21 +323,21 @@ export default function AllTitlesPage() {
         <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 lg:grid-cols-4 bg-transparent">
           {isPending
             ? Array.from({ length: 12 }).map((_, index) => (
-              <BooksGridSkeletonCard key={`books-skeleton-${index}`} />
-            ))
+                <BooksGridSkeletonCard key={`books-skeleton-${index}`} />
+              ))
             : books.map((book) => (
-              <BookCard
-                key={book.id}
-                title={book.title}
-                subtitle={book.format ?? book.title}
-                price={Number(book.price ?? 0)}
-                bookVariantId={Number(book.bookVariantId ?? 0)}
-                currency={book.currencyCode ?? "VND"}
-                imageUrl={book.coverImageUrl ?? undefined}
-                href={`/detail/${book.slug ?? book.id}`}
-                variant="compact"
-              />
-            ))}
+                <BookCard
+                  key={book.id}
+                  title={book.title}
+                  subtitle={book.format ?? book.title}
+                  price={Number(book.price ?? 0)}
+                  bookVariantId={Number(book.bookVariantId ?? 0)}
+                  currency={book.currencyCode ?? "VND"}
+                  imageUrl={book.coverImageUrl ?? undefined}
+                  href={`/detail/${book.slug ?? book.id}`}
+                  variant="compact"
+                />
+              ))}
         </div>
 
         {/* Pagination */}

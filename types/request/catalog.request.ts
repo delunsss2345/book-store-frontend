@@ -6,6 +6,7 @@ export type CatalogHomeQuery = {
 export type CatalogBookListQuery = {
   page?: number;
   limit?: number;
+  slugCategory?: string;
 };
 
 export type CatalogCategoriesQuery = {

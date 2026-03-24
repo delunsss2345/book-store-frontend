@@ -1,10 +1,8 @@
 import type {
-  CatalogHomeQuery,
   CatalogBookListQuery,
   CatalogCategoriesQuery,
 } from "@/types/request/catalog.request";
 import type {
-  CatalogHomeResponse,
   CatalogBookListResponse,
   CatalogBookDetailResponse,
   CatalogCategoriesResponse,
@@ -14,11 +12,13 @@ import type {
 import { http } from "@/utils/http";
 
 export const catalogApi = {
-  getHome: () =>
-    http.get<HomeResponse>("catalog/home"),
+  getHome: () => http.get<HomeResponse>("catalog/home"),
 
-  getBooks: (query?: CatalogBookListQuery) =>
-    http.get<CatalogBookListResponse>("catalog/books", { params: query }),
+  getBooks: (query?: CatalogBookListQuery) => {
+    return http.get<CatalogBookListResponse>("catalog/books", {
+      params: query,
+    });
+  },
 
   getBookById: (bookId: string) =>
     http.get<CatalogBookDetailResponse>(`catalog/books/${bookId}`),
@@ -27,5 +27,7 @@ export const catalogApi = {
     http.get<GetBookDetailResponse>(`catalog/books/slug/${slug}`),
 
   getCategories: (query?: CatalogCategoriesQuery) =>
-    http.get<CatalogCategoriesResponse>("catalog/categories", { params: query }),
+    http.get<CatalogCategoriesResponse>("catalog/categories", {
+      params: query,
+    }),
 };

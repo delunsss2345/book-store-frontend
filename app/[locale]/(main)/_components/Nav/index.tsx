@@ -5,6 +5,7 @@ import { useCategoryStore } from "@/features/category/store/category.store";
 import useTranslator from "@/hooks/use-translator";
 import type { CategoryItemData } from "@/types/response/category.response";
 import { Menu, X } from "lucide-react";
+import { useLocale } from "next-intl";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -23,6 +24,7 @@ const navItems: NavItem[] = [
 const PARENT_PLACEHOLDER_COUNT = 6;
 
 const Nav = () => {
+  const locale = useLocale();
   const { t } = useTranslator();
   const [activeNav, setActiveNav] = useState<string | null>(null);
   const [activeParentId, setActiveParentId] = useState<string | null>(null);
@@ -72,14 +74,20 @@ const Nav = () => {
       setActiveParentId(null);
       return;
     }
-    if (!activeParentId || !parentCategories.some((parent) => parent.id === activeParentId)) {
+    if (
+      !activeParentId ||
+      !parentCategories.some((parent) => parent.id === activeParentId)
+    ) {
       setActiveParentId(parentCategories[0].id);
     }
   }, [parentCategories, activeParentId]);
 
   const activeParent =
-    parentCategories.find((parent) => parent.id === activeParentId) ?? parentCategories[0];
-  const childrenForActiveParent = activeParent ? childrenByParent.get(activeParent.id) ?? [] : [];
+    parentCategories.find((parent) => parent.id === activeParentId) ??
+    parentCategories[0];
+  const childrenForActiveParent = activeParent
+    ? (childrenByParent.get(activeParent.id) ?? [])
+    : [];
   const isDropdownLoading = isPending && categories.length === 0;
   const isDropdownError = isError && categories.length === 0;
   const showDropdown = activeNav === "books";
@@ -116,9 +124,12 @@ const Nav = () => {
               className="relative py-2"
             >
               <Link
-                href={item.to}
-                className={`nav-link text-[11px] font-medium tracking-[0.2em] uppercase transition-all duration-300 ${activeNav === item.key ? "opacity-100" : "opacity-60 hover:opacity-100"
-                  }`}
+                href={`/books?search=${item.key}`}
+                className={`nav-link text-[11px] font-medium tracking-[0.2em] uppercase transition-all duration-300 ${
+                  activeNav === item.key
+                    ? "opacity-100"
+                    : "opacity-60 hover:opacity-100"
+                }`}
               >
                 {t(`nav.${item.key}`)}
               </Link>
@@ -149,12 +160,14 @@ const Nav = () => {
               // loading skeleton khi chưa có data
               <div className="grid grid-cols-[240px_1fr] gap-8">
                 <div className="space-y-3">
-                  {Array.from({ length: PARENT_PLACEHOLDER_COUNT }).map((_, index) => (
-                    <div
-                      key={`parent-loading-${index}`}
-                      className="h-4 w-32 animate-pulse rounded-md bg-zinc-100"
-                    />
-                  ))}
+                  {Array.from({ length: PARENT_PLACEHOLDER_COUNT }).map(
+                    (_, index) => (
+                      <div
+                        key={`parent-loading-${index}`}
+                        className="h-4 w-32 animate-pulse rounded-md bg-zinc-100"
+                      />
+                    ),
+                  )}
                 </div>
                 <div className="space-y-3">
                   {Array.from({ length: 6 }).map((_, index) => (
@@ -167,21 +180,28 @@ const Nav = () => {
               </div>
             ) : isDropdownError ? (
               // lỗi fetch
-              <div className="py-10 text-sm text-rose-600">Unable to load categories.</div>
+              <div className="py-10 text-sm text-rose-600">
+                Unable to load categories.
+              </div>
             ) : parentCategories.length === 0 ? (
               // mặc định khi backend trả danh sách rỗng
-              <div className="py-10 text-sm text-zinc-500">No categories available.</div>
+              <div className="py-10 text-sm text-zinc-500">
+                No categories available.
+              </div>
             ) : (
               <div className="grid grid-cols-[240px_1fr] gap-8">
                 <div className="flex flex-col gap-3 border-r border-zinc-100 pr-4">
                   {parentCategories.map((parent) => (
                     <Link
                       key={parent.id}
-                      href={`/books/${parent.slug ?? parent.id}`}
+                      href={`/books?search=${parent.slug}`}
                       onMouseEnter={() => handleParentHover(parent.id)}
                       onClick={() => setActiveNav(null)}
-                      className={`text-sm transition-colors ${activeParent?.id === parent.id ? "text-black font-semibold" : "text-zinc-500 hover:text-black"
-                        }`}
+                      className={`text-sm transition-colors ${
+                        activeParent?.id === parent.id
+                          ? "text-black font-semibold"
+                          : "text-zinc-500 hover:text-black"
+                      }`}
                     >
                       {parent.name}
                     </Link>
@@ -189,7 +209,9 @@ const Nav = () => {
                 </div>
                 <div className="flex flex-col gap-4">
                   <div>
-                    <p className="text-xs uppercase tracking-[0.3em] text-zinc-400">Subcategories</p>
+                    <p className="text-xs uppercase tracking-[0.3em] text-zinc-400">
+                      Subcategories
+                    </p>
                     <h3 className="text-lg font-semibold text-neutral-900">
                       {activeParent?.name ?? "Explore topics"}
                     </h3>
@@ -200,7 +222,7 @@ const Nav = () => {
                       childrenForActiveParent.map((child) => (
                         <Link
                           key={child.id}
-                          href={`/books/${child.slug ?? child.id}`}
+                          href={`${locale}/books?search=${child.slug}`}
                           onClick={() => setActiveNav(null)}
                           className="text-sm font-medium text-zinc-600 transition-colors hover:text-black"
                         >
@@ -208,7 +230,9 @@ const Nav = () => {
                         </Link>
                       ))
                     ) : (
-                      <p className="text-sm text-zinc-500">No subcategories yet.</p>
+                      <p className="text-sm text-zinc-500">
+                        No subcategories yet.
+                      </p>
                     )}
                   </div>
                 </div>
@@ -239,32 +263,40 @@ const Nav = () => {
                 {item.key === "books" && (
                   <div className="space-y-6">
                     {isPending && categories.length === 0 ? (
-                      <p className="text-sm text-zinc-500">Loading categories…</p>
+                      <p className="text-sm text-zinc-500">
+                        Loading categories…
+                      </p>
                     ) : isError && categories.length === 0 ? (
-                      <p className="text-sm text-rose-600">Unable to load categories.</p>
+                      <p className="text-sm text-rose-600">
+                        Unable to load categories.
+                      </p>
                     ) : parentCategories.length === 0 ? (
-                      <p className="text-sm text-zinc-500">No categories available.</p>
+                      <p className="text-sm text-zinc-500">
+                        No categories available.
+                      </p>
                     ) : (
                       parentCategories.map((parent) => (
                         <div key={parent.id} className="space-y-2">
                           <Link
-                            href={`/books/${parent.slug ?? parent.id}`}
+                            href={`${locale}/books/${parent.slug ?? parent.id}`}
                             className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-800"
                             onClick={() => setIsMobileMenuOpen(false)}
                           >
                             {parent.name}
                           </Link>
                           <div className="space-y-1 pl-4 text-sm text-zinc-500">
-                            {(childrenByParent.get(parent.id) ?? []).map((child) => (
-                              <Link
-                                key={child.id}
-                                href={`/books/${child.slug ?? child.id}`}
-                                className="block text-sm text-zinc-500 transition-colors hover:text-zinc-900"
-                                onClick={() => setIsMobileMenuOpen(false)}
-                              >
-                                {child.name}
-                              </Link>
-                            ))}
+                            {(childrenByParent.get(parent.id) ?? []).map(
+                              (child) => (
+                                <Link
+                                  key={child.id}
+                                  href={`${locale}/books/${child.slug ?? child.id}`}
+                                  className="block text-sm text-zinc-500 transition-colors hover:text-zinc-900"
+                                  onClick={() => setIsMobileMenuOpen(false)}
+                                >
+                                  {child.name}
+                                </Link>
+                              ),
+                            )}
                           </div>
                         </div>
                       ))

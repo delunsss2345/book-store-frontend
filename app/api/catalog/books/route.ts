@@ -5,11 +5,20 @@ import { HttpStatusCode } from "axios";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
-    try {
-        const { searchParams } = new URL(request.url);
-        const response = await api.get<CatalogBookListResponse>(`catalog/books?${searchParams.toString()}`);
-        return ResponseApi.success(response.data, HttpStatusCode.Ok);
-    } catch (error: any) {
-        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
-    }
+  try {
+    const { searchParams } = new URL(request.url);
+    const page = searchParams.get("page");
+    const limit = searchParams.get("limit");
+    const slugCategory = searchParams.get("slugCategory");
+
+    const response = await api.get<CatalogBookListResponse>(
+      `catalog/books?page=${page}&limit=${limit}&slugCategory=${encodeURIComponent(slugCategory ?? "")}`,
+    );
+    return ResponseApi.success(response.data, HttpStatusCode.Ok);
+  } catch (error: any) {
+    return ResponseApi.error(
+      error.message,
+      error.status ?? HttpStatusCode.BadRequest,
+    );
+  }
 }

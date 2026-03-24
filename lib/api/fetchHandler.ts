@@ -243,5 +243,5 @@ export const fetchApi = (
 
 export const api = fetchApi({
   // instance api dùng chung toàn app
-  baseURL: BACKEND_URL, // set baseURL mặc định
+  baseURL: BACKEND_URL, // set baseURL mặc định,
 });
