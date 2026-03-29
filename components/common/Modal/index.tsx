@@ -11,6 +11,7 @@ import ModalAddSupplier from "./ModalAddSupplier";
 import ModalPurchaseOrderDetail from "./ModelPurchaseOrderDetail";
 import ModalGoodsReceiptDetail from "./ModalGoodsReceiptDetail";
 import ModalCreateAddress from "./ModalCreateAddress";
+import ModalOrderItemsDetail from "./ModalShowOrderItem";
 
 export function ModalHost() {
   const { getIsOpen, onClose, getType } = useModalStore();
@@ -61,10 +62,13 @@ export function ModalHost() {
                   <ModalPurchaseOrderDetail onClose={onClose} />
                 )}
                 {type === ModalType.DETAIL_GOODS_RECEIPT && (
-                  <ModalGoodsReceiptDetail onClose={onClose} />
+                  <ModalGoodsReceiptDetail />
                 )}
                 {type === ModalType.CREATE_ADDRESS && (
                   <ModalCreateAddress onClose={onClose} />
+                )}
+                {type === ModalType.SHOW_ORDER_ITEMS && (
+                  <ModalOrderItemsDetail />
                 )}
               </div>
             </motion.div>

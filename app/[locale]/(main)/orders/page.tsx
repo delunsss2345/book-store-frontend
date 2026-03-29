@@ -7,6 +7,7 @@ import { OrderStatus } from "@/constants/enums/order";
 import { OrderCard } from "./_components/OrderCard";
 import { OrdersSkeleton } from "./_components/OrdersSkeleton";
 import { useQueryOrder } from "@/features/orders/hooks/use-query-orders";
+import { ModalType, useModalStore } from "@/features/modal";
 
 type TabValue = "all" | "in-progress" | "delivered" | "returns";
 
@@ -39,6 +40,8 @@ export default function OrdersPage() {
   const [activeTab, setActiveTab] = useState<TabValue>("all");
   const [searchValue, setSearchValue] = useState("");
   const { data: orders, isLoading, isFetching, error } = useQueryOrder();
+
+  const { setOrderShowDetailId, onOpen } = useModalStore();
   const isOrdersLoading = isLoading || isFetching;
   const searchTerm = searchValue.trim().toLowerCase();
 
@@ -110,7 +113,14 @@ export default function OrdersPage() {
             <OrdersSkeleton count={2} />
           ) : filteredOrders.length ? (
             filteredOrders.map((order) => (
-              <OrderCard key={order.id} order={order} />
+              <OrderCard
+                onClick={() => {
+                  onOpen(ModalType.SHOW_ORDER_ITEMS);
+                  setOrderShowDetailId(order.id);
+                }}
+                key={order.id}
+                order={order}
+              />
             ))
           ) : (
             <div className="rounded-xl border border-dashed border-neutral-200 px-6 py-12 text-center text-sm text-neutral-500">

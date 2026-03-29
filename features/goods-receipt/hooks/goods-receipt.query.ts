@@ -15,7 +15,7 @@ export const useGetGoodsReceiptsQuery = () => {
   });
 };
 
-export const useQueryGoodsReceiptDetail = (goodsReceiptId?: string) => {
+export const useQueryGoodsReceiptDetail = (goodsReceiptId: string | null) => {
   return useQuery({
     queryKey: goods_receipt_key.detail(goodsReceiptId as string),
     queryFn: () => goodsReceiptService.getById(goodsReceiptId as string),

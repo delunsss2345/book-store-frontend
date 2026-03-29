@@ -37,7 +37,7 @@ export async function proxy(request: NextRequest) {
       decode = jwtDecode(token);
     } catch (error) {
       if (process.env.NODE_ENV === "development") {
-        console.log(error);
+        console.log(error.response.data.message);
         header.delete("authorization");
         cookieStore.delete("accessToken");
       }

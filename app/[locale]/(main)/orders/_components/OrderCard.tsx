@@ -9,9 +9,13 @@ import { ArrowUpRight, ChevronRight, Package } from "lucide-react";
 
 type OrderCardProps = {
   order: OrderSummary;
+  onClick: () => void;
 };
 
-const ORDER_STATUS_STYLES: Record<OrderStatus, { label: string; tone: string; dot: string }> = {
+const ORDER_STATUS_STYLES: Record<
+  OrderStatus,
+  { label: string; tone: string; dot: string }
+> = {
   [OrderStatus.PENDING_PAYMENT]: {
     label: "Pending payment",
     tone: "bg-amber-50 text-amber-700",
@@ -94,7 +98,7 @@ const formatLabel = (value: string | null | undefined) => {
     .join(" ");
 };
 
-export function OrderCard({ order }: OrderCardProps) {
+export function OrderCard({ order, onClick }: OrderCardProps) {
   const currency = order.currencyCode ?? "VND";
   const statusKey = order.status ?? OrderStatus.PENDING_PAYMENT;
   const status = ORDER_STATUS_STYLES[statusKey];
@@ -107,7 +111,9 @@ export function OrderCard({ order }: OrderCardProps) {
         <div className="flex flex-wrap gap-x-10 gap-y-1 text-sm text-neutral-500">
           <div>
             <p className="text-xs text-neutral-400">Order placed</p>
-            <p className="font-medium text-neutral-900">{formatDate(placedAt)}</p>
+            <p className="font-medium text-neutral-900">
+              {formatDate(placedAt)}
+            </p>
           </div>
           <div>
             <p className="text-xs text-neutral-400">Order number</p>
@@ -143,7 +149,11 @@ export function OrderCard({ order }: OrderCardProps) {
             </p>
           </div>
         </div>
-        <Button variant="outline" size="sm" className="gap-1 rounded-lg text-xs">
+        <Button
+          variant="outline"
+          size="sm"
+          className="gap-1 rounded-lg text-xs"
+        >
           Track <ArrowUpRight className="h-3 w-3" />
         </Button>
       </div>
@@ -152,19 +162,25 @@ export function OrderCard({ order }: OrderCardProps) {
 
       <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-4 text-sm text-neutral-500">
         <div>
-          <p className="text-xs uppercase tracking-wide text-neutral-400">Subtotal</p>
+          <p className="text-xs uppercase tracking-wide text-neutral-400">
+            Subtotal
+          </p>
           <p className="font-medium text-neutral-900">
             {formatCurrency(order.subtotal, currency)}
           </p>
         </div>
         <div>
-          <p className="text-xs uppercase tracking-wide text-neutral-400">Shipping</p>
+          <p className="text-xs uppercase tracking-wide text-neutral-400">
+            Shipping
+          </p>
           <p className="font-medium text-neutral-900">
             {formatCurrency(order.shippingFee, currency)}
           </p>
         </div>
         <div>
-          <p className="text-xs uppercase tracking-wide text-neutral-400">Discount</p>
+          <p className="text-xs uppercase tracking-wide text-neutral-400">
+            Discount
+          </p>
           <p className="font-medium text-neutral-900">
             {formatCurrency(order.discountAmount, currency)}
           </p>
@@ -172,7 +188,10 @@ export function OrderCard({ order }: OrderCardProps) {
       </div>
 
       <div className="flex items-center justify-between border-t border-neutral-100 px-6 py-3 text-sm">
-        <button className="flex items-center gap-1 text-sm font-medium text-blue-600 hover:underline">
+        <button
+          onClick={onClick}
+          className="cursor-pointer flex items-center gap-1 text-sm font-medium text-blue-600 hover:underline"
+        >
           View order details <ChevronRight className="h-3.5 w-3.5" />
         </button>
         <button className="text-sm font-medium text-neutral-500 hover:text-neutral-900">

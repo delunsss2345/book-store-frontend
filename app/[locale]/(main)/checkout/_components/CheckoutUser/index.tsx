@@ -48,7 +48,7 @@ export default function CheckoutUser() {
   const form = useForm<CreateUserOrdersAndPaymentInput>({
     resolver: zodResolver(CreateUserOrdersAndPaymentSchema),
     defaultValues: {
-      addressId: "",
+      addressId: 0,
       paymentGateway: PaymentGateway.COD,
     },
     mode: "onSubmit",
@@ -61,11 +61,15 @@ export default function CheckoutUser() {
 
   useEffect(() => {
     if (defaultAddress?.id) {
-      form.setValue("addressId", defaultAddress.id);
+      form.setValue("addressId", Number(defaultAddress.id));
     }
   }, [defaultAddress, form]);
 
   const handleSubmit = async (values: CreateUserOrdersAndPaymentInput) => {
+    if (!values.addressId) {
+      toast.warning("Vui lòng chọn hoặc tạo mới địa chỉ");
+      return;
+    }
     await toast.promise(createOrderUser(values), {
       loading: t("checkout.toast.loading"),
       success: (data) => {
@@ -79,7 +83,7 @@ export default function CheckoutUser() {
         );
         return t("checkout.toast.success");
       },
-      error: (error) => error.message,
+      error: (error) => error.response.data.message,
     });
   };
 
@@ -116,13 +120,16 @@ export default function CheckoutUser() {
               render={({ field }) => (
                 <FormItem>
                   <Select
-                    value={field.value}
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    value={String(field.value)}
+                    onValueChange={(value) => field.onChange(Number(value))}
+                    defaultValue={String(field.value)}
                   >
                     <FormControl>
                       <SelectTrigger className="flex h-auto w-full items-center justify-between rounded-2xl border-2 border-zinc-900 bg-white px-5 py-10 text-left shadow-sm transition-all">
-                        <SelectValue />
+                        <SelectValue
+                          className="black"
+                          placeholder={"Chọn địa chỉ"}
+                        />
                       </SelectTrigger>
                     </FormControl>
 

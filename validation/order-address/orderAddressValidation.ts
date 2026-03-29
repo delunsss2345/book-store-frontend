@@ -32,7 +32,7 @@ export type CreateGuestOrdersAndPaymentInput = z.infer<
 export const CreateUserOrdersAndPaymentSchema = z.object({
   paymentGateway: PaymentGatewaySchema,
   note: z.string().optional(),
-  addressId: z.string().min(1, "orderAddressId is required"),
+  addressId: z.number().min(0, "orderAddressId is required"),
 });
 
 export type CreateUserOrdersAndPaymentInput = z.infer<

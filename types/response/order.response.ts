@@ -40,3 +40,36 @@ export type CreateGuestOrderResponseData = {
 export type OrderStatusResponse = ApiResponse<OrderStatusData>;
 export type CreateGuestOrderResponse = ApiResponse<CreateGuestOrderResponseData>;
 export type GetOrdersResponse = ApiResponse<OrderListResponseData>;
+
+// ── Order items (GET orders/:orderId) ─────────────────────────────────────────
+
+export type OrderItemBookTranslation = {
+  title: string;
+  slug: string;
+};
+
+export type OrderItemBook = {
+  coverImageUrl: string;
+  id: string;
+  translations: OrderItemBookTranslation[];
+};
+
+export type OrderItemBookVariant = {
+  book: OrderItemBook;
+};
+
+export type OrderItemBookVariantSnapshot = {
+  priceSnapshot: string;
+  bookVariantId: string;
+  bookVariant: OrderItemBookVariant;
+};
+
+export type OrderItem = {
+  quantity: number;
+  bookVariantSnapshotId: string;
+  bookVariantSnapshot: OrderItemBookVariantSnapshot;
+};
+
+export type OrderItemListData = OrderItem[];
+
+export type GetOrderItemsResponse = ApiResponse<OrderItemListData>;

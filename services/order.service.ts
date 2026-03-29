@@ -3,6 +3,7 @@ import type {
   CreateGuestOrdersAndPaymentDTO,
   CreateUserOrdersAndPaymentDTO,
 } from "@/types/request/order.request";
+import type { GetOrderItemsResponse } from "@/types/response/order.response";
 import { http } from "@/utils/http";
 
 export const orderService = {
@@ -14,4 +15,8 @@ export const orderService = {
 
   getOrders: <T = unknown>(config?: AxiosRequestConfig) =>
     http.get<T>("orders", config),
+
+  getOrderItems: (orderId: string) => {
+    return http.get<GetOrderItemsResponse>(`orders/${orderId}`);
+  },
 };

@@ -5,10 +5,7 @@ import { useQueryGoodsReceiptDetail } from "@/features/goods-receipt/hooks/goods
 import { LoadingLazy } from "../../LoadingLazy";
 import { GoodsReceiptDetailItem } from "@/types/response/goods-receipt.response";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default function ModalGoodsReceiptDetail(_props: {
-  onClose: () => void;
-}) {
+export default function ModalGoodsReceiptDetail() {
   const goodsReceiptId = useModalStore((state) => state.goodsReceiptId);
   const { data: goodsReceiptDetail, isLoading } = useQueryGoodsReceiptDetail(
     goodsReceiptId as string,

@@ -41,10 +41,14 @@ export const useCreateOrderUserMutation = () => {
       }
       setIsOrdering(true);
       try {
-        const response = await orderService.createOrderUser({
+        console.log({
           ...values,
           cartId: Number(cart.id),
           languageCode: "vi",
+        });
+        const response = await orderService.createOrderUser({
+          ...values,
+          cartId: Number(cart.id),
         });
         return response.data;
       } finally {
@@ -53,3 +57,7 @@ export const useCreateOrderUserMutation = () => {
     },
   });
 };
+
+export * from "./use-query-orders";
+export * from "./use-query-order-items";
+
