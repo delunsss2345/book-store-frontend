@@ -1,5 +1,11 @@
-import { ApiResponse } from "@/types/response/base.response";
-import { CatalogBookCardDto } from "@/types/response/catalog.response";
+import {
+  ApiResponse,
+  PaginationResponse,
+} from "@/types/response/base.response";
+import {
+  CatalogBookCardDto,
+  CatalogCategoryDto,
+} from "@/types/response/catalog.response";
 import { CreateBookSpecRequest } from "../request/admin.request";
 
 export type SearchBookItemData = CatalogBookCardDto & {
@@ -25,6 +31,22 @@ export type QuickBookFillResponse = {
   spec?: CreateBookSpecRequest | undefined;
 };
 
-export type SearchBooksResponse = ApiResponse<SearchBookItemData[]>;
 export type SearchBooksISBNQuickFillResponse =
   ApiResponse<QuickBookFillResponse>;
+
+export type SearchBookListItemDto = {
+  id: string;
+  title: string;
+  slug: string;
+  coverImageUrl: string;
+  price: string;
+  currencyCode: string;
+  isOutOfStock: boolean;
+  createdAt: string;
+  bookVariantId: string;
+  categories: CatalogCategoryDto[];
+};
+
+export type SearchBooksListResponse = ApiResponse<
+  PaginationResponse<SearchBookListItemDto>
+>;

@@ -7,6 +7,7 @@ export type CatalogBookListQuery = {
   page?: number;
   limit?: number;
   slugCategory?: string;
+  keyword?: string;
 };
 
 export type CatalogCategoriesQuery = {

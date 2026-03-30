@@ -245,10 +245,12 @@ export default function AllTitlesPage() {
   const setBooksPage = useCatalogStore(selectorSetBooksPage);
   const setBooksMeta = useCatalogStore(selectorSetBooksMeta);
   const slugCategory = useSearchParams().get("search");
+  const keyword = useSearchParams().get("keyword");
   const { data: bookList, isPending } = useBooksQuery({
     page: booksPage,
     limit: booksLimit,
     ...(slugCategory && { slugCategory }),
+    ...(keyword && { keyword }),
   });
 
   useEffect(() => {
@@ -329,7 +331,7 @@ export default function AllTitlesPage() {
                 <BookCard
                   key={book.id}
                   title={book.title}
-                  subtitle={book.format ?? book.title}
+                  subtitle={book?.format ?? book.title}
                   price={Number(book.price ?? 0)}
                   bookVariantId={Number(book.bookVariantId ?? 0)}
                   currency={book.currencyCode ?? "VND"}

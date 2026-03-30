@@ -18,6 +18,7 @@ import ProfileButton from "./ProfileButton";
 import { WishlistHeader } from "./WishlistHeader";
 import CartSheet from "./CartSheet";
 import Nav from "../Nav";
+import { useDebounceInput } from "@/hooks/use-debounce-input";
 
 const Header = () => {
   const isMobile = useIsMobile();

@@ -5,9 +5,11 @@ import { useOrderStore } from "../store/order.store";
 import { selectorSetIsOrdering } from "../selector/order.selector";
 import { CreateGuestOrdersAndPaymentInput } from "@/validation/order-address/orderAddressValidation";
 import { CreateUserOrdersAndPaymentDTO } from "@/types/request/order.request";
+import { useQueryOrder } from "./use-query-orders";
 
 export const useCreateOrderGuestMutation = () => {
   const { data: cart } = useCartQuery();
+  const queryOrder = useQueryOrder();
   const setIsOrdering = useOrderStore(selectorSetIsOrdering);
 
   return useMutation({
@@ -26,6 +28,9 @@ export const useCreateOrderGuestMutation = () => {
       } finally {
         setIsOrdering(false);
       }
+    },
+    onSuccess: () => {
+      queryOrder.refetch();
     },
   });
 };
@@ -60,4 +65,3 @@ export const useCreateOrderUserMutation = () => {
 
 export * from "./use-query-orders";
 export * from "./use-query-order-items";
-
