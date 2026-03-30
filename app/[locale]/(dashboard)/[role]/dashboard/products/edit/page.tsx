@@ -5,40 +5,24 @@ import { useRouter } from "next/navigation";
 import {
   ChevronLeft,
   Save,
-  Search,
   Sparkles,
   ImageIcon,
-  Building2,
-  Hash,
-  Calendar,
-  Layers,
-  Weight,
   Languages,
   Wallet,
-  Package,
   Ruler,
-  Tag,
-  AlertCircle,
   Trash2,
   Plus,
   ExternalLink,
   Copy,
   CheckCircle2,
   Globe,
-  Eye,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
@@ -58,17 +42,18 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import useTranslator from "@/hooks/use-translator";
+import { useAdminStore } from "@/features/admin";
+import { LoadingLazy } from "@/components/common/LoadingLazy";
 
 export default function EditBookPage() {
   const router = useRouter();
   const { t } = useTranslator();
 
-  const bookData = {
-    id: "998877",
-    title: t("dashboard_products.edit.mockTitle"),
-    isActive: true,
-    isbn: "9780132350884",
-  };
+  // Lấy bookEdit từ store
+  const { bookEdit } = useAdminStore();
+
+  // Nếu chưa có dữ liệu, có thể hiển thị loading hoặc return null
+  if (!bookEdit) return <LoadingLazy />;
 
   return (
     <div className="max-w-[1600px] mx-auto p-4 space-y-8">
@@ -86,23 +71,25 @@ export default function EditBookPage() {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-2xl font-bold tracking-tight">
-                {t("dashboard_products.edit.editing")}: {bookData.title}
+                {t("dashboard_products.edit.editing")}:{" "}
+                {bookEdit.translation?.title}
               </h1>
               <Badge variant="outline" className="font-mono text-[10px]">
-                ID: {bookData.id}
+                ID: {bookEdit.id}
               </Badge>
             </div>
             <div className="flex items-center gap-4 mt-1">
               <p className="text-sm text-muted-foreground flex items-center gap-1">
                 <Globe className="size-3" /> https://yourshop.com/books/
-                {bookData.id}
+                {bookEdit.translation?.slug}
               </p>
               <Button
                 variant="link"
                 size="sm"
                 className="h-auto p-0 text-xs text-primary gap-1"
               >
-                <ExternalLink className="size-3" /> {t("dashboard_products.edit.viewLive")}
+                <ExternalLink className="size-3" />{" "}
+                {t("dashboard_products.edit.viewLive")}
               </Button>
             </div>
           </div>
@@ -112,7 +99,8 @@ export default function EditBookPage() {
             variant="outline"
             className="text-destructive hover:bg-destructive/5 border-destructive/20 gap-2"
           >
-            <Trash2 className="size-4" /> {t("dashboard_products.edit.deleteBook")}
+            <Trash2 className="size-4" />{" "}
+            {t("dashboard_products.edit.deleteBook")}
           </Button>
           <Separator
             orientation="vertical"
@@ -122,7 +110,8 @@ export default function EditBookPage() {
             {t("dashboard_products.edit.cancel")}
           </Button>
           <Button className="bg-slate-900 hover:bg-slate-800 px-8 gap-2 shadow-lg shadow-slate-200">
-            <Save className="size-4" /> {t("dashboard_products.edit.updateChanges")}
+            <Save className="size-4" />{" "}
+            {t("dashboard_products.edit.updateChanges")}
           </Button>
         </div>
       </div>
@@ -135,21 +124,29 @@ export default function EditBookPage() {
             <CardHeader className="border-b bg-indigo-50/30 flex flex-row items-center justify-between space-y-0">
               <div className="flex items-center gap-2 text-indigo-700">
                 <Languages className="size-5" />
-                <CardTitle className="text-lg">{t("dashboard_products.edit.translationContent")}</CardTitle>
+                <CardTitle className="text-lg">
+                  {t("dashboard_products.edit.translationContent")}
+                </CardTitle>
               </div>
               <Button
                 size="sm"
                 variant="outline"
                 className="bg-white border-indigo-200 text-indigo-600 gap-2"
               >
-                <Sparkles className="size-3.5" /> {t("dashboard_products.edit.aiRewrite")}
+                <Sparkles className="size-3.5" />{" "}
+                {t("dashboard_products.edit.aiRewrite")}
               </Button>
             </CardHeader>
             <CardContent className="p-6 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label className="font-bold">{t("dashboard_products.edit.bookTitle")}</Label>
-                  <Input defaultValue={bookData.title} className="h-11" />
+                  <Label className="font-bold">
+                    {t("dashboard_products.edit.bookTitle")}
+                  </Label>
+                  <Input
+                    defaultValue={bookEdit.translation?.title}
+                    className="h-11"
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label className="font-bold text-muted-foreground">
@@ -157,7 +154,7 @@ export default function EditBookPage() {
                   </Label>
                   <div className="relative">
                     <Input
-                      defaultValue="clean-code-ma-sach"
+                      defaultValue={bookEdit.translation?.slug}
                       className="h-11 pr-10 font-mono text-sm bg-slate-50"
                     />
                     <Button
@@ -171,10 +168,12 @@ export default function EditBookPage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label className="font-bold">{t("dashboard_products.edit.description")}</Label>
+                <Label className="font-bold">
+                  {t("dashboard_products.edit.description")}
+                </Label>
                 <Textarea
-                  className="min-h-[300px] leading-relaxed italic"
-                  defaultValue={t("dashboard_products.edit.oldSummary")}
+                  className="min-h-[300px] leading-relaxed"
+                  defaultValue={bookEdit.translation?.description}
                 />
               </div>
             </CardContent>
@@ -193,56 +192,50 @@ export default function EditBookPage() {
                 size="sm"
                 className="bg-emerald-600 hover:bg-emerald-700 gap-2"
               >
-                <Plus className="size-4" /> {t("dashboard_products.edit.addFormat")}
+                <Plus className="size-4" />{" "}
+                {t("dashboard_products.edit.addFormat")}
               </Button>
             </CardHeader>
             <CardContent className="p-0">
               <Table>
                 <TableHeader>
                   <TableRow className="bg-slate-50/50">
-                    <TableHead className="w-[120px]">{t("dashboard_products.edit.table.format")}</TableHead>
+                    <TableHead className="w-[120px]">
+                      {t("dashboard_products.edit.table.format")}
+                    </TableHead>
                     <TableHead>ISBN</TableHead>
-                    <TableHead className="text-right">{t("dashboard_products.edit.table.costPrice")}</TableHead>
+                    <TableHead className="text-right">
+                      {t("dashboard_products.edit.table.costPrice")}
+                    </TableHead>
                     <TableHead className="text-right font-bold">
                       {t("dashboard_products.edit.table.price")}
                     </TableHead>
-                    <TableHead className="text-right">{t("dashboard_products.edit.table.stock")}</TableHead>
+                    <TableHead className="text-right">
+                      {t("dashboard_products.edit.table.stock")}
+                    </TableHead>
                     <TableHead className="w-[100px]"></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {[
-                    {
-                      format: t("dashboard_products.edit.formats.paperback"),
-                      isbn: "9780132350884",
-                      cost: "250.000",
-                      price: "380.000",
-                      stock: 45,
-                    },
-                    {
-                      format: t("dashboard_products.edit.formats.hardcover"),
-                      isbn: "9780132350999",
-                      cost: "450.000",
-                      price: "620.000",
-                      stock: 12,
-                    },
-                  ].map((v, i) => (
-                    <TableRow key={i} className="group">
+                  {bookEdit.variants.map((variant) => (
+                    <TableRow key={variant.id} className="group">
                       <TableCell className="font-bold">
-                        <Badge variant="secondary">{v.format}</Badge>
+                        <Badge variant="secondary">{variant.format}</Badge>
                       </TableCell>
                       <TableCell className="font-mono text-xs">
-                        {v.isbn}
+                        {variant.isbn}
                       </TableCell>
                       <TableCell className="text-right text-muted-foreground">
-                        {v.cost}đ
+                        {Number(variant.costPrice).toLocaleString()}{" "}
+                        {variant.currencyCode}
                       </TableCell>
                       <TableCell className="text-right font-bold text-emerald-600">
-                        {v.price}đ
+                        {Number(variant.price).toLocaleString()}{" "}
+                        {variant.currencyCode}
                       </TableCell>
                       <TableCell className="text-right">
                         <span className="bg-slate-100 px-2 py-1 rounded text-xs font-bold">
-                          {v.stock}
+                          {variant.stock}
                         </span>
                       </TableCell>
                       <TableCell>
@@ -286,14 +279,15 @@ export default function EditBookPage() {
                   </p>
                 </div>
                 <Switch
-                  defaultChecked={bookData.isActive}
+                  defaultChecked={bookEdit.isActive}
                   className="data-[state=checked]:bg-emerald-500"
                 />
               </div>
               <Separator className="my-4" />
               <div className="flex items-center gap-3 text-[11px] text-muted-foreground italic">
                 <CheckCircle2 className="size-3 text-emerald-500" />{" "}
-                {t("dashboard_products.edit.lastUpdated")}
+                {t("dashboard_products.edit.lastUpdated")}:{" "}
+                {new Date(bookEdit.updatedAt).toLocaleDateString()}
               </div>
             </CardContent>
           </Card>
@@ -308,13 +302,14 @@ export default function EditBookPage() {
             <CardContent className="p-6 space-y-4">
               <div className="aspect-[3/4] rounded-xl bg-slate-100 overflow-hidden shadow-inner border group relative">
                 <img
-                  src="https://m.media-amazon.com/images/I/81LFApP99ML.jpg"
+                  src={bookEdit.coverImageUrl}
                   className="w-full h-full object-cover"
                   alt="Current cover"
                 />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <Button variant="secondary" size="sm" className="gap-2">
-                    <ImageIcon className="size-4" /> {t("dashboard_products.edit.changeImage")}
+                    <ImageIcon className="size-4" />{" "}
+                    {t("dashboard_products.edit.changeImage")}
                   </Button>
                 </div>
               </div>
@@ -324,13 +319,13 @@ export default function EditBookPage() {
                 </Label>
                 <Input
                   className="h-8 text-[11px] font-mono bg-slate-50"
-                  defaultValue="https://covers.openlibrary.org/..."
+                  defaultValue={bookEdit.coverImageUrl}
                 />
               </div>
             </CardContent>
           </Card>
 
-          {/* PHYSICAL SPECS (Edited Version) */}
+          {/* PHYSICAL SPECS */}
           <Card className="shadow-sm">
             <CardHeader className="py-3 bg-slate-50 border-b flex flex-row items-center justify-between">
               <CardTitle className="text-xs font-bold uppercase tracking-widest text-slate-500">
@@ -342,19 +337,23 @@ export default function EditBookPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <Label className="text-[10px] font-bold uppercase text-muted-foreground">
-                    {t("dashboard_products.edit.weight")}
+                    {t("dashboard_products.edit.weight")} (g)
                   </Label>
                   <Input
                     type="number"
                     className="h-9 font-bold"
-                    defaultValue={650}
+                    defaultValue={bookEdit.weightGrams}
                   />
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-[10px] font-bold uppercase text-muted-foreground">
                     {t("dashboard_products.edit.pageCount")}
                   </Label>
-                  <Input type="number" className="h-9" defaultValue={460} />
+                  <Input
+                    type="number"
+                    className="h-9"
+                    defaultValue={bookEdit.pageCount}
+                  />
                 </div>
               </div>
 
@@ -363,15 +362,15 @@ export default function EditBookPage() {
               <div className="space-y-4">
                 <div className="space-y-1.5">
                   <Label className="text-[10px] font-bold uppercase text-muted-foreground">
-                    {t("dashboard_products.edit.publisher")}
+                    {t("dashboard_products.edit.publisher")} (ID)
                   </Label>
-                  <Select defaultValue="1">
+                  <Select defaultValue={String(bookEdit.publisherId)}>
                     <SelectTrigger className="h-9 text-sm font-medium">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent position="popper">
+                      <SelectItem value="8">NXB Trẻ (ID: 8)</SelectItem>
                       <SelectItem value="1">Pearson Education</SelectItem>
-                      <SelectItem value="2">Addison-Wesley</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -379,26 +378,11 @@ export default function EditBookPage() {
                   <Label className="text-[10px] font-bold uppercase text-muted-foreground">
                     {t("dashboard_products.edit.publicationYear")}
                   </Label>
-                  <Input type="number" className="h-9" defaultValue={2025} />
-                </div>
-              </div>
-
-              {/* BADGES EDIT */}
-              <div className="space-y-3">
-                <Label className="text-[10px] font-bold uppercase text-muted-foreground">
-                  {t("dashboard_products.edit.currentLabels")}
-                </Label>
-                <div className="flex flex-wrap gap-2">
-                  <Badge className="bg-amber-100 text-amber-700 border-amber-200 hover:bg-amber-200 cursor-pointer">
-                    {t("dashboard_products.edit.bestSeller")} <Plus className="size-2 ml-1 rotate-45" />
-                  </Badge>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-6 px-2 text-[10px] border-dashed border-2"
-                  >
-                    <Plus className="size-3 mr-1" /> {t("dashboard_products.edit.attachNewLabel")}
-                  </Button>
+                  <Input
+                    type="number"
+                    className="h-9"
+                    defaultValue={bookEdit.publicationYear}
+                  />
                 </div>
               </div>
             </CardContent>

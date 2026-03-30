@@ -12,7 +12,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useAdminBooksQuery, useAdminBooksStatsQuery } from "@/features/admin";
+import {
+  useAdminBooksQuery,
+  useAdminBooksStatsQuery,
+  useAdminStore,
+} from "@/features/admin";
 import type { AdminBook } from "@/types/response/admin.response";
 import useTranslator from "@/hooks/use-translator";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -47,6 +51,7 @@ import ProductsTableSkeleton from "./ProductsTableSkeleton";
 export function ProductsDashboardClient() {
   const { t } = useTranslator();
   const { onOpen, setBookDetail } = useModalStore();
+  const { setBookEdit } = useAdminStore();
 
   const {
     data: books = [] as AdminBook[],
@@ -148,19 +153,19 @@ export function ProductsDashboardClient() {
               <Eye className="size-4" />
             </Button>
             <Button
-              onClick={() =>
+              onClick={() => {
+                setBookEdit(row.original);
                 router.push({
                   pathname: "/[role]/dashboard/products/edit",
                   params: { role },
-                })
-              }
+                });
+              }}
               variant="ghost"
               size="icon"
               className="h-8 w-8 text-muted-foreground hover:text-foreground"
             >
               <Pencil className="size-4" />
             </Button>
-            <ActionDropdown items={variantMenuItems} />
           </div>
         ),
       },
@@ -323,7 +328,10 @@ export function ProductsDashboardClient() {
         {/* Pagination Section */}
         <div className="flex flex-col items-center justify-between gap-4 border-t bg-slate-50/30 px-6 py-4 md:flex-row text-sm text-muted-foreground">
           <p>
-            {t("dashboard.products.pagination.summary", { perPage: 8, total: 128 })}
+            {t("dashboard.products.pagination.summary", {
+              perPage: 8,
+              total: 128,
+            })}
           </p>
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1">

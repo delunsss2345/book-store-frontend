@@ -59,21 +59,19 @@ function CardInner({
   return (
     <article
       className={cn(
-        "group/card flex flex-col h-full bg-white p-2 transition-all duration-300",
+        "group/card flex flex-col h-full p-2 transition-all duration-300",
         className,
       )}
     >
-      {/* Container Ảnh: Thêm shadow nhẹ và hiệu ứng zoom */}
       <figure
         className={cn(
-          "relative overflow-hidden rounded-md bg-neutral-50 transition-all duration-500",
-          "group-hover/card:shadow-xl group-hover/card:shadow-neutral-200/50",
+          "relative overflow-hidden rounded-md transition-all duration-500",
           style.figure,
         )}
       >
         {imageUrl ? (
           <img
-            className="h-full w-full object-contain p-4 transition-transform duration-700 ease-out group-hover/card:scale-110"
+            className="h-full w-full object-contain p-4 transition-transform duration-700 ease-out group-hover/card:scale-105"
             src={imageUrl}
             alt={`${title} cover`}
             loading="lazy"
@@ -126,11 +124,14 @@ function CardInner({
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            toast.promise(mutationAddToCardItem.mutateAsync({ bookVariantId }), {
-              loading: t("cart.toast.addItemLoading"),
-              success: t("cart.toast.addItemSuccess"),
-              error: t("cart.toast.addItemError"),
-            });
+            toast.promise(
+              mutationAddToCardItem.mutateAsync({ bookVariantId }),
+              {
+                loading: t("cart.toast.addItemLoading"),
+                success: t("cart.toast.addItemSuccess"),
+                error: t("cart.toast.addItemError"),
+              },
+            );
           }}
           className={cn(
             "cursor-pointer w-full py-3 px-6 text-[12px] font-bold tracking-[0.15em] uppercase transition-all duration-300",
