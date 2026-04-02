@@ -5,6 +5,23 @@ import { NextRequest } from "next/server";
 
 type Params = { params: Promise<{ bookId: string }> };
 
+// GET /api/v1/admin/books/{bookId}
+export async function GET(_request: NextRequest, { params }: Params) {
+  try {
+    const { bookId } = await params;
+    const response = await api.get(`admin/books/${bookId}`);
+    return ResponseApi.success(response.data, HttpStatusCode.Ok);
+  } catch (error: any) {
+    if (process.env.NODE_ENV === "development") {
+      console.error("Admin Get Book API Error:", error);
+    }
+    return ResponseApi.error(
+      error.message,
+      error.status ?? HttpStatusCode.BadRequest,
+    );
+  }
+}
+
 // PATCH /api/v1/admin/books/{bookId}
 export async function PATCH(request: NextRequest, { params }: Params) {
   try {
@@ -12,6 +29,7 @@ export async function PATCH(request: NextRequest, { params }: Params) {
     const body = await request.json();
     const response = await api.patch(`admin/books/${bookId}`, body);
     return ResponseApi.success(response.data, HttpStatusCode.Ok);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     if (process.env.NODE_ENV === "development") {
       console.error("Admin Update Book API Error:", error);
@@ -29,6 +47,7 @@ export async function DELETE(_request: NextRequest, { params }: Params) {
     const { bookId } = await params;
     const response = await api.delete(`admin/books/${bookId}`);
     return ResponseApi.success(response.data, HttpStatusCode.Ok);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     if (process.env.NODE_ENV === "development") {
       console.error("Admin Delete Book API Error:", error);

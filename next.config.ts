@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "dummyimage.com" },
       { protocol: "https", hostname: "picsum.photos" },
       { protocol: "http", hostname: "books.google.com" },
+      { protocol: "https", hostname: "taschen.makaira.media" },
     ],
   },
 };

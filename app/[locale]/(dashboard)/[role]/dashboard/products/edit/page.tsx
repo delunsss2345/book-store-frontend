@@ -1,21 +1,22 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   ChevronLeft,
   Save,
-  Sparkles,
   ImageIcon,
   Languages,
   Wallet,
   Ruler,
   Trash2,
-  Plus,
   ExternalLink,
   Copy,
   CheckCircle2,
   Globe,
+  Lock,
+  PencilLine,
+  BadgeDollarSign,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -33,307 +34,573 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import useTranslator from "@/hooks/use-translator";
-import { useAdminStore } from "@/features/admin";
+import { useAdminBookQuery, useAdminStore } from "@/features/admin";
 import { LoadingLazy } from "@/components/common/LoadingLazy";
+
+type BookTranslation = {
+  id: string;
+  languageId: number;
+  title: string;
+  description: string;
+  slug: string;
+};
+
+type BookVariant = {
+  id: string;
+  format: string;
+  edition: number;
+  isbn: string;
+  costPrice: string;
+  price: string;
+  currencyCode: string;
+  stock: number;
+  isActive: boolean;
+};
+
+type BookDetail = {
+  id: string;
+  publisherId: string | number;
+  publicationYear: number;
+  pageCount: number;
+  weightGrams: number;
+  coverImageUrl: string;
+  isActive: boolean;
+  deletedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  translation: BookTranslation[];
+  variants: BookVariant[];
+};
+
+const LANGUAGE_META: Record<
+  number,
+  { label: string; short: string; emoji: string }
+> = {
+  1: { label: "English", short: "EN", emoji: "🇺🇸" },
+  2: { label: "Tiếng Việt", short: "VI", emoji: "🇻🇳" },
+};
+
+function getLanguageMeta(languageId: number) {
+  return (
+    LANGUAGE_META[languageId] || {
+      label: `Language ${languageId}`,
+      short: `L${languageId}`,
+      emoji: "🌐",
+    }
+  );
+}
+
+function formatCurrency(value: string | number, currencyCode: string) {
+  return `${Number(value || 0).toLocaleString()} ${currencyCode}`;
+}
 
 export default function EditBookPage() {
   const router = useRouter();
   const { t } = useTranslator();
-
-  // Lấy bookEdit từ store
   const { bookEdit } = useAdminStore();
 
-  // Nếu chưa có dữ liệu, có thể hiển thị loading hoặc return null
-  if (!bookEdit) return <LoadingLazy />;
+  const bookId = bookEdit?.id;
+  const { bookDetail, isLoading } = useAdminBookQuery(bookId);
+
+  const detail = (bookDetail || bookEdit) as BookDetail | undefined;
+
+  const translations = useMemo(
+    () => (detail?.translation || []) as BookTranslation[],
+    [detail],
+  );
+
+  const variants = useMemo(
+    () => (detail?.variants || []) as BookVariant[],
+    [detail],
+  );
+
+  const defaultTranslation = useMemo(() => {
+    return (
+      translations.find((item) => item.languageId === 2) ||
+      translations.find((item) => item.languageId === 1) ||
+      translations[0]
+    );
+  }, [translations]);
+
+  const [translationDrafts, setTranslationDrafts] = useState<BookTranslation[]>(
+    [],
+  );
+
+  const [variantDrafts, setVariantDrafts] = useState<BookVariant[]>([]);
+
+  const [generalForm, setGeneralForm] = useState({
+    isActive: false,
+    coverImageUrl: "",
+    weightGrams: 0,
+    pageCount: 0,
+    publisherId: "",
+    publicationYear: new Date().getFullYear(),
+  });
+
+  useEffect(() => {
+    if (!detail) return;
+
+    setTranslationDrafts((detail.translation || []) as BookTranslation[]);
+    setVariantDrafts((detail.variants || []) as BookVariant[]);
+    setGeneralForm({
+      isActive: !!detail.isActive,
+      coverImageUrl: detail.coverImageUrl || "",
+      weightGrams: detail.weightGrams ?? 0,
+      pageCount: detail.pageCount ?? 0,
+      publisherId: String(detail.publisherId ?? ""),
+      publicationYear: detail.publicationYear ?? new Date().getFullYear(),
+    });
+  }, [detail]);
+
+  const updateTranslationField = (
+    translationId: string,
+    field: keyof Pick<BookTranslation, "title" | "slug" | "description">,
+    value: string,
+  ) => {
+    setTranslationDrafts((prev) =>
+      prev.map((item) =>
+        item.id === translationId ? { ...item, [field]: value } : item,
+      ),
+    );
+  };
+
+  const updateVariantPrice = (variantId: string, value: string) => {
+    const normalized = value.replace(/[^\d]/g, "");
+    setVariantDrafts((prev) =>
+      prev.map((item) =>
+        item.id === variantId ? { ...item, price: normalized } : item,
+      ),
+    );
+  };
+
+  const handleSave = () => {
+    if (!detail) return;
+
+    const payload = {
+      id: detail.id,
+      isActive: generalForm.isActive,
+      coverImageUrl: generalForm.coverImageUrl,
+      weightGrams: Number(generalForm.weightGrams),
+      pageCount: Number(generalForm.pageCount),
+      publisherId: Number(generalForm.publisherId),
+      publicationYear: Number(generalForm.publicationYear),
+      translation: translationDrafts.map((item) => ({
+        id: item.id,
+        languageId: item.languageId,
+        title: item.title,
+        slug: item.slug,
+        description: item.description,
+      })),
+      variants: variantDrafts.map((item) => ({
+        id: item.id,
+        price: item.price,
+      })),
+    };
+
+    console.log("UPDATE BOOK PAYLOAD", payload);
+    // TODO: call update API ở đây
+  };
+
+  if (!bookId) return <LoadingLazy />;
+  if (isLoading && !detail) return <LoadingLazy />;
+  if (!detail) return <LoadingLazy />;
 
   return (
-    <div className="max-w-[1600px] mx-auto p-4 space-y-8">
-      {/* 1. TOP BAR: Header & Global Actions */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-xl border shadow-sm sticky top-0 z-10">
+    <div className="mx-auto max-w-[1600px] space-y-8 p-4">
+      <div className="sticky top-0 z-10 flex flex-col justify-between gap-4 rounded-2xl border bg-background/95 p-6 shadow-sm backdrop-blur md:flex-row md:items-center">
         <div className="flex items-center gap-4">
           <Button
             variant="outline"
             size="icon"
             onClick={() => router.back()}
-            className="rounded-full shrink-0"
+            className="size-10 shrink-0 rounded-full"
           >
             <ChevronLeft className="size-5" />
           </Button>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold tracking-tight">
+
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="truncate text-2xl font-semibold tracking-tight">
                 {t("dashboard_products.edit.editing")}:{" "}
-                {bookEdit.translation?.title}
+                {defaultTranslation?.title || "Untitled Book"}
               </h1>
               <Badge variant="outline" className="font-mono text-[10px]">
-                ID: {bookEdit.id}
+                ID: {detail.id}
               </Badge>
             </div>
-            <div className="flex items-center gap-4 mt-1">
-              <p className="text-sm text-muted-foreground flex items-center gap-1">
-                <Globe className="size-3" /> https://yourshop.com/books/
-                {bookEdit.translation?.slug}
+
+            <div className="mt-1 flex flex-wrap items-center gap-4">
+              <p className="flex items-center gap-1 text-sm text-muted-foreground">
+                <Globe className="size-3" />
+                https://yourshop.com/books/{defaultTranslation?.slug || ""}
               </p>
               <Button
                 variant="link"
                 size="sm"
-                className="h-auto p-0 text-xs text-primary gap-1"
+                className="h-auto p-0 text-xs gap-1"
               >
-                <ExternalLink className="size-3" />{" "}
+                <ExternalLink className="size-3" />
                 {t("dashboard_products.edit.viewLive")}
               </Button>
             </div>
           </div>
         </div>
+
         <div className="flex items-center gap-3">
           <Button
             variant="outline"
-            className="text-destructive hover:bg-destructive/5 border-destructive/20 gap-2"
+            className="gap-2 border-destructive/20 text-destructive hover:bg-destructive/5"
           >
-            <Trash2 className="size-4" />{" "}
+            <Trash2 className="size-4" />
             {t("dashboard_products.edit.deleteBook")}
           </Button>
+
           <Separator
             orientation="vertical"
-            className="h-8 mx-2 hidden md:block"
+            className="mx-2 hidden h-8 md:block"
           />
+
           <Button variant="ghost" onClick={() => router.back()}>
             {t("dashboard_products.edit.cancel")}
           </Button>
-          <Button className="bg-slate-900 hover:bg-slate-800 px-8 gap-2 shadow-lg shadow-slate-200">
-            <Save className="size-4" />{" "}
+
+          <Button onClick={handleSave} className="gap-2 px-8">
+            <Save className="size-4" />
             {t("dashboard_products.edit.updateChanges")}
           </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* LEFT COLUMN: Main Data */}
-        <div className="lg:col-span-8 space-y-8">
-          {/* TRANSLATION SECTION */}
-          <Card className="shadow-sm overflow-hidden border-indigo-100">
-            <CardHeader className="border-b bg-indigo-50/30 flex flex-row items-center justify-between space-y-0">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+        <div className="space-y-8 lg:col-span-8">
+          <Card className="overflow-hidden border-indigo-100 shadow-sm">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 border-b bg-indigo-50/40">
               <div className="flex items-center gap-2 text-indigo-700">
                 <Languages className="size-5" />
                 <CardTitle className="text-lg">
-                  {t("dashboard_products.edit.translationContent")}
+                  Nội dung theo ngôn ngữ
                 </CardTitle>
               </div>
-              <Button
-                size="sm"
-                variant="outline"
-                className="bg-white border-indigo-200 text-indigo-600 gap-2"
+              <Badge
+                variant="secondary"
+                className="rounded-full bg-indigo-100 text-indigo-700"
               >
-                <Sparkles className="size-3.5" />{" "}
-                {t("dashboard_products.edit.aiRewrite")}
-              </Button>
+                {translationDrafts.length} languages
+              </Badge>
             </CardHeader>
-            <CardContent className="p-6 space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label className="font-bold">
-                    {t("dashboard_products.edit.bookTitle")}
-                  </Label>
-                  <Input
-                    defaultValue={bookEdit.translation?.title}
-                    className="h-11"
-                  />
+
+            <CardContent className="p-6">
+              {translationDrafts.length === 0 ? (
+                <div className="rounded-xl border border-dashed p-8 text-sm text-muted-foreground">
+                  Không có translation để chỉnh sửa.
                 </div>
-                <div className="space-y-2">
-                  <Label className="font-bold text-muted-foreground">
-                    {t("dashboard_products.edit.slug")}
-                  </Label>
-                  <div className="relative">
-                    <Input
-                      defaultValue={bookEdit.translation?.slug}
-                      className="h-11 pr-10 font-mono text-sm bg-slate-50"
-                    />
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
-                    >
-                      <Copy className="size-3.5" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label className="font-bold">
-                  {t("dashboard_products.edit.description")}
-                </Label>
-                <Textarea
-                  className="min-h-[300px] leading-relaxed"
-                  defaultValue={bookEdit.translation?.description}
-                />
-              </div>
+              ) : (
+                <Tabs
+                  defaultValue={String(translationDrafts[0]?.languageId)}
+                  className="space-y-6"
+                >
+                  <TabsList className="h-auto flex-wrap justify-start gap-2 bg-transparent p-0">
+                    {translationDrafts.map((translation) => {
+                      const meta = getLanguageMeta(translation.languageId);
+                      return (
+                        <TabsTrigger
+                          key={translation.id}
+                          value={String(translation.languageId)}
+                          className="rounded-xl border bg-background px-4 py-2 data-[state=active]:border-indigo-300 data-[state=active]:bg-indigo-50"
+                        >
+                          <span className="mr-2">{meta.emoji}</span>
+                          <span>{meta.label}</span>
+                        </TabsTrigger>
+                      );
+                    })}
+                  </TabsList>
+
+                  {translationDrafts.map((translation) => {
+                    const meta = getLanguageMeta(translation.languageId);
+
+                    return (
+                      <TabsContent
+                        key={translation.id}
+                        value={String(translation.languageId)}
+                        className="mt-0"
+                      >
+                        <div className="rounded-2xl border bg-card p-5">
+                          <div className="mb-5 flex items-center justify-between">
+                            <div>
+                              <p className="text-sm font-medium">
+                                {meta.label}
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                Chỉnh title, slug, description cho ngôn ngữ này
+                              </p>
+                            </div>
+                            <Badge variant="outline">{meta.short}</Badge>
+                          </div>
+
+                          <div className="space-y-5">
+                            <div className="space-y-2">
+                              <Label className="font-semibold">Title</Label>
+                              <Input
+                                value={translation.title}
+                                onChange={(e) =>
+                                  updateTranslationField(
+                                    translation.id,
+                                    "title",
+                                    e.target.value,
+                                  )
+                                }
+                                className="h-11"
+                                placeholder={`Nhập tiêu đề (${meta.label})`}
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label className="font-semibold">Slug</Label>
+                              <div className="relative">
+                                <Input
+                                  value={translation.slug}
+                                  onChange={(e) =>
+                                    updateTranslationField(
+                                      translation.id,
+                                      "slug",
+                                      e.target.value,
+                                    )
+                                  }
+                                  className="h-11 pr-10 font-mono text-sm"
+                                  placeholder="book-slug"
+                                />
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  className="absolute right-1 top-1/2 size-8 -translate-y-1/2"
+                                  onClick={() =>
+                                    navigator.clipboard.writeText(
+                                      translation.slug || "",
+                                    )
+                                  }
+                                >
+                                  <Copy className="size-3.5" />
+                                </Button>
+                              </div>
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label className="font-semibold">
+                                Description
+                              </Label>
+                              <Textarea
+                                className="min-h-[240px] leading-relaxed"
+                                value={translation.description}
+                                onChange={(e) =>
+                                  updateTranslationField(
+                                    translation.id,
+                                    "description",
+                                    e.target.value,
+                                  )
+                                }
+                                placeholder={`Nhập mô tả (${meta.label})`}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </TabsContent>
+                    );
+                  })}
+                </Tabs>
+              )}
             </CardContent>
           </Card>
 
-          {/* VARIANTS MANAGEMENT */}
-          <Card className="shadow-sm border-emerald-100">
-            <CardHeader className="border-b bg-emerald-50/30 flex flex-row items-center justify-between space-y-0">
+          <Card className="border-emerald-100 shadow-sm">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 border-b bg-emerald-50/40">
               <div className="flex items-center gap-2 text-emerald-700">
                 <Wallet className="size-5" />
                 <CardTitle className="text-lg">
-                  {t("dashboard_products.edit.variantsTitle")}
+                  Giá bán theo từng variant
                 </CardTitle>
               </div>
-              <Button
-                size="sm"
-                className="bg-emerald-600 hover:bg-emerald-700 gap-2"
+              <Badge
+                variant="secondary"
+                className="rounded-full bg-emerald-100 text-emerald-700"
               >
-                <Plus className="size-4" />{" "}
-                {t("dashboard_products.edit.addFormat")}
-              </Button>
+                Chỉ sửa price
+              </Badge>
             </CardHeader>
-            <CardContent className="p-0">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-slate-50/50">
-                    <TableHead className="w-[120px]">
-                      {t("dashboard_products.edit.table.format")}
-                    </TableHead>
-                    <TableHead>ISBN</TableHead>
-                    <TableHead className="text-right">
-                      {t("dashboard_products.edit.table.costPrice")}
-                    </TableHead>
-                    <TableHead className="text-right font-bold">
-                      {t("dashboard_products.edit.table.price")}
-                    </TableHead>
-                    <TableHead className="text-right">
-                      {t("dashboard_products.edit.table.stock")}
-                    </TableHead>
-                    <TableHead className="w-[100px]"></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {bookEdit.variants.map((variant) => (
-                    <TableRow key={variant.id} className="group">
-                      <TableCell className="font-bold">
-                        <Badge variant="secondary">{variant.format}</Badge>
-                      </TableCell>
-                      <TableCell className="font-mono text-xs">
-                        {variant.isbn}
-                      </TableCell>
-                      <TableCell className="text-right text-muted-foreground">
-                        {Number(variant.costPrice).toLocaleString()}{" "}
-                        {variant.currencyCode}
-                      </TableCell>
-                      <TableCell className="text-right font-bold text-emerald-600">
-                        {Number(variant.price).toLocaleString()}{" "}
-                        {variant.currencyCode}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <span className="bg-slate-100 px-2 py-1 rounded text-xs font-bold">
-                          {variant.stock}
+
+            <CardContent className="space-y-4 p-6">
+              {variantDrafts.map((variant) => (
+                <div
+                  key={variant.id}
+                  className="rounded-2xl border bg-card p-5 shadow-sm"
+                >
+                  <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                    <div className="flex items-center gap-3">
+                      <Badge className="rounded-full px-3 py-1">
+                        {variant.format}
+                      </Badge>
+                      <div className="text-sm text-muted-foreground">
+                        Edition {variant.edition} • ISBN{" "}
+                        <span className="font-mono">{variant.isbn}</span>
+                      </div>
+                    </div>
+
+                    <Badge
+                      variant={variant.isActive ? "default" : "secondary"}
+                      className="w-fit"
+                    >
+                      {variant.isActive ? "Active" : "Inactive"}
+                    </Badge>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    <div className="rounded-xl border bg-muted/40 p-4">
+                      <div className="mb-2 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                        <Lock className="size-3.5" />
+                        Cost price
+                      </div>
+                      <Input
+                        value={formatCurrency(
+                          variant.costPrice,
+                          variant.currencyCode,
+                        )}
+                        readOnly
+                        disabled
+                        className="h-11 font-semibold"
+                      />
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        Không được chỉnh
+                      </p>
+                    </div>
+
+                    <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-4">
+                      <div className="mb-2 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-emerald-700">
+                        <PencilLine className="size-3.5" />
+                        Sale price
+                      </div>
+                      <div className="relative">
+                        <Input
+                          value={variant.price}
+                          onChange={(e) =>
+                            updateVariantPrice(variant.id, e.target.value)
+                          }
+                          inputMode="numeric"
+                          className="h-11 border-emerald-300 bg-background pr-14 text-right text-base font-semibold"
+                        />
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground">
+                          {variant.currencyCode}
                         </span>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8"
-                          >
-                            <Plus className="size-3" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 text-destructive"
-                          >
-                            <Trash2 className="size-3" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                      </div>
+                      <p className="mt-2 text-xs text-emerald-700">
+                        Đây là field duy nhất được phép sửa ở variant
+                      </p>
+                    </div>
+
+                    <div className="rounded-xl border bg-muted/40 p-4">
+                      <div className="mb-2 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                        <Lock className="size-3.5" />
+                        Stock
+                      </div>
+                      <Input
+                        value={String(variant.stock)}
+                        readOnly
+                        disabled
+                        className="h-11 font-semibold"
+                      />
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        Chỉ xem, không được chỉnh tồn kho
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </CardContent>
           </Card>
         </div>
 
-        {/* RIGHT COLUMN: Sidebar */}
-        <div className="lg:col-span-4 space-y-8">
-          {/* STATUS CARD */}
-          <Card className="shadow-sm border-2 border-primary/10">
+        <div className="space-y-8 lg:col-span-4">
+          <Card className="border-2 border-primary/10 shadow-sm">
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-4">
                 <div className="space-y-0.5">
-                  <Label className="text-base font-bold italic">
+                  <Label className="text-base font-semibold">
                     {t("dashboard_products.edit.releaseStatus")}
                   </Label>
-                  <p className="text-xs text-muted-foreground italic">
+                  <p className="text-xs text-muted-foreground">
                     {t("dashboard_products.edit.releaseStatusDescription")}
                   </p>
                 </div>
                 <Switch
-                  defaultChecked={bookEdit.isActive}
+                  checked={generalForm.isActive}
+                  onCheckedChange={(checked) =>
+                    setGeneralForm((prev) => ({ ...prev, isActive: checked }))
+                  }
                   className="data-[state=checked]:bg-emerald-500"
                 />
               </div>
+
               <Separator className="my-4" />
-              <div className="flex items-center gap-3 text-[11px] text-muted-foreground italic">
-                <CheckCircle2 className="size-3 text-emerald-500" />{" "}
+
+              <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
+                <CheckCircle2 className="size-3 text-emerald-500" />
                 {t("dashboard_products.edit.lastUpdated")}:{" "}
-                {new Date(bookEdit.updatedAt).toLocaleDateString()}
+                {new Date(detail.updatedAt).toLocaleDateString()}
               </div>
             </CardContent>
           </Card>
 
-          {/* COVER PREVIEW */}
-          <Card className="shadow-sm overflow-hidden">
-            <CardHeader className="py-3 bg-slate-50 border-b">
+          <Card className="overflow-hidden shadow-sm">
+            <CardHeader className="border-b bg-slate-50 py-3">
               <CardTitle className="text-xs font-bold uppercase tracking-widest text-slate-500">
                 {t("dashboard_products.edit.currentCover")}
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-6 space-y-4">
-              <div className="aspect-[3/4] rounded-xl bg-slate-100 overflow-hidden shadow-inner border group relative">
+
+            <CardContent className="space-y-4 p-6">
+              <div className="group relative aspect-[3/4] overflow-hidden rounded-xl border bg-slate-100 shadow-inner">
                 <img
-                  src={bookEdit.coverImageUrl}
-                  className="w-full h-full object-cover"
+                  src={generalForm.coverImageUrl}
+                  className="h-full w-full object-cover"
                   alt="Current cover"
                 />
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
                   <Button variant="secondary" size="sm" className="gap-2">
-                    <ImageIcon className="size-4" />{" "}
+                    <ImageIcon className="size-4" />
                     {t("dashboard_products.edit.changeImage")}
                   </Button>
                 </div>
               </div>
+
               <div className="space-y-1.5">
                 <Label className="text-[10px] font-bold uppercase text-muted-foreground">
                   {t("dashboard_products.edit.originalImageUrl")}
                 </Label>
                 <Input
-                  className="h-8 text-[11px] font-mono bg-slate-50"
-                  defaultValue={bookEdit.coverImageUrl}
+                  className="h-9 text-[11px] font-mono"
+                  value={generalForm.coverImageUrl}
+                  onChange={(e) =>
+                    setGeneralForm((prev) => ({
+                      ...prev,
+                      coverImageUrl: e.target.value,
+                    }))
+                  }
                 />
               </div>
             </CardContent>
           </Card>
 
-          {/* PHYSICAL SPECS */}
           <Card className="shadow-sm">
-            <CardHeader className="py-3 bg-slate-50 border-b flex flex-row items-center justify-between">
+            <CardHeader className="flex flex-row items-center justify-between border-b bg-slate-50 py-3">
               <CardTitle className="text-xs font-bold uppercase tracking-widest text-slate-500">
                 {t("dashboard_products.edit.specifications")}
               </CardTitle>
               <Ruler className="size-4 text-slate-400" />
             </CardHeader>
-            <CardContent className="p-6 space-y-6">
+
+            <CardContent className="space-y-6 p-6">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <Label className="text-[10px] font-bold uppercase text-muted-foreground">
@@ -341,10 +608,17 @@ export default function EditBookPage() {
                   </Label>
                   <Input
                     type="number"
-                    className="h-9 font-bold"
-                    defaultValue={bookEdit.weightGrams}
+                    className="h-9 font-semibold"
+                    value={generalForm.weightGrams}
+                    onChange={(e) =>
+                      setGeneralForm((prev) => ({
+                        ...prev,
+                        weightGrams: Number(e.target.value),
+                      }))
+                    }
                   />
                 </div>
+
                 <div className="space-y-1.5">
                   <Label className="text-[10px] font-bold uppercase text-muted-foreground">
                     {t("dashboard_products.edit.pageCount")}
@@ -352,7 +626,13 @@ export default function EditBookPage() {
                   <Input
                     type="number"
                     className="h-9"
-                    defaultValue={bookEdit.pageCount}
+                    value={generalForm.pageCount}
+                    onChange={(e) =>
+                      setGeneralForm((prev) => ({
+                        ...prev,
+                        pageCount: Number(e.target.value),
+                      }))
+                    }
                   />
                 </div>
               </div>
@@ -364,7 +644,15 @@ export default function EditBookPage() {
                   <Label className="text-[10px] font-bold uppercase text-muted-foreground">
                     {t("dashboard_products.edit.publisher")} (ID)
                   </Label>
-                  <Select defaultValue={String(bookEdit.publisherId)}>
+                  <Select
+                    value={generalForm.publisherId}
+                    onValueChange={(value) =>
+                      setGeneralForm((prev) => ({
+                        ...prev,
+                        publisherId: value,
+                      }))
+                    }
+                  >
                     <SelectTrigger className="h-9 text-sm font-medium">
                       <SelectValue />
                     </SelectTrigger>
@@ -374,6 +662,7 @@ export default function EditBookPage() {
                     </SelectContent>
                   </Select>
                 </div>
+
                 <div className="space-y-1.5">
                   <Label className="text-[10px] font-bold uppercase text-muted-foreground">
                     {t("dashboard_products.edit.publicationYear")}
@@ -381,8 +670,35 @@ export default function EditBookPage() {
                   <Input
                     type="number"
                     className="h-9"
-                    defaultValue={bookEdit.publicationYear}
+                    value={generalForm.publicationYear}
+                    onChange={(e) =>
+                      setGeneralForm((prev) => ({
+                        ...prev,
+                        publicationYear: Number(e.target.value),
+                      }))
+                    }
                   />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-amber-200 bg-amber-50/40 shadow-sm">
+            <CardContent className="p-5">
+              <div className="flex items-start gap-3">
+                <BadgeDollarSign className="mt-0.5 size-4 text-amber-700" />
+                <div className="space-y-1">
+                  <p className="text-sm font-semibold text-amber-900">
+                    Quy tắc chỉnh sửa
+                  </p>
+                  <ul className="space-y-1 text-xs text-amber-800">
+                    <li>
+                      - Được sửa: title, slug, description theo từng ngôn ngữ
+                    </li>
+                    <li>- Được sửa: price của từng variant</li>
+                    <li>- Không được sửa: stock</li>
+                    <li>- Không được sửa: costPrice</li>
+                  </ul>
                 </div>
               </div>
             </CardContent>

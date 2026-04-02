@@ -20,3 +20,5 @@ export enum PaymentStatus {
   PAYMENT_OVERAGE = "PAYMENT_OVERAGE",
   PARTIAL_REFUND = "PARTIAL_REFUND",
 }
+
+export const ShipFee = 20000;

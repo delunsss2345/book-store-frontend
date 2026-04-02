@@ -38,7 +38,7 @@ export type AdminBook = {
   deletedAt: string | null;
   createdAt: string;
   updatedAt: string;
-  translation: AdminBookTranslation;
+  translation: AdminBookTranslation | AdminBookTranslation[];
   variants: AdminBookVariant[];
 };
 

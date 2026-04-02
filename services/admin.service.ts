@@ -6,6 +6,7 @@ import {
   AdminBookStatsProxyResponse,
   AdminCategoryStatsProxyResponse,
   AdminUserStatsProxyResponse,
+  AdminBook,
 } from "@/types/response/admin.response";
 import { ProxySuccessResponse } from "@/types/response/base.response";
 import { http } from "@/utils/http";
@@ -18,7 +19,9 @@ export const adminService = {
     http.get<AdminBookStatsProxyResponse>("admin/books/stats"),
 
   getBookVariants: () =>
-    http.get<ProxySuccessResponse<AdminBookVariantListData>>("admin/book-variants"),
+    http.get<ProxySuccessResponse<AdminBookVariantListData>>(
+      "admin/book-variants",
+    ),
 
   getCategoriesStats: () =>
     http.get<AdminCategoryStatsProxyResponse>("admin/categories/stats"),
@@ -28,6 +31,9 @@ export const adminService = {
 
   // Books
   getBooks: () => http.get<AdminBookListResponse>("admin/books"),
+
+  getBookById: (bookId: string) =>
+    http.get<ProxySuccessResponse<AdminBook>>(`admin/books/${bookId}`),
 
   createBook: (payload: AdminMutationPayload) =>
     http.post("admin/books", payload),
@@ -49,6 +55,8 @@ export const adminService = {
 
   // Users
   getUsers: () => http.get("admin/users"),
+
+  // Detail
 
   getNonCustomerUsers: () => http.get("admin/users/non-customer"),
 

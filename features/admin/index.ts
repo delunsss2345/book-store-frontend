@@ -1,6 +1,7 @@
 export * from "./store/admin.store";
 export * from "./selector/admin.selector";
 export * from "./hooks/use-admin-books-query";
+export * from "./hooks/use-admin-book-query";
 export * from "./hooks/use-admin-books-stats-query";
 export * from "./hooks/use-create-book-mutation";
 export * from "./hooks/use-update-book-mutation";

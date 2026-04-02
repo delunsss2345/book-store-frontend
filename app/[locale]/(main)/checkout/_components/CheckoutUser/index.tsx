@@ -36,12 +36,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useRouter } from "@/i18n/navigation";
 import { FormMessageI18n } from "@/components/common/FormMessageI18n";
+import { useCartStore } from "@/features/cart/store/cart.store";
 
 export default function CheckoutUser() {
   const { data: addresses, isPending } = useQueryAddress();
   const t = useTranslations();
   const router = useRouter();
   const { onOpen } = useModalStore();
+  const clearCart = useCartStore((state) => state.clearCart);
   const { mutateAsync: createOrderUser, isPending: isCreatingOrder } =
     useCreateOrderUserMutation();
 
@@ -75,9 +77,10 @@ export default function CheckoutUser() {
       success: (data) => {
         if (values.paymentGateway === PaymentGateway.COD) {
           router.push("/orders");
+          clearCart();
           return t("checkout.toast.success");
         }
-
+        clearCart();
         router.push(
           `/checkout/payment?orderCode=${data.orderCode}&totalAmount=${data.totalAmount}&subtotal=${data.subtotal}`,
         );
@@ -120,16 +123,12 @@ export default function CheckoutUser() {
               render={({ field }) => (
                 <FormItem>
                   <Select
-                    value={String(field.value)}
+                    value={field.value != null ? String(field.value) : ""}
                     onValueChange={(value) => field.onChange(Number(value))}
-                    defaultValue={String(field.value)}
                   >
                     <FormControl>
                       <SelectTrigger className="flex h-auto w-full items-center justify-between rounded-2xl border-2 border-zinc-900 bg-white px-5 py-10 text-left shadow-sm transition-all">
-                        <SelectValue
-                          className="black"
-                          placeholder={"Chọn địa chỉ"}
-                        />
+                        <SelectValue className="black" />
                       </SelectTrigger>
                     </FormControl>
 

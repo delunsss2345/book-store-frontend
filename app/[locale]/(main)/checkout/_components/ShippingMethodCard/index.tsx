@@ -1,5 +1,7 @@
 "use client";
 
+import { ShipFee } from "@/constants/enums/order";
+import { fmt } from "@/utils/format-number-vi";
 import { Truck } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -10,7 +12,9 @@ export function ShippingMethodCard() {
     <section className="space-y-2">
       <div className="flex items-center gap-2">
         <Truck className="h-5 w-5 text-zinc-800" />
-        <h3 className="text-lg font-bold">{t("checkout.shippingMethod.title")}</h3>
+        <h3 className="text-lg font-bold">
+          {t("checkout.shippingMethod.title")}
+        </h3>
       </div>
 
       <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
@@ -27,7 +31,7 @@ export function ShippingMethodCard() {
         </div>
 
         <span className="text-sm font-bold uppercase text-green-600">
-          {t("checkout.shippingMethod.free")}
+          {fmt(ShipFee)}
         </span>
       </div>
     </section>

@@ -75,7 +75,8 @@ export function ProductsDashboardClient() {
         header: () => t("dashboard.products.table.columns.title"),
         cell: ({ row }) => {
           const { coverImageUrl, id, translation } = row.original;
-          const title = translation?.title ?? "";
+          const transObj = Array.isArray(translation) ? translation[0] : translation;
+          const title = transObj?.title ?? "";
           return (
             <div className="flex items-center gap-3">
               <div className="flex h-12 w-9 shrink-0 items-center justify-center overflow-hidden rounded border bg-muted shadow-sm">
