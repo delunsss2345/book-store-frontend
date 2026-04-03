@@ -75,7 +75,9 @@ export function ProductsDashboardClient() {
         header: () => t("dashboard.products.table.columns.title"),
         cell: ({ row }) => {
           const { coverImageUrl, id, translation } = row.original;
-          const transObj = Array.isArray(translation) ? translation[0] : translation;
+          const transObj = Array.isArray(translation)
+            ? translation[0]
+            : translation;
           const title = transObj?.title ?? "";
           return (
             <div className="flex items-center gap-3">
@@ -155,11 +157,9 @@ export function ProductsDashboardClient() {
             </Button>
             <Button
               onClick={() => {
-                setBookEdit(row.original);
-                router.push({
-                  pathname: "/[role]/dashboard/products/edit",
-                  params: { role },
-                });
+                router.push(
+                  `/${role}/books/${row.original.id}/edit`,
+                );
               }}
               variant="ghost"
               size="icon"
@@ -222,7 +222,7 @@ export function ProductsDashboardClient() {
         <Button
           onClick={() =>
             router.push({
-              pathname: "/[role]/dashboard/products/create",
+              pathname: "/[role]/books/create",
               params: { role },
             })
           }

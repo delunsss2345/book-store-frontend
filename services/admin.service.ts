@@ -32,8 +32,10 @@ export const adminService = {
   // Books
   getBooks: () => http.get<AdminBookListResponse>("admin/books"),
 
-  getBookById: (bookId: string) =>
-    http.get<ProxySuccessResponse<AdminBook>>(`admin/books/${bookId}`),
+  getBookById: (bookId: string) => {
+    console.log(bookId);
+    return http.get<ProxySuccessResponse<AdminBook>>(`admin/books/${bookId}`);
+  },
 
   createBook: (payload: AdminMutationPayload) =>
     http.post("admin/books", payload),

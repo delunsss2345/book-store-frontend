@@ -47,7 +47,7 @@ export const sidebarData: SidebarData = {
       items: [
         {
           title: "Quản lý Sách",
-          url: "products",
+          url: "books",
           icon: Book,
         },
         {

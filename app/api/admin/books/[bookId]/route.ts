@@ -10,6 +10,7 @@ export async function GET(_request: NextRequest, { params }: Params) {
   try {
     const { bookId } = await params;
     const response = await api.get(`admin/books/${bookId}`);
+    console.log(response);
     return ResponseApi.success(response.data, HttpStatusCode.Ok);
   } catch (error: any) {
     if (process.env.NODE_ENV === "development") {
@@ -29,7 +30,7 @@ export async function PATCH(request: NextRequest, { params }: Params) {
     const body = await request.json();
     const response = await api.patch(`admin/books/${bookId}`, body);
     return ResponseApi.success(response.data, HttpStatusCode.Ok);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     if (process.env.NODE_ENV === "development") {
       console.error("Admin Update Book API Error:", error);
@@ -47,7 +48,7 @@ export async function DELETE(_request: NextRequest, { params }: Params) {
     const { bookId } = await params;
     const response = await api.delete(`admin/books/${bookId}`);
     return ResponseApi.success(response.data, HttpStatusCode.Ok);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     if (process.env.NODE_ENV === "development") {
       console.error("Admin Delete Book API Error:", error);

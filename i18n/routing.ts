@@ -66,225 +66,225 @@ export const routing = defineRouting({
     },
 
     // Products
-    "/[role]/dashboard/products": {
-      vi: "/[role]/dashboard/products",
-      en: "/[role]/dashboard/products",
+    "/[role]/books": {
+      vi: "/[role]/books",
+      en: "/[role]/books",
     },
-    "/[role]/dashboard/products/new": {
-      vi: "/[role]/dashboard/products/new",
-      en: "/[role]/dashboard/products/new",
+    "/[role]/books/new": {
+      vi: "/[role]/books/new",
+      en: "/[role]/books/new",
     },
-    "/[role]/dashboard/products/[productId]": {
-      vi: "/[role]/dashboard/products/[productId]",
-      en: "/[role]/dashboard/products/[productId]",
+    "/[role]/books/[productId]": {
+      vi: "/[role]/books/[productId]",
+      en: "/[role]/books/[productId]",
     },
-    "/[role]/dashboard/products/[productId]/edit": {
-      vi: "/[role]/dashboard/products/[productId]/edit",
-      en: "/[role]/dashboard/products/[productId]/edit",
+    "/[role]/books/[productId]/edit": {
+      vi: "/[role]/books/[productId]/edit",
+      en: "/[role]/books/[productId]/edit",
     },
-    "/[role]/dashboard/products/create": {
-      vi: "/[role]/dashboard/products/create",
-      en: "/[role]/dashboard/products/create",
+    "/[role]/books/create": {
+      vi: "/[role]/books/create",
+      en: "/[role]/books/create",
     },
-    "/[role]/dashboard/products/edit": {
-      vi: "/[role]/dashboard/products/edit",
-      en: "/[role]/dashboard/products/edit",
+    "/[role]/books/edit": {
+      vi: "/[role]/books/edit",
+      en: "/[role]/books/edit",
     },
 
     // Catalog
-    "/[role]/dashboard/categories": {
-      vi: "/[role]/dashboard/categories",
-      en: "/[role]/dashboard/categories",
+    "/[role]/categories": {
+      vi: "/[role]/categories",
+      en: "/[role]/categories",
     },
-    "/[role]/dashboard/authors": {
-      vi: "/[role]/dashboard/authors",
-      en: "/[role]/dashboard/authors",
+    "/[role]/authors": {
+      vi: "/[role]/authors",
+      en: "/[role]/authors",
     },
-    "/[role]/dashboard/publishers": {
-      vi: "/[role]/dashboard/publishers",
-      en: "/[role]/dashboard/publishers",
+    "/[role]/publishers": {
+      vi: "/[role]/publishers",
+      en: "/[role]/publishers",
     },
 
     // Inventory & assets
-    "/[role]/dashboard/inventory": {
-      vi: "/[role]/dashboard/inventory",
-      en: "/[role]/dashboard/inventory",
+    "/[role]/inventory": {
+      vi: "/[role]/inventory",
+      en: "/[role]/inventory",
     },
-    "/[role]/dashboard/book-assets": {
-      vi: "/[role]/dashboard/book-assets",
-      en: "/[role]/dashboard/book-assets",
+    "/[role]/book-assets": {
+      vi: "/[role]/book-assets",
+      en: "/[role]/book-assets",
     },
-    "/[role]/dashboard/book-snapshots": {
-      vi: "/[role]/dashboard/book-snapshots",
-      en: "/[role]/dashboard/book-snapshots",
+    "/[role]/book-snapshots": {
+      vi: "/[role]/book-snapshots",
+      en: "/[role]/book-snapshots",
     },
 
     // Orders & invoices
-    "/[role]/dashboard/orders": {
-      vi: "/[role]/dashboard/orders",
-      en: "/[role]/dashboard/orders",
+    "/[role]/orders": {
+      vi: "/[role]/orders",
+      en: "/[role]/orders",
     },
-    "/[role]/dashboard/orders/[orderId]": {
-      vi: "/[role]/dashboard/orders/[orderId]",
-      en: "/[role]/dashboard/orders/[orderId]",
+    "/[role]/orders/[orderId]": {
+      vi: "/[role]/orders/[orderId]",
+      en: "/[role]/orders/[orderId]",
     },
-    "/[role]/dashboard/invoices": {
-      vi: "/[role]/dashboard/invoices",
-      en: "/[role]/dashboard/invoices",
+    "/[role]/invoices": {
+      vi: "/[role]/invoices",
+      en: "/[role]/invoices",
     },
-    "/[role]/dashboard/invoices/[invoiceId]": {
-      vi: "/[role]/dashboard/invoices/[invoiceId]",
-      en: "/[role]/dashboard/invoices/[invoiceId]",
+    "/[role]/invoices/[invoiceId]": {
+      vi: "/[role]/invoices/[invoiceId]",
+      en: "/[role]/invoices/[invoiceId]",
     },
-    "/[role]/dashboard/shipping": {
-      vi: "/[role]/dashboard/shipping",
-      en: "/[role]/dashboard/shipping",
+    "/[role]/shipping": {
+      vi: "/[role]/shipping",
+      en: "/[role]/shipping",
     },
 
     // Users & Access Control
-    "/[role]/dashboard/customers": {
-      vi: "/[role]/dashboard/customers",
-      en: "/[role]/dashboard/customers",
+    "/[role]/customers": {
+      vi: "/[role]/customers",
+      en: "/[role]/customers",
     },
-    "/[role]/dashboard/customers/[customerId]": {
-      vi: "/[role]/dashboard/customers/[customerId]",
-      en: "/[role]/dashboard/customers/[customerId]",
+    "/[role]/customers/[customerId]": {
+      vi: "/[role]/customers/[customerId]",
+      en: "/[role]/customers/[customerId]",
     },
-    "/[role]/dashboard/users": {
-      vi: "/[role]/dashboard/users",
-      en: "/[role]/dashboard/users",
+    "/[role]/users": {
+      vi: "/[role]/users",
+      en: "/[role]/users",
     },
-    "/[role]/dashboard/roles": {
-      vi: "/[role]/dashboard/roles",
-      en: "/[role]/dashboard/roles",
+    "/[role]/roles": {
+      vi: "/[role]/roles",
+      en: "/[role]/roles",
     },
-    "/[role]/dashboard/permissions": {
-      vi: "/[role]/dashboard/permissions",
-      en: "/[role]/dashboard/permissions",
+    "/[role]/permissions": {
+      vi: "/[role]/permissions",
+      en: "/[role]/permissions",
     },
-    "/[role]/dashboard/guest-sessions": {
-      vi: "/[role]/dashboard/guest-sessions",
-      en: "/[role]/dashboard/guest-sessions",
+    "/[role]/guest-sessions": {
+      vi: "/[role]/guest-sessions",
+      en: "/[role]/guest-sessions",
     },
 
     // Marketing & Engagement
-    "/[role]/dashboard/coupons": {
-      vi: "/[role]/dashboard/coupons",
-      en: "/[role]/dashboard/coupons",
+    "/[role]/coupons": {
+      vi: "/[role]/coupons",
+      en: "/[role]/coupons",
     },
-    "/[role]/dashboard/reviews": {
-      vi: "/[role]/dashboard/reviews",
-      en: "/[role]/dashboard/reviews",
+    "/[role]/reviews": {
+      vi: "/[role]/reviews",
+      en: "/[role]/reviews",
     },
-    "/[role]/dashboard/notifications": {
-      vi: "/[role]/dashboard/notifications",
-      en: "/[role]/dashboard/notifications",
+    "/[role]/notifications": {
+      vi: "/[role]/notifications",
+      en: "/[role]/notifications",
     },
 
     // System & Monitoring
-    "/[role]/dashboard/email-outbox": {
-      vi: "/[role]/dashboard/email-outbox",
-      en: "/[role]/dashboard/email-outbox",
+    "/[role]/email-outbox": {
+      vi: "/[role]/email-outbox",
+      en: "/[role]/email-outbox",
     },
-    "/[role]/dashboard/login-attempts": {
-      vi: "/[role]/dashboard/login-attempts",
-      en: "/[role]/dashboard/login-attempts",
+    "/[role]/login-attempts": {
+      vi: "/[role]/login-attempts",
+      en: "/[role]/login-attempts",
     },
-    "/[role]/dashboard/devices": {
-      vi: "/[role]/dashboard/devices",
-      en: "/[role]/dashboard/devices",
+    "/[role]/devices": {
+      vi: "/[role]/devices",
+      en: "/[role]/devices",
     },
 
     // Settings
-    "/[role]/dashboard/settings": {
-      vi: "/[role]/dashboard/settings",
-      en: "/[role]/dashboard/settings",
+    "/[role]/settings": {
+      vi: "/[role]/settings",
+      en: "/[role]/settings",
     },
-    "/[role]/dashboard/settings/account": {
-      vi: "/[role]/dashboard/settings/account",
-      en: "/[role]/dashboard/settings/account",
+    "/[role]/settings/account": {
+      vi: "/[role]/settings/account",
+      en: "/[role]/settings/account",
     },
-    "/[role]/dashboard/settings/appearance": {
-      vi: "/[role]/dashboard/settings/appearance",
-      en: "/[role]/dashboard/settings/appearance",
+    "/[role]/settings/appearance": {
+      vi: "/[role]/settings/appearance",
+      en: "/[role]/settings/appearance",
     },
-    "/[role]/dashboard/settings/notifications": {
-      vi: "/[role]/dashboard/settings/notifications",
-      en: "/[role]/dashboard/settings/notifications",
+    "/[role]/settings/notifications": {
+      vi: "/[role]/settings/notifications",
+      en: "/[role]/settings/notifications",
     },
-    "/[role]/dashboard/settings/display": {
-      vi: "/[role]/dashboard/settings/display",
-      en: "/[role]/dashboard/settings/display",
+    "/[role]/settings/display": {
+      vi: "/[role]/settings/display",
+      en: "/[role]/settings/display",
     },
 
     // Help
-    "/[role]/dashboard/help-center": {
-      vi: "/[role]/dashboard/help-center",
-      en: "/[role]/dashboard/help-center",
+    "/[role]/help-center": {
+      vi: "/[role]/help-center",
+      en: "/[role]/help-center",
     },
 
     // Staff
-    "/[role]/dashboard/staff/orders": {
-      vi: "/[role]/dashboard/staff/orders",
-      en: "/[role]/dashboard/staff/orders",
+    "/[role]/staff/orders": {
+      vi: "/[role]/staff/orders",
+      en: "/[role]/staff/orders",
     },
-    "/[role]/dashboard/staff/orders/[orderId]": {
-      vi: "/[role]/dashboard/staff/orders/[orderId]",
-      en: "/[role]/dashboard/staff/orders/[orderId]",
+    "/[role]/staff/orders/[orderId]": {
+      vi: "/[role]/staff/orders/[orderId]",
+      en: "/[role]/staff/orders/[orderId]",
     },
-    "/[role]/dashboard/staff/customers": {
-      vi: "/[role]/dashboard/staff/customers",
-      en: "/[role]/dashboard/staff/customers",
+    "/[role]/staff/customers": {
+      vi: "/[role]/staff/customers",
+      en: "/[role]/staff/customers",
     },
-    "/[role]/dashboard/staff/products": {
-      vi: "/[role]/dashboard/staff/products",
-      en: "/[role]/dashboard/staff/products",
+    "/[role]/staff/products": {
+      vi: "/[role]/staff/products",
+      en: "/[role]/staff/products",
     },
-    "/[role]/dashboard/staff/reviews": {
-      vi: "/[role]/dashboard/staff/reviews",
-      en: "/[role]/dashboard/staff/reviews",
+    "/[role]/staff/reviews": {
+      vi: "/[role]/staff/reviews",
+      en: "/[role]/staff/reviews",
     },
-    "/[role]/dashboard/staff/coupons": {
-      vi: "/[role]/dashboard/staff/coupons",
-      en: "/[role]/dashboard/staff/coupons",
+    "/[role]/staff/coupons": {
+      vi: "/[role]/staff/coupons",
+      en: "/[role]/staff/coupons",
     },
-    "/[role]/dashboard/staff/shipping": {
-      vi: "/[role]/dashboard/staff/shipping",
-      en: "/[role]/dashboard/staff/shipping",
+    "/[role]/staff/shipping": {
+      vi: "/[role]/staff/shipping",
+      en: "/[role]/staff/shipping",
     },
 
     // Warehouse
-    "/[role]/dashboard/warehouse/inventory": {
-      vi: "/[role]/dashboard/warehouse/inventory",
-      en: "/[role]/dashboard/warehouse/inventory",
+    "/[role]/warehouse/inventory": {
+      vi: "/[role]/warehouse/inventory",
+      en: "/[role]/warehouse/inventory",
     },
-    "/[role]/dashboard/warehouse/stock-in": {
-      vi: "/[role]/dashboard/warehouse/stock-in",
-      en: "/[role]/dashboard/warehouse/stock-in",
+    "/[role]/warehouse/stock-in": {
+      vi: "/[role]/warehouse/stock-in",
+      en: "/[role]/warehouse/stock-in",
     },
-    "/[role]/dashboard/warehouse/stock-out": {
-      vi: "/[role]/dashboard/warehouse/stock-out",
-      en: "/[role]/dashboard/warehouse/stock-out",
+    "/[role]/warehouse/stock-out": {
+      vi: "/[role]/warehouse/stock-out",
+      en: "/[role]/warehouse/stock-out",
     },
-    "/[role]/dashboard/warehouse/products": {
-      vi: "/[role]/dashboard/warehouse/products",
-      en: "/[role]/dashboard/warehouse/products",
+    "/[role]/warehouse/products": {
+      vi: "/[role]/warehouse/products",
+      en: "/[role]/warehouse/products",
     },
-    "/[role]/dashboard/warehouse/shipments": {
-      vi: "/[role]/dashboard/warehouse/shipments",
-      en: "/[role]/dashboard/warehouse/shipments",
+    "/[role]/warehouse/shipments": {
+      vi: "/[role]/warehouse/shipments",
+      en: "/[role]/warehouse/shipments",
     },
-    "/[role]/dashboard/warehouse/shipments/[shipmentId]": {
-      vi: "/[role]/dashboard/warehouse/shipments/[shipmentId]",
-      en: "/[role]/dashboard/warehouse/shipments/[shipmentId]",
+    "/[role]/warehouse/shipments/[shipmentId]": {
+      vi: "/[role]/warehouse/shipments/[shipmentId]",
+      en: "/[role]/warehouse/shipments/[shipmentId]",
     },
-    "/[role]/dashboard/warehouse/suppliers": {
-      vi: "/[role]/dashboard/warehouse/suppliers",
-      en: "/[role]/dashboard/warehouse/suppliers",
+    "/[role]/warehouse/suppliers": {
+      vi: "/[role]/warehouse/suppliers",
+      en: "/[role]/warehouse/suppliers",
     },
-    "/[role]/dashboard/warehouse/reports": {
-      vi: "/[role]/dashboard/warehouse/reports",
-      en: "/[role]/dashboard/warehouse/reports",
+    "/[role]/warehouse/reports": {
+      vi: "/[role]/warehouse/reports",
+      en: "/[role]/warehouse/reports",
     },
   },
 });

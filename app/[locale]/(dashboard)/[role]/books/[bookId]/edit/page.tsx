@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import {
   ChevronLeft,
   Save,
@@ -16,7 +16,6 @@ import {
   Globe,
   Lock,
   PencilLine,
-  BadgeDollarSign,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -100,12 +99,10 @@ function formatCurrency(value: string | number, currencyCode: string) {
 export default function EditBookPage() {
   const router = useRouter();
   const { t } = useTranslator();
-  const { bookEdit } = useAdminStore();
+  const { bookId } = useParams<{ bookId: string }>();
 
-  const bookId = bookEdit?.id;
-  const { bookDetail, isLoading } = useAdminBookQuery(bookId);
-
-  const detail = (bookDetail || bookEdit) as BookDetail | undefined;
+  const { data: bookDetail, isLoading } = useAdminBookQuery(bookId);
+  const detail = bookDetail as BookDetail;
 
   const translations = useMemo(
     () => (detail?.translation || []) as BookTranslation[],
@@ -118,11 +115,7 @@ export default function EditBookPage() {
   );
 
   const defaultTranslation = useMemo(() => {
-    return (
-      translations.find((item) => item.languageId === 2) ||
-      translations.find((item) => item.languageId === 1) ||
-      translations[0]
-    );
+    return translations;
   }, [translations]);
 
   const [translationDrafts, setTranslationDrafts] = useState<BookTranslation[]>(
@@ -225,26 +218,11 @@ export default function EditBookPage() {
             <div className="flex flex-wrap items-center gap-2">
               <h1 className="truncate text-2xl font-semibold tracking-tight">
                 {t("dashboard_products.edit.editing")}:{" "}
-                {defaultTranslation?.title || "Untitled Book"}
+                {defaultTranslation[0].title || "Untitled Book"}
               </h1>
               <Badge variant="outline" className="font-mono text-[10px]">
                 ID: {detail.id}
               </Badge>
-            </div>
-
-            <div className="mt-1 flex flex-wrap items-center gap-4">
-              <p className="flex items-center gap-1 text-sm text-muted-foreground">
-                <Globe className="size-3" />
-                https://yourshop.com/books/{defaultTranslation?.slug || ""}
-              </p>
-              <Button
-                variant="link"
-                size="sm"
-                className="h-auto p-0 text-xs gap-1"
-              >
-                <ExternalLink className="size-3" />
-                {t("dashboard_products.edit.viewLive")}
-              </Button>
             </div>
           </div>
         </div>
@@ -334,7 +312,7 @@ export default function EditBookPage() {
                                 {meta.label}
                               </p>
                               <p className="text-xs text-muted-foreground">
-                                Chỉnh title, slug, description cho ngôn ngữ này
+                                Chỉnh title, description cho ngôn ngữ này
                               </p>
                             </div>
                             <Badge variant="outline">{meta.short}</Badge>
@@ -361,6 +339,7 @@ export default function EditBookPage() {
                               <Label className="font-semibold">Slug</Label>
                               <div className="relative">
                                 <Input
+                                  disabled={true}
                                   value={translation.slug}
                                   onChange={(e) =>
                                     updateTranslationField(
@@ -488,15 +467,12 @@ export default function EditBookPage() {
                             updateVariantPrice(variant.id, e.target.value)
                           }
                           inputMode="numeric"
-                          className="h-11 border-emerald-300 bg-background pr-14 text-right text-base font-semibold"
+                          className="h-11 border-emerald-300 bg-background pr-14 text-left text-base font-semibold"
                         />
                         <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground">
                           {variant.currencyCode}
                         </span>
                       </div>
-                      <p className="mt-2 text-xs text-emerald-700">
-                        Đây là field duy nhất được phép sửa ở variant
-                      </p>
                     </div>
 
                     <div className="rounded-xl border bg-muted/40 p-4">
@@ -678,27 +654,6 @@ export default function EditBookPage() {
                       }))
                     }
                   />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-amber-200 bg-amber-50/40 shadow-sm">
-            <CardContent className="p-5">
-              <div className="flex items-start gap-3">
-                <BadgeDollarSign className="mt-0.5 size-4 text-amber-700" />
-                <div className="space-y-1">
-                  <p className="text-sm font-semibold text-amber-900">
-                    Quy tắc chỉnh sửa
-                  </p>
-                  <ul className="space-y-1 text-xs text-amber-800">
-                    <li>
-                      - Được sửa: title, slug, description theo từng ngôn ngữ
-                    </li>
-                    <li>- Được sửa: price của từng variant</li>
-                    <li>- Không được sửa: stock</li>
-                    <li>- Không được sửa: costPrice</li>
-                  </ul>
                 </div>
               </div>
             </CardContent>
