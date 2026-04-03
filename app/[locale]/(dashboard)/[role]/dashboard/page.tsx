@@ -43,19 +43,15 @@ export default function Dashboard() {
           <Button>Download</Button>
         </div>
       </div>
-      <Tabs
-        orientation="vertical"
-        defaultValue="overview"
-        className="space-y-4"
-      >
+      <Tabs orientation="vertical" defaultValue="" className="space-y-4">
         <div className="w-full overflow-x-auto pb-2">
           <TabsList className="!flex-row">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="">Overview</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="sale-profile">Sale Profile</TabsTrigger>
             <TabsTrigger value="customer">Customer</TabsTrigger>
           </TabsList>
-          <TabsContent value="overview" className="space-y-4 mt-5">
+          <TabsContent value="" className="space-y-4 mt-5">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

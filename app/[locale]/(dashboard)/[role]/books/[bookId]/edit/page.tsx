@@ -10,10 +10,8 @@ import {
   Wallet,
   Ruler,
   Trash2,
-  ExternalLink,
   Copy,
   CheckCircle2,
-  Globe,
   Lock,
   PencilLine,
 } from "lucide-react";
@@ -36,10 +34,24 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import useTranslator from "@/hooks/use-translator";
-import { useAdminBookQuery, useAdminStore } from "@/features/admin";
+import { useAdminBookQuery, useUpdateBookMutation } from "@/features/admin";
 import { LoadingLazy } from "@/components/common/LoadingLazy";
+import { BookVariant } from "@/types/response/catalog.response";
+import {
+  AdminBookDetail,
+  UpdateAdminBookPayload,
+} from "@/types/request/admin.request";
 
-type BookTranslation = {
+export type AdminBookGeneralForm = {
+  isActive: boolean;
+  coverImageUrl: string;
+  weightGrams: number;
+  pageCount: number;
+  publisherId: string;
+  publicationYear: number;
+};
+
+export type AdminBookTranslationDraft = {
   id: string;
   languageId: number;
   title: string;
@@ -47,9 +59,9 @@ type BookTranslation = {
   slug: string;
 };
 
-type BookVariant = {
+export type AdminBookVariantDraft = {
   id: string;
-  format: string;
+  format: BookVariant;
   edition: number;
   isbn: string;
   costPrice: string;
@@ -59,41 +71,77 @@ type BookVariant = {
   isActive: boolean;
 };
 
-type BookDetail = {
-  id: string;
-  publisherId: string | number;
-  publicationYear: number;
-  pageCount: number;
-  weightGrams: number;
-  coverImageUrl: string;
-  isActive: boolean;
-  deletedAt: string | null;
-  createdAt: string;
-  updatedAt: string;
-  translation: BookTranslation[];
-  variants: BookVariant[];
+export type AdminBookEditStore = {
+  general: AdminBookGeneralForm;
+  translations: AdminBookTranslationDraft[];
+  variants: AdminBookVariantDraft[];
 };
 
-const LANGUAGE_META: Record<
+const EMPTY_GENERAL_FORM: AdminBookGeneralForm = {
+  isActive: false,
+  coverImageUrl: "",
+  weightGrams: 0,
+  pageCount: 0,
+  publisherId: "",
+  publicationYear: new Date().getFullYear(),
+};
+
+const LANGUAGE_META_BY_ID: Record<
   number,
-  { label: string; short: string; emoji: string }
+  { code: string; label: string; short: string; emoji: string }
 > = {
-  1: { label: "English", short: "EN", emoji: "🇺🇸" },
-  2: { label: "Tiếng Việt", short: "VI", emoji: "🇻🇳" },
+  1: { code: "en", label: "English", short: "EN", emoji: "🇺🇸" },
+  2: { code: "vi", label: "Tiếng Việt", short: "VI", emoji: "🇻🇳" },
 };
 
-function getLanguageMeta(languageId: number) {
+function getLanguageMetaById(languageId: number) {
   return (
-    LANGUAGE_META[languageId] || {
+    LANGUAGE_META_BY_ID[languageId] || {
+      code: `lang-${languageId}`,
       label: `Language ${languageId}`,
-      short: `L${languageId}`,
+      short: String(languageId),
       emoji: "🌐",
     }
   );
 }
 
+function getLanguageCodeById(languageId: number): string {
+  return getLanguageMetaById(languageId).code;
+}
+
 function formatCurrency(value: string | number, currencyCode: string) {
   return `${Number(value || 0).toLocaleString()} ${currencyCode}`;
+}
+
+function toAdminBookEditStore(detail: AdminBookDetail): AdminBookEditStore {
+  return {
+    general: {
+      isActive: detail.isActive,
+      coverImageUrl: detail.coverImageUrl,
+      weightGrams: detail.weightGrams,
+      pageCount: detail.pageCount,
+      publisherId: detail.publisherId,
+      publicationYear: detail.publicationYear,
+    },
+    translations: detail.translation.map((item) => ({
+      id: item.id,
+      languageId: item.languageId,
+      title: item.title,
+      description: item.description,
+      slug: item.slug,
+    })),
+    variants: detail.variants.map((item) => ({
+      id: item.id,
+      format: item.format,
+      edition: item.edition,
+      isbn: item.isbn,
+      costPrice: item.costPrice,
+      price: item.price,
+      currencyCode: item.currencyCode,
+      stock: item.stock,
+      isActive: item.isActive,
+    })),
+  };
 }
 
 export default function EditBookPage() {
@@ -102,55 +150,38 @@ export default function EditBookPage() {
   const { bookId } = useParams<{ bookId: string }>();
 
   const { data: bookDetail, isLoading } = useAdminBookQuery(bookId);
-  const detail = bookDetail as BookDetail;
+  const { mutateAsync: updateBook } = useUpdateBookMutation();
 
-  const translations = useMemo(
-    () => (detail?.translation || []) as BookTranslation[],
-    [detail],
-  );
+  const detail = bookDetail as AdminBookDetail | undefined;
 
-  const variants = useMemo(
-    () => (detail?.variants || []) as BookVariant[],
-    [detail],
-  );
-
-  const defaultTranslation = useMemo(() => {
-    return translations;
-  }, [translations]);
-
-  const [translationDrafts, setTranslationDrafts] = useState<BookTranslation[]>(
+  const [generalForm, setGeneralForm] =
+    useState<AdminBookGeneralForm>(EMPTY_GENERAL_FORM);
+  const [translationDrafts, setTranslationDrafts] = useState<
+    AdminBookTranslationDraft[]
+  >([]);
+  const [variantDrafts, setVariantDrafts] = useState<AdminBookVariantDraft[]>(
     [],
   );
-
-  const [variantDrafts, setVariantDrafts] = useState<BookVariant[]>([]);
-
-  const [generalForm, setGeneralForm] = useState({
-    isActive: false,
-    coverImageUrl: "",
-    weightGrams: 0,
-    pageCount: 0,
-    publisherId: "",
-    publicationYear: new Date().getFullYear(),
-  });
 
   useEffect(() => {
     if (!detail) return;
 
-    setTranslationDrafts((detail.translation || []) as BookTranslation[]);
-    setVariantDrafts((detail.variants || []) as BookVariant[]);
-    setGeneralForm({
-      isActive: !!detail.isActive,
-      coverImageUrl: detail.coverImageUrl || "",
-      weightGrams: detail.weightGrams ?? 0,
-      pageCount: detail.pageCount ?? 0,
-      publisherId: String(detail.publisherId ?? ""),
-      publicationYear: detail.publicationYear ?? new Date().getFullYear(),
-    });
+    const store = toAdminBookEditStore(detail);
+    setGeneralForm(store.general);
+    setTranslationDrafts(store.translations);
+    setVariantDrafts(store.variants);
   }, [detail]);
+
+  const defaultTranslation = useMemo(() => {
+    return translationDrafts[0] ?? detail?.translation?.[0];
+  }, [translationDrafts, detail]);
 
   const updateTranslationField = (
     translationId: string,
-    field: keyof Pick<BookTranslation, "title" | "slug" | "description">,
+    field: keyof Pick<
+      AdminBookTranslationDraft,
+      "title" | "slug" | "description"
+    >,
     value: string,
   ) => {
     setTranslationDrafts((prev) =>
@@ -162,6 +193,7 @@ export default function EditBookPage() {
 
   const updateVariantPrice = (variantId: string, value: string) => {
     const normalized = value.replace(/[^\d]/g, "");
+
     setVariantDrafts((prev) =>
       prev.map((item) =>
         item.id === variantId ? { ...item, price: normalized } : item,
@@ -169,10 +201,10 @@ export default function EditBookPage() {
     );
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!detail) return;
 
-    const payload = {
+    const payload: UpdateAdminBookPayload = {
       id: detail.id,
       isActive: generalForm.isActive,
       coverImageUrl: generalForm.coverImageUrl,
@@ -180,11 +212,9 @@ export default function EditBookPage() {
       pageCount: Number(generalForm.pageCount),
       publisherId: Number(generalForm.publisherId),
       publicationYear: Number(generalForm.publicationYear),
-      translation: translationDrafts.map((item) => ({
-        id: item.id,
-        languageId: item.languageId,
+      translations: translationDrafts.map((item) => ({
+        code: getLanguageCodeById(item.languageId),
         title: item.title,
-        slug: item.slug,
         description: item.description,
       })),
       variants: variantDrafts.map((item) => ({
@@ -193,8 +223,7 @@ export default function EditBookPage() {
       })),
     };
 
-    console.log("UPDATE BOOK PAYLOAD", payload);
-    // TODO: call update API ở đây
+    await updateBook({ bookId, payload });
   };
 
   if (!bookId) return <LoadingLazy />;
@@ -218,7 +247,7 @@ export default function EditBookPage() {
             <div className="flex flex-wrap items-center gap-2">
               <h1 className="truncate text-2xl font-semibold tracking-tight">
                 {t("dashboard_products.edit.editing")}:{" "}
-                {defaultTranslation[0].title || "Untitled Book"}
+                {defaultTranslation?.title || "Untitled Book"}
               </h1>
               <Badge variant="outline" className="font-mono text-[10px]">
                 ID: {detail.id}
@@ -282,7 +311,8 @@ export default function EditBookPage() {
                 >
                   <TabsList className="h-auto flex-wrap justify-start gap-2 bg-transparent p-0">
                     {translationDrafts.map((translation) => {
-                      const meta = getLanguageMeta(translation.languageId);
+                      const meta = getLanguageMetaById(translation.languageId);
+
                       return (
                         <TabsTrigger
                           key={translation.id}
@@ -297,7 +327,7 @@ export default function EditBookPage() {
                   </TabsList>
 
                   {translationDrafts.map((translation) => {
-                    const meta = getLanguageMeta(translation.languageId);
+                    const meta = getLanguageMetaById(translation.languageId);
 
                     return (
                       <TabsContent
@@ -339,7 +369,7 @@ export default function EditBookPage() {
                               <Label className="font-semibold">Slug</Label>
                               <div className="relative">
                                 <Input
-                                  disabled={true}
+                                  disabled
                                   value={translation.slug}
                                   onChange={(e) =>
                                     updateTranslationField(

@@ -1,4 +1,8 @@
-import { CreateAdminBookAllRequest } from "@/types/request/admin.request";
+import {
+  AdminBookDetail,
+  CreateAdminBookAllRequest,
+  UpdateAdminBookPayload,
+} from "@/types/request/admin.request";
 import { AdminBookVariantListData } from "@/types/response/admin-book-variant.response";
 import {
   AdminBookListResponse,
@@ -34,7 +38,9 @@ export const adminService = {
 
   getBookById: (bookId: string) => {
     console.log(bookId);
-    return http.get<ProxySuccessResponse<AdminBook>>(`admin/books/${bookId}`);
+    return http.get<ProxySuccessResponse<AdminBookDetail>>(
+      `admin/books/${bookId}`,
+    );
   },
 
   createBook: (payload: AdminMutationPayload) =>
@@ -43,7 +49,7 @@ export const adminService = {
   createBookAll: (payload: CreateAdminBookAllRequest) =>
     http.post<AdminBookResponse>("admin/books/all", payload),
 
-  updateBook: (bookId: string, payload: AdminMutationPayload) =>
+  updateBook: (bookId: string, payload: UpdateAdminBookPayload) =>
     http.patch(`admin/books/${bookId}`, payload),
 
   deleteBook: (bookId: string) => http.del(`admin/books/${bookId}`),

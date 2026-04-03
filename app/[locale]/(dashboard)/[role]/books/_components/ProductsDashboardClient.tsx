@@ -157,9 +157,7 @@ export function ProductsDashboardClient() {
             </Button>
             <Button
               onClick={() => {
-                router.push(
-                  `/${role}/books/${row.original.id}/edit`,
-                );
+                router.push(`/${role}/books/${row.original.id}/edit`);
               }}
               variant="ghost"
               size="icon"

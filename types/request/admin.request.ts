@@ -1,4 +1,4 @@
-import { BookFormat } from "../response/catalog.response";
+import { BookFormat, BookVariant } from "../response/catalog.response";
 import { Badge } from "@/components/ui/badge";
 
 export type CreateBookSpecRequest = {
@@ -20,6 +20,7 @@ export type CreateBookAuthorRequest = {
   authorName: string;
   isPrimary?: boolean;
 };
+
 export type CreateBookVariantRequest = {
   format: BookFormat;
 
@@ -35,20 +36,63 @@ export type CreateBookVariantRequest = {
 };
 
 export type CreateAdminBookAllRequest = {
-  // Publisher
   publisherName: string;
-  // Book-level fields
   publicationYear?: number;
   pageCount?: number;
   weightGrams?: number;
   coverImageUrl?: string;
-  // Badge
   badgeCode?: string | null;
-  // Specs
   spec?: CreateBookSpecRequest | undefined;
   translations: CreateBookTranslationRequest[];
-  // Authors
   authors?: CreateBookAuthorRequest[];
-  // Variants (>=1)
   variants: CreateBookVariantRequest[];
+};
+
+export type UpdateAdminBookTranslationPayload = {
+  languageId: number;
+  title?: string;
+  description?: string;
+};
+
+export type UpdateAdminBookPayload = {
+  pageCount?: number;
+  weightGrams?: number;
+  coverImageUrl?: string;
+  isActive?: boolean;
+  translations?: UpdateAdminBookTranslationPayload[];
+};
+
+export type AdminBookDetail = {
+  id: string;
+  publisherId: string;
+  publicationYear: number;
+  pageCount: number;
+  weightGrams: number;
+  coverImageUrl: string;
+  isActive: boolean;
+  deletedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  translation: AdminBookTranslation[];
+  variants: AdminBookVariant[];
+};
+
+export type AdminBookTranslation = {
+  id: string;
+  languageId: number;
+  title: string;
+  description: string;
+  slug: string;
+};
+
+export type AdminBookVariant = {
+  id: string;
+  format: BookVariant;
+  edition: number;
+  isbn: string;
+  costPrice: string;
+  price: string;
+  currencyCode: string;
+  stock: number;
+  isActive: boolean;
 };
