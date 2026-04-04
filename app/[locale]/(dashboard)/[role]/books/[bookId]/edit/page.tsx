@@ -41,6 +41,10 @@ import {
   AdminBookDetail,
   UpdateAdminBookPayload,
 } from "@/types/request/admin.request";
+import { useLanguagesQuery } from "@/features/language/hooks/use-languages-query";
+import { LanguagePicker } from "./_components/LanguageTab";
+import HeaderEdit from "./_components/HeaderEdit";
+import { TranslationTabs } from "./_components/TranslationTabs";
 
 export type AdminBookGeneralForm = {
   isActive: boolean;
@@ -86,29 +90,6 @@ const EMPTY_GENERAL_FORM: AdminBookGeneralForm = {
   publicationYear: new Date().getFullYear(),
 };
 
-const LANGUAGE_META_BY_ID: Record<
-  number,
-  { code: string; label: string; short: string; emoji: string }
-> = {
-  1: { code: "en", label: "English", short: "EN", emoji: "🇺🇸" },
-  2: { code: "vi", label: "Tiếng Việt", short: "VI", emoji: "🇻🇳" },
-};
-
-function getLanguageMetaById(languageId: number) {
-  return (
-    LANGUAGE_META_BY_ID[languageId] || {
-      code: `lang-${languageId}`,
-      label: `Language ${languageId}`,
-      short: String(languageId),
-      emoji: "🌐",
-    }
-  );
-}
-
-function getLanguageCodeById(languageId: number): string {
-  return getLanguageMetaById(languageId).code;
-}
-
 function formatCurrency(value: string | number, currencyCode: string) {
   return `${Number(value || 0).toLocaleString()} ${currencyCode}`;
 }
@@ -150,6 +131,9 @@ export default function EditBookPage() {
   const { bookId } = useParams<{ bookId: string }>();
 
   const { data: bookDetail, isLoading } = useAdminBookQuery(bookId);
+  const { data: languages, isPending: isPendingLanguages } =
+    useLanguagesQuery();
+
   const { mutateAsync: updateBook } = useUpdateBookMutation();
 
   const detail = bookDetail as AdminBookDetail | undefined;
@@ -232,54 +216,13 @@ export default function EditBookPage() {
 
   return (
     <div className="mx-auto max-w-[1600px] space-y-8 p-4">
-      <div className="sticky top-0 z-10 flex flex-col justify-between gap-4 rounded-2xl border bg-background/95 p-6 shadow-sm backdrop-blur md:flex-row md:items-center">
-        <div className="flex items-center gap-4">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => router.back()}
-            className="size-10 shrink-0 rounded-full"
-          >
-            <ChevronLeft className="size-5" />
-          </Button>
-
-          <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className="truncate text-2xl font-semibold tracking-tight">
-                {t("dashboard_products.edit.editing")}:{" "}
-                {defaultTranslation?.title || "Untitled Book"}
-              </h1>
-              <Badge variant="outline" className="font-mono text-[10px]">
-                ID: {detail.id}
-              </Badge>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            className="gap-2 border-destructive/20 text-destructive hover:bg-destructive/5"
-          >
-            <Trash2 className="size-4" />
-            {t("dashboard_products.edit.deleteBook")}
-          </Button>
-
-          <Separator
-            orientation="vertical"
-            className="mx-2 hidden h-8 md:block"
-          />
-
-          <Button variant="ghost" onClick={() => router.back()}>
-            {t("dashboard_products.edit.cancel")}
-          </Button>
-
-          <Button onClick={handleSave} className="gap-2 px-8">
-            <Save className="size-4" />
-            {t("dashboard_products.edit.updateChanges")}
-          </Button>
-        </div>
-      </div>
+      <HeaderEdit
+        detail={detail}
+        defaultTranslation={defaultTranslation}
+        handleSave={handleSave}
+        // onDelete={handleDelete}
+        // isSaving={isSaving}
+      />
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
         <div className="space-y-8 lg:col-span-8">
@@ -300,127 +243,11 @@ export default function EditBookPage() {
             </CardHeader>
 
             <CardContent className="p-6">
-              {translationDrafts.length === 0 ? (
-                <div className="rounded-xl border border-dashed p-8 text-sm text-muted-foreground">
-                  Không có translation để chỉnh sửa.
-                </div>
-              ) : (
-                <Tabs
-                  defaultValue={String(translationDrafts[0]?.languageId)}
-                  className="space-y-6"
-                >
-                  <TabsList className="h-auto flex-wrap justify-start gap-2 bg-transparent p-0">
-                    {translationDrafts.map((translation) => {
-                      const meta = getLanguageMetaById(translation.languageId);
-
-                      return (
-                        <TabsTrigger
-                          key={translation.id}
-                          value={String(translation.languageId)}
-                          className="rounded-xl border bg-background px-4 py-2 data-[state=active]:border-indigo-300 data-[state=active]:bg-indigo-50"
-                        >
-                          <span className="mr-2">{meta.emoji}</span>
-                          <span>{meta.label}</span>
-                        </TabsTrigger>
-                      );
-                    })}
-                  </TabsList>
-
-                  {translationDrafts.map((translation) => {
-                    const meta = getLanguageMetaById(translation.languageId);
-
-                    return (
-                      <TabsContent
-                        key={translation.id}
-                        value={String(translation.languageId)}
-                        className="mt-0"
-                      >
-                        <div className="rounded-2xl border bg-card p-5">
-                          <div className="mb-5 flex items-center justify-between">
-                            <div>
-                              <p className="text-sm font-medium">
-                                {meta.label}
-                              </p>
-                              <p className="text-xs text-muted-foreground">
-                                Chỉnh title, description cho ngôn ngữ này
-                              </p>
-                            </div>
-                            <Badge variant="outline">{meta.short}</Badge>
-                          </div>
-
-                          <div className="space-y-5">
-                            <div className="space-y-2">
-                              <Label className="font-semibold">Title</Label>
-                              <Input
-                                value={translation.title}
-                                onChange={(e) =>
-                                  updateTranslationField(
-                                    translation.id,
-                                    "title",
-                                    e.target.value,
-                                  )
-                                }
-                                className="h-11"
-                                placeholder={`Nhập tiêu đề (${meta.label})`}
-                              />
-                            </div>
-
-                            <div className="space-y-2">
-                              <Label className="font-semibold">Slug</Label>
-                              <div className="relative">
-                                <Input
-                                  disabled
-                                  value={translation.slug}
-                                  onChange={(e) =>
-                                    updateTranslationField(
-                                      translation.id,
-                                      "slug",
-                                      e.target.value,
-                                    )
-                                  }
-                                  className="h-11 pr-10 font-mono text-sm"
-                                  placeholder="book-slug"
-                                />
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="icon"
-                                  className="absolute right-1 top-1/2 size-8 -translate-y-1/2"
-                                  onClick={() =>
-                                    navigator.clipboard.writeText(
-                                      translation.slug || "",
-                                    )
-                                  }
-                                >
-                                  <Copy className="size-3.5" />
-                                </Button>
-                              </div>
-                            </div>
-
-                            <div className="space-y-2">
-                              <Label className="font-semibold">
-                                Description
-                              </Label>
-                              <Textarea
-                                className="min-h-[240px] leading-relaxed"
-                                value={translation.description}
-                                onChange={(e) =>
-                                  updateTranslationField(
-                                    translation.id,
-                                    "description",
-                                    e.target.value,
-                                  )
-                                }
-                                placeholder={`Nhập mô tả (${meta.label})`}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </TabsContent>
-                    );
-                  })}
-                </Tabs>
-              )}
+              <TranslationTabs
+                translationDrafts={translationDrafts}
+                languages={languages ?? []}
+                // updateTranslationField={updateTranslationField}
+              />
             </CardContent>
           </Card>
 
@@ -567,11 +394,11 @@ export default function EditBookPage() {
 
             <CardContent className="space-y-4 p-6">
               <div className="group relative aspect-[3/4] overflow-hidden rounded-xl border bg-slate-100 shadow-inner">
-                <img
+                {/* <img
                   src={generalForm.coverImageUrl}
                   className="h-full w-full object-cover"
                   alt="Current cover"
-                />
+                /> */}
                 <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
                   <Button variant="secondary" size="sm" className="gap-2">
                     <ImageIcon className="size-4" />
