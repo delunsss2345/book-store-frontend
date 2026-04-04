@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useMemo } from "react";
 import { Copy, Languages, Globe, Check, Loader2 } from "lucide-react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,36 +9,18 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import { LanguageTabsList } from "../LanguageTab";
 import { useLanguagesQuery } from "@/features/language/hooks/use-languages-query";
+import { useAdminStore } from "@/features/admin";
 
-// Giả sử hook này được import từ service của bạn
-// import { useLanguagesQuery } from "@/hooks/use-languages-query";
-
-interface TranslationDraft {
-  id: string | number;
-  languageId: string | number;
-  title: string;
-  slug: string;
-  description: string;
-}
-
-interface TranslationTabsProps {
-  translationDrafts: TranslationDraft[];
-  updateTranslationField: (
-    id: string | number,
-    field: keyof TranslationDraft,
-    value: string,
-  ) => void;
-}
-
-export function TranslationTabs({
-  translationDrafts,
-  updateTranslationField,
-}: TranslationTabsProps) {
+export function TranslationTabs() {
   const { data: languages, isPending: isPendingLanguages } =
     useLanguagesQuery();
+
+  const { bookDraft, updateTranslationDraft } = useAdminStore();
+  const translations = useMemo(() => {
+    return bookDraft?.translation;
+  }, [bookDraft]);
 
   if (isPendingLanguages) {
     return (
@@ -52,7 +34,7 @@ export function TranslationTabs({
     );
   }
 
-  if (!translationDrafts || translationDrafts.length === 0) {
+  if (!translations || translations.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed p-12 text-center bg-muted/10">
         <div className="bg-muted mb-4 flex h-14 w-14 items-center justify-center rounded-full">
@@ -66,7 +48,7 @@ export function TranslationTabs({
     );
   }
   if (!languages) return null;
-  const defaultTab = String(translationDrafts[0]?.languageId);
+  const defaultTab = String(translations[0]?.languageId);
 
   return (
     <Tabs defaultValue={defaultTab} className="w-full space-y-6">
@@ -74,9 +56,9 @@ export function TranslationTabs({
         languages={languages}
         isPendingLanguages={isPendingLanguages}
       />
-      {translationDrafts.map((translation) => {
+      {translations.map((translation) => {
         const meta = languages?.find(
-          (lang) => lang.id === translation.languageId,
+          (lang) => Number(lang.id) === Number(translation.languageId),
         );
         return (
           <TabsContent
@@ -117,8 +99,8 @@ export function TranslationTabs({
                     placeholder="VD: Harry Potter và Hòn đá Phù thủy"
                     value={translation.title}
                     onChange={(e) =>
-                      updateTranslationField(
-                        translation.id,
+                      updateTranslationDraft(
+                        translation.languageId,
                         "title",
                         e.target.value,
                       )
@@ -160,8 +142,8 @@ export function TranslationTabs({
                     className="min-h-[240px] resize-none leading-relaxed border-muted-foreground/20 focus-visible:ring-indigo-500 shadow-sm"
                     value={translation.description}
                     onChange={(e) =>
-                      updateTranslationField(
-                        translation.id,
+                      updateTranslationDraft(
+                        translation.languageId,
                         "description",
                         e.target.value,
                       )

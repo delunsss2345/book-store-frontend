@@ -54,12 +54,19 @@ export type UpdateAdminBookTranslationPayload = {
   description?: string;
 };
 
+export type UpdateAdminBookVariantPayload = {
+  id: number;
+  price?: number;
+  isActive?: boolean;
+};
+
 export type UpdateAdminBookPayload = {
   pageCount?: number;
   weightGrams?: number;
   coverImageUrl?: string;
   isActive?: boolean;
   translations?: UpdateAdminBookTranslationPayload[];
+  variants: UpdateAdminBookVariantPayload[];
 };
 
 export type AdminBookDetail = {

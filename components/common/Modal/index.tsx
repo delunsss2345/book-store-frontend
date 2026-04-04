@@ -12,6 +12,8 @@ import ModalPurchaseOrderDetail from "./ModelPurchaseOrderDetail";
 import ModalGoodsReceiptDetail from "./ModalGoodsReceiptDetail";
 import ModalCreateAddress from "./ModalCreateAddress";
 import ModalOrderItemsDetail from "./ModalShowOrderItem";
+import ModalBookVariantPricing from "./ModalShowVariant";
+import ModelShowSpecEdit from "./ModalShowSpecEdit";
 
 export function ModalHost() {
   const { getIsOpen, onClose, getType } = useModalStore();
@@ -36,7 +38,7 @@ export function ModalHost() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
-              className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white dark:bg-slate-950 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 custom-scrollbar"
+              className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-white dark:bg-slate-950 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 custom-scrollbar"
             >
               <button
                 onClick={onClose}
@@ -69,6 +71,12 @@ export function ModalHost() {
                 )}
                 {type === ModalType.SHOW_ORDER_ITEMS && (
                   <ModalOrderItemsDetail />
+                )}
+                {type === ModalType.SHOW_VARIANT_EDIT && (
+                  <ModalBookVariantPricing />
+                )}
+                {type === ModalType.SHOW_BOOK_SPECIFICATIONS_EDIT && (
+                  <ModelShowSpecEdit />
                 )}
               </div>
             </motion.div>
