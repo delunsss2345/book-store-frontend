@@ -30,6 +30,7 @@ import HeaderEdit from "./_components/HeaderEdit";
 import { TranslationTabs } from "./_components/TranslationTabs";
 import { AdminBookEditSidebar } from "./_components/BookEditSidebar";
 import { ModalType, useModalStore } from "@/features/modal";
+import { toast } from "sonner";
 
 export default function EditBookPage() {
   const { t } = useTranslator();
@@ -67,7 +68,11 @@ export default function EditBookPage() {
       })),
     };
 
-    await updateBook({ bookId, payload });
+    toast.promise(updateBook({ bookId, payload }), {
+      loading: "Đang cập nhật sách...",
+      success: "Cập nhật sách thành công",
+      error: (error) => error.message,
+    });
   };
 
   if (!bookId || (isLoading && !detail) || !detail) return <LoadingLazy />;

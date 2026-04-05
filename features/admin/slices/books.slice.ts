@@ -1,26 +1,26 @@
-import { AdminBookDetail } from "@/types/request/admin.request";
+import { AdminBookDetailData } from "@/types/response/admin-book-detail.response";
 import type { StateCreator } from "zustand";
 
 type BooksSliceState = {
   books: any[];
   isLoadingBooks: boolean;
-  bookDetail: AdminBookDetail | null;
-  bookDraft: AdminBookDetail | null;
+  bookDetail: AdminBookDetailData | null;
+  bookDraft: AdminBookDetailData | null;
 };
 
 type BooksSliceActions = {
   setBooks: (books: any[]) => void;
-  setBookDetail: (bookDetail: AdminBookDetail | null) => void;
-  setBookDraft: (bookDraft: AdminBookDetail | null) => void;
+  setBookDetail: (bookDetail: AdminBookDetailData | null) => void;
+  setBookDraft: (bookDraft: AdminBookDetailData | null) => void;
 
-  updateBookDetail: <K extends keyof AdminBookDetail>(
+  updateBookDetail: <K extends keyof AdminBookDetailData>(
     field: K,
-    value: AdminBookDetail[K],
+    value: AdminBookDetailData[K],
   ) => void;
 
-  updateBookDraft: <K extends keyof AdminBookDetail>(
+  updateBookDraft: <K extends keyof AdminBookDetailData>(
     field: K,
-    value: AdminBookDetail[K],
+    value: AdminBookDetailData[K],
   ) => void;
 
   updateTranslationDraft: (
@@ -28,6 +28,8 @@ type BooksSliceActions = {
     field: string,
     value: string,
   ) => void;
+
+  updateBookVariant: (variantId: string, field: string, value: string) => void;
 };
 
 export type BooksSlice = BooksSliceState & BooksSliceActions;
@@ -88,6 +90,21 @@ export const createBooksSlice: StateCreator<BooksSlice> = (set) => ({
             translation.languageId === languageId
               ? { ...translation, [field]: value }
               : translation,
+          ),
+        },
+      };
+    });
+  },
+
+  updateBookVariant: (variantId: string, field: string, value: string) => {
+    set((state) => {
+      if (!state.bookDraft) return state;
+
+      return {
+        bookDraft: {
+          ...state.bookDraft,
+          variants: state.bookDraft.variants.map((variant) =>
+            variant.id === variantId ? { ...variant, [field]: value } : variant,
           ),
         },
       };

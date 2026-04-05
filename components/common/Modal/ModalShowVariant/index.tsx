@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import {
   ColumnDef,
   flexRender,
@@ -20,24 +20,18 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useAdminStore } from "@/features/admin";
 import { CircleDollarSign, Info, Lock } from "lucide-react";
-import { AdminBookVariant } from "@/types/response/admin.response";
 import { fmt } from "@/utils/format-number-vi";
+import { AdminBookVariant } from "@/types/response/admin.response";
 
 export default function ModalBookVariantPricing() {
-  const { bookDraft, setBookDraft } = useAdminStore();
+  const { bookDraft, updateBookVariant } = useAdminStore();
   const variants = useMemo(() => bookDraft?.variants || [], [bookDraft]);
-
-  const updateVariantPrice = (variantId: string, value: string) => {
-    if (!bookDraft) return;
-    setBookDraft({
-      ...bookDraft,
-      variants: bookDraft.variants.map((v) =>
-        v.id === variantId ? { ...v, price: value } : v,
-      ),
-    });
-  };
-
-  // 1. Định nghĩa Columns cho TanStack Table
+  const updateVariantPrice = useCallback(
+    (variantId: string, value: string) => {
+      updateBookVariant(variantId, "price", value);
+    },
+    [updateBookVariant],
+  );
   const columns = useMemo<ColumnDef<AdminBookVariant>[]>(
     () => [
       {
@@ -90,7 +84,7 @@ export default function ModalBookVariantPricing() {
               className="h-9 border-emerald-500/20 bg-emerald-500/[0.02] font-bold focus-visible:ring-emerald-500/30"
               placeholder="0"
             />
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-muted-foreground">
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[s10px] font-bold text-muted-foreground">
               {row.original.currencyCode || "VND"}
             </span>
           </div>
@@ -120,7 +114,7 @@ export default function ModalBookVariantPricing() {
         ),
       },
     ],
-    [variants],
+    [updateVariantPrice],
   );
 
   const table = useReactTable({
