@@ -29,7 +29,11 @@ type BooksSliceActions = {
     value: string,
   ) => void;
 
-  updateBookVariant: (variantId: string, field: string, value: string) => void;
+  updateBookVariant: (
+    variantId: string,
+    field: string,
+    value: string | boolean,
+  ) => void;
 };
 
 export type BooksSlice = BooksSliceState & BooksSliceActions;
@@ -96,7 +100,11 @@ export const createBooksSlice: StateCreator<BooksSlice> = (set) => ({
     });
   },
 
-  updateBookVariant: (variantId: string, field: string, value: string) => {
+  updateBookVariant: (
+    variantId: string,
+    field: string,
+    value: string | boolean,
+  ) => {
     set((state) => {
       if (!state.bookDraft) return state;
 

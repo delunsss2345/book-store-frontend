@@ -4,6 +4,8 @@ export type AdminBookDetailData = {
   id: string;
   publisherId: string;
   publicationYear: number;
+  authorName: string;
+  publisherName: string;
   pageCount: number;
   weightGrams: number;
   coverImageUrl: string;

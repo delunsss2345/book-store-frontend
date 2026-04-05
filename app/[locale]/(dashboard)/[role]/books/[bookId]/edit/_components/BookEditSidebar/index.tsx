@@ -15,15 +15,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAdminStore } from "@/features/admin";
 import { LoadingLazy } from "@/components/common/LoadingLazy";
+import { TranslationValues } from "next-intl";
 
-export function AdminBookEditSidebar({ t }: { t: any }) {
+export function AdminBookEditSidebar({ t }: { t: TranslationValues }) {
   const { bookDraft, updateBookDraft } = useAdminStore();
 
   if (!bookDraft) return <LoadingLazy />;
 
   return (
     <div className="space-y-6 lg:col-span-4">
-      {/* 1. Trạng thái - Gọn gàng, hiện đại */}
       <div className="rounded-2xl border border-border/50 bg-background p-5 shadow-sm ring-1 ring-border/5">
         <div className="flex items-center justify-between">
           <div className="space-y-1">

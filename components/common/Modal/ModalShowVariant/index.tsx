@@ -19,9 +19,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useAdminStore } from "@/features/admin";
-import { CircleDollarSign, Info, Lock } from "lucide-react";
+import { CircleDollarSign, Info, Lock, Trash } from "lucide-react";
 import { fmt } from "@/utils/format-number-vi";
 import { AdminBookVariant } from "@/types/response/admin.response";
+import { Switch } from "@/components/ui/switch";
 
 export default function ModalBookVariantPricing() {
   const { bookDraft, updateBookVariant } = useAdminStore();
@@ -29,6 +30,13 @@ export default function ModalBookVariantPricing() {
   const updateVariantPrice = useCallback(
     (variantId: string, value: string) => {
       updateBookVariant(variantId, "price", value);
+    },
+    [updateBookVariant],
+  );
+
+  const updateVariantStatus = useCallback(
+    (variantId: string, value: boolean) => {
+      updateBookVariant(variantId, "isActive", value);
     },
     [updateBookVariant],
   );
@@ -113,8 +121,23 @@ export default function ModalBookVariantPricing() {
           </Badge>
         ),
       },
+      {
+        id: "actions",
+        header: "Actions",
+        cell: ({ row }) => {
+          return (
+            <Switch
+              className="cursor-pointer"
+              checked={row.original.isActive}
+              onCheckedChange={(value) =>
+                updateVariantStatus(row.original.id, value)
+              }
+            />
+          );
+        },
+      },
     ],
-    [updateVariantPrice],
+    [updateVariantPrice, updateVariantStatus],
   );
 
   const table = useReactTable({

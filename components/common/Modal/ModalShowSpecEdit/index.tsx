@@ -144,33 +144,11 @@ export default function ModelShowSpecEdit() {
           <div className="grid gap-6">
             <div className="space-y-2">
               <Label className="text-xs font-bold text-muted-foreground uppercase flex items-center gap-2">
-                <Building2 className="size-3.5" /> Nhà xuất bản
+                <Building2 className="size-3.5" /> Nhà xuất bản / Tác giả
               </Label>
-              <Select
-                value={bookDraft.publisherId ?? ""}
-                onValueChange={(value) => updateField("publisherId", value)}
-              >
-                <SelectTrigger className="h-12 rounded-xl border-border bg-background font-semibold hover:border-sky-200 focus:ring-sky-500">
-                  <SelectValue placeholder="Chọn nhà xuất bản" />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl shadow-xl">
-                  {suppliers && suppliers.length ? (
-                    suppliers?.map((supplier: SupplierItem) => (
-                      <SelectItem
-                        key={supplier.id}
-                        value={supplier.id}
-                        className="rounded-lg"
-                      >
-                        {supplier.name}
-                      </SelectItem>
-                    ))
-                  ) : (
-                    <SelectItem value="__empty" disabled>
-                      Chưa có dữ liệu nhà xuất bản
-                    </SelectItem>
-                  )}
-                </SelectContent>
-              </Select>
+              <p className="text-base font-semibold text-foreground">
+                {bookDraft.publisherName ?? "-"} / {bookDraft.authorName ?? "-"}
+              </p>
             </div>
 
             <div className="space-y-2">

@@ -1,16 +1,9 @@
 "use client";
 
-import React, { useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useParams } from "next/navigation";
-import {
-  Languages,
-  Layers,
-  Settings2,
-  LayoutDashboard,
-  ArrowUpRight,
-} from "lucide-react";
+import { Languages } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
@@ -29,8 +22,8 @@ import {
 import HeaderEdit from "./_components/HeaderEdit";
 import { TranslationTabs } from "./_components/TranslationTabs";
 import { AdminBookEditSidebar } from "./_components/BookEditSidebar";
-import { ModalType, useModalStore } from "@/features/modal";
 import { toast } from "sonner";
+import { AdminBookDetailData } from "@/types/response/admin-book-detail.response";
 
 export default function EditBookPage() {
   const { t } = useTranslator();
@@ -39,9 +32,8 @@ export default function EditBookPage() {
   const { data: bookDetail, isLoading } = useAdminBookQuery(bookId);
   const { mutateAsync: updateBook } = useUpdateBookMutation();
 
-  const detail = bookDetail as AdminBookDetail | undefined;
+  const detail = bookDetail as AdminBookDetailData | undefined;
   const { bookDraft, setBookDraft, setBookDetail } = useAdminStore();
-  const { onOpen } = useModalStore();
 
   useEffect(() => {
     if (!detail) return;
@@ -66,12 +58,18 @@ export default function EditBookPage() {
         title: item.title,
         description: item.description,
       })),
+      variants: bookDraft.variants.map((variant) => ({
+        id: Number(variant.id),
+        costPrice: Number(variant.costPrice),
+        price: Number(variant.price),
+        isActive: variant.isActive,
+      })),
     };
 
     toast.promise(updateBook({ bookId, payload }), {
       loading: "Đang cập nhật sách...",
       success: "Cập nhật sách thành công",
-      error: (error) => error.message,
+      error: (error) => error.response.data.message,
     });
   };
 
