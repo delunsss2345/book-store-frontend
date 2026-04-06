@@ -2,17 +2,17 @@ import { api } from "@/lib/api/fetchHandler";
 import { ResponseApi } from "@/lib/api/responseHandler";
 import { OrderStatusResponse } from "@/types/response/order.response";
 import { HttpStatusCode } from "axios";
-import { NextRequest } from "next/server";
+import { wrapperHandler } from "@/lib/api/wrapperHandler";
 
-export async function GET(
-    request: NextRequest,
-    { params }: { params: Promise<{ orderId: string }> }
-) {
-    try {
-        const { orderId } = await params;
-        const response = await api.get<OrderStatusResponse>(`hooks/${orderId}/status`);
-        return ResponseApi.success(response.data, HttpStatusCode.Ok);
-    } catch (error: any) {
-        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
-    }
-}
+export const GET = wrapperHandler(
+  async (
+    request: Request,
+    { params }: { params: Promise<{ orderId: string }> },
+  ) => {
+    const { orderId } = await params;
+    const response = await api.get<OrderStatusResponse>(
+      `hooks/${orderId}/status`,
+    );
+    return ResponseApi.success(response.data, HttpStatusCode.Ok);
+  },
+);

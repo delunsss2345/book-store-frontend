@@ -1,17 +1,15 @@
 import { api } from "@/lib/api/fetchHandler";
 import { ResponseApi } from "@/lib/api/responseHandler";
 import { HttpStatusCode } from "axios";
-import { NextRequest } from "next/server";
+import { wrapperHandler } from "@/lib/api/wrapperHandler";
 
-export async function PATCH(
-    request: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
-) {
-    try {
-        const payload = await params;
-        const response = await api.patch<any>(`user-address/user/${payload.id}/set-default`, {});
-        return ResponseApi.success(response.data, HttpStatusCode.Ok);
-    } catch (error: any) {
-        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
-    }
-}
+export const PATCH = wrapperHandler(
+  async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
+    const payload = await params;
+    const response = await api.patch<any>(
+      `user-address/user/${payload.id}/set-default`,
+      {},
+    );
+    return ResponseApi.success(response.data, HttpStatusCode.Ok);
+  },
+);

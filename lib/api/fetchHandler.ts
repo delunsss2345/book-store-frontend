@@ -4,12 +4,11 @@ import { HttpStatusCode } from "axios"; // dùng enum status code để so sánh
 import { cookies } from "next/headers"; // lấy cookies server-side từ Next
 import "server-only"; // đảm bảo file chỉ chạy ở server
 const BACKEND_URL = envConfig.BACKEND_API_URL; // URL BE mặc định cho mọi request
-import jwtDecode from "jwt-decode";
 
 export class HttpError<T = unknown> extends Error {
   // custom error để gắn status + data
-  status: number; // HTTP status trả về từ BE
-  data?: T; // dữ liệu lỗi (nếu BE trả JSON)
+  public status: number; // HTTP status trả về từ BE
+  public data?: T; // dữ liệu lỗi (nếu BE trả JSON)
 
   constructor(status: number, message: string, data?: T) {
     // khởi tạo lỗi với status + message + data
@@ -25,7 +24,7 @@ type Query = Record<string, string | number | boolean | null | undefined>; // ki
 // Kết quả trả về dạng "raw" để caller có thể đọc header (vd: set-cookie)
 export type ApiRawResponse<T = unknown> = {
   // wrapper trả về đủ dữ liệu + header
-  data: any; // body sau khi parse
+  data: T; // body sau khi parse
   headers: Headers; // header response từ BE
   status: number; // status code từ BE
   setCookies: string[]; // danh sách Set-Cookie để forward
@@ -76,7 +75,7 @@ function readSetCookies(res: Response): string[] {
 }
 
 // requestRaw: trả về cả headers/status/set-cookie để route có thể forward cho browser
-async function request<T = any>( // hàm fetch đầy đủ metadata
+async function request<T = unknown>( // hàm fetch đầy đủ metadata
   method: string, // HTTP method
   path: string, // path API
   opt: ApiOptions = {}, // option tùy chọn
@@ -201,43 +200,26 @@ export const fetchApi = (
 
   return {
     // trả ra các method HTTP
-    get<T = any>(path: string, opt?: ApiOptions) {
+    get<T = unknown>(path: string, opt?: ApiOptions) {
       // GET wrapper
       return request<T>("GET", path, withDefaults(opt)); // gọi request đơn giản
     },
-    post<T = any>(path: string, body?: unknown, opt?: ApiOptions) {
+    post<T = unknown>(path: string, body?: unknown, opt?: ApiOptions) {
       // POST wrapper
       return request<T>("POST", path, withDefaults({ ...opt, body })); // gộp body vào option
     },
-    put<T = any>(path: string, body?: unknown, opt?: ApiOptions) {
+    put<T = unknown>(path: string, body?: unknown, opt?: ApiOptions) {
       // PUT wrapper
       return request<T>("PUT", path, withDefaults({ ...opt, body })); // gộp body vào option
     },
-    patch<T = any>(path: string, body?: unknown, opt?: ApiOptions) {
+    patch<T = unknown>(path: string, body?: unknown, opt?: ApiOptions) {
       // PATCH wrapper
       return request<T>("PATCH", path, withDefaults({ ...opt, body })); // gộp body vào option
     },
-    delete<T = any>(path: string, opt?: ApiOptions) {
+    delete<T = unknown>(path: string, opt?: ApiOptions) {
       // DELETE wrapper
       return request<T>("DELETE", path, withDefaults(opt)); // gọi request đơn giản
     },
-    // raw: { // nhóm method trả về raw response
-    //     get<T = any>(path: string, opt?: ApiOptions) { // GET raw
-    //         return requestRaw<T>("GET", path, withDefaults(opt)); // gọi requestRaw
-    //     },
-    //     post<T = any>(path: string, body?: unknown, opt?: ApiOptions) { // POST raw
-    //         return requestRaw<T>("POST", path, withDefaults({ ...opt, body })); // gộp body + gọi requestRaw
-    //     },
-    //     put<T = any>(path: string, body?: unknown, opt?: ApiOptions) { // PUT raw
-    //         return requestRaw<T>("PUT", path, withDefaults({ ...opt, body })); // gộp body + gọi requestRaw
-    //     },
-    //     patch<T = any>(path: string, body?: unknown, opt?: ApiOptions) { // PATCH raw
-    //         return requestRaw<T>("PATCH", path, withDefaults({ ...opt, body })); // gộp body + gọi requestRaw
-    //     },
-    //     delete<T = any>(path: string, opt?: ApiOptions) { // DELETE raw
-    //         return requestRaw<T>("DELETE", path, withDefaults(opt)); // gọi requestRaw
-    //     },
-    // },
   };
 };
 

@@ -1,11 +1,15 @@
 import { handleError } from "./errorHandler";
+import { NextResponse } from "next/server";
 
-export function wrapperHandler(
-  fn: (...args: any) => Promise<Response> | Response,
+export function wrapperHandler<T = unknown>(
+  fn: (
+    req: Request,
+    params: Promise<T>,
+  ) => Promise<NextResponse> | NextResponse,
 ) {
-  return async (...args: any) => {
+  return async (req: Request, params: T) => {
     try {
-      return await fn(...args);
+      return await fn(req, Promise.resolve(params));
     } catch (error: unknown) {
       return handleError(error);
     }

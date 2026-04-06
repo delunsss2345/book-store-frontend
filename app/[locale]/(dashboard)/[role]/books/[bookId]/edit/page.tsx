@@ -14,10 +14,7 @@ import {
   useAdminStore,
 } from "@/features/admin";
 import { LoadingLazy } from "@/components/common/LoadingLazy";
-import {
-  AdminBookDetail,
-  UpdateAdminBookPayload,
-} from "@/types/request/admin.request";
+import { UpdateAdminBookPayload } from "@/types/request/admin.request";
 
 import HeaderEdit from "./_components/HeaderEdit";
 import { TranslationTabs } from "./_components/TranslationTabs";

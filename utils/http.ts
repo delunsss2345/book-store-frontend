@@ -80,7 +80,7 @@ axiosInstance.interceptors.response.use(
 );
 
 class AxiosHttp {
-  private _send = async <T = any>(
+  private _send = async <T = unknown>(
     method: "get" | "post" | "put" | "delete" | "patch",
     path: string,
     data: object | undefined,
@@ -93,21 +93,25 @@ class AxiosHttp {
         data,
         ...config,
       });
+      if (response.status === 401) {
+        console.log(response);
+        throw new Error("Unauthorized");
+      }
       return response.data;
     } catch (error) {
-      console.log(error);
+      console.log("error", error);
       throw error;
     }
   };
 
-  get = <T = any>(
+  get = <T = unknown>(
     path: string,
     config?: AxiosRequestConfig,
   ): Promise<T> => {
     return this._send<T>("get", path, undefined, config);
   };
 
-  post = <T = any>(
+  post = <T = unknown>(
     path: string,
     data?: object,
     config?: AxiosRequestConfig,
@@ -115,7 +119,7 @@ class AxiosHttp {
     return this._send<T>("post", path, data, config);
   };
 
-  put = <T = any>(
+  put = <T = unknown>(
     path: string,
     data: object,
     config?: AxiosRequestConfig,
@@ -123,7 +127,7 @@ class AxiosHttp {
     return this._send<T>("put", path, data, config);
   };
 
-  patch = <T = any>(
+  patch = <T = unknown>(
     path: string,
     data: object,
     config?: AxiosRequestConfig,
@@ -131,7 +135,7 @@ class AxiosHttp {
     return this._send<T>("patch", path, data, config);
   };
 
-  del = <T = any>(
+  del = <T = unknown>(
     path: string,
     config?: AxiosRequestConfig,
   ): Promise<T> => {

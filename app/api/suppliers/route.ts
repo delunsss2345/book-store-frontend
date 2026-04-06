@@ -6,14 +6,12 @@ import {
   SupplierListResponse,
 } from "@/types/response/supplier.response";
 import { HttpStatusCode } from "axios";
-import { NextRequest } from "next/server";
-
 export const GET = wrapperHandler(async () => {
   const response = await api.get<SupplierListResponse>("suppliers");
   return ResponseApi.success(response.data, HttpStatusCode.Ok);
 });
 
-export const POST = wrapperHandler(async (request: NextRequest) => {
+export const POST = wrapperHandler(async (request: Request) => {
   const body = await request.json();
   const response = await api.post<SupplierItemResponse>("suppliers", body);
   return ResponseApi.success(response.data, HttpStatusCode.Ok);

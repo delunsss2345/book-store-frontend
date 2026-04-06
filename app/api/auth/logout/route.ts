@@ -4,25 +4,17 @@ import { ResponseApi } from "@/lib/api/responseHandler";
 import { LogoutResponse } from "@/types/response/auth.response";
 import { HttpStatusCode } from "axios";
 import { cookies } from "next/headers";
-import { NextRequest } from "next/server";
+import { wrapperHandler } from "@/lib/api/wrapperHandler";
 
-export async function POST(request: NextRequest) {
-    try {
-        const cookieStore = await cookies();
-        const refreshToken = cookieStore.get("refreshToken")?.value;
-        cookieStore.delete("refreshToken");
-        cookieStore.delete("accessToken");
-        cookieStore.delete("guestSessionId");
+export const POST = wrapperHandler(async (request: Request) => {
+  const cookieStore = await cookies();
+  const refreshToken = cookieStore.get("refreshToken")?.value;
+  cookieStore.delete("refreshToken");
+  cookieStore.delete("accessToken");
+  cookieStore.delete("guestSessionId");
 
-        const response = await api.post<LogoutResponse>("auth/logout", {
-            refreshToken
-        });
-        return ResponseApi.success(response.data, HttpStatusCode.Ok);
-    }
-    catch (error: any) {
-        if (process.env.NODE_ENV === "development") {
-            console.error("Logout API Error:", error);
-        }
-        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
-    }
-}
+  const response = await api.post<LogoutResponse>("auth/logout", {
+    refreshToken,
+  });
+  return ResponseApi.success(response.data, HttpStatusCode.Ok);
+});

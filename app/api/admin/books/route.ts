@@ -2,23 +2,13 @@ import { api } from "@/lib/api/fetchHandler";
 import { ResponseApi } from "@/lib/api/responseHandler";
 import { AdminBookListResponse } from "@/types/response/admin.response";
 import { HttpStatusCode } from "axios";
-import { NextRequest } from "next/server";
+import { wrapperHandler } from "@/lib/api/wrapperHandler";
 
 // GET /api/v1/admin/books
-export async function GET() {
-  try {
-    const response = await api.get<AdminBookListResponse>("admin/books");
-    return ResponseApi.success(response.data, HttpStatusCode.Ok);
-  } catch (error: any) {
-    if (process.env.NODE_ENV === "development") {
-      console.error("Admin Get Books API Error:", error);
-    }
-    return ResponseApi.error(
-      error.message,
-      error.status ?? HttpStatusCode.BadRequest,
-    );
-  }
-}
+export const GET = wrapperHandler(async () => {
+  const response = await api.get<AdminBookListResponse>("admin/books");
+  return ResponseApi.success(response.data, HttpStatusCode.Ok);
+});
 
 // // POST /api/v1/admin/books
 // export async function POST(request: NextRequest) {

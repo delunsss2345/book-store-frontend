@@ -14,6 +14,7 @@ import ModalCreateAddress from "./ModalCreateAddress";
 import ModalOrderItemsDetail from "./ModalShowOrderItem";
 import ModalBookVariantPricing from "./ModalShowVariant";
 import ModelShowSpecEdit from "./ModalShowSpecEdit";
+import ModelShowOrderDetailAdmin from "./ModelShowOrderDetailAdmin";
 
 export function ModalHost() {
   const { getIsOpen, onClose, getType } = useModalStore();
@@ -77,6 +78,9 @@ export function ModalHost() {
                 )}
                 {type === ModalType.SHOW_BOOK_SPECIFICATIONS_EDIT && (
                   <ModelShowSpecEdit />
+                )}
+                {type === ModalType.ORDER_DETAIL_ADMIN && (
+                  <ModelShowOrderDetailAdmin />
                 )}
               </div>
             </motion.div>

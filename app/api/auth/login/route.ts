@@ -10,39 +10,29 @@ import { LoginResponse } from "@/types/response/auth.response";
 import { LoginSchema } from "@/validation/auth/loginValidation";
 import { HttpStatusCode } from "axios";
 import { cookies } from "next/headers";
-import { NextRequest } from "next/server";
+import { wrapperHandler } from "@/lib/api/wrapperHandler";
 
-export async function POST(request: NextRequest) {
-  try {
-    const payload = await request.json();
-    const parsed = LoginSchema.safeParse(payload);
-    if (!parsed.success) {
-      return ResponseApi.error(
-        API_MESSAGE.AUTH_EMAIL_PASSWORD_EMPTY,
-        HttpStatusCode.UnprocessableEntity,
-      );
-    }
-    const response = await api.post<LoginResponse>("auth/login", {
-      ...payload,
-    });
-    const cookieStore = await cookies();
-
-    cookieStore.set("refreshToken", response.data.refreshToken, {
-      ...COOKIE_OPTIONS,
-      maxAge: COOKIE_REFRESH_TOKEN_MAX_AGE,
-    });
-    cookieStore.set("accessToken", response.data.accessToken, {
-      ...COOKIE_OPTIONS,
-      maxAge: COOKIE_ACCESS_TOKEN_MAX_AGE,
-    });
-    return ResponseApi.success(response.data, HttpStatusCode.Ok);
-  } catch (error: any) {
-    if (process.env.NODE_ENV === "development") {
-      console.error("Login API Error:", error);
-    }
+export const POST = wrapperHandler(async (request: Request) => {
+  const payload = await request.json();
+  const parsed = LoginSchema.safeParse(payload);
+  if (!parsed.success) {
     return ResponseApi.error(
-      error.message,
-      error.status ?? HttpStatusCode.BadRequest,
+      API_MESSAGE.AUTH_EMAIL_PASSWORD_EMPTY,
+      HttpStatusCode.UnprocessableEntity,
     );
   }
-}
+  const response = await api.post<LoginResponse>("auth/login", {
+    ...payload,
+  });
+  const cookieStore = await cookies();
+
+  cookieStore.set("refreshToken", response.data.refreshToken, {
+    ...COOKIE_OPTIONS,
+    maxAge: COOKIE_REFRESH_TOKEN_MAX_AGE,
+  });
+  cookieStore.set("accessToken", response.data.accessToken, {
+    ...COOKIE_OPTIONS,
+    maxAge: COOKIE_ACCESS_TOKEN_MAX_AGE,
+  });
+  return ResponseApi.success(response.data, HttpStatusCode.Ok);
+});

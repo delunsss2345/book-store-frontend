@@ -2,32 +2,18 @@ import { api } from "@/lib/api/fetchHandler";
 import { appendSetCookies, ResponseApi } from "@/lib/api/responseHandler";
 import { WishResponse } from "@/types/response/wish.response";
 import { HttpStatusCode } from "axios";
-import { NextRequest } from "next/server";
+import { wrapperHandler } from "@/lib/api/wrapperHandler";
 
-export async function GET(request: NextRequest) {
-    try {
-        const response = await api.get<WishResponse>("wish");
-        const res = ResponseApi.success(response.data, HttpStatusCode.Ok);
-        appendSetCookies(res, response.setCookies);
-        return res;
-    } catch (error: any) {
-        if (process.env.NODE_ENV === 'development') {
-            console.error("Wish GET API Error:", error);
-        }
-        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
-    }
-}
+export const GET = wrapperHandler(async (request: Request) => {
+  const response = await api.get<WishResponse>("wish");
+  const res = ResponseApi.success(response.data, HttpStatusCode.Ok);
+  appendSetCookies(res, response.setCookies);
+  return res;
+});
 
-export async function DELETE(request: NextRequest) {
-    try {
-        const response = await api.delete<WishResponse>("wish");
-        const res = ResponseApi.success(response.data, HttpStatusCode.Ok);
-        appendSetCookies(res, response.setCookies);
-        return res;
-    } catch (error: any) {
-        if (process.env.NODE_ENV === 'development') {
-            console.error("Wish DELETE API Error:", error);
-        }
-        return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
-    }
-}
+export const DELETE = wrapperHandler(async (request: Request) => {
+  const response = await api.delete<WishResponse>("wish");
+  const res = ResponseApi.success(response.data, HttpStatusCode.Ok);
+  appendSetCookies(res, response.setCookies);
+  return res;
+});

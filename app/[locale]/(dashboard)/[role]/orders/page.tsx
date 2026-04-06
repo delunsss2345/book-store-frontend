@@ -36,27 +36,21 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { Separator } from "@/components/ui/separator";
+
 import useTranslator from "@/hooks/use-translator";
-import { useAdminOrdersQuery } from "@/features/admin";
-import type {
-  AdminOrder,
-  AdminOrderItem,
-} from "@/types/response/admin.response";
+import { useAdminOrdersQuery, useAdminStore } from "@/features/admin";
+import type { AdminOrder } from "@/types/response/admin.response";
 import OrdersTableSkeleton from "./_components/OrdersTableSkeleton";
+import { ModalType, useModalStore } from "@/features/modal";
 
 export default function OrdersPage() {
   const { t } = useTranslator();
   const { data: orders = [], isPending: isPendingOrders } =
     useAdminOrdersQuery();
+
+  const onOpen = useModalStore((state) => state.onOpen);
+
+  const { setSelectOrderDetailId } = useAdminStore();
 
   const columns: ColumnDef<AdminOrder>[] = [
     {
@@ -69,15 +63,14 @@ export default function OrdersPage() {
       ),
     },
     {
-      accessorKey: "guestEmail",
+      accessorKey: "customer",
       header: t("dashboard.orders.table.columns.customer"),
       cell: ({ row }) => (
         <div className="flex flex-col">
-          <span className="text-sm font-medium">
-            {row.getValue("guestEmail")}
-          </span>
-          <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
-            Guest
+          <span className="text-sm font-medium truncate max-w-[150px]">
+            {row.original?.user
+              ? row.original.user?.firstName + " " + row.original.user?.lastName
+              : row.original?.guestEmail}
           </span>
         </div>
       ),
@@ -145,7 +138,17 @@ export default function OrdersPage() {
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
           {/* Chi tiết đơn hàng */}
-          <OrderDetailsSheet order={row.original} />
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 gap-1"
+            onClick={() => {
+              setSelectOrderDetailId(row.original.id);
+              onOpen(ModalType.ORDER_DETAIL_ADMIN);
+            }}
+          >
+            <Eye className="h-4 w-4" /> {t("dashboard.orders.details.view")}
+          </Button>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -154,9 +157,12 @@ export default function OrdersPage() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>{t("dashboard.orders.table.actions.label")}</DropdownMenuLabel>
+              <DropdownMenuLabel>
+                {t("dashboard.orders.table.actions.label")}
+              </DropdownMenuLabel>
               <DropdownMenuItem>
-                <FileDown className="mr-2 h-4 w-4" /> {t("dashboard.orders.table.actions.exportPdf")}
+                <FileDown className="mr-2 h-4 w-4" />{" "}
+                {t("dashboard.orders.table.actions.exportPdf")}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="text-destructive">
@@ -179,14 +185,17 @@ export default function OrdersPage() {
     <div className="p-8 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">{t("dashboard.orders.title")}</h2>
+          <h2 className="text-3xl font-bold tracking-tight">
+            {t("dashboard.orders.title")}
+          </h2>
           <p className="text-muted-foreground">
             {t("dashboard.orders.subtitle")}
           </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline">
-            <FileDown className="mr-2 h-4 w-4" /> {t("dashboard.orders.exportExcel")}
+            <FileDown className="mr-2 h-4 w-4" />{" "}
+            {t("dashboard.orders.exportExcel")}
           </Button>
         </div>
       </div>
@@ -195,7 +204,10 @@ export default function OrdersPage() {
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input placeholder={t("dashboard.orders.searchPlaceholder")} className="pl-8" />
+          <Input
+            placeholder={t("dashboard.orders.searchPlaceholder")}
+            className="pl-8"
+          />
         </div>
         <Button variant="outline" className="gap-2">
           <Filter className="h-4 w-4" /> {t("dashboard.orders.filterButton")}
@@ -254,98 +266,5 @@ export default function OrdersPage() {
         </Table>
       </div>
     </div>
-  );
-}
-
-// --- Sub-component: Order Details Sheet ---
-function OrderDetailsSheet({ order }: { order: AdminOrder }) {
-  const { t } = useTranslator();
-  const items = order.items ?? [];
-  const customerEmail = order.guestEmail ?? "-";
-
-  return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-8 gap-1">
-          <Eye className="h-4 w-4" /> {t("dashboard.orders.details.view")}
-        </Button>
-      </SheetTrigger>
-      <SheetContent className="sm:max-w-md overflow-y-auto">
-        <SheetHeader>
-          <SheetTitle className="flex items-center gap-2">
-            <Package className="h-5 w-5" /> {t("dashboard.orders.details.order")}{" "}{order.orderCode}
-          </SheetTitle>
-          <SheetDescription>
-            {t("dashboard.orders.details.description")}
-          </SheetDescription>
-        </SheetHeader>
-
-        <div className="py-6 space-y-6">
-          {/* Thông tin khách hàng */}
-          <div className="space-y-2">
-            <h4 className="text-sm font-semibold uppercase text-muted-foreground tracking-widest">
-              {t("dashboard.orders.details.customer")}
-            </h4>
-            <p className="text-sm">{customerEmail}</p>
-          </div>
-
-          <Separator />
-
-          {/* Danh sách OrderItems */}
-          <div className="space-y-4">
-            <h4 className="text-sm font-semibold uppercase text-muted-foreground tracking-widest">
-              {t("dashboard.orders.details.products", { count: items.length })}
-            </h4>
-            {items.map((item: AdminOrderItem) => {
-              const unitPriceValue = Number(item.unitPrice ?? 0);
-              const lineTotalValue = Number(item.lineTotal ?? 0);
-              const unitPrice = Number.isFinite(unitPriceValue)
-                ? unitPriceValue
-                : 0;
-              const lineTotal = Number.isFinite(lineTotalValue)
-                ? lineTotalValue
-                : 0;
-              return (
-                <div
-                  key={item.id}
-                  className="flex justify-between items-start text-sm border-b pb-3 last:border-0"
-                >
-                  <div className="space-y-1">
-                    <p className="font-medium">{item.productName ?? "-"}</p>
-                    <p className="text-muted-foreground text-xs">
-                      {t("dashboard.orders.details.quantity")}: {item.quantity} x{" "}
-                      {unitPrice.toLocaleString()}đ
-                    </p>
-                  </div>
-                  <p className="font-mono">{lineTotal.toLocaleString()}đ</p>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Tổng kết tiền */}
-          <div className="bg-muted/50 p-4 rounded-lg space-y-2">
-            <div className="flex justify-between text-sm italic">
-              <span>{t("dashboard.orders.details.subtotal")}:</span>
-              <span>
-                {Number.isFinite(Number(order.totalAmount ?? 0))
-                  ? Number(order.totalAmount ?? 0).toLocaleString()
-                  : "0"}
-                đ
-              </span>
-            </div>
-            <div className="flex justify-between font-bold text-lg border-t pt-2 mt-2">
-              <span>{t("dashboard.orders.details.total")}:</span>
-              <span className="text-blue-600">
-                {Number.isFinite(Number(order.totalAmount ?? 0))
-                  ? Number(order.totalAmount ?? 0).toLocaleString()
-                  : "0"}
-                đ
-              </span>
-            </div>
-          </div>
-        </div>
-      </SheetContent>
-    </Sheet>
   );
 }

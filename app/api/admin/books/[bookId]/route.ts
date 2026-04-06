@@ -1,61 +1,37 @@
 import { api } from "@/lib/api/fetchHandler";
 import { ResponseApi } from "@/lib/api/responseHandler";
 import { HttpStatusCode } from "axios";
-import { NextRequest } from "next/server";
+import { wrapperHandler } from "@/lib/api/wrapperHandler";
 
 type Params = { params: Promise<{ bookId: string }> };
 
 // GET /api/v1/admin/books/{bookId}
-export async function GET(_request: NextRequest, { params }: Params) {
-  try {
+export const GET = wrapperHandler<Params>(
+  async (_request: Request, { params }: Params) => {
     const { bookId } = await params;
     const response = await api.get(`admin/books/${bookId}`);
     console.log(response);
     return ResponseApi.success(response.data, HttpStatusCode.Ok);
-  } catch (error: any) {
-    if (process.env.NODE_ENV === "development") {
-      console.error("Admin Get Book API Error:", error);
-    }
-    return ResponseApi.error(
-      error.message,
-      error.status ?? HttpStatusCode.BadRequest,
-    );
-  }
-}
+  },
+);
 
 // PATCH /api/v1/admin/books/{bookId}
-export async function PATCH(request: NextRequest, { params }: Params) {
-  try {
+export const PATCH = wrapperHandler<Params>(
+  async (request: Request, { params }: Params) => {
     const { bookId } = await params;
     const body = await request.json();
     const response = await api.patch(`admin/books/${bookId}`, body);
     return ResponseApi.success(response.data, HttpStatusCode.Ok);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    if (process.env.NODE_ENV === "development") {
-      console.error("Admin Update Book API Error:", error);
-    }
-    return ResponseApi.error(
-      error.message,
-      error.status ?? HttpStatusCode.BadRequest,
-    );
-  }
-}
+  },
+);
 
 // DELETE /api/v1/admin/books/{bookId}
-export async function DELETE(_request: NextRequest, { params }: Params) {
-  try {
+export const DELETE = wrapperHandler<Params>(
+  async (_request: Request, { params }: Params) => {
     const { bookId } = await params;
     const response = await api.delete(`admin/books/${bookId}`);
     return ResponseApi.success(response.data, HttpStatusCode.Ok);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    if (process.env.NODE_ENV === "development") {
-      console.error("Admin Delete Book API Error:", error);
-    }
-    return ResponseApi.error(
-      error.message,
-      error.status ?? HttpStatusCode.BadRequest,
-    );
-  }
-}
+  },
+);

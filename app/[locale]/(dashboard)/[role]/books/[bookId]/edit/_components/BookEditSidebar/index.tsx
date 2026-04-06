@@ -15,9 +15,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAdminStore } from "@/features/admin";
 import { LoadingLazy } from "@/components/common/LoadingLazy";
-import { TranslationValues } from "next-intl";
+import { _Translator } from "next-intl";
 
-export function AdminBookEditSidebar({ t }: { t: TranslationValues }) {
+export function AdminBookEditSidebar({ t }: { t: _Translator }) {
   const { bookDraft, updateBookDraft } = useAdminStore();
 
   if (!bookDraft) return <LoadingLazy />;

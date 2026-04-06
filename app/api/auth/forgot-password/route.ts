@@ -4,31 +4,23 @@ import { ResponseApi } from "@/lib/api/responseHandler";
 import { ForgotPasswordResponse } from "@/types/response/auth.response";
 import { ForgotPasswordSchema } from "@/validation/auth/forgotPasswordValidation";
 import { HttpStatusCode } from "axios";
-import { NextRequest } from "next/server";
+import { wrapperHandler } from "@/lib/api/wrapperHandler";
 
-export async function POST(request: NextRequest) {
-  try {
-    const payload = await request.json();
-    const parsed = ForgotPasswordSchema.safeParse(payload);
+export const POST = wrapperHandler(async (request: Request) => {
+  const payload = await request.json();
+  const parsed = ForgotPasswordSchema.safeParse(payload);
 
-    if (!parsed.success) {
-      return ResponseApi.error(
-        API_MESSAGE.FORGOT_PASSWORD_VALIDATION_FAILED,
-        HttpStatusCode.UnprocessableEntity,
-      );
-    }
-
-    const response = await api.post<ForgotPasswordResponse>(
-      "auth/forgot-password",
-      parsed.data,
+  if (!parsed.success) {
+    return ResponseApi.error(
+      API_MESSAGE.FORGOT_PASSWORD_VALIDATION_FAILED,
+      HttpStatusCode.UnprocessableEntity,
     );
-
-    return ResponseApi.success(response.data, HttpStatusCode.Ok);
-  } catch (error: any) {
-    if (process.env.NODE_ENV === "development") {
-      console.error("Forgot Password API Error:", error);
-    }
-
-    return ResponseApi.error(error.message, error.status ?? HttpStatusCode.BadRequest);
   }
-}
+
+  const response = await api.post<ForgotPasswordResponse>(
+    "auth/forgot-password",
+    parsed.data,
+  );
+
+  return ResponseApi.success(response.data, HttpStatusCode.Ok);
+});

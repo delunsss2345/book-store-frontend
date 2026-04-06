@@ -108,16 +108,31 @@ export type AdminPaymentStatus = "UNPAID" | "PAID" | "REFUNDED" | (string & {});
 
 export type AdminOrderItem = {
   id: string;
-  productName?: string;
+  bookVariantSnapshotId: string;
   quantity: number;
-  unitPrice: number | string;
-  lineTotal: number | string;
+  unitPrice: string | number;
+  lineTotal: string | number;
+  createdAt: string;
+
+  titleSnapshot: string;
+  coverImageUrlSnapshot: string | null;
+  skuSnapshot: string | null;
+  priceSnapshot: string | number;
+  currencyCodeSnapshot: string;
+  formatSnapshot: string;
+  editionSnapshot: string | null;
+  isbnSnapshot: string | null;
 };
 
 export type AdminOrder = {
   id: string;
   orderCode: string;
   guestEmail?: string;
+  user: {
+    email: string;
+    firstName: string;
+    lastName: string;
+  };
   status: AdminOrderStatus;
   paymentStatus: AdminPaymentStatus;
   totalAmount: number | string;

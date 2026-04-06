@@ -1,7 +1,6 @@
 import { jwtDecode } from "jwt-decode";
 import createMiddleware from "next-intl/middleware";
 import { cookies, headers } from "next/headers";
-import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { routing } from "./i18n/routing";
 import { Locale, SUPPORTED_LOCALES } from "./lib/i18n/config";
@@ -14,7 +13,7 @@ type JwtPayload = {
   isEmailVerified: boolean;
 };
 
-export async function proxy(request: NextRequest) {
+export async function proxy(request: Request) {
   const { pathname } = request.nextUrl;
   const locale = pathname.split("/")[1];
   const cookieStore = await cookies();

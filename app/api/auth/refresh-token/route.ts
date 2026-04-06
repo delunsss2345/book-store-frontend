@@ -10,47 +10,33 @@ import { RefreshTokenResponse } from "@/types/response/auth.response";
 import { HttpStatusCode } from "axios";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { wrapperHandler } from "@/lib/api/wrapperHandler";
 
-export async function POST() {
-  try {
-    const cookieStore = await cookies();
-    const refreshToken = cookieStore.get("refreshToken")?.value;
+export const POST = wrapperHandler(async () => {
+  const cookieStore = await cookies();
+  const refreshToken = cookieStore.get("refreshToken")?.value;
 
-    if (refreshToken) {
-      const response = await api.post<RefreshTokenResponse>(
-        "auth/refresh-token",
-        {
-          refreshToken,
-        },
-      );
-
-      cookieStore.set("refreshToken", response.data.refreshToken, {
-        ...COOKIE_OPTIONS,
-        maxAge: COOKIE_REFRESH_TOKEN_MAX_AGE,
-      });
-      cookieStore.set("accessToken", response.data.accessToken, {
-        ...COOKIE_OPTIONS,
-        maxAge: COOKIE_ACCESS_TOKEN_MAX_AGE,
-      });
-      return ResponseApi.success(response.data, HttpStatusCode.Ok);
-    }
-
-    return ResponseApi.error(
-      API_MESSAGE.AUTH_EMAIL_PASSWORD_INVALID,
-      HttpStatusCode.Unauthorized,
+  if (refreshToken) {
+    const response = await api.post<RefreshTokenResponse>(
+      "auth/refresh-token",
+      {
+        refreshToken,
+      },
     );
-  } catch (error: any) {
-    const cookieStore = await cookies();
-    cookieStore.delete("accessToken");
-    cookieStore.delete("refreshToken");
 
-    if (process.env.NODE_ENV === "development") {
-      console.error("Refresh Token API Error:", error);
-    }
-
-    return ResponseApi.error(
-      error.message,
-      error.status ?? HttpStatusCode.BadRequest,
-    );
+    cookieStore.set("refreshToken", response.data.refreshToken, {
+      ...COOKIE_OPTIONS,
+      maxAge: COOKIE_REFRESH_TOKEN_MAX_AGE,
+    });
+    cookieStore.set("accessToken", response.data.accessToken, {
+      ...COOKIE_OPTIONS,
+      maxAge: COOKIE_ACCESS_TOKEN_MAX_AGE,
+    });
+    return ResponseApi.success(response.data, HttpStatusCode.Ok);
   }
-}
+
+  return ResponseApi.error(
+    API_MESSAGE.AUTH_EMAIL_PASSWORD_INVALID,
+    HttpStatusCode.Unauthorized,
+  );
+});
