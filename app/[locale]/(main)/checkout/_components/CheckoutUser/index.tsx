@@ -1,12 +1,12 @@
 "use client";
 
+import { FormMessageI18n } from "@/components/common/FormMessageI18n";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
   FormField,
-  FormItem,
-  FormMessage,
+  FormItem
 } from "@/components/ui/form";
 import {
   Select,
@@ -14,29 +14,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CheckoutHeader } from "../CheckoutHeader";
-import { ShippingMethodCard } from "../ShippingMethodCard";
-import { CheckoutFooter } from "../CheckoutFooter";
-import { PaymentCheckout } from "../PaymentCheckout";
-import { MapPin, Plus } from "lucide-react";
-import { useQueryAddress } from "@/features/user-address/hooks/use-query-address-mutation";
-import SelectItemAddress from "./_components/SelectItemAddress";
-import { useEffect, useMemo } from "react";
-import { useTranslations } from "next-intl";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useCartStore } from "@/features/cart/store/cart.store";
 import { ModalType, useModalStore } from "@/features/modal";
 import { useCreateOrderUserMutation } from "@/features/orders";
+import { useQueryAddress } from "@/features/user-address/hooks/use-query-address-mutation";
+import { useRouter } from "@/i18n/navigation";
 import {
   CreateUserOrdersAndPaymentInput,
   CreateUserOrdersAndPaymentSchema,
   PaymentGateway,
 } from "@/validation/order-address/orderAddressValidation";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { MapPin, Plus } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useEffect, useMemo } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { useRouter } from "@/i18n/navigation";
-import { FormMessageI18n } from "@/components/common/FormMessageI18n";
-import { useCartStore } from "@/features/cart/store/cart.store";
+import { CheckoutFooter } from "../CheckoutFooter";
+import { CheckoutHeader } from "../CheckoutHeader";
+import { PaymentCheckout } from "../PaymentCheckout";
+import { ShippingMethodCard } from "../ShippingMethodCard";
+import SelectItemAddress from "./_components/SelectItemAddress";
 
 export default function CheckoutUser() {
   const { data: addresses, isPending } = useQueryAddress();
@@ -81,9 +80,14 @@ export default function CheckoutUser() {
           return t("checkout.toast.success");
         }
         clearCart();
-        router.push(
-          `/checkout/payment?orderCode=${data.orderCode}&totalAmount=${data.totalAmount}&subtotal=${data.subtotal}`,
-        );
+        router.push({
+          pathname: '/checkout/payment',
+          query: {
+            orderCode: data.orderCode,
+            totalAmount: data.totalAmount,
+            subtotal: data.subtotal
+          },
+        });
         return t("checkout.toast.success");
       },
       error: (error) => error.response.data.message,
