@@ -1,15 +1,4 @@
-import React from "react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { useCreateSupplierMutation } from "@/features/supplier/hooks/use-create-supplier-mutation";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  createSupplierSchema,
-  CreateSupplierValues,
-} from "@/validation/supplier/supplier.validation";
-import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
@@ -18,6 +7,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { useCreateSupplierMutation } from "@/features/supplier/hooks/use-create-supplier-mutation";
+import {
+  createSupplierSchema,
+  CreateSupplierValues,
+} from "@/validation/supplier/supplier.validation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 interface ModalAddSupplierProps {
   onClose: () => void;
@@ -36,8 +34,12 @@ const ModalAddSupplier = ({ onClose }: ModalAddSupplierProps) => {
     },
   });
   const handleCreateSupplier = (data: CreateSupplierValues) => {
+    const payload = {
+      ...data,
+      isActive: data.isActive ?? true,
+    };
     if (data.isActive) {
-      createSupplier(data);
+      createSupplier(payload);
     }
   };
   return (

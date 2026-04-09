@@ -5,6 +5,6 @@ export const useAdminOrderDetailsQuery = (orderId: string) =>
   useQuery({
     queryKey: ["admin", "order-details", orderId],
     queryFn: () => adminService.getOrderDetails(orderId),
-    enabled: Boolean(orderId),
-    select: (response: any) => response.data,
+    enabled: !!orderId,
+    select: (response) => response.data.items,
   });

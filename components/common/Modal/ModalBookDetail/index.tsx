@@ -1,25 +1,23 @@
-import React from "react";
-import Image from "next/image";
 import {
-  Star,
   BookOpen,
-  Calendar,
   Building2,
-  Tag,
-  Layers,
-  Wallet,
-  Box,
+  Calendar,
   CheckCircle2,
-  XCircle,
-  Edit3,
+  Layers,
+  Star,
+  Tag,
+  Wallet,
+  XCircle
 } from "lucide-react";
+import Image from "next/image";
+import React from "react";
 
 // Shadcn UI Components
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import {
   Table,
   TableBody,
@@ -31,16 +29,15 @@ import {
 
 import { useModalStore } from "@/features/modal";
 import { AdminBook } from "@/types/response/admin.response";
-import { useRouter } from "@/i18n/navigation";
 
 export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
   const book = useModalStore((state) => state.bookDetail) as AdminBook;
 
   if (!book) return null;
 
-  const title = book.translation?.title || "No Title";
+  const title = book.translation[0].title || "No Title";
   const description =
-    book.translation?.description || "No description available.";
+    book.translation[0].description || "No description available.";
 
   return (
     <div className="space-y-6">
@@ -90,7 +87,7 @@ export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
               variant="secondary"
               className="rounded-sm px-1.5 uppercase text-[10px] font-bold"
             >
-              {book.translation?.languageId === 1 ? "VN" : "EN"}
+              {/* {book.translation?.languageId === 1 ? "VN" : "EN"} */}
             </Badge>
             <Separator orientation="vertical" className="h-4" />
             <div className="flex items-center text-yellow-500">
@@ -101,7 +98,7 @@ export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
 
           <ScrollArea className="h-20 w-full rounded-md border bg-muted/30 p-2">
             <p className="text-xs leading-relaxed text-muted-foreground italic">
-              "{description}"
+              {description}
             </p>
           </ScrollArea>
         </div>
@@ -162,7 +159,7 @@ export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
                   <TableCell className="text-right py-2">
                     <span
                       className={
-                        v.stock < 10 ? "text-destructive font-bold" : ""
+                        v?.stock ?? 0 < 10 ? "text-destructive font-bold" : ""
                       }
                     >
                       {v.stock}
@@ -191,9 +188,7 @@ export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
   );
 }
 
-/**
- * Sub-component for small stat blocks
- */
+
 function StatBox({
   icon,
   label,

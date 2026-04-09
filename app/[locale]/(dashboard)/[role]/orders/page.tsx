@@ -18,13 +18,13 @@ import {
 // shadcn/ui components
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
@@ -44,11 +44,9 @@ import OrdersTableSkeleton from "./_components/OrdersTableSkeleton";
 
 export default function OrdersPage() {
   const { t } = useTranslator();
-  const { data: orders = [], isPending: isPendingOrders } =
-    useAdminOrdersQuery();
+  const { data: items = [], isPending: isPendingOrders } = useAdminOrdersQuery();
 
   const onOpen = useModalStore((state) => state.onOpen);
-
   const { setSelectOrderDetailId } = useAdminStore();
 
   const columns: ColumnDef<AdminOrder>[] = [
@@ -56,40 +54,36 @@ export default function OrdersPage() {
       accessorKey: "orderCode",
       header: t("dashboard.orders.table.columns.orderCode"),
       cell: ({ row }) => (
-        <span className="font-bold text-blue-600">
-          #{row.getValue("orderCode")}
-        </span>
+        <span className="font-medium text-blue-600">#{row.getValue("orderCode")}</span>
       ),
     },
     {
       accessorKey: "customer",
       header: t("dashboard.orders.table.columns.customer"),
-      cell: ({ row }) => (
-        <div className="flex flex-col">
-          <span className="text-sm font-medium truncate max-w-[150px]">
-            {row.original?.user
-              ? row.original.user?.firstName + " " + row.original.user?.lastName
-              : row.original?.guestEmail}
-          </span>
-        </div>
-      ),
+      cell: ({ row }) => {
+        const user = row.original?.user;
+        return (
+          <div className="flex flex-col">
+            <span className="font-medium">
+              {user ? `${user.firstName} ${user.lastName}` : row.original?.guestEmail}
+            </span>
+            {user && <span className="text-xs text-muted-foreground">{user.email}</span>}
+          </div>
+        );
+      },
     },
     {
       accessorKey: "status",
       header: t("dashboard.orders.table.columns.status"),
       cell: ({ row }) => {
         const status = row.getValue("status") as string;
-        const variants: Record<
-          string,
-          "outline" | "secondary" | "default" | "success" | "destructive"
-        > = {
-          PENDING: "outline",
-          PROCESSING: "secondary",
-          SHIPPED: "default",
-          DELIVERED: "success", // Cần custom màu success trong tailwind
-          CANCELLED: "destructive",
-        };
-        return <Badge >{status}</Badge>;
+        let variant: "outline" | "secondary" | "default" | "destructive" = "outline";
+
+        if (status === "DELIVERED") variant = "default";
+        if (status === "CANCELLED") variant = "destructive";
+        if (status === "PROCESSING") variant = "secondary";
+
+        return <Badge variant={variant}>{status}</Badge>;
       },
     },
     {
@@ -99,9 +93,7 @@ export default function OrdersPage() {
         const pStatus = row.getValue("paymentStatus") as string;
         return (
           <div className="flex items-center gap-2">
-            <CircleDot
-              className={`h-2 w-2 ${pStatus === "PAID" ? "text-green-500" : "text-yellow-500"}`}
-            />
+            <CircleDot className={`h-2 w-2 ${pStatus === "PAID" ? "text-green-500" : "text-amber-500"}`} />
             <span className="text-xs font-medium">{pStatus}</span>
           </div>
         );
@@ -109,64 +101,47 @@ export default function OrdersPage() {
     },
     {
       accessorKey: "totalAmount",
-      header: t("dashboard.orders.table.columns.totalAmount"),
+      header: () => <div className="text-right">{t("dashboard.orders.table.columns.totalAmount")}</div>,
       cell: ({ row }) => {
-        const amountValue = Number(row.getValue("totalAmount") ?? 0);
-        const amount = Number.isFinite(amountValue) ? amountValue : 0;
+        const amount = Number(row.getValue("totalAmount") ?? 0);
         return (
-          <div className="font-medium text-right font-mono tracking-tighter">
-            {new Intl.NumberFormat("vi-VN", {
-              style: "currency",
-              currency: "VND",
-            }).format(amount)}
+          <div className="text-right font-semibold">
+            {new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(amount)}
           </div>
         );
       },
     },
     {
-      accessorKey: "placedAt",
+      accessorKey: "createdAt",
       header: t("dashboard.orders.table.columns.placedAt"),
-      cell: ({ row }) => {
-        const placedAt = row.original.placedAt ?? row.original.createdAt ?? "-";
-        return <span>{placedAt}</span>;
-      },
+      cell: ({ row }) => <span className="text-muted-foreground">{new Date(row.original?.createdAt ?? 0).toLocaleDateString("vi-VN")}</span>,
     },
     {
       id: "actions",
-      header: t("dashboard.orders.table.columns.actions"),
       cell: ({ row }) => (
-        <div className="flex items-center gap-2">
-          {/* Chi tiết đơn hàng */}
+        <div className="flex items-center justify-end gap-2">
           <Button
             variant="ghost"
-            size="sm"
-            className="h-8 gap-1"
+            size="icon"
             onClick={() => {
               setSelectOrderDetailId(row.original.id);
               onOpen(ModalType.ORDER_DETAIL_ADMIN);
             }}
           >
-            <Eye className="h-4 w-4" /> {t("dashboard.orders.details.view")}
+            <Eye className="h-4 w-4" />
           </Button>
-
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
+              <Button variant="ghost" size="icon">
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>
-                {t("dashboard.orders.table.actions.label")}
-              </DropdownMenuLabel>
               <DropdownMenuItem>
-                <FileDown className="mr-2 h-4 w-4" />{" "}
-                {t("dashboard.orders.table.actions.exportPdf")}
+                <FileDown className="mr-2 h-4 w-4" /> Export PDF
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive">
-                {t("dashboard.orders.table.actions.cancelOrder")}
-              </DropdownMenuItem>
+              <DropdownMenuItem className="text-destructive">Hủy đơn</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -175,61 +150,78 @@ export default function OrdersPage() {
   ];
 
   const table = useReactTable({
-    data: orders,
+    data: items,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
   return (
-    <div className="p-8 space-y-6">
+    <div className="p-8 space-y-6 bg-slate-50/50 min-h-screen">
+      {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">
-            {t("dashboard.orders.title")}
-          </h2>
-          <p className="text-muted-foreground">
-            {t("dashboard.orders.subtitle")}
-          </p>
+          <h2 className="text-3xl font-bold tracking-tight">{t("dashboard.orders.title")}</h2>
+          <p className="text-muted-foreground">{t("dashboard.orders.subtitle")}</p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline">
-            <FileDown className="mr-2 h-4 w-4" />{" "}
-            {t("dashboard.orders.exportExcel")}
-          </Button>
-        </div>
+        <Button variant="default" className="shadow-sm">
+          <FileDown className="mr-2 h-4 w-4" /> {t("dashboard.orders.exportExcel")}
+        </Button>
       </div>
 
-      {/* Filters */}
+      {/* Quick Stats - Dùng Card thuần của Shadcn */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Tổng đơn hàng</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{items.length}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Chờ thanh toán</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-amber-600">
+              {items && items.filter(i => i.paymentStatus === "PENDING").length}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Doanh thu tạm tính</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-blue-600">
+              {new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(
+                items.reduce((acc, curr) => acc + Number(curr.totalAmount), 0)
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Filter Bar */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder={t("dashboard.orders.searchPlaceholder")}
-            className="pl-8"
-          />
+          <Input placeholder={t("dashboard.orders.searchPlaceholder")} className="pl-8 bg-white" />
         </div>
-        <Button variant="outline" className="gap-2">
+        <Button variant="outline" className="gap-2 bg-white">
           <Filter className="h-4 w-4" /> {t("dashboard.orders.filterButton")}
         </Button>
       </div>
 
-      {/* Table */}
-      <div className="rounded-md border bg-card shadow-sm">
+      {/* Table Section */}
+      <div className="rounded-lg border bg-white shadow-sm overflow-hidden">
         <Table>
-          <TableHeader className="bg-muted/50">
+          <TableHeader className="bg-slate-50">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead
-                    key={header.id}
-                    className={
-                      header.column.id === "totalAmount" ? "text-right" : ""
-                    }
-                  >
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext(),
-                    )}
+                  <TableHead key={header.id}>
+                    {flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 ))}
               </TableRow>
@@ -240,23 +232,17 @@ export default function OrdersPage() {
               <OrdersTableSkeleton />
             ) : table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow key={row.id} className="hover:bg-slate-50/50">
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
+                    <TableCell key={cell.id} className="py-3">
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center text-muted-foreground"
-                >
+                <TableCell colSpan={columns.length} className="h-32 text-center text-muted-foreground">
                   {t("dashboard.orders.table.empty")}
                 </TableCell>
               </TableRow>

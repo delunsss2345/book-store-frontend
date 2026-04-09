@@ -32,4 +32,4 @@ export type ProxyErrorResponse = {
   details?: unknown;
 };
 
-export type ProxyResponse<T> = ProxySuccessResponse<T> | ProxyErrorResponse;
+export type ProxyResponse<T> = ProxySuccessResponse<T>;

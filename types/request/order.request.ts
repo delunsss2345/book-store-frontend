@@ -23,10 +23,14 @@ export type CreateGuestOrdersAndPaymentDTO = {
   orderAddress: CreateOrderAddressDTO;
 };
 
+export type CreateUserOrdersAndPaymentInput = {
+  paymentGateway: string;
+  note?: string;
+  addressId: number;
+};
 export type CreateUserOrdersAndPaymentDTO = {
   cartId: number;
   paymentGateway: string;
   note?: string;
-  languageCode: string;
   addressId: number;
 };

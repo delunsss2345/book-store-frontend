@@ -5,10 +5,9 @@ import { wrapperHandler } from "@/lib/api/wrapperHandler";
 import { AuthActionResponseData } from "@/types/response/auth.response";
 import { VerifyEmailTokenSchema } from "@/validation/auth/verifyEmailTokenValidation";
 import { HttpStatusCode } from "axios";
-import { NextRequest } from "next/server";
 
-export const GET = wrapperHandler(async (request: NextRequest) => {
-  const token = request.nextUrl.searchParams.get("token") ?? "";
+export const GET = wrapperHandler(async (request: Request) => {
+  const token = new URL(request.url).searchParams.get("token") ?? "";
   const parsed = VerifyEmailTokenSchema.safeParse({ token });
 
   if (!parsed.success) {

@@ -3,12 +3,12 @@ import { ResponseApi } from "@/lib/api/responseHandler";
 import { wrapperHandler } from "@/lib/api/wrapperHandler";
 import { SearchBooksISBNQuickFillResponse } from "@/types/response/search.response";
 import { HttpStatusCode } from "axios";
-import { NextRequest } from "next/server";
 
-export const GET = wrapperHandler(async (request: NextRequest) => {
+export const GET = wrapperHandler(async (request: Request) => {
+  const payloadUrl = new URL(request.url);
   const payload = {
-    isbn: request.nextUrl.searchParams.get("isbn"),
-    lang: request.nextUrl.searchParams.get("lang"),
+    isbn: payloadUrl.searchParams.get("isbn"),
+    lang: payloadUrl.searchParams.get("lang"),
   };
   const response = await api.get<SearchBooksISBNQuickFillResponse>(
     `search/isbn?isbn=${payload.isbn}&lang=${payload.lang}`,

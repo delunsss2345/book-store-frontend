@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
 import { orderService } from "@/services/order.service";
+import { useQuery } from "@tanstack/react-query";
 
 export const ORDER_ITEMS_QUERY_KEY = {
   all: ["orders"],
@@ -8,8 +8,8 @@ export const ORDER_ITEMS_QUERY_KEY = {
 
 export const useQueryOrderItems = (orderId: string | null) => {
   return useQuery({
-    queryKey: ORDER_ITEMS_QUERY_KEY.detail(orderId as string),
-    queryFn: () => orderService.getOrderItems(orderId as string),
+    queryKey: ORDER_ITEMS_QUERY_KEY.detail(orderId!),
+    queryFn: () => orderService.getOrderItems(orderId!),
     select: (response) => response.data,
     enabled: !!orderId,
   });

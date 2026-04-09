@@ -38,7 +38,7 @@ export type AdminBook = {
   deletedAt: string | null;
   createdAt: string;
   updatedAt: string;
-  translation: AdminBookTranslation | AdminBookTranslation[];
+  translation: AdminBookTranslation[];
   variants: AdminBookVariant[];
 };
 
@@ -142,4 +142,5 @@ export type AdminOrder = {
 };
 
 export type AdminOrderListData = PaginationResponse<AdminOrder>;
+export type AdminOrderDetails = PaginationResponse<AdminOrderItem>;
 export type AdminOrderListResponse = ApiResponse<AdminOrderListData>;
