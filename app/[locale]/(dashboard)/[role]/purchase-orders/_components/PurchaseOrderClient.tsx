@@ -3,6 +3,12 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -12,6 +18,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { ModalType, useModalStore } from "@/features/modal";
+import {
+  useApprovePurchaseOrderMutation,
+  useGetPurchaseOrdersQuery,
+} from "@/features/purchaser-orders/hooks/create-purchaser-orders.mutation";
+import { PurchaseOrderStatus } from "@/types/request/purchase-order.request";
+import type { PurchaseOrderItem } from "@/types/response/purchase-order.response";
 import type { ColumnDef } from "@tanstack/react-table";
 import {
   flexRender,
@@ -30,26 +43,6 @@ import {
 import Link from "next/link";
 import { useMemo } from "react";
 import PurchaseOrderSkeleton from "./PurchaseOrderSkeleton";
-import {
-  useApprovePurchaseOrderMutation,
-  useGetPurchaseOrdersQuery,
-} from "@/features/purchaser-orders/hooks/create-purchaser-orders.mutation";
-import { PurchaseOrderStatus } from "@/types/request/purchase-order.request";
-import type { PurchaseOrderItem } from "@/types/response/purchase-order.response";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-} from "@/components/ui/select";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ModalType, useModalStore } from "@/features/modal";
 
 type PurchaseOrderDisplayStatus =
   | "PENDING"
@@ -148,16 +141,15 @@ export function PurchaseOrderClient() {
         accessorKey: "status",
         header: () => "Trạng thái",
         cell: ({ row }) => {
-          const config = STATUS_CONFIG[row.original.status];
           return (
             <Badge
               variant="outline"
-              className={`gap-1.5 font-medium ${config?.className}`}
+              className={`gap-1.5 font-medium `}
             >
               <span
-                className={`h-1.5 w-1.5 rounded-full ${config?.dotClassName}`}
+                className={`h-1.5 w-1.5 rounded-full `}
               />
-              {config?.label || row.original.status}
+              {row.original.status}
             </Badge>
           );
         },
@@ -294,9 +286,9 @@ export function PurchaseOrderClient() {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                     </TableHead>
                   ))}
                 </TableRow>

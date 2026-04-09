@@ -6,11 +6,11 @@ import {
 import { API_MESSAGE } from "@/constants/api/messageApi";
 import { api } from "@/lib/api/fetchHandler";
 import { ResponseApi } from "@/lib/api/responseHandler";
-import { LoginResponse } from "@/types/response/auth.response";
+import { wrapperHandler } from "@/lib/api/wrapperHandler";
+import { LoginResponseData } from "@/types/response/auth.response";
 import { LoginSchema } from "@/validation/auth/loginValidation";
 import { HttpStatusCode } from "axios";
 import { cookies } from "next/headers";
-import { wrapperHandler } from "@/lib/api/wrapperHandler";
 
 export const POST = wrapperHandler(async (request: Request) => {
   const payload = await request.json();
@@ -21,7 +21,7 @@ export const POST = wrapperHandler(async (request: Request) => {
       HttpStatusCode.UnprocessableEntity,
     );
   }
-  const response = await api.post<LoginResponse>("auth/login", {
+  const response = await api.post<LoginResponseData>("auth/login", {
     ...payload,
   });
   const cookieStore = await cookies();

@@ -8,7 +8,7 @@ export const purchaseOrderItemSchema = z.object({
 });
 
 export const purchaseOrderSchema = z.object({
-  supplierId: z.coerce.number().min(1, "Vui lòng chọn nhà cung cấp"),
+  supplierId: z.number().min(1, "Vui lòng chọn nhà cung cấp"),
   code: z.string().min(1, "Mã đơn nhập không được để trống"),
   createdAt: z.string().min(1, "Ngày tạo đơn không được để trống"),
   note: z.string().optional(),

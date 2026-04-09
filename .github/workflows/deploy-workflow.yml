@@ -1,0 +1,21 @@
+name: Build next and check lint dev
+on:
+  push:
+    branches: [dev]
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Lint
+        run: npm run lint
+
+  build:
+    needs: [tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: build
+        run: npm run build

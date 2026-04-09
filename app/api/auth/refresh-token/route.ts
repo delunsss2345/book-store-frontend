@@ -1,23 +1,22 @@
 import {
-  COOKIE_OPTIONS,
   COOKIE_ACCESS_TOKEN_MAX_AGE,
+  COOKIE_OPTIONS,
   COOKIE_REFRESH_TOKEN_MAX_AGE,
 } from "@/config/cookie.config";
 import { API_MESSAGE } from "@/constants/api/messageApi";
 import { api } from "@/lib/api/fetchHandler";
 import { ResponseApi } from "@/lib/api/responseHandler";
-import { RefreshTokenResponse } from "@/types/response/auth.response";
+import { wrapperHandler } from "@/lib/api/wrapperHandler";
+import { RefreshTokenResponseData } from "@/types/response/auth.response";
 import { HttpStatusCode } from "axios";
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
-import { wrapperHandler } from "@/lib/api/wrapperHandler";
 
 export const POST = wrapperHandler(async () => {
   const cookieStore = await cookies();
   const refreshToken = cookieStore.get("refreshToken")?.value;
 
   if (refreshToken) {
-    const response = await api.post<RefreshTokenResponse>(
+    const response = await api.post<RefreshTokenResponseData>(
       "auth/refresh-token",
       {
         refreshToken,

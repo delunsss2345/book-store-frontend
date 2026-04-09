@@ -1,13 +1,13 @@
 import { api } from "@/lib/api/fetchHandler";
 import { ResponseApi } from "@/lib/api/responseHandler";
-import { HttpStatusCode } from "axios";
 import { wrapperHandler } from "@/lib/api/wrapperHandler";
+import { HttpStatusCode } from "axios";
 
-type Params = { params: Promise<{ bookId: string }> };
+type BookParams = { bookId: string };
 
 // POST /api/v1/admin/books/{bookId}/translations
-export const POST = wrapperHandler<Params>(
-  async (request: Request, { params }: Params) => {
+export const POST = wrapperHandler<BookParams>(
+  async (request: Request, { params }) => {
     const { bookId } = await params;
     const body = await request.json();
     const response = await api.post(`admin/books/${bookId}/translations`, body);

@@ -1,13 +1,17 @@
 "use client";
 
-import React, { useState, useCallback, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -16,13 +20,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
   Table,
   TableBody,
   TableCell,
@@ -30,28 +27,25 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
 import {
   ArrowLeft,
-  Save,
+  BookOpen,
+  CalendarDays,
   CheckCircle2,
+  ClipboardList,
+  FileText,
+  Loader2,
+  PackageOpen,
+  Plus,
+  Save,
   Search,
   Trash2,
-  Plus,
-  PackageOpen,
-  Loader2,
-  BookOpen,
-  ClipboardList,
-  CalendarDays,
-  FileText,
   Truck,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-import {
-  purchaseOrderSchema,
-  PurchaseOrderSchemaType,
-} from "@/validation/supplier/supplier.validation";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
@@ -60,17 +54,22 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useAdminBookVariantsQuery } from "@/features/admin/hooks/use-admin-book-variant-query";
+import { useCreatePurchaseOrderMutation } from "@/features/purchaser-orders/hooks/create-purchaser-orders.mutation";
 import {
   PurchaseItem,
   usePurchaseStore,
 } from "@/features/purchaser-orders/store";
-import { useAdminBookVariantsQuery } from "@/features/admin/hooks/use-admin-book-variant-query";
-import { BookVariantPurchaseItem } from "../BookVariantItem";
+import { useSupplierQuery } from "@/features/supplier/hooks/use-supplier-query";
 import { AdminBookVariantDetail } from "@/types/response/admin-book-variant.response";
 import { Book } from "@/types/response/variant.response";
-import { useSupplierQuery } from "@/features/supplier/hooks/use-supplier-query";
-import { useCreatePurchaseOrderMutation } from "@/features/purchaser-orders/hooks/create-purchaser-orders.mutation";
-import { useModalStore } from "@/features/modal";
+import {
+  purchaseOrderSchema,
+  PurchaseOrderSchemaType,
+} from "@/validation/supplier/supplier.validation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { BookVariantPurchaseItem } from "../BookVariantItem";
 
 function generateOrderCode() {
   const now = new Date();
@@ -102,9 +101,9 @@ export function CreatePurchaseOrderClient() {
   const form = useForm<PurchaseOrderSchemaType>({
     resolver: zodResolver(purchaseOrderSchema),
     defaultValues: {
-      supplierId: "",
-      code: generateOrderCode(),
-      createdAt: todayISO(),
+      supplierId: 0,
+      code: generateOrderCode()!,
+      createdAt: todayISO()!,
       note: "",
       totalAmount: 0,
     },
@@ -162,9 +161,6 @@ export function CreatePurchaseOrderClient() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleShowDetail = (purchaseOrderId: string) => {
-    setPurchaseOrderId(purchaseOrderId);
-  };
 
   const handleAddItem = (variant: AdminBookVariantDetail, book: Book) => {
     if (purchaseItems.some((i) => i.id === variant.id)) {
@@ -330,7 +326,7 @@ export function CreatePurchaseOrderClient() {
                         Nhà cung cấp <span className="text-red-500">*</span>
                       </FormLabel>
                       <Select
-                        value={field.value}
+                        // value={field.value}
                         onValueChange={field.onChange}
                       >
                         <FormControl>

@@ -7,25 +7,17 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import {
-  MoreHorizontal,
-  Search,
+  CircleDot,
   Eye,
   FileDown,
   Filter,
-  Package,
-  CircleDot,
+  MoreHorizontal,
+  Search
 } from "lucide-react";
 
 // shadcn/ui components
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,13 +27,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
-import useTranslator from "@/hooks/use-translator";
 import { useAdminOrdersQuery, useAdminStore } from "@/features/admin";
+import { ModalType, useModalStore } from "@/features/modal";
+import useTranslator from "@/hooks/use-translator";
 import type { AdminOrder } from "@/types/response/admin.response";
 import OrdersTableSkeleton from "./_components/OrdersTableSkeleton";
-import { ModalType, useModalStore } from "@/features/modal";
 
 export default function OrdersPage() {
   const { t } = useTranslator();
@@ -90,7 +89,7 @@ export default function OrdersPage() {
           DELIVERED: "success", // Cần custom màu success trong tailwind
           CANCELLED: "destructive",
         };
-        return <Badge variant={variants[status] || "outline"}>{status}</Badge>;
+        return <Badge >{status}</Badge>;
       },
     },
     {

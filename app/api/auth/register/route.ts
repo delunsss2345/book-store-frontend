@@ -1,16 +1,16 @@
 import {
-  COOKIE_OPTIONS,
   COOKIE_ACCESS_TOKEN_MAX_AGE,
+  COOKIE_OPTIONS,
   COOKIE_REFRESH_TOKEN_MAX_AGE,
 } from "@/config/cookie.config";
 import { API_MESSAGE } from "@/constants/api/messageApi";
 import { api } from "@/lib/api/fetchHandler";
 import { ResponseApi } from "@/lib/api/responseHandler";
-import { RegisterResponse } from "@/types/response/auth.response";
+import { wrapperHandler } from "@/lib/api/wrapperHandler";
+import { RegisterResponseData } from "@/types/response/auth.response";
 import { RegisterSchema } from "@/validation/auth/registerValidation";
 import { HttpStatusCode } from "axios";
 import { cookies } from "next/headers";
-import { wrapperHandler } from "@/lib/api/wrapperHandler";
 
 export const POST = wrapperHandler(async (request: Request) => {
   const payload = await request.json();
@@ -21,7 +21,7 @@ export const POST = wrapperHandler(async (request: Request) => {
       HttpStatusCode.UnprocessableEntity,
     );
   }
-  const response = await api.post<RegisterResponse>("auth/register", {
+  const response = await api.post<RegisterResponseData>("auth/register", {
     ...payload,
   });
 

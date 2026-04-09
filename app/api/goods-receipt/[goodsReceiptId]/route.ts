@@ -4,7 +4,7 @@ import { wrapperHandler } from "@/lib/api/wrapperHandler";
 import { GoodsReceiptDetailResponse } from "@/types/response/goods-receipt.response";
 
 export const GET = wrapperHandler<{ goodsReceiptId: string }>(
-  async (request: Request, params) => {
+  async (request: Request, { params }) => {
     const { goodsReceiptId } = await params;
     const response = await api.get<GoodsReceiptDetailResponse>(
       `stock-imports/${goodsReceiptId}`,

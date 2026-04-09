@@ -3,7 +3,9 @@ import { ResponseApi } from "@/lib/api/responseHandler";
 import { wrapperHandler } from "@/lib/api/wrapperHandler";
 import { PurchaseOrderDetailResponse } from "@/types/response/purchase-order.response";
 
-export const GET = wrapperHandler(async (request: Request, { params }) => {
+type PurchaseOrderIdParams = { purchaseOrderId: string };
+
+export const GET = wrapperHandler<PurchaseOrderIdParams>(async (request: Request, { params }) => {
   const { purchaseOrderId } = await params;
   const response = await api.get<PurchaseOrderDetailResponse>(
     `purchase-orders/${purchaseOrderId}`,

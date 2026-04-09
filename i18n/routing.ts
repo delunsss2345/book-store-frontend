@@ -64,11 +64,19 @@ export const routing = defineRouting({
       vi: "/[role]/dashboard/revenue",
       en: "/[role]/dashboard/revenue",
     },
+    "/detail/[slug]": {
+      vi: "/detail/[...slug]",
+      en: "/detail/[...slug]",
+    },
 
     // Products
     "/[role]/books": {
       vi: "/[role]/books",
       en: "/[role]/books",
+    },
+    "/[role]/books/[id]/edit": {
+      vi: "/[role]/books/[id]/edit",
+      en: "/[role]/books/[id]/edit",
     },
     "/[role]/books/new": {
       vi: "/[role]/books/new",

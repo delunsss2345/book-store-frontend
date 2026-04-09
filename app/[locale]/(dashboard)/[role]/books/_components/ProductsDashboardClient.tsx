@@ -14,11 +14,12 @@ import {
 } from "@/components/ui/table";
 import {
   useAdminBooksQuery,
-  useAdminBooksStatsQuery,
-  useAdminStore,
+  useAdminBooksStatsQuery
 } from "@/features/admin";
-import type { AdminBook } from "@/types/response/admin.response";
+import { ModalType, useModalStore } from "@/features/modal";
 import useTranslator from "@/hooks/use-translator";
+import { useRouter } from "@/i18n/navigation";
+import type { AdminBook } from "@/types/response/admin.response";
 import type { ColumnDef } from "@tanstack/react-table";
 import {
   flexRender,
@@ -39,19 +40,14 @@ import {
   Search,
   Users,
 } from "lucide-react";
-import { useEffect, useMemo } from "react";
 import { useParams } from "next/navigation";
+import { useEffect, useMemo } from "react";
 import { toast } from "sonner";
-import { ModalType, useModalStore } from "@/features/modal";
-import { ActionDropdown } from "@/components/common/ActionDropdownMenu";
-import { variantMenuItems } from "./data/action-products";
-import { useRouter } from "@/i18n/navigation";
 import ProductsTableSkeleton from "./ProductsTableSkeleton";
 
 export function ProductsDashboardClient() {
   const { t } = useTranslator();
   const { onOpen, setBookDetail } = useModalStore();
-  const { setBookEdit } = useAdminStore();
 
   const {
     data: books = [] as AdminBook[],
@@ -157,7 +153,10 @@ export function ProductsDashboardClient() {
             </Button>
             <Button
               onClick={() => {
-                router.push(`/${role}/books/${row.original.id}/edit`);
+                router.push({
+                  pathname: `/[role]/books/[id]/edit`,
+                  params: { role, id: row.original.id },
+                });
               }}
               variant="ghost"
               size="icon"
@@ -283,9 +282,9 @@ export function ProductsDashboardClient() {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                     </TableHead>
                   ))}
                 </TableRow>
