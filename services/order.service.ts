@@ -1,20 +1,20 @@
-import type { AxiosRequestConfig } from "axios";
 import type {
   CreateGuestOrdersAndPaymentDTO,
   CreateUserOrdersAndPaymentDTO,
 } from "@/types/request/order.request";
-import type { GetOrderItemsResponse } from "@/types/response/order.response";
+import type { CreateGuestOrderResponse, CreateUserOrderResponse, GetOrderItemsResponse, GetUserOrdersResponse } from "@/types/response/order.response";
 import { http } from "@/utils/http";
+import type { AxiosRequestConfig } from "axios";
 
 export const orderService = {
   createOrderGuest: (payload: CreateGuestOrdersAndPaymentDTO) =>
-    http.post("orders/guest/checkout", payload),
+    http.post<CreateGuestOrderResponse>("orders/guest/checkout", payload),
 
   createOrderUser: (payload: CreateUserOrdersAndPaymentDTO) =>
-    http.post("orders/user/checkout", payload),
+    http.post<CreateUserOrderResponse>("orders/user/checkout", payload),
 
-  getOrders: <T = unknown>(config?: AxiosRequestConfig) =>
-    http.get<T>("orders", config),
+  getOrders: (config?: AxiosRequestConfig) =>
+    http.get<GetUserOrdersResponse>("orders", config),
 
   getOrderItems: (orderId: string) => {
     return http.get<GetOrderItemsResponse>(`orders/${orderId}`);

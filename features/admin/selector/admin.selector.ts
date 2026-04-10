@@ -7,8 +7,7 @@ export const selectorAdminBooks = (state: AdminStoreState) => state.books;
 export const selectorIsLoadingBooks = (state: AdminStoreState) =>
   state.isLoadingBooks;
 export const selectorSetAdminBooks = (state: AdminStoreState) => state.setBooks;
-export const selectorSetIsLoadingBooks = (state: AdminStoreState) =>
-  state.setIsLoadingBooks;
+
 
 // Users
 export const selectorAdminUsers = (state: AdminStoreState) => state.users;

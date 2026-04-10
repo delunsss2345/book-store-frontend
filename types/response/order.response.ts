@@ -1,28 +1,20 @@
-import { ApiResponse } from "@/types/response/base.response";
 import type { OrderStatus, PaymentStatus } from "@/constants/enums/order";
+import { ProxyResponse } from "@/types/response/base.response";
 
 export type OrderSummary = {
   id: string;
   orderCode: string;
   userId: string | null;
   addressId: string | null;
-  cartHash: string | null;
-  guestSessionId: string | null;
-  guestEmail: string | null;
   status: OrderStatus | null;
+  currencyCode: string | null;
   paymentStatus: PaymentStatus | null;
   subtotal: string | null;
   discountAmount: string | null;
   shippingFee: string | null;
   totalAmount: string | null;
-  currencyCode: string | null;
-  idempotencyKey: string | null;
-  placedAt: string | null;
-  createdAt: string;
   expiredAt: string | null;
-  updatedAt: string;
-  createdBy: string | null;
-  updatedBy: string | null;
+  createdAt: string;
 };
 
 export type OrderListResponseData = OrderSummary[];
@@ -34,14 +26,24 @@ export type OrderStatusData = {
 
 export type CreateGuestOrderResponseData = {
   orderId: string;
-  paymentUrl?: string;
+  totalAmount: number;
+  subtotal: number;
+  orderCode: string;
 };
 
-export type OrderStatusResponse = ApiResponse<OrderStatusData>;
-export type CreateGuestOrderResponse = ApiResponse<CreateGuestOrderResponseData>;
-export type GetOrdersResponse = ApiResponse<OrderListResponseData>;
 
-// ── Order items (GET orders/:orderId) ─────────────────────────────────────────
+export type CreateUserOrder = {
+  orderCode: string,
+  orderId: string
+  subtotal: number,
+  totalAmount: number
+};
+
+export type OrderStatusResponse = ProxyResponse<OrderStatusData>;
+export type CreateGuestOrderResponse = ProxyResponse<CreateGuestOrderResponseData>;
+export type GetUserOrdersResponse = ProxyResponse<OrderListResponseData>;
+export type CreateUserOrderResponse = ProxyResponse<CreateUserOrder>;
+
 
 export type OrderItemBookTranslation = {
   title: string;
@@ -72,4 +74,4 @@ export type OrderItem = {
 
 export type OrderItemListData = OrderItem[];
 
-export type GetOrderItemsResponse = ApiResponse<OrderItemListData>;
+export type GetOrderItemsResponse = ProxyResponse<OrderItemListData>;

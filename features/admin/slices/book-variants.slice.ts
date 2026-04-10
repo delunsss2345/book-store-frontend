@@ -1,15 +1,15 @@
+import { BookVariant } from "@/types/response/catalog.response";
 import type { StateCreator } from "zustand";
 
 type BooksVariantState = {
-  bookVariants: any[];
+  bookVariants: BookVariant[];
 };
 
 type BooksVariantSliceAction = {
-  setBookVariants: (bookVariants: any[]) => void;
+  setBookVariants: (bookVariants: BookVariant[]) => void;
 };
 
 export type BooksVariantSlice = BooksVariantState & BooksVariantSliceAction;
-
 export const createBookVariantSlice: StateCreator<BooksVariantSlice> = (
   set,
 ) => ({

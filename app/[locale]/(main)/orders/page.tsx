@@ -1,13 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { OrderStatus } from "@/constants/enums/order";
+import { ModalType, useModalStore } from "@/features/modal";
+import { useQueryOrder } from "@/features/orders/hooks/use-query-orders";
+import { OrderSummary } from "@/types/response/order.response";
+import { Search } from "lucide-react";
+import { useMemo, useState } from "react";
 import { OrderCard } from "./_components/OrderCard";
 import { OrdersSkeleton } from "./_components/OrdersSkeleton";
-import { useQueryOrder } from "@/features/orders/hooks/use-query-orders";
-import { ModalType, useModalStore } from "@/features/modal";
 
 type TabValue = "all" | "in-progress" | "delivered" | "returns";
 
@@ -40,8 +41,8 @@ export default function OrdersPage() {
   const [activeTab, setActiveTab] = useState<TabValue>("all");
   const [searchValue, setSearchValue] = useState("");
   const { data: orders, isLoading, isFetching, error } = useQueryOrder();
-
   const { setOrderShowDetailId, onOpen } = useModalStore();
+
   const isOrdersLoading = isLoading || isFetching;
   const searchTerm = searchValue.trim().toLowerCase();
 
@@ -53,8 +54,8 @@ export default function OrdersPage() {
     const statusFilter = STATUS_FILTERS[activeTab];
     const baseOrders = statusFilter
       ? orders.filter(
-          (order) => order.status && statusFilter.includes(order.status),
-        )
+        (order: OrderSummary) => order.status && statusFilter.includes(order.status),
+      )
       : orders;
 
     if (!searchTerm) {
@@ -80,11 +81,10 @@ export default function OrdersPage() {
               <button
                 key={tab.value}
                 onClick={() => setActiveTab(tab.value)}
-                className={`rounded-md px-3 py-1.5 text-sm font-medium transition ${
-                  activeTab === tab.value
-                    ? "bg-neutral-100 text-neutral-900"
-                    : "text-neutral-500 hover:text-neutral-900"
-                }`}
+                className={`rounded-md px-3 py-1.5 text-sm font-medium transition ${activeTab === tab.value
+                  ? "bg-neutral-100 text-neutral-900"
+                  : "text-neutral-500 hover:text-neutral-900"
+                  }`}
               >
                 {tab.label}
               </button>

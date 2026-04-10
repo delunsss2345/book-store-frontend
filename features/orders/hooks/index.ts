@@ -23,7 +23,7 @@ export const useCreateOrderGuestMutation = () => {
           cartId: Number(cart.id),
           languageCode: "vi",
         });
-        return response.data;
+        return response.data!;
       } finally {
         setIsOrdering(false);
       }
