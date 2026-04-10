@@ -27,7 +27,8 @@ jobs:
 
       - name: Show github
         if: always()
-        run: ${{ toJson(github) }}
+        run: echo ${{ toJson(github) }}
+        continue-on-error: true
 
   build:
     needs: [tests]
