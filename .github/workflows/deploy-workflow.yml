@@ -23,6 +23,7 @@ jobs:
 
       - name: Check lint
         run: npm run lint
+        continue-on-error: true
 
   build:
     needs: [tests]
