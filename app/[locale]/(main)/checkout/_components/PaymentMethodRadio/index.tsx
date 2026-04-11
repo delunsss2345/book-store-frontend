@@ -29,10 +29,7 @@ export function PaymentMethodRadio({ variant = "rich" }: Props) {
       className="gap-0 overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm"
     >
       {/* SEPAY - MB Bank style */}
-      <label
-        htmlFor={PaymentGateway.SEPAY}
-        className={`${itemClass} border-b`}
-      >
+      <label htmlFor={PaymentGateway.SEPAY} className={`${itemClass} border-b`}>
         <RadioGroupItem
           value={PaymentGateway.SEPAY}
           id={PaymentGateway.SEPAY}
@@ -53,10 +50,7 @@ export function PaymentMethodRadio({ variant = "rich" }: Props) {
 
       {/* COD */}
       <label htmlFor={PaymentGateway.COD} className={itemClass}>
-        <RadioGroupItem
-          value={PaymentGateway.COD}
-          id={PaymentGateway.COD}
-        />
+        <RadioGroupItem value={PaymentGateway.COD} id={PaymentGateway.COD} />
 
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-md bg-zinc-100 text-zinc-700">

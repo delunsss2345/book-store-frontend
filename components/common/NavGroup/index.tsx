@@ -24,7 +24,7 @@ import {
 import { ChevronRight } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { type ReactNode } from "react";
-import { Badge } from "../ui/badge";
+import { Badge } from "../../ui/badge";
 import { Link } from "@/i18n/navigation";
 
 export function NavGroup({ title, items }: NavGroupProps) {

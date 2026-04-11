@@ -2,7 +2,7 @@
 
 import { useModalStore } from "@/features/modal";
 import { useQueryPurchaserOrderDetail } from "@/features/purchaser-orders/hooks/get-purchaser-orders-detail.mutation";
-import { LoadingLazy } from "../../LoadingLazy";
+import LoadingState from "../../LoadingState";
 import { PurchaseOrderDetailItem } from "@/types/response/purchase-order.response";
 
 export default function ModalPurchaseOrderDetail({
@@ -16,7 +16,7 @@ export default function ModalPurchaseOrderDetail({
   );
 
   if (isLoading || !purchaseOrderId || !purchaseOrderDetail)
-    return <LoadingLazy />;
+    return <LoadingState />;
 
   return (
     <div className="flex flex-col gap-4 ">

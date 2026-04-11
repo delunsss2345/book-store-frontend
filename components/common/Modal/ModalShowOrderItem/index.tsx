@@ -4,14 +4,14 @@ import Image from "next/image";
 import { useModalStore } from "@/features/modal";
 import { useQueryOrderItems } from "@/features/orders/hooks/use-query-order-items";
 import { OrderItem } from "@/types/response/order.response";
-import { LoadingLazy } from "../../LoadingLazy";
+import LoadingState from "../../LoadingState";
 import { Package, ReceiptText } from "lucide-react";
 
 export default function ModalOrderItemsDetail() {
   const orderId = useModalStore((state) => state.orderShowDetailId);
   const { data: orderItems, isLoading, isError } = useQueryOrderItems(orderId);
 
-  if (!orderId || isLoading) return <LoadingLazy />;
+  if (!orderId || isLoading) return <LoadingState />;
 
   if (isError) {
     return (

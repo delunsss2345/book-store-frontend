@@ -20,7 +20,8 @@ import {
 import { useAdminOrderDetailsQuery, useAdminStore } from "@/features/admin";
 import { AdminOrderItem } from "@/types/response/admin.response";
 import { fmt } from "@/utils/format-number-vi";
-import { ImageIcon, Loader2, Package } from "lucide-react";
+import { ImageIcon, Package } from "lucide-react";
+import LoadingState from "../../LoadingState";
 
 export default function ModelShowOrderDetailAdmin() {
   const { selectOrderDetailId } = useAdminStore();
@@ -54,7 +55,10 @@ export default function ModelShowOrderDetailAdmin() {
                   {item.titleSnapshot || "Không có tiêu đề"}
                 </span>
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 uppercase font-bold bg-slate-50">
+                  <Badge
+                    variant="outline"
+                    className="text-[10px] px-1.5 py-0 h-4 uppercase font-bold bg-slate-50"
+                  >
                     {item.formatSnapshot}
                   </Badge>
                   <span className="text-[11px] text-muted-foreground font-mono bg-slate-100 px-1 rounded">
@@ -69,7 +73,11 @@ export default function ModelShowOrderDetailAdmin() {
       {
         accessorKey: "unitPrice",
         header: "Đơn giá",
-        cell: ({ row }) => <span className="text-sm font-medium">{fmt(Number(row.original.unitPrice))}</span>,
+        cell: ({ row }) => (
+          <span className="text-sm font-medium">
+            {fmt(Number(row.original.unitPrice))}
+          </span>
+        ),
       },
       {
         accessorKey: "quantity",
@@ -118,8 +126,14 @@ export default function ModelShowOrderDetailAdmin() {
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="hover:bg-transparent">
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="text-[11px] font-bold uppercase tracking-wider py-4">
-                    {flexRender(header.column.columnDef.header, header.getContext())}
+                  <TableHead
+                    key={header.id}
+                    className="text-[11px] font-bold uppercase tracking-wider py-4"
+                  >
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -128,17 +142,26 @@ export default function ModelShowOrderDetailAdmin() {
           <TableBody>
             {items.length > 0 ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} className="hover:bg-slate-50/30 transition-colors border-b last:border-0">
+                <TableRow
+                  key={row.id}
+                  className="hover:bg-slate-50/30 transition-colors border-b last:border-0"
+                >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="py-3">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-32 text-center text-muted-foreground italic">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-32 text-center text-muted-foreground italic"
+                >
                   Không tìm thấy dữ liệu sản phẩm.
                 </TableCell>
               </TableRow>
@@ -149,21 +172,14 @@ export default function ModelShowOrderDetailAdmin() {
 
       <div className="flex justify-end pr-4">
         <div className="flex items-center gap-3">
-          <span className="text-sm text-muted-foreground">Tổng cộng vật phẩm:</span>
+          <span className="text-sm text-muted-foreground">
+            Tổng cộng vật phẩm:
+          </span>
           <span className="text-xl font-black text-blue-600">
             {fmt(items.reduce((acc, cur) => acc + Number(cur.lineTotal), 0))}
           </span>
         </div>
       </div>
-    </div>
-  );
-}
-
-function LoadingState() {
-  return (
-    <div className="flex min-h-[300px] w-full flex-col items-center justify-center gap-4">
-      <Loader2 className="size-10 text-blue-500 animate-spin" />
-      <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Đang tải...</p>
     </div>
   );
 }

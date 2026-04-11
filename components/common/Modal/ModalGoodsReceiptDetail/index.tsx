@@ -2,7 +2,7 @@
 
 import { useModalStore } from "@/features/modal";
 import { useQueryGoodsReceiptDetail } from "@/features/goods-receipt/hooks/goods-receipt.query";
-import { LoadingLazy } from "../../LoadingLazy";
+import LoadingState from "../../LoadingState";
 import { GoodsReceiptDetailItem } from "@/types/response/goods-receipt.response";
 
 export default function ModalGoodsReceiptDetail() {
@@ -12,7 +12,7 @@ export default function ModalGoodsReceiptDetail() {
   );
 
   if (isLoading || !goodsReceiptId || !goodsReceiptDetail)
-    return <LoadingLazy />;
+    return <LoadingState />;
 
   return (
     <div className="flex flex-col gap-4">

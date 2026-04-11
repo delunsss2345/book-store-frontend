@@ -41,9 +41,12 @@ import {
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useCartStore } from "@/features/cart/store/cart.store";
 
 export function CheckoutGuest() {
   const paymentGateway = useOrderStore((state) => state.paymentGateway);
+  const clearCart = useCartStore((state) => state.clearCart);
+
   const form = useForm<CreateGuestOrdersAndPaymentInput>({
     resolver: zodResolver(CreateGuestOrdersAndPaymentSchema),
     defaultValues: {
@@ -71,18 +74,22 @@ export function CheckoutGuest() {
   const t = useTranslations();
 
   const onSubmit = async (values: CreateGuestOrdersAndPaymentInput) => {
-    toast.promise(createOrderGuest(values), {
+    const payload = {
+      ...values,
+      paymentGateway,
+    };
+    toast.promise(createOrderGuest(payload), {
       loading: t("checkout.toast.loading"),
       success: (data) => {
-        if (paymentGateway === PaymentGateway.COD) {
-          router.push(
-            `/${locale}/orders`,
-          );
+        if (payload.paymentGateway === PaymentGateway.COD) {
+          router.push(`/${locale}/orders`);
+          clearCart();
           return t("checkout.toast.success");
         }
         router.push(
           `/${locale}/checkout/payment?orderCode=${data.orderCode}&totalAmount=${data.totalAmount}&subtotal=${data.subtotal}`,
         );
+        clearCart();
         return t("checkout.toast.success");
       },
       error: (error) => error.message,
@@ -152,7 +159,9 @@ export function CheckoutGuest() {
         <section className="space-y-6">
           <div className="flex items-center gap-2 border-b pb-2">
             <Truck className="h-5 w-5 text-zinc-800" />
-            <h2 className="text-lg font-semibold">{t("checkout.shippingTitle")}</h2>
+            <h2 className="text-lg font-semibold">
+              {t("checkout.shippingTitle")}
+            </h2>
           </div>
 
           <div className="grid gap-4">
@@ -166,16 +175,20 @@ export function CheckoutGuest() {
                     <Select
                       value={field.value}
                       onValueChange={(v) => field.onChange(v)}
-                      defaultValue="vn"
+                      defaultValue="vi"
                     >
                       <SelectTrigger className="h-12 border-zinc-200 shadow-sm">
-                        <SelectValue placeholder={t("checkout.countryPlaceholder")} />
+                        <SelectValue
+                          placeholder={t("checkout.countryPlaceholder")}
+                        />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem defaultChecked value="vn">
                           {t("checkout.countries.vn")}
                         </SelectItem>
-                        <SelectItem value="us">{t("checkout.countries.us")}</SelectItem>
+                        <SelectItem value="us">
+                          {t("checkout.countries.us")}
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -296,7 +309,10 @@ export function CheckoutGuest() {
         <PaymentCheckout />
 
         {/* Footer submit */}
-        <CheckoutFooter buttonText={t("checkout.submitButton")} disabled={isOrdering} />
+        <CheckoutFooter
+          buttonText={t("checkout.submitButton")}
+          disabled={isOrdering}
+        />
       </form>
     </Form>
   );

@@ -3,7 +3,7 @@
 import { cn } from '@/lib/utils'
 import { SearchIcon } from 'lucide-react'
 import { useState } from 'react'
-import { Button } from '../ui/button'
+import { Button } from '../../ui/button'
 
 type SearchProps = {
   className?: string
