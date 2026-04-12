@@ -67,7 +67,7 @@ export default function DetailPage() {
 
   const handleAddToCart = async (quantity: number) => {
     if (bookVariantDetail && quantity >= 1) {
-      await toast.promise(
+      toast.promise(
         addToCart({
           bookVariantId: Number(bookVariantDetail.id),
           quantity,
@@ -97,50 +97,47 @@ export default function DetailPage() {
         </nav>
 
         <div className="mt-6 grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
-          <section className="lg:col-span-7">
-            <div className="sticky top-24 space-y-4">
-              <div className="relative aspect-[3/4] w-full overflow-hidden rounded-md bg-neutral-50 shadow-sm border border-neutral-100">
-                {bookDetail?.coverImageUrl ? (
-                  <Image
-                    src={bookDetail?.coverImageUrl}
-                    alt={bookDetail.title}
-                    fill
-                    priority
-                    className="object-contain p-4 md:p-8"
-                    sizes="(max-width: 768px) 100vw, 60vw"
-                  />
-                ) : (
-                  <div className="relative aspect-[3/4] w-full overflow-hidden bg-white rounded-sm border border-neutral-100 transition-shadow group-hover:shadow-md"></div>
-                )}
+          <section className="lg:col-span-5">
+            {" "}
+            <div className=" flex flex-col-reverse gap-4 md:flex-row">
+              <div className="flex flex-row gap-3 overflow-x-auto pb-2 md:w-20 md:flex-col md:overflow-y-visible md:pb-0">
+                {[1, 2, 3].map((i) => (
+                  <button
+                    key={i}
+                    className="relative aspect-[3/4] w-16 flex-shrink-0 overflow-hidden rounded-md border border-neutral-200 transition-all hover:border-black md:w-full"
+                  >
+                    <Image
+                      src={bookDetail?.coverImageUrl}
+                      alt="thumbnail"
+                      fill
+                      className="object-cover"
+                    />
+                  </button>
+                ))}
               </div>
 
-              <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-                {[1, 2, 3].map((i) => (
-                  <div
-                    key={i}
-                    className="relative h-24 w-18 flex-shrink-0 cursor-pointer overflow-hidden rounded border border-neutral-200 hover:border-black transition-all"
-                  >
-                    {bookDetail?.coverImageUrl ? (
+              {/* Ảnh chính - Thêm max-h để không quá cao trên màn hình lớn */}
+              <div className="relative flex-1">
+                <div className="relative aspect-[3/4] w-full max-w-[450px] mx-auto overflow-hidden rounded-xl bg-[#fdfdfd] shadow-2xl shadow-neutral-200/50">
+                  {bookDetail?.coverImageUrl ? (
+                    <div className="relative h-full w-full p-4 md:p-10">
                       <Image
                         src={bookDetail?.coverImageUrl}
                         alt={bookDetail.title}
                         fill
                         priority
-                        className="object-contain p-4 md:p-8"
-                        sizes="(max-width: 768px) 100vw, 60vw"
+                        className="object-contain drop-shadow-[2px_10px_20px_rgba(0,0,0,0.15)]"
+                        sizes="(max-width: 768px) 100vw, 40vw"
                       />
-                    ) : (
-                      <div className="relative aspect-[3/4] w-full overflow-hidden bg-white rounded-sm border border-neutral-100 transition-shadow group-hover:shadow-md">
-                        {/* Placeholder for similar books */}
-                      </div>
-                    )}
-                  </div>
-                ))}
+                    </div>
+                  ) : (
+                    <div className="h-full w-full bg-neutral-100 animate-pulse" />
+                  )}
+                </div>
               </div>
             </div>
           </section>
-
-          <section className="flex flex-col lg:col-span-5">
+          <section className="flex flex-col lg:col-span-7 lg:pl-10">
             <div className="border-b border-neutral-100 pb-6">
               <div className="flex items-center justify-between">
                 <span className="text-[12px] font-bold tracking-[0.2em] text-red-600 uppercase">
@@ -321,9 +318,7 @@ export default function DetailPage() {
                     />
                   ))}
                 </div>
-                <p className="text-neutral-500">
-                  {t("detail.noReviews")}
-                </p>
+                <p className="text-neutral-500">{t("detail.noReviews")}</p>
                 <Button
                   variant="outline"
                   className="mt-6 rounded-none px-8 uppercase tracking-widest text-[11px] font-bold"
@@ -339,7 +334,10 @@ export default function DetailPage() {
       {/* RELAXED PRODUCTS */}
       <section className="bg-neutral-50 py-20">
         <div className="container-main">
-          <RecommendedSection books={bookDetail?.recommend ?? []} title="Các sản phẩm tương tự" />
+          <RecommendedSection
+            books={bookDetail?.recommend ?? []}
+            title="Các sản phẩm tương tự"
+          />
         </div>
       </section>
     </main>
