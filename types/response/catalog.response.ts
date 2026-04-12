@@ -45,7 +45,6 @@ export type CatalogBookCardDto = {
 };
 
 // --- Catalog Book Variant ---
-
 export type CatalogBookVariantDto = {
   id: string;
   format: string;
@@ -54,10 +53,10 @@ export type CatalogBookVariantDto = {
   price: string;
   currencyCode?: string | null;
   stock?: number | null;
+  available?: number | null;
 };
 
 // --- Catalog Book Spec ---
-
 export type CatalogBookSpecDto = {
   widthCm?: string | null;
   heightCm?: string | null;
@@ -66,7 +65,6 @@ export type CatalogBookSpecDto = {
 };
 
 // --- Catalog Book Detail ---
-
 export type CatalogBookDetailDto = {
   id: string;
   title: string;
@@ -86,7 +84,7 @@ export type CatalogBookDetailDto = {
   badges: string[];
   createdAt: string;
 
-  recommend?: CatalogBookCardDto[]
+  recommend?: CatalogBookCardDto[];
 };
 
 // --- Catalog Book List ---
@@ -137,7 +135,6 @@ export type BookFormat = "PAPERBACK" | "HARDCOVER" | (string & {});
 export type BookVariant = CatalogBookVariantDto;
 export type BookCategory = CatalogCategoryDto;
 export type BookDetail = CatalogBookDetailDto;
-
 
 export type CatalogHomeResponse = ApiResponse<CatalogHomeData>;
 export type CatalogBookListResponse = ApiResponse<CatalogBookListData>;

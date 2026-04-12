@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, ChevronRight } from "lucide-react";
+import { Menu, ChevronRight, Package } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -18,11 +19,11 @@ import ProfileButton from "./ProfileButton";
 import { WishlistHeader } from "./WishlistHeader";
 import CartSheet from "./CartSheet";
 import Nav from "../Nav";
-import { useDebounceInput } from "@/hooks/use-debounce-input";
 
 const Header = () => {
   const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
+  const router = useRouter();
 
   return (
     <header
@@ -33,32 +34,36 @@ const Header = () => {
       }}
     >
       <div className="mx-auto flex h-16 w-full items-center justify-between gap-6">
-        {/* LEFT: Nav (Desktop) / Menu Icon (Mobile) */}
         <div className="flex-1">
           {isMobile ? (
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
-                <button className="p-2 -ml-2 hover:bg-zinc-50 rounded-full transition-colors">
+                <button className="-ml-2 rounded-full p-2 transition-colors hover:bg-zinc-50">
                   <Menu size={24} strokeWidth={1.5} />
                 </button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[300px] sm:w-[400px] p-0">
-                <SheetHeader className="p-6 border-b text-left">
+
+              <SheetContent side="left" className="w-[300px] p-0 sm:w-[400px]">
+                <SheetHeader className="border-b p-6 text-left">
                   <SheetTitle className="text-2xl font-black tracking-tighter">
                     TASCHEN
                   </SheetTitle>
                 </SheetHeader>
 
-                {/* Mobile Menu Links */}
                 <div className="flex flex-col py-4">
-                  {/* Bạn có thể export biến 'nav' từ file Nav.tsx để map qua ở đây */}
                   <MobileNavLink
                     href="/books"
                     label="Books"
                     onClick={() => setOpen(false)}
                   />
 
-                  <div className="mt-8 px-6 pt-8 border-t border-zinc-100 flex flex-col gap-6">
+                  <MobileNavLink
+                    href="/orders"
+                    label="Orders"
+                    onClick={() => setOpen(false)}
+                  />
+
+                  <div className="mt-8 flex flex-col gap-6 border-t border-zinc-100 px-6 pt-8">
                     <div className="flex items-center gap-4">
                       <SearchBar />
                       <span className="text-sm font-medium">Search</span>
@@ -82,25 +87,33 @@ const Header = () => {
           )}
         </div>
 
-        {/* CENTER: Logo */}
         <div className="flex-none">
           <Link
             href="/"
-            className="text-2xl md:text-3xl font-black tracking-tighter"
+            className="text-2xl font-black tracking-tighter md:text-3xl"
           >
             TASCHEN
           </Link>
         </div>
 
-        {/* RIGHT: Actions */}
         <div className="flex flex-1 items-center justify-end gap-1 md:gap-3">
           {!isMobile && (
             <div className="flex items-center gap-2">
               <SearchBar />
               <SettingsTranslation />
               <ProfileButton />
+
+              <button
+                type="button"
+                onClick={() => router.push("/orders")}
+                className="rounded-full p-2 transition-colors hover:bg-zinc-50"
+                aria-label="Orders"
+              >
+                <Package size={20} strokeWidth={1.5} />
+              </button>
             </div>
           )}
+
           <WishlistHeader />
           <CartSheet />
         </div>
@@ -109,7 +122,6 @@ const Header = () => {
   );
 };
 
-// Helper component cho Mobile Links
 const MobileNavLink = ({
   href,
   label,
@@ -122,7 +134,7 @@ const MobileNavLink = ({
   <Link
     href={href}
     onClick={onClick}
-    className="flex items-center justify-between px-6 py-4 text-sm font-bold uppercase tracking-widest hover:bg-zinc-50 border-b border-zinc-50 last:border-0"
+    className="flex items-center justify-between border-b border-zinc-50 px-6 py-4 text-sm font-bold uppercase tracking-widest hover:bg-zinc-50 last:border-0"
   >
     {label}
     <ChevronRight size={16} className="text-zinc-400" />
