@@ -9,8 +9,10 @@ import {
   AdminBookResponse,
   AdminBookStatsProxyResponse,
   AdminCategoryStatsProxyResponse,
+  AdminGuestOrderListData,
   AdminOrderDetails,
-  AdminUserStatsProxyResponse
+  AdminUserOrderListData,
+  AdminUserStatsProxyResponse,
 } from "@/types/response/admin.response";
 import { ProxySuccessResponse } from "@/types/response/base.response";
 import { http } from "@/utils/http";
@@ -68,7 +70,11 @@ export const adminService = {
   getNonCustomerUsers: () => http.get("admin/users/non-customer"),
 
   // Orders
-  getOrders: () => http.get("admin/orders"),
+  getAdminGuestOrders: () =>
+    http.get<ProxySuccessResponse<AdminGuestOrderListData>>("admin/orders"),
+
+  getAdminUserOrders: () =>
+    http.get<ProxySuccessResponse<AdminUserOrderListData>>("admin/orders/user"),
 
   getOrderDetails: (orderId: string) =>
     http.get<ProxySuccessResponse<AdminOrderDetails>>(`admin/order-details/${orderId}`),

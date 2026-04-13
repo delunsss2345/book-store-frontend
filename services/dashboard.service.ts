@@ -1,8 +1,7 @@
 import type { GetCategoriesQuery } from "@/types/request/category.request";
 import type {
-  AdminOrderListData,
   AdminUser,
-  AdminUserListData
+  AdminUserListData,
 } from "@/types/response/admin.response";
 import type { ProxyResponse } from "@/types/response/base.response";
 import type {
@@ -20,7 +19,5 @@ export const dashboardService = {
 
   getAdminUsers: () =>
     http.get<ProxyResponse<AdminUsersPayload>>("/admin/users"),
-
-  getAdminOrders: () =>
-    http.get<ProxyResponse<AdminOrderListData>>("/admin/orders"),
 };
+

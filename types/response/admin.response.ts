@@ -1,146 +1,120 @@
-import {
-  ApiResponse,
-  PaginationResponse,
-  ProxySuccessResponse,
-} from "@/types/response/base.response";
+import { ApiResponse, PaginationResponse } from "./base.response";
 
-// --- Admin Book Translation ---
-export type AdminBookTranslation = {
-  id: string;
-  languageId: number;
-  title: string;
-  description: string;
-  slug: string;
-};
+export enum AdminOrderStatus {
+  PENDING = "PENDING",
+  PROCESSING = "PROCESSING",
+  SHIPPED = "SHIPPED",
+  DELIVERED = "DELIVERED",
+  CANCELLED = "CANCELLED",
+  RETURNED = "RETURNED",
+}
 
-// --- Admin Book Variant ---
-export type AdminBookVariant = {
-  id: string;
-  format: "PAPERBACK" | "HARDCOVER" | "EBOOK" | "AUDIOBOOK" | (string & {});
-  edition: number;
-  isbn: string;
-  price: string;
-  costPrice?: string | number;
-  stock?: number;
-  currencyCode: string;
-  isActive: boolean;
-};
+export enum AdminPaymentStatus {
+  UNPAID = "UNPAID",
+  PAID = "PAID",
+  REFUNDED = "REFUNDED",
+  FAILED = "FAILED",
+}
 
-// --- Admin Book ---
-export type AdminBook = {
+export enum UserAddressType {
+  HOME = "HOME",
+  WORK = "WORK",
+  OTHER = "OTHER",
+}
+
+export type UserAddress = {
   id: string;
-  publisherId: string;
-  publicationYear: number;
-  pageCount: number;
-  weightGrams: number;
-  coverImageUrl: string | null;
-  isActive: boolean;
-  deletedAt: string | null;
+  userId: string;
+  recipientName: string;
+  phoneNumber: string;
+  addressDetail: string;
+  addressType: UserAddressType | string;
+  city: string;
+  district: string;
+  ward: string;
+  isDefault: boolean;
   createdAt: string;
   updatedAt: string;
-  translation: AdminBookTranslation[];
-  variants: AdminBookVariant[];
+  deletedAt: string | null;
 };
 
-// --- Admin Book List (Paginated) ---
-
-export type AdminBookListData = PaginationResponse<AdminBook>;
-
-export type AdminBookStats = {
-  totalBooks: number;
-  activeBooks: number;
-  totalAuthors: number;
-  totalPublishers: number;
-};
-
-// --- API Response Types ---
-
-export type AdminBookListResponse = ApiResponse<AdminBookListData>;
-export type AdminBookResponse = ApiResponse<AdminBook>;
-export type AdminBookStatsProxyResponse = ProxySuccessResponse<AdminBookStats>;
-
-// --- Admin User ---
-
-export type AdminUser = {
+export interface AdminOrderAddress {
   id: string;
-  email: string;
-  phoneNumber?: string;
-  firstName?: string;
-  lastName?: string;
-  gender?: string;
-  avatarUrl?: string;
-  isEmailVerified: boolean;
-  status?: string;
-  role?: string;
+  orderId: string;
+  addressLine: string;
+  city: string;
+  countryCode: string | null;
+  district: string | null;
+  ward: string | null;
+  recipientName: string;
+  phoneNumber: string;
+  note: string | null;
+}
+
+export type AdminOrderUserSummary = {
+  email: string | null;
+  firstName: string | null;
+  lastName: string | null;
 };
 
-export type AdminUserListData = PaginationResponse<AdminUser>;
-export type AdminUserListResponse = ApiResponse<AdminUserListData>;
-
-export type AdminUserStats = {
-  totalUsers: number;
-  customersLoggedInLast24Hours: number;
+export type AdminOrderBase = {
+  id: string;
+  orderCode: string;
+  status: AdminOrderStatus | string | null;
+  paymentStatus: AdminPaymentStatus | string | null;
+  subtotal: string | null;
+  discountAmount: string | null;
+  shippingFee: string | null;
+  totalAmount: string | null;
+  currencyCode: string | null;
+  placedAt: string | null;
+  createdAt: string;
+  expiredAt: string;
+  updatedAt: string;
 };
 
-export type AdminUserStatsProxyResponse = ProxySuccessResponse<AdminUserStats>;
-
-// --- Admin Category ---
-
-export type AdminCategoryStats = {
-  totalCategories: number;
-  activeCategories: number;
+export type AdminGuestOrder = AdminOrderBase & {
+  guestSessionId: string | null;
+  guestEmail: string | null;
+  address: AdminOrderAddress | null;
 };
 
-export type AdminCategoryStatsProxyResponse =
-  ProxySuccessResponse<AdminCategoryStats>;
+export type AdminUserOrder = AdminOrderBase & {
+  userId: string | null;
+  user: AdminOrderUserSummary | null;
+  addressUser: UserAddress | null;
+};
 
-// --- Admin Order ---
+export type AdminOrder = AdminGuestOrder | AdminUserOrder;
 
-export type AdminOrderStatus =
-  | "PENDING"
-  | "PROCESSING"
-  | "SHIPPED"
-  | "DELIVERED"
-  | "CANCELLED"
-  | (string & {});
+// GET /admin/orders
+export type AdminGuestOrderListData = PaginationResponse<AdminGuestOrder>;
+export type AdminGuestOrderListResponse = ApiResponse<AdminGuestOrderListData>;
 
-export type AdminPaymentStatus = "UNPAID" | "PAID" | "REFUNDED" | (string & {});
+// GET /admin/orders/user
+export type AdminUserOrderListData = PaginationResponse<AdminUserOrder>;
+export type AdminUserOrderListResponse = ApiResponse<AdminUserOrderListData>;
 
+// Order detail
 export type AdminOrderItem = {
   id: string;
   bookVariantSnapshotId: string;
   quantity: number;
-  unitPrice: string | number;
-  lineTotal: string | number;
+  unitPrice: string;
+  lineTotal: string;
   createdAt: string;
-
-  titleSnapshot: string;
+  titleSnapshot: string | null;
   coverImageUrlSnapshot: string | null;
-  skuSnapshot: string | null;
-  priceSnapshot: string | number;
-  currencyCodeSnapshot: string;
+  skuSnapshot: string;
+  priceSnapshot: string;
+  currencyCodeSnapshot: string | null;
   formatSnapshot: string;
-  editionSnapshot: string | null;
+  editionSnapshot: number | null;
   isbnSnapshot: string | null;
 };
 
-export type AdminOrder = {
-  id: string;
-  orderCode: string;
-  guestEmail?: string;
-  user: {
-    email: string;
-    firstName: string;
-    lastName: string;
-  };
-  status: AdminOrderStatus;
-  paymentStatus: AdminPaymentStatus;
-  totalAmount: number | string;
-  placedAt?: string;
-  createdAt?: string;
-  items?: AdminOrderItem[];
+export type AdminOrderDetails = {
+  items: AdminOrderItem[];
 };
 
-export type AdminOrderListData = PaginationResponse<AdminOrder>;
-export type AdminOrderDetails = PaginationResponse<AdminOrderItem>;
-export type AdminOrderListResponse = ApiResponse<AdminOrderListData>;
+export type AdminOrderDetailResponse = ApiResponse<AdminOrderDetails>;
