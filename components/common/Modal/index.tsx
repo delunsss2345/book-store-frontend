@@ -15,6 +15,7 @@ import ModalOrderItemsDetail from "./ModalShowOrderItem";
 import ModalBookVariantPricing from "./ModalShowVariant";
 import ModelShowSpecEdit from "./ModalShowSpecEdit";
 import ModelShowOrderDetailAdmin from "./ModelShowOrderDetailAdmin";
+import ModalApproveOrderAdmin from "./ModalApprovalOrderAdmin";
 
 export function ModalHost() {
   const { getIsOpen, onClose, getType } = useModalStore();
@@ -81,6 +82,9 @@ export function ModalHost() {
                 )}
                 {type === ModalType.ORDER_DETAIL_ADMIN && (
                   <ModelShowOrderDetailAdmin />
+                )}
+                {type === ModalType.ORDER_APPROVAL_ADMIN && (
+                  <ModalApproveOrderAdmin />
                 )}
               </div>
             </motion.div>

@@ -24,6 +24,7 @@ import {
   AdminUserOrder,
   UserAddress,
 } from "@/types/response/admin.response";
+import { ApproveOrderAdmin, ModalType } from "@/features/modal";
 
 const currencyFormatter = new Intl.NumberFormat("vi-VN", {
   style: "currency",
@@ -54,7 +55,8 @@ const paymentStatusVariant: Record<
 
 type BuildUserOrderColumnsOptions = {
   onOpenDetail: (orderId: string) => void;
-  handleUpdateOrderStatus: (orderId: string, status: AdminOrderStatus) => void;
+  onShowModel: (type: ModalType.ORDER_APPROVAL_ADMIN) => void;
+  onSetActionApproveOrder: (action: ApproveOrderAdmin) => void;
 };
 
 function formatAddress(addr: UserAddress): string {
@@ -65,7 +67,8 @@ function formatAddress(addr: UserAddress): string {
 
 export function buildUserOrderColumns({
   onOpenDetail,
-  handleUpdateOrderStatus,
+  onShowModel,
+  onSetActionApproveOrder,
 }: BuildUserOrderColumnsOptions): ColumnDef<AdminUserOrder>[] {
   return [
     {
@@ -193,12 +196,13 @@ export function buildUserOrderColumns({
 
                 {canApprove && (
                   <DropdownMenuItem
-                    onClick={() =>
-                      handleUpdateOrderStatus(
-                        order.id,
-                        AdminOrderStatus.CONFIRMED,
-                      )
-                    }
+                    onClick={() => {
+                      (onShowModel(ModalType.ORDER_APPROVAL_ADMIN),
+                        onSetActionApproveOrder({
+                          orderId: order.id,
+                          status: AdminOrderStatus.CONFIRMED,
+                        }));
+                    }}
                   >
                     <Check className="mr-2 size-4" />
                     Duyệt đơn
@@ -207,12 +211,13 @@ export function buildUserOrderColumns({
 
                 {canReject && (
                   <DropdownMenuItem
-                    onClick={() =>
-                      handleUpdateOrderStatus(
-                        order.id,
-                        AdminOrderStatus.CANCELLED,
-                      )
-                    }
+                    onClick={() => {
+                      (onShowModel(ModalType.ORDER_APPROVAL_ADMIN),
+                        onSetActionApproveOrder({
+                          orderId: order.id,
+                          status: AdminOrderStatus.CANCELLED,
+                        }));
+                    }}
                     className="text-destructive focus:text-destructive"
                   >
                     <X className="mr-2 size-4" />

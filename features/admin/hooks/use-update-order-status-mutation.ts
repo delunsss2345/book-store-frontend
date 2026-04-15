@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 interface UpdateOrderStatusParams {
   orderId: string;
   status: AdminOrderStatus;
+  note?: string;
 }
 
 export const useUpdateOrderStatusMutation = () => {
@@ -16,8 +17,8 @@ export const useUpdateOrderStatusMutation = () => {
     Error,
     UpdateOrderStatusParams
   >({
-    mutationFn: ({ orderId, status }) =>
-      adminService.updateOrderStatus(orderId, status),
+    mutationFn: ({ orderId, status, note }) =>
+      adminService.updateOrderStatus(orderId, status, note),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin", "orders"] });
     },

@@ -82,11 +82,16 @@ export const adminService = {
       `admin/order-details/${orderId}`,
     ),
 
-  updateOrderStatus: (orderId: string, status: AdminOrderStatus) =>
+  updateOrderStatus: (
+    orderId: string,
+    status: AdminOrderStatus,
+    note?: string,
+  ) =>
     http.patch<ProxySuccessResponse<{ message: string }>>(
       `admin/orders/${orderId}/status`,
       {
         status,
+        note,
       },
     ),
 

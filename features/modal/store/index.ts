@@ -1,4 +1,5 @@
-import { AdminBook } from "@/types/response/admin.response";
+import { AdminBookDetail } from "@/types/request/admin.request";
+import { AdminOrderStatus, AdminBook } from "@/types/response/admin.response";
 import { create } from "zustand";
 
 export enum ModalType {
@@ -16,7 +17,13 @@ export enum ModalType {
   SHOW_VARIANT_EDIT = "SHOW_VARIANT_EDIT",
   SHOW_BOOK_SPECIFICATIONS_EDIT = "BOOK_SPECIFICATIONS",
   ORDER_DETAIL_ADMIN = "ORDER_DETAIL_ADMIN",
+  ORDER_APPROVAL_ADMIN = "ORDER_APPROVAL_ADMIN",
 }
+
+export type ApproveOrderAdmin = {
+  orderId: string;
+  status: AdminOrderStatus.CANCELLED | AdminOrderStatus.CONFIRMED;
+};
 
 interface ModalStore {
   bookDetail: AdminBook | null;
@@ -25,6 +32,8 @@ interface ModalStore {
   purchaseOrderId: string | null;
   goodsReceiptId: string | null;
   orderShowDetailId: string | null;
+  actionApproveOrder: ApproveOrderAdmin | null;
+  setActionApproveOrder: (actionApproveOrder: ApproveOrderAdmin) => void;
   setOrderShowDetailId: (orderShowDetailId: string | null) => void;
   setBookDetail: (bookDetail: AdminBook | null) => void;
   setPurchaseOrderId: (purchaseOrderId: string | null) => void;
@@ -40,6 +49,10 @@ export const useModalStore = create<ModalStore>((set, get) => ({
   orderShowDetailId: null,
   setOrderShowDetailId: (orderShowDetailId: string | null) => {
     set({ orderShowDetailId });
+  },
+  actionApproveOrder: null,
+  setActionApproveOrder: (actionApproveOrder: ApproveOrderAdmin) => {
+    set({ actionApproveOrder });
   },
   setBookDetail: (bookDetail: AdminBook | null) => set({ bookDetail }),
   type: ModalType.BOOK,

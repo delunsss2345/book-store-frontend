@@ -29,15 +29,8 @@ export default function OrdersPage() {
     useAdminUserOrdersQuery();
 
   const onOpen = useModalStore((state) => state.onOpen);
+  const setApproval = useModalStore((state) => state.setActionApproveOrder);
   const { setSelectOrderDetailId } = useAdminStore();
-  const { mutateAsync: updateOrderStatus } = useUpdateOrderStatusMutation();
-
-  const handleUpdateOrderStatus = useCallback(
-    (orderId: string, status: AdminOrderStatus) => {
-      updateOrderStatus({ orderId, status });
-    },
-    [updateOrderStatus],
-  );
 
   const openOrderDetail = useCallback(
     (orderId: string) => {
@@ -51,18 +44,20 @@ export default function OrdersPage() {
     () =>
       buildGuestOrderColumns({
         onOpenDetail: openOrderDetail,
-        updateOrderStatus,
+        onShowModel: onOpen,
+        onSetActionApproveOrder: setApproval,
       }),
-    [openOrderDetail, updateOrderStatus],
+    [openOrderDetail, onOpen, setApproval],
   );
 
   const userColumns = useMemo(
     () =>
       buildUserOrderColumns({
         onOpenDetail: openOrderDetail,
-        updateOrderStatus,
+        onShowModel: onOpen,
+        onSetActionApproveOrder: setApproval,
       }),
-    [openOrderDetail],
+    [openOrderDetail, onOpen, setApproval],
   );
 
   const totalOrders = guestOrders.length + userOrders.length;
