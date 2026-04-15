@@ -1,8 +1,23 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { Eye, Mail, MapPin, Phone, UserRound } from "lucide-react";
+import {
+  Check,
+  Eye,
+  Mail,
+  MapPin,
+  MoreHorizontal,
+  Phone,
+  UserRound,
+  X,
+} from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   AdminOrderStatus,
   AdminPaymentStatus,
@@ -39,6 +54,7 @@ const paymentStatusVariant: Record<
 
 type BuildUserOrderColumnsOptions = {
   onOpenDetail: (orderId: string) => void;
+  handleUpdateOrderStatus: (orderId: string, status: AdminOrderStatus) => void;
 };
 
 function formatAddress(addr: UserAddress): string {
@@ -49,6 +65,7 @@ function formatAddress(addr: UserAddress): string {
 
 export function buildUserOrderColumns({
   onOpenDetail,
+  handleUpdateOrderStatus,
 }: BuildUserOrderColumnsOptions): ColumnDef<AdminUserOrder>[] {
   return [
     {
@@ -70,9 +87,9 @@ export function buildUserOrderColumns({
           : "—";
 
         return (
-          <div className="flex flex-col gap-1 min-w-44">
+          <div className="flex min-w-44 flex-col gap-1">
             <div className="flex items-center gap-1.5">
-              <UserRound className="size-4 text-muted-foreground shrink-0" />
+              <UserRound className="size-4 shrink-0 text-muted-foreground" />
               <span className="font-medium text-foreground">{fullName}</span>
             </div>
             <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
@@ -153,18 +170,60 @@ export function buildUserOrderColumns({
     {
       id: "actions",
       header: () => <div className="text-right">Thao tác</div>,
-      cell: ({ row }) => (
-        <div className="flex justify-end">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onOpenDetail(row.original.id)}
-          >
-            <Eye className="mr-2 size-4" />
-            Xem chi tiết
-          </Button>
-        </div>
-      ),
+      cell: ({ row }) => {
+        const order = row.original;
+        console.log(order.status);
+        const canApprove = order.status === AdminOrderStatus.PENDING_PAYMENT;
+        const canReject = order.status === AdminOrderStatus.PENDING_PAYMENT;
+
+        return (
+          <div className="flex justify-end">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="size-8">
+                  <MoreHorizontal className="size-4" />
+                </Button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent align="end" className="w-44">
+                <DropdownMenuItem onClick={() => onOpenDetail(order.id)}>
+                  <Eye className="mr-2 size-4" />
+                  Xem chi tiết
+                </DropdownMenuItem>
+
+                {canApprove && (
+                  <DropdownMenuItem
+                    onClick={() =>
+                      handleUpdateOrderStatus(
+                        order.id,
+                        AdminOrderStatus.CONFIRMED,
+                      )
+                    }
+                  >
+                    <Check className="mr-2 size-4" />
+                    Duyệt đơn
+                  </DropdownMenuItem>
+                )}
+
+                {canReject && (
+                  <DropdownMenuItem
+                    onClick={() =>
+                      handleUpdateOrderStatus(
+                        order.id,
+                        AdminOrderStatus.CANCELLED,
+                      )
+                    }
+                    className="text-destructive focus:text-destructive"
+                  >
+                    <X className="mr-2 size-4" />
+                    Từ chối đơn
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        );
+      },
     },
   ];
 }

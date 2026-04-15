@@ -13,6 +13,7 @@ import {
   AdminOrderDetails,
   AdminUserOrderListData,
   AdminUserStatsProxyResponse,
+  AdminOrderStatus,
 } from "@/types/response/admin.response";
 import { ProxySuccessResponse } from "@/types/response/base.response";
 import { http } from "@/utils/http";
@@ -77,7 +78,17 @@ export const adminService = {
     http.get<ProxySuccessResponse<AdminUserOrderListData>>("admin/orders/user"),
 
   getOrderDetails: (orderId: string) =>
-    http.get<ProxySuccessResponse<AdminOrderDetails>>(`admin/order-details/${orderId}`),
+    http.get<ProxySuccessResponse<AdminOrderDetails>>(
+      `admin/order-details/${orderId}`,
+    ),
+
+  updateOrderStatus: (orderId: string, status: AdminOrderStatus) =>
+    http.patch<ProxySuccessResponse<{ message: string }>>(
+      `admin/orders/${orderId}/status`,
+      {
+        status,
+      },
+    ),
 
   // Book Assets
   uploadBookAsset: (formData: FormData) =>

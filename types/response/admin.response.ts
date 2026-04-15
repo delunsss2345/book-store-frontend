@@ -1,12 +1,14 @@
 import { ApiResponse, PaginationResponse } from "./base.response";
 
 export enum AdminOrderStatus {
+  PENDING_PAYMENT = "PENDING_PAYMENT",
   PENDING = "PENDING",
   PROCESSING = "PROCESSING",
   SHIPPED = "SHIPPED",
   DELIVERED = "DELIVERED",
   CANCELLED = "CANCELLED",
   RETURNED = "RETURNED",
+  CONFIRMED = "CONFIRMED",
 }
 
 export enum AdminPaymentStatus {

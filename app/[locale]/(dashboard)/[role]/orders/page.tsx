@@ -7,6 +7,7 @@ import {
   useAdminGuestOrdersQuery,
   useAdminUserOrdersQuery,
   useAdminStore,
+  useUpdateOrderStatusMutation,
 } from "@/features/admin";
 import { ModalType, useModalStore } from "@/features/modal";
 import { AdminOrderStatus } from "@/types/response/admin.response";
@@ -29,6 +30,14 @@ export default function OrdersPage() {
 
   const onOpen = useModalStore((state) => state.onOpen);
   const { setSelectOrderDetailId } = useAdminStore();
+  const { mutateAsync: updateOrderStatus } = useUpdateOrderStatusMutation();
+
+  const handleUpdateOrderStatus = useCallback(
+    (orderId: string, status: AdminOrderStatus) => {
+      updateOrderStatus({ orderId, status });
+    },
+    [updateOrderStatus],
+  );
 
   const openOrderDetail = useCallback(
     (orderId: string) => {
@@ -39,12 +48,20 @@ export default function OrdersPage() {
   );
 
   const guestColumns = useMemo(
-    () => buildGuestOrderColumns({ onOpenDetail: openOrderDetail }),
-    [openOrderDetail],
+    () =>
+      buildGuestOrderColumns({
+        onOpenDetail: openOrderDetail,
+        updateOrderStatus,
+      }),
+    [openOrderDetail, updateOrderStatus],
   );
 
   const userColumns = useMemo(
-    () => buildUserOrderColumns({ onOpenDetail: openOrderDetail }),
+    () =>
+      buildUserOrderColumns({
+        onOpenDetail: openOrderDetail,
+        updateOrderStatus,
+      }),
     [openOrderDetail],
   );
 

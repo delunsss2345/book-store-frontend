@@ -1,8 +1,22 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { Eye, MapPin, Phone, UserRound } from "lucide-react";
+import {
+  Check,
+  Eye,
+  MapPin,
+  MoreHorizontal,
+  Phone,
+  UserRound,
+  X,
+} from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   AdminGuestOrder,
   AdminOrderStatus,
@@ -14,7 +28,10 @@ const currencyFormatter = new Intl.NumberFormat("vi-VN", {
   currency: "VND",
 });
 
-const orderStatusVariant: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+const orderStatusVariant: Record<
+  string,
+  "default" | "secondary" | "destructive" | "outline"
+> = {
   [AdminOrderStatus.PENDING]: "secondary",
   [AdminOrderStatus.PROCESSING]: "default",
   [AdminOrderStatus.SHIPPED]: "default",
@@ -23,7 +40,10 @@ const orderStatusVariant: Record<string, "default" | "secondary" | "destructive"
   [AdminOrderStatus.RETURNED]: "outline",
 };
 
-const paymentStatusVariant: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+const paymentStatusVariant: Record<
+  string,
+  "default" | "secondary" | "destructive" | "outline"
+> = {
   [AdminPaymentStatus.UNPAID]: "secondary",
   [AdminPaymentStatus.PAID]: "default",
   [AdminPaymentStatus.REFUNDED]: "outline",
@@ -32,10 +52,12 @@ const paymentStatusVariant: Record<string, "default" | "secondary" | "destructiv
 
 type BuildGuestOrderColumnsOptions = {
   onOpenDetail: (orderId: string) => void;
+  handleUpdateOrderStatus: (orderId: string, status: AdminOrderStatus) => void;
 };
 
 export function buildGuestOrderColumns({
   onOpenDetail,
+  handleUpdateOrderStatus,
 }: BuildGuestOrderColumnsOptions): ColumnDef<AdminGuestOrder>[] {
   return [
     {
@@ -51,7 +73,7 @@ export function buildGuestOrderColumns({
       id: "guestEmail",
       header: () => <span>Email khách</span>,
       cell: ({ row }) => (
-        <div className="flex flex-col gap-1 min-w-40">
+        <div className="flex min-w-40 flex-col gap-1">
           <span className="font-medium text-foreground">Khách vãng lai</span>
           <span className="text-sm text-muted-foreground">
             {row.original.guestEmail ?? "Không có email"}
@@ -111,7 +133,9 @@ export function buildGuestOrderColumns({
       accessorKey: "status",
       header: () => <span>Trạng thái đơn</span>,
       cell: ({ row }) => (
-        <Badge variant={orderStatusVariant[row.original.status ?? ""] ?? "outline"}>
+        <Badge
+          variant={orderStatusVariant[row.original.status ?? ""] ?? "outline"}
+        >
           {row.original.status}
         </Badge>
       ),
@@ -120,7 +144,11 @@ export function buildGuestOrderColumns({
       accessorKey: "paymentStatus",
       header: () => <span>Thanh toán</span>,
       cell: ({ row }) => (
-        <Badge variant={paymentStatusVariant[row.original.paymentStatus ?? ""] ?? "outline"}>
+        <Badge
+          variant={
+            paymentStatusVariant[row.original.paymentStatus ?? ""] ?? "outline"
+          }
+        >
           {row.original.paymentStatus}
         </Badge>
       ),
@@ -137,18 +165,59 @@ export function buildGuestOrderColumns({
     {
       id: "actions",
       header: () => <div className="text-right">Thao tác</div>,
-      cell: ({ row }) => (
-        <div className="flex justify-end">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onOpenDetail(row.original.id)}
-          >
-            <Eye className="mr-2 size-4" />
-            Xem chi tiết
-          </Button>
-        </div>
-      ),
+      cell: ({ row }) => {
+        const order = row.original;
+        const canApprove = order.status === AdminOrderStatus.PENDING_PAYMENT;
+        const canReject = order.status === AdminOrderStatus.PENDING_PAYMENT;
+
+        return (
+          <div className="flex justify-end">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="size-8">
+                  <MoreHorizontal className="size-4" />
+                </Button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent align="end" className="w-44">
+                <DropdownMenuItem onClick={() => onOpenDetail(order.id)}>
+                  <Eye className="mr-2 size-4" />
+                  Xem chi tiết
+                </DropdownMenuItem>
+
+                {canApprove && (
+                  <DropdownMenuItem
+                    onClick={() =>
+                      handleUpdateOrderStatus(
+                        order.id,
+                        AdminOrderStatus.CONFIRMED,
+                      )
+                    }
+                  >
+                    <Check className="mr-2 size-4" />
+                    Duyệt đơn
+                  </DropdownMenuItem>
+                )}
+
+                {canReject && (
+                  <DropdownMenuItem
+                    onClick={() =>
+                      handleUpdateOrderStatus(
+                        order.id,
+                        AdminOrderStatus.CANCELLED,
+                      )
+                    }
+                    className="text-destructive focus:text-destructive"
+                  >
+                    <X className="mr-2 size-4" />
+                    Từ chối đơn
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        );
+      },
     },
   ];
 }

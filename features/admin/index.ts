@@ -16,3 +16,4 @@ export * from "./hooks/use-admin-user-orders-query";
 export * from "./hooks/use-admin-order-details-query";
 export * from "./hooks/use-admin-categories-stats-query";
 export * from "./hooks/use-upload-book-asset-mutation";
+export * from "./hooks/use-update-order-status-mutation";
