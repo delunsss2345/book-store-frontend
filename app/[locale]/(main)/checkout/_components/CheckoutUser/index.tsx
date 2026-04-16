@@ -2,12 +2,7 @@
 
 import { FormMessageI18n } from "@/components/common/FormMessageI18n";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -68,7 +63,7 @@ export default function CheckoutUser() {
 
   const handleSubmit = async (values: CreateUserOrdersAndPaymentInput) => {
     if (!values.addressId) {
-      toast.warning("Vui lòng chọn hoặc tạo mới địa chỉ");
+      toast.warning(t("checkout.toast.addressRequired"));
       return;
     }
     await toast.promise(createOrderUser(values), {
@@ -81,11 +76,11 @@ export default function CheckoutUser() {
         }
         clearCart();
         router.push({
-          pathname: '/checkout/payment',
+          pathname: "/checkout/payment",
           query: {
             orderCode: data.orderCode,
             totalAmount: data.totalAmount,
-            subtotal: data.subtotal
+            subtotal: data.subtotal,
           },
         });
         return t("checkout.toast.success");

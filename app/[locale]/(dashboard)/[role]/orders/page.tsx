@@ -7,7 +7,6 @@ import {
   useAdminGuestOrdersQuery,
   useAdminUserOrdersQuery,
   useAdminStore,
-  useUpdateOrderStatusMutation,
 } from "@/features/admin";
 import { ModalType, useModalStore } from "@/features/modal";
 import { AdminOrderStatus } from "@/types/response/admin.response";

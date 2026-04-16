@@ -19,6 +19,7 @@ import ProfileButton from "./ProfileButton";
 import { WishlistHeader } from "./WishlistHeader";
 import CartSheet from "./CartSheet";
 import Nav from "../Nav";
+import NotificationDropdown from "./NotificationDropdown";
 
 const Header = () => {
   const isMobile = useIsMobile();
@@ -102,7 +103,7 @@ const Header = () => {
               <SearchBar />
               <SettingsTranslation />
               <ProfileButton />
-
+              <NotificationDropdown />
               <button
                 type="button"
                 onClick={() => router.push("/orders")}
