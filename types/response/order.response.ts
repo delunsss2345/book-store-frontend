@@ -30,6 +30,7 @@ export type CreateGuestOrderResponseData = {
   orderCode: string;
   status: string;
   paymentUrl: string;
+  expiredAt: Date;
   tokenUrl: string;
   totalAmount: string;
   bankName: string;

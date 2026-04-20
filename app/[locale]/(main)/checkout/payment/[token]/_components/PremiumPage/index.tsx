@@ -20,20 +20,22 @@ import { useQueryOrderStatus } from "@/features/hooks/hooks/use-get-order-status
 import { useGetPaymentByToken } from "@/features/hooks/hooks/use-get-payment-by-token";
 import { CopyCard } from "../CopyCard";
 import { CreateGuestOrderResponseData } from "@/types/response/order.response";
+import { useHooksStore } from "@/features/hooks/store/hooks.store";
+import { LoadingLazy } from "@/components/common/LoadingLazy";
+import LoadingState from "@/components/common/LoadingState";
 
 function PremiumPaymentContent({ tokenUrl }: { tokenUrl: string }) {
   const t = useTranslations();
   const router = useRouter();
-
-  const [timeLeft, setTimeLeft] = useState(10 * 60);
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
   // 1. Lấy dữ liệu chi tiết đơn hàng bằng tokenUrl (hash)
-  const { data: response, isLoading: isPaymentLoading } =
-    useGetPaymentByToken(tokenUrl, {
+  const { data: response, isLoading: isPaymentLoading } = useGetPaymentByToken(
+    tokenUrl,
+    {
       enabled: !!tokenUrl,
-    });
-
+    },
+  );
   const payment = response?.data as CreateGuestOrderResponseData | undefined;
 
   // 2. Long Polling: Kiểm tra trạng thái đơn hàng mỗi 5 giây
@@ -42,20 +44,29 @@ function PremiumPaymentContent({ tokenUrl }: { tokenUrl: string }) {
     refetchInterval: (query) => {
       const status = query.state.data?.data?.status;
       // Dừng polling nếu trạng thái là PAID hoặc CANCELLED
-      return status === "PAID" || status === "CANCELLED" ? false : 5000;
+      return status === "PAID" || status === "CANCELLED" ? false : 10000;
     },
   });
 
+  const { timeLeft, setTimeLeft } = useHooksStore();
   // Xử lý đếm ngược
   useEffect(() => {
     if (!tokenUrl) return;
+    if (!response?.data?.expiredAt) return;
+    else {
+      const expiry = new Date(response.data.expiredAt).getTime();
+      const now = new Date().getTime();
+
+      const diff = Math.max(0, Math.floor((expiry - now) / 1000));
+      setTimeLeft(diff);
+    }
     if (timeLeft <= 0) {
       router.push("/orders");
       return;
     }
-    const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
+    const timer = setInterval(() => setTimeLeft(timeLeft - 1), 1000);
     return () => clearInterval(timer);
-  }, [timeLeft, tokenUrl, router]);
+  }, [setTimeLeft, response, timeLeft, tokenUrl, router]);
 
   // Xử lý khi thanh toán thành công
   useEffect(() => {
@@ -84,11 +95,10 @@ function PremiumPaymentContent({ tokenUrl }: { tokenUrl: string }) {
 
   // State Loading khi đang tải dữ liệu thanh toán
   if (isPaymentLoading || !payment) {
-    return (
-      <div className="min-h-screen bg-[#f8fafc] dark:bg-zinc-950 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
-      </div>
-    );
+    return <LoadingState />;
+  }
+  if (!payment.expiredAt) {
+    return <LoadingState />;
   }
 
   return (

@@ -9,7 +9,7 @@ type PaymentByTokenOptions = Omit<
 
 export const useGetPaymentByToken = (
   tokenUrl: string,
-  options?: PaymentByTokenOptions
+  options?: PaymentByTokenOptions,
 ) =>
   useQuery({
     queryKey: ["payment-by-token", tokenUrl] as const,
