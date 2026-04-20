@@ -8,4 +8,7 @@ export const hooksApi = {
 
   getOrderStatus: (orderId: string): Promise<OrderStatusResponse> =>
     http.get(`/hooks/${orderId}/status`),
+
+  getPaymentByToken: (token: string): Promise<OrderStatusResponse> =>
+    http.get(`/payments/${token}/qr`),
 };

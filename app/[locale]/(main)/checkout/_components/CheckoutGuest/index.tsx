@@ -86,10 +86,7 @@ export function CheckoutGuest() {
           clearCart();
           return t("checkout.toast.success");
         }
-        router.push(
-          `/${locale}/checkout/payment?orderCode=${data.orderCode}&totalAmount=${data.totalAmount}&subtotal=${data.subtotal}`,
-        );
-        clearCart();
+        router.push(`/${locale}/checkout/payment/${data.tokenUrl}`);
         return t("checkout.toast.success");
       },
       error: (error) => error.message,

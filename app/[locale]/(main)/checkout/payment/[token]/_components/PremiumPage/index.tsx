@@ -3,62 +3,61 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, Check, Copy, QrCode, ShieldCheck } from "lucide-react";
+import {
+  ArrowLeft,
+  Check,
+  Copy,
+  QrCode,
+  ShieldCheck,
+  Loader2,
+} from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { useQueryOrderStatus } from "@/features/hooks/hooks/use-get-order-status";
-// import { useQueryPaymentByToken } from "@/features/hooks/hooks/use-get-payment-by-token";
+import { useGetPaymentByToken } from "@/features/hooks/hooks/use-get-payment-by-token";
 import { CopyCard } from "../CopyCard";
+import { CreateGuestOrderResponseData } from "@/types/response/order.response";
 
-function PremiumPaymentContent() {
+function PremiumPaymentContent({ tokenUrl }: { tokenUrl: string }) {
   const t = useTranslations();
   const router = useRouter();
-  const params = useParams<{ token: string }>();
 
-  const token = String(params?.token ?? "");
-  const [timeLeft, setTimeLeft] = useState(5 * 60);
+  const [timeLeft, setTimeLeft] = useState(10 * 60);
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
-  //   const { data: paymentData, isLoading: isPaymentLoading } =
-  //     useQueryPaymentByToken(token, {
-  //       enabled: !!token,
-  //     });
+  // 1. Lấy dữ liệu chi tiết đơn hàng bằng tokenUrl (hash)
+  const { data: response, isLoading: isPaymentLoading } =
+    useGetPaymentByToken(tokenUrl, {
+      enabled: !!tokenUrl,
+    });
 
-  //   const payment = paymentData?.data;
+  const payment = response?.data as CreateGuestOrderResponseData | undefined;
 
-  const orderCode = "";
-  const totalAmount = 0;
-  const qrImageUrl = "";
-  const bankName = "MBBank";
-  const bankFullName = "";
-  const accountNumber = "";
-  const transferContent = "";
-
-  const { data: orderStatus } = useQueryOrderStatus(orderCode, {
-    enabled: !!orderCode,
+  // 2. Long Polling: Kiểm tra trạng thái đơn hàng mỗi 5 giây
+  const { data: orderStatus } = useQueryOrderStatus(payment?.orderCode ?? "", {
+    enabled: !!payment?.orderCode,
     refetchInterval: (query) => {
       const status = query.state.data?.data?.status;
-      return status === "PAID" ? false : 5000;
+      // Dừng polling nếu trạng thái là PAID hoặc CANCELLED
+      return status === "PAID" || status === "CANCELLED" ? false : 5000;
     },
   });
 
+  // Xử lý đếm ngược
   useEffect(() => {
-    if (!token) return;
+    if (!tokenUrl) return;
     if (timeLeft <= 0) {
       router.push("/orders");
       return;
     }
-
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => prev - 1);
-    }, 1000);
-
+    const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
     return () => clearInterval(timer);
-  }, [timeLeft, token, router]);
+  }, [timeLeft, tokenUrl, router]);
 
+  // Xử lý khi thanh toán thành công
   useEffect(() => {
     if (orderStatus?.data?.status === "PAID") {
       toast.success(t("checkout.toast.paymentSuccess"), { duration: 5000 });
@@ -66,8 +65,8 @@ function PremiumPaymentContent() {
     }
   }, [orderStatus, router, t]);
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("vi-VN").format(amount);
+  const formatCurrency = (amount: string | number) => {
+    return new Intl.NumberFormat("vi-VN").format(Number(amount));
   };
 
   const countdown = useMemo(() => {
@@ -83,13 +82,19 @@ function PremiumPaymentContent() {
     setTimeout(() => setCopiedField(null), 2000);
   };
 
-  if (!token) {
-    return <div className="min-h-screen bg-[#f8fafc] dark:bg-zinc-950" />;
+  // State Loading khi đang tải dữ liệu thanh toán
+  if (isPaymentLoading || !payment) {
+    return (
+      <div className="min-h-screen bg-[#f8fafc] dark:bg-zinc-950 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen bg-[#f8fafc] dark:bg-zinc-950 flex items-center justify-center p-4 md:p-6 font-sans text-zinc-900 dark:text-zinc-100">
       <Card className="p-0 w-full max-w-5xl grid md:grid-cols-12 overflow-hidden border-none shadow-[0_32px_64px_-12px_rgba(0,0,0,0.1)] rounded-[2rem]">
+        {/* Cột trái: Thông tin tổng quan */}
         <div className="md:col-span-5 lg:col-span-4 bg-zinc-900 p-8 text-white flex flex-col justify-between relative overflow-hidden">
           <div className="relative z-10">
             <Button
@@ -110,7 +115,9 @@ function PremiumPaymentContent() {
                 <h2 className="text-3xl font-bold tracking-tight mb-2">
                   {t("checkout.paymentPage.title")}
                 </h2>
-                <p className="text-zinc-400 font-mono text-sm">#{orderCode}</p>
+                <p className="text-zinc-400 font-mono text-sm">
+                  #{payment.orderCode}
+                </p>
               </div>
 
               <div className="space-y-4 pt-4">
@@ -119,7 +126,7 @@ function PremiumPaymentContent() {
                     {t("checkout.paymentPage.total")}
                   </span>
                   <span className="text-4xl font-black text-white tracking-tighter">
-                    {formatCurrency(totalAmount)}
+                    {formatCurrency(payment.totalAmount)}
                     <span className="text-xl ml-1 text-blue-500">đ</span>
                   </span>
                 </div>
@@ -141,6 +148,7 @@ function PremiumPaymentContent() {
           <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 blur-[100px] -mr-32 -mt-32 rounded-full" />
         </div>
 
+        {/* Cột phải: QR và Thông tin chuyển khoản */}
         <div className="md:col-span-7 lg:col-span-8 bg-white dark:bg-zinc-950 p-8 md:p-12">
           <div className="max-w-md mx-auto space-y-8">
             <div className="text-center space-y-3">
@@ -156,12 +164,13 @@ function PremiumPaymentContent() {
               </h3>
             </div>
 
+            {/* Hiển thị QR Code từ paymentUrl */}
             <div className="relative group">
               <div className="absolute -inset-4 bg-gradient-to-b from-blue-50 to-transparent dark:from-blue-900/10 rounded-[3rem] -z-10 opacity-50" />
               <div className="bg-white p-6 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-zinc-100 relative">
                 <div className="aspect-square rounded-2xl overflow-hidden bg-zinc-50 border border-zinc-50 flex items-center justify-center">
                   <img
-                    src={`/api/payments/${token}/qr`}
+                    src={payment.paymentUrl}
                     alt="Payment QR"
                     className="w-full h-full object-contain p-2"
                   />
@@ -176,39 +185,41 @@ function PremiumPaymentContent() {
               </div>
             </div>
 
+            {/* Thông tin chi tiết ngân hàng */}
             <div className="space-y-3 pt-4">
               <div className="grid grid-cols-2 gap-3">
                 <CopyCard
                   label={t("checkout.paymentPage.bank")}
-                  value={bankName}
-                  subValue={bankFullName}
-                  onCopy={() => handleCopy(bankName, "bank")}
+                  value={payment.bankName}
+                  subValue={payment.nameAccount} // Hiển thị tên chủ tài khoản ở đây
+                  onCopy={() => handleCopy(payment.bankName, "bank")}
                   isCopied={copiedField === "bank"}
                 />
 
                 <CopyCard
                   label={t("checkout.paymentPage.accountNumber")}
-                  value={accountNumber}
-                  onCopy={() => handleCopy(accountNumber, "acc")}
+                  value={payment.stk}
+                  onCopy={() => handleCopy(payment.stk, "acc")}
                   isCopied={copiedField === "acc"}
                   mono
                 />
               </div>
 
+              {/* Nội dung chuyển khoản thường dùng chính là orderCode */}
               <div className="w-full p-4 rounded-2xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/50 flex items-center justify-between">
                 <div>
                   <span className="text-[10px] uppercase text-blue-600 dark:text-blue-400 font-bold block mb-1">
                     {t("checkout.paymentPage.transferContent")}
                   </span>
                   <span className="text-base font-mono font-bold text-blue-700 dark:text-blue-300">
-                    {transferContent}
+                    {payment.orderCode}
                   </span>
                 </div>
 
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => handleCopy(transferContent, "code")}
+                  onClick={() => handleCopy(payment.orderCode, "code")}
                   className="hover:bg-blue-100 dark:hover:bg-blue-800"
                 >
                   {copiedField === "code" ? (
@@ -221,7 +232,10 @@ function PremiumPaymentContent() {
             </div>
 
             <div className="space-y-4">
-              <Button className="w-full bg-zinc-900 dark:bg-white dark:text-zinc-900 hover:scale-[1.02] active:scale-[0.98] transition-all h-14 rounded-2xl font-bold text-base shadow-xl">
+              <Button
+                onClick={() => router.push("/orders")}
+                className="w-full bg-zinc-900 dark:bg-white dark:text-zinc-900 hover:scale-[1.02] active:scale-[0.98] transition-all h-14 rounded-2xl font-bold text-base shadow-xl"
+              >
                 {t("checkout.paymentPage.confirmTransfer")}
               </Button>
 

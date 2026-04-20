@@ -6,17 +6,12 @@ import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Info } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useCartQuery } from "@/features/cart/hooks";
 
 import CheckoutUser from "./_components/CheckoutUser";
 import { selectorCurrentUser } from "@/features/auth/selector/auth.selector";
 import { useAuthStore } from "@/features/auth";
 import { CheckoutGuest } from "./_components/CheckoutGuest";
-import { ShipFee } from "@/constants/enums/order";
-import { fmt } from "@/utils/format-number-vi";
 import { CheckoutPageSkeleton } from "./_components/CheckoutPageSekeleton";
 import { OrderSummary } from "./_components/OrderSummany";
 

@@ -23,27 +23,32 @@ export type OrderStatusData = {
   orderId: string;
   status: string;
 };
-
 export type CreateGuestOrderResponseData = {
+  id: string;
   orderId: string;
-  totalAmount: number;
-  subtotal: number;
+  gateway: string;
   orderCode: string;
+  status: string;
+  paymentUrl: string;
+  tokenUrl: string;
+  totalAmount: string;
+  bankName: string;
+  stk: string;
+  nameAccount: string;
 };
 
-
 export type CreateUserOrder = {
-  orderCode: string,
-  orderId: string
-  subtotal: number,
-  totalAmount: number
+  orderCode: string;
+  orderId: string;
+  subtotal: number;
+  totalAmount: number;
 };
 
 export type OrderStatusResponse = ProxyResponse<OrderStatusData>;
-export type CreateGuestOrderResponse = ProxyResponse<CreateGuestOrderResponseData>;
+export type CreateGuestOrderResponse =
+  ProxyResponse<CreateGuestOrderResponseData>;
 export type GetUserOrdersResponse = ProxyResponse<OrderListResponseData>;
 export type CreateUserOrderResponse = ProxyResponse<CreateUserOrder>;
-
 
 export type OrderItemBookTranslation = {
   title: string;
