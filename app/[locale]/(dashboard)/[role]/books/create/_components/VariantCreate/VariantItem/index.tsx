@@ -20,15 +20,15 @@ export default function VariantItem({
   const t = useTranslations();
 
   return (
-    <div className="flex items-center justify-between gap-4 p-4 border rounded-xl bg-white shadow-sm hover:shadow transition-shadow">
-      <div className="flex gap-4 items-center min-w-0">
+    <div className="flex items-center justify-between gap-4 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm transition-all hover:border-emerald-300 hover:shadow">
+      <div className="flex min-w-0 items-center gap-4">
         <Badge variant="secondary" className="bg-emerald-100 text-emerald-800">
           {v.format}
         </Badge>
 
-        <div className="min-w-0">
-          <p className="text-sm font-bold truncate">
-            Giá bán: {v.price} {v.currencyCode} - Giá nhập: {v.costPrice} {v.currencyCode}
+        <div className="min-w-0 space-y-0.5">
+          <p className="truncate text-sm font-bold">
+            Gia ban: {v.price} {v.currencyCode} - Gia nhap: {v.costPrice} {v.currencyCode}
           </p>
           <p className="text-xs text-muted-foreground truncate">
             ISBN: {v.isbn} • {t("dashboard.products.create.variant.stockShort")}: {v.stock}
@@ -39,7 +39,7 @@ export default function VariantItem({
       <Button
         variant="ghost"
         size="icon"
-        className="shrink-0 hover:bg-red-50"
+        className="shrink-0 rounded-lg hover:bg-red-50"
         onClick={() => setVariants(variants.filter((item) => item.id !== v.id))}
       >
         <Trash2 className="size-4 text-red-500" />

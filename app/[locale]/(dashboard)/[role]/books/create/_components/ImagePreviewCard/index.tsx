@@ -24,12 +24,12 @@ export const ImagePreviewCard = ({
   const hasImage = imageUrl && imageUrl.trim() !== "";
 
   return (
-    <Card className="shadow-sm overflow-hidden border-slate-200">
-      <CardHeader className="border-b bg-muted/30 py-3 px-4">
+    <Card className="overflow-hidden border-zinc-200 shadow-sm">
+      <CardHeader className="border-b bg-zinc-50/80 px-5 py-4">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <ImageIcon className="size-4 text-slate-500" />
-            <CardTitle className="text-[11px] uppercase tracking-wider font-bold text-slate-700">
+            <CardTitle className="text-base font-bold tracking-tight text-slate-700">
               {t("dashboard.products.create.imagePreview.title")}
             </CardTitle>
           </div>
@@ -42,10 +42,10 @@ export const ImagePreviewCard = ({
         </div>
       </CardHeader>
 
-      <CardContent className="p-3 space-y-3">
+      <CardContent className="space-y-4 p-5">
         {/* Preview */}
-        <div className="rounded-lg border bg-background p-1.5">
-          <div className="relative h-48 w-full max-w-50 mx-auto rounded-lg bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center overflow-hidden group transition-all hover:border-primary/30">
+        <div className="rounded-xl border bg-background p-2">
+          <div className="group relative mx-auto flex h-52 w-full max-w-52 items-center justify-center overflow-hidden rounded-lg border-2 border-dashed border-slate-200 bg-slate-50 transition-all hover:border-primary/30">
             {hasImage ? (
               <>
                 <img
@@ -105,7 +105,7 @@ export const ImagePreviewCard = ({
 
           <Input
             placeholder="https://example.com/cover.jpg"
-            className="text-xs font-mono h-10 bg-muted/20 focus-visible:bg-white transition-colors"
+            className="h-10 rounded-xl bg-muted/20 text-xs font-mono transition-colors focus-visible:bg-white"
             value={imageUrl || ""}
             onChange={(e) => onUrlChange?.(e.target.value)}
           />

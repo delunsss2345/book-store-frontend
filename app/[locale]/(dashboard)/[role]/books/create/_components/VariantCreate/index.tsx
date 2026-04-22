@@ -100,12 +100,12 @@ export default function VariantCreate({
     }
   };
 
-  const onError = (error: any) => {
+  const onError = (error: unknown) => {
     console.log(error);
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       {/* LIST */}
       <div className="space-y-3">
         {variants?.length ? (
@@ -118,7 +118,7 @@ export default function VariantCreate({
             />
           ))
         ) : (
-          <div className="rounded-xl border bg-muted/20 p-4 text-sm text-muted-foreground">
+          <div className="rounded-xl border border-dashed bg-zinc-50 p-4 text-sm text-muted-foreground">
             {t("dashboard.products.create.variant.empty")}
           </div>
         )}
@@ -127,35 +127,35 @@ export default function VariantCreate({
       {!isOpen ? (
         <Button
           variant="outline"
-          className="w-full h-20 border-dashed border-2 text-muted-foreground hover:text-emerald-700 hover:border-emerald-600 transition-all"
+          className="h-14 w-full rounded-xl border-2 border-dashed border-zinc-300 text-muted-foreground transition-all hover:border-emerald-600 hover:text-emerald-700"
           onClick={() => setIsOpen(true)}
         >
-          <Plus className="mr-2 size-5" />{" "}
+          <Plus className="mr-2 size-5" />
           {t("dashboard.products.create.variant.addNew")}
         </Button>
       ) : (
-        <Card className="border-emerald-200 bg-emerald-50/10">
-          <CardHeader className="pb-0">
+        <Card className="overflow-hidden border-emerald-200 bg-emerald-50/30">
+          <CardHeader className="border-b bg-white/70 pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm">
+              <CardTitle className="text-base font-bold">
                 {t("dashboard.products.create.variant.formTitle")}
               </CardTitle>
-              <Badge variant="secondary" className="text-xs">
+              <Badge variant="outline" className="bg-white text-[10px] uppercase tracking-wide">
                 Form
               </Badge>
             </div>
           </CardHeader>
 
-          <CardContent className="p-5 lg:p-6">
+          <CardContent className="p-5">
             <Form {...form}>
               <div className="space-y-6">
                 {/* Block 1 */}
-                <div className="space-y-4 pt-2">
-                  <div className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
+                <div className="space-y-4 rounded-xl border bg-white p-4">
+                  <div className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
                     {t("dashboard.products.create.variant.basicInfo")}
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <FormField
                       control={form.control}
                       name="format"
@@ -169,7 +169,7 @@ export default function VariantCreate({
                             defaultValue={field.value}
                           >
                             <FormControl>
-                              <SelectTrigger>
+                              <SelectTrigger className="h-10">
                                 <SelectValue />
                               </SelectTrigger>
                             </FormControl>
@@ -215,12 +215,12 @@ export default function VariantCreate({
                 </div>
 
                 {/* Block 2 */}
-                <div className="space-y-4 pt-2">
-                  <div className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
+                <div className="space-y-4 rounded-xl border bg-white p-4">
+                  <div className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
                     {t("dashboard.products.create.variant.pricingAndEdition")}
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <FormField
                       control={form.control}
                       name="costPrice"
@@ -232,7 +232,7 @@ export default function VariantCreate({
                           <FormControl>
                             <Input
                               type="number"
-                              className="h-10 border-emerald-200"
+                              className="h-10 border-emerald-200 bg-emerald-50/30"
                               {...field}
                             />
                           </FormControl>
@@ -252,7 +252,7 @@ export default function VariantCreate({
                           <FormControl>
                             <Input
                               type="number"
-                              className="h-10 border-emerald-200"
+                              className="h-10 border-emerald-200 bg-emerald-50/30"
                               {...field}
                             />
                           </FormControl>
@@ -290,7 +290,7 @@ export default function VariantCreate({
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>
-                            Số lượng nhập
+                            So luong nhap
                           </FormLabel>
                           <FormControl>
                             <Input
@@ -311,7 +311,7 @@ export default function VariantCreate({
                 <Separator />
 
                 {/* Actions */}
-                <div className="flex flex-col sm:flex-row justify-end gap-3">
+                <div className="flex flex-col justify-end gap-3 sm:flex-row">
                   <Button
                     variant="ghost"
                     type="button"
@@ -319,17 +319,18 @@ export default function VariantCreate({
                       setIsOpen(false);
                       form.reset();
                     }}
+                    className="rounded-xl"
                   >
-                    <X className="mr-2 size-4" />{" "}
+                    <X className="mr-2 size-4" />
                     {t("dashboard.products.create.variant.cancel")}
                   </Button>
 
                   <Button
                     type="button"
                     onClick={form.handleSubmit(onSaveVariant, onError)}
-                    className="bg-emerald-600 hover:bg-emerald-700"
+                    className="rounded-xl bg-emerald-600 hover:bg-emerald-700"
                   >
-                    <Check className="mr-2 size-4" />{" "}
+                    <Check className="mr-2 size-4" />
                     {t("dashboard.products.create.variant.save")}
                   </Button>
                 </div>

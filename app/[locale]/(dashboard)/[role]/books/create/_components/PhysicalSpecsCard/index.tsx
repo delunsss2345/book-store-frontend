@@ -8,31 +8,42 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
-import type { ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
 
-export const PhysicalSpecsCard = ({ data }: { data?: any }) => {
+type PhysicalSpecsData = {
+  width?: number | string;
+  height?: number | string;
+  thickness?: number | string;
+  weight?: number | string;
+  publisher?: string;
+  authors?: string;
+  year?: number | string;
+  pages?: number | string;
+};
+
+export const PhysicalSpecsCard = ({ data }: { data?: PhysicalSpecsData }) => {
   const t = useTranslations();
 
   return (
-    <Card className="shadow-sm">
-      <CardHeader className="border-b bg-muted/30">
+    <Card className="overflow-hidden border-zinc-200 shadow-sm">
+      <CardHeader className="border-b bg-zinc-50/80 px-5 py-4">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <Ruler className="size-5 text-slate-500" />
-            <CardTitle className="text-xs uppercase tracking-widest text-slate-700">
+            <Ruler className="size-4 text-slate-500" />
+            <CardTitle className="text-base font-bold tracking-tight text-slate-700">
               {t("dashboard.products.create.physicalSpecs.title")}
             </CardTitle>
           </div>
 
-          <Badge variant="outline" className="text-xs">
+          <Badge variant="outline" className="bg-white text-[10px] uppercase tracking-wide">
             Specs
           </Badge>
         </div>
       </CardHeader>
 
-      <CardContent className="p-4 space-y-4">
+      <CardContent className="space-y-4 p-5">
         {/* Kích thước & Trọng lượng */}
-        <div className="rounded-xl border bg-background p-3 space-y-2">
+        <div className="space-y-2 rounded-xl border bg-background p-3">
           <div className="flex items-center justify-between">
             <Label className="text-xs font-bold">
               {t("dashboard.products.create.physicalSpecs.dimensionLabel")}
@@ -111,7 +122,7 @@ export const PhysicalSpecsCard = ({ data }: { data?: any }) => {
         </div>
 
         {/* Badges */}
-        <div className="space-y-3 pt-2">
+        <div className="space-y-3 pt-1">
           <Label className="text-xs font-bold flex items-center gap-2">
             <Tag className="size-3 text-primary" />{" "}
             {t("dashboard.products.create.physicalSpecs.badgesLabel")}
@@ -152,29 +163,33 @@ export const PhysicalSpecsCard = ({ data }: { data?: any }) => {
   );
 };
 
-const SpecInput = ({ label, isBold, ...props }: any) => (
+type SpecInputProps = Omit<ComponentProps<typeof Input>, "type"> & {
+  label: string;
+  isBold?: boolean;
+};
+
+const SpecInput = ({ label, isBold, ...props }: SpecInputProps) => (
   <div className="space-y-1.5">
     <Label className="text-[11px] font-bold text-muted-foreground uppercase">
       {label}
     </Label>
-    <Input
-      type="number"
-      step="0.1"
-      className={`h-9 ${isBold ? "font-bold" : ""}`}
-      {...props}
-    />
+    <Input type="number" step="0.1" className={`h-10 rounded-xl ${isBold ? "font-bold" : ""}`} {...props} />
   </div>
 );
 
-const FullWidthInput = ({ label, ...props }: any) => (
+type FullWidthInputProps = ComponentProps<typeof Input> & {
+  label: string;
+};
+
+const FullWidthInput = ({ label, ...props }: FullWidthInputProps) => (
   <div className="space-y-2">
     <Label className="text-xs font-bold">{label}</Label>
-    <Input className="h-9" {...props} />
+    <Input className="h-10 rounded-xl" {...props} />
   </div>
 );
 
 const FooterAlert = ({ text }: { text: ReactNode }) => (
-  <div className="p-4 bg-amber-50 border-t flex gap-3">
+  <div className="flex gap-3 border-t bg-amber-50 p-4">
     <AlertCircle className="size-4 text-amber-600 shrink-0 mt-0.5" />
     <p className="text-[11px] text-amber-800 leading-normal font-medium">
       {text}

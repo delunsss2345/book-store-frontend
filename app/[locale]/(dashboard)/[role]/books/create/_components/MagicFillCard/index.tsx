@@ -27,27 +27,27 @@ export const MagicFillCard = ({
   const [lang, setLang] = useState("vi");
 
   return (
-    <Card className="border-primary/15 bg-primary/[0.03] shadow-none border border-dashed text-sm">
-      <CardContent className="p-2.5">
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between gap-2">
-            <Label className="text-primary font-semibold text-xs flex items-center gap-1.5">
+    <Card className="border-indigo-200 bg-gradient-to-br from-indigo-50/60 via-white to-cyan-50/40 shadow-sm">
+      <CardContent className="p-4">
+        <div className="space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <Label className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-indigo-700">
               <Sparkles className="size-3.5" />
               {t("dashboard.products.create.magicFill.title")}
             </Label>
 
             {isPending && (
-              <span className="text-[10px] text-muted-foreground font-medium">
+              <span className="rounded-full bg-white px-2 py-1 text-[10px] font-medium text-muted-foreground">
                 {t("dashboard.products.create.magicFill.scanning")}
               </span>
             )}
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
-            <div className="w-full sm:w-[130px]">
+          <div className="grid gap-2 md:grid-cols-[160px_minmax(0,1fr)_auto] md:items-center">
+            <div>
               <Select value={lang} onValueChange={setLang} disabled={isPending}>
-                <SelectTrigger className="h-7 px-2 bg-white border-primary/10 text-xs shadow-sm">
-                  <Languages className="size-3 mr-1.5 text-muted-foreground" />
+                <SelectTrigger className="h-10 rounded-xl border-indigo-200 bg-white text-xs shadow-sm">
+                  <Languages className="mr-1.5 size-3 text-muted-foreground" />
                   <SelectValue
                     placeholder={t(
                       "dashboard.products.create.magicFill.languagePlaceholder",
@@ -68,7 +68,7 @@ export const MagicFillCard = ({
             </div>
 
             <div className="relative flex-1">
-              <Hash className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3 text-muted-foreground" />
+              <Hash className="absolute left-3 top-1/2 size-3 -translate-y-1/2 text-muted-foreground" />
               <Input
                 value={isbn}
                 disabled={isPending}
@@ -76,24 +76,23 @@ export const MagicFillCard = ({
                 placeholder={t(
                   "dashboard.products.create.magicFill.isbnPlaceholder",
                 )}
-                className="pl-7 h-7 bg-white text-xs font-mono shadow-sm"
+                className="h-10 rounded-xl border-indigo-200 bg-white pl-8 text-xs font-mono shadow-sm"
               />
             </div>
 
             <Button
               disabled={isPending || !isbn.trim()}
               onClick={() => onScan(isbn.trim(), lang)}
-              size="sm"
-              className="h-7 px-3 shadow-none group"
+              className="h-10 rounded-xl bg-indigo-600 px-4 shadow-none transition-all hover:bg-indigo-700"
             >
-              <Search className="size-3 mr-1.5 group-hover:scale-110 transition-transform" />
+              <Search className="mr-1.5 size-3 transition-transform group-hover:scale-110" />
               <span className="text-xs">
                 {t("dashboard.products.create.magicFill.scanButton")}
               </span>
             </Button>
           </div>
 
-          <div className="text-[9px] leading-relaxed text-muted-foreground mt-0.5">
+          <div className="rounded-xl border border-dashed border-indigo-200 bg-white/80 px-3 py-2 text-[10px] leading-relaxed text-muted-foreground">
             {t("dashboard.products.create.magicFill.hint")}
           </div>
         </div>
