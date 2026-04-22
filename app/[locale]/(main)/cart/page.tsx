@@ -3,7 +3,11 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useCartQuery } from "@/features/cart/hooks";
+import {
+  useCartQuery,
+  useRemoveItemMutation,
+  useUpdateQtyMutation,
+} from "@/features/cart/hooks";
 import { Minus, Plus, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -20,11 +24,14 @@ export default function ShoppingCartPage() {
   const locale = useLocale();
   const t = useTranslations();
   const { data: cart, isPending, isError } = useCartQuery();
+  const updateQtyMutation = useUpdateQtyMutation();
+  const removeItemMutation = useRemoveItemMutation();
+  const items = cart?.items ?? [];
 
-  const subtotal = cart?.items?.reduce(
-    (sum, item) => sum + parseFloat(item.variant.price) * item.quantity,
-    0,
-  );
+  const subtotal = items.reduce((sum, item) => {
+    const price = Number(item.variant.price ?? 0);
+    return sum + price * item.quantity;
+  }, 0);
 
   if (isPending) {
     return (
@@ -67,14 +74,15 @@ export default function ShoppingCartPage() {
             <span className="text-right">Total</span>
           </div>
 
-          {cart?.items && cart.items.length > 0 ? (
-            cart.items.map((item) => {
+          {items.length > 0 ? (
+            items.map((item) => {
+              const id = item.id ?? item.bookVariantId;
               const itemTitle = item.variant.book.translations[0].title;
               const itemDesc = item.variant.book.translations[0].description;
               const currencyCode = item.variant.currencyCode;
 
               return (
-                <div key={item.bookVariantId} className="group">
+                <div key={id} className="group">
                   <div className="grid grid-cols-[1fr_120px_120px_120px] items-center gap-x-4 py-8">
                     {/* Product Info */}
                     <div className="flex items-center gap-5">
@@ -82,6 +90,8 @@ export default function ShoppingCartPage() {
                         type="button"
                         className="text-zinc-300 transition-colors hover:text-red-500"
                         title="Remove item"
+                        onClick={() => removeItemMutation.mutate(String(id))}
+                        disabled={removeItemMutation.isPending}
                       >
                         <X className="h-4 w-4" />
                       </button>
@@ -117,13 +127,31 @@ export default function ShoppingCartPage() {
                     {/* Quantity Selector */}
                     <div className="flex items-center justify-center">
                       <div className="flex items-center border border-zinc-200">
-                        <button className="p-1.5 px-2 hover:bg-zinc-50 transition-colors">
+                        <button
+                          className="p-1.5 px-2 hover:bg-zinc-50 transition-colors"
+                          onClick={() =>
+                            updateQtyMutation.mutate({
+                              id: String(id),
+                              delta: -1,
+                            })
+                          }
+                          disabled={updateQtyMutation.isPending}
+                        >
                           <Minus className="h-3 w-3 text-zinc-500" />
                         </button>
                         <span className="w-8 text-center text-xs font-medium border-x border-zinc-200 py-1">
                           {item.quantity}
                         </span>
-                        <button className="p-1.5 px-2 hover:bg-zinc-50 transition-colors">
+                        <button
+                          className="p-1.5 px-2 hover:bg-zinc-50 transition-colors"
+                          onClick={() =>
+                            updateQtyMutation.mutate({
+                              id: String(id),
+                              delta: 1,
+                            })
+                          }
+                          disabled={updateQtyMutation.isPending}
+                        >
                           <Plus className="h-3 w-3 text-zinc-500" />
                         </button>
                       </div>
@@ -160,8 +188,8 @@ export default function ShoppingCartPage() {
               <div className="flex items-center justify-between text-zinc-500">
                 <span>Subtotal</span>
                 <span className="font-semibold text-zinc-900">
-                  {numberFormatter.format(subtotal ?? 0)}{" "}
-                  {cart?.items?.[0]?.variant.currencyCode ?? ""}
+                  {numberFormatter.format(subtotal)}{" "}
+                  {items[0]?.variant.currencyCode ?? ""}
                 </span>
               </div>
               <div className="flex items-center justify-between text-zinc-500">
@@ -176,8 +204,8 @@ export default function ShoppingCartPage() {
               <div className="flex items-center justify-between text-lg font-bold text-zinc-900">
                 <span>Total</span>
                 <span>
-                  {numberFormatter.format(subtotal ?? 0)}{" "}
-                  {cart?.items?.[0]?.variant.currencyCode ?? ""}
+                  {numberFormatter.format(subtotal)}{" "}
+                  {items[0]?.variant.currencyCode ?? ""}
                 </span>
               </div>
             </div>
@@ -185,7 +213,7 @@ export default function ShoppingCartPage() {
             <Button
               onClick={() => router.push(`/${locale}/checkout`)}
               className="mt-8 w-full rounded-none bg-zinc-900 py-7 text-[10px] font-bold uppercase tracking-[0.25em] text-white hover:bg-zinc-800 transition-all active:scale-[0.98]"
-              disabled={!cart?.items || cart?.items?.length === 0}
+              disabled={items.length === 0}
             >
               Checkout Now
             </Button>

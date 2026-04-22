@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
@@ -166,13 +167,15 @@ const CartSheet = () => {
               </p>
             </div>
 
-            <Button
-              asChild
-              variant="outline"
-              className="h-10 rounded-sm px-6 text-sm sm:text-base"
-            >
-              <Link href={`/${local}/cart`}>Go to Shopping Cart</Link>
-            </Button>
+            <SheetClose asChild>
+              <Button
+                asChild
+                variant="outline"
+                className="h-10 rounded-sm px-6 text-sm sm:text-base"
+              >
+                <Link href={`/${local}/cart`}>Go to Shopping Cart</Link>
+              </Button>
+            </SheetClose>
           </div>
         </div>
       </SheetContent>
