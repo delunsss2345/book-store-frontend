@@ -1,6 +1,5 @@
 "use client";
 
-import { Search } from "@/components/common/Search";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,904 +9,318 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
+import {
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  ArrowDownRight,
   ArrowUpRight,
-  Calendar,
-  ChevronLeft,
-  ChevronRight,
-  CreditCard,
-  DollarSign,
-  Filter,
-  LayoutGrid,
-  List,
-  MapPin,
-  MoreHorizontal,
-  Phone,
-  ShoppingCart,
-  Star,
-  TrendingUp,
+  BookOpen,
+  ChartNoAxesCombined,
+  CircleDollarSign,
+  Package,
+  ShoppingBag,
+  Sparkles,
   Users,
-  Wallet,
 } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
+
+type RevenuePoint = {
+  date: string;
+  gross: number;
+  net: number;
+};
+
+const revenueData: RevenuePoint[] = [
+  { date: "2026-01-01", gross: 920, net: 540 },
+  { date: "2026-02-01", gross: 1010, net: 610 },
+  { date: "2026-03-01", gross: 980, net: 590 },
+  { date: "2026-04-01", gross: 1240, net: 770 },
+  { date: "2026-05-01", gross: 1320, net: 860 },
+  { date: "2026-06-01", gross: 1480, net: 920 },
+  { date: "2026-07-01", gross: 1430, net: 900 },
+  { date: "2026-08-01", gross: 1510, net: 960 },
+  { date: "2026-09-01", gross: 1610, net: 1010 },
+  { date: "2026-10-01", gross: 1670, net: 1060 },
+  { date: "2026-11-01", gross: 1730, net: 1120 },
+  { date: "2026-12-01", gross: 1810, net: 1180 },
+];
+
+const channelData = [
+  { month: "Jan", marketplace: 180, website: 120 },
+  { month: "Feb", marketplace: 210, website: 135 },
+  { month: "Mar", marketplace: 230, website: 150 },
+  { month: "Apr", marketplace: 245, website: 170 },
+  { month: "May", marketplace: 280, website: 195 },
+  { month: "Jun", marketplace: 310, website: 225 },
+];
+
+const revenueChartConfig = {
+  gross: {
+    label: "Gross",
+    color: "hsl(203 89% 53%)",
+  },
+  net: {
+    label: "Net",
+    color: "hsl(142 76% 36%)",
+  },
+} satisfies ChartConfig;
+
+const channelChartConfig = {
+  marketplace: {
+    label: "Marketplace",
+    color: "hsl(217 91% 60%)",
+  },
+  website: {
+    label: "Website",
+    color: "hsl(263 70% 58%)",
+  },
+} satisfies ChartConfig;
+
+const numberFmt = new Intl.NumberFormat("en-US");
 
 export default function Dashboard() {
+  const [range, setRange] = useState<"12m" | "6m" | "3m">("6m");
+
+  const filteredRevenue = useMemo(() => {
+    if (range === "12m") return revenueData;
+    if (range === "6m") return revenueData.slice(-6);
+    return revenueData.slice(-3);
+  }, [range]);
+
   return (
-    <>
-      <div className="mb-2 flex items-center justify-between space-y-2">
-        <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
-        <div className="flex items-center space-x-2">
-          <Button>Download</Button>
+    <div className="space-y-6 pb-6">
+      <section className="relative overflow-hidden rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-950 via-zinc-900 to-slate-900 p-6 text-white shadow-2xl">
+        <div className="pointer-events-none absolute -left-14 top-0 h-36 w-36 rounded-full bg-cyan-400/20 blur-2xl" />
+        <div className="pointer-events-none absolute right-0 top-12 h-44 w-44 rounded-full bg-blue-500/20 blur-3xl" />
+        <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="space-y-2">
+            <Badge className="bg-white/10 text-white hover:bg-white/10">
+              Live mock dashboard
+            </Badge>
+            <h1 className="text-2xl font-black tracking-tight md:text-3xl">
+              Commerce Analytics Hub
+            </h1>
+            <p className="max-w-2xl text-sm text-zinc-300">
+              Snapshot UI using shadcn chart area to visualize sales velocity, channel mix, and operational health.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <Button variant="secondary" className="gap-2 bg-white text-zinc-900 hover:bg-zinc-100">
+              <Sparkles className="h-4 w-4" /> Export report
+            </Button>
+            <Button variant="outline" className="border-white/20 bg-white/5 text-white hover:bg-white/10">
+              <ChartNoAxesCombined className="mr-2 h-4 w-4" /> View insights
+            </Button>
+          </div>
         </div>
-      </div>
-      <Tabs orientation="vertical" defaultValue="" className="space-y-4">
-        <div className="w-full overflow-x-auto pb-2">
-          <TabsList className="!flex-row">
-            <TabsTrigger value="">Overview</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
-            <TabsTrigger value="sale-profile">Sale Profile</TabsTrigger>
-            <TabsTrigger value="customer">Customer</TabsTrigger>
-          </TabsList>
-          <TabsContent value="" className="space-y-4 mt-5">
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    Total Revenue
-                  </CardTitle>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="h-4 w-4 text-muted-foreground"
-                  >
-                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">$45,231.89</div>
-                  <p className="text-xs text-muted-foreground">
-                    +20.1% from last month
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    Subscriptions
-                  </CardTitle>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="h-4 w-4 text-muted-foreground"
-                  >
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                    <circle cx="9" cy="7" r="4" />
-                    <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">+2350</div>
-                  <p className="text-xs text-muted-foreground">
-                    +180.1% from last month
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Sales</CardTitle>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="h-4 w-4 text-muted-foreground"
-                  >
-                    <rect width="20" height="14" x="2" y="5" rx="2" />
-                    <path d="M2 10h20" />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">+12,234</div>
-                  <p className="text-xs text-muted-foreground">
-                    +19% from last month
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    Active Now
-                  </CardTitle>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="h-4 w-4 text-muted-foreground"
-                  >
-                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">+573</div>
-                  <p className="text-xs text-muted-foreground">
-                    +201 since last hour
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-7">
-              <Card className="col-span-1 lg:col-span-4">
-                <CardHeader>
-                  <CardTitle>Overview</CardTitle>
-                </CardHeader>
-                <CardContent className="ps-2"></CardContent>
-              </Card>
-              <Card className="col-span-1 lg:col-span-3">
-                <CardHeader>
-                  <CardTitle>Recent Sales</CardTitle>
-                  <CardDescription>
-                    You made 265 sales this month.
+      </section>
+
+      <Tabs defaultValue="overview" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-3 md:w-[420px]">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="revenue">Revenue</TabsTrigger>
+          <TabsTrigger value="customers">Customers</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="space-y-4">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {[
+              {
+                title: "Net Revenue",
+                value: "$1,18M",
+                change: "+12.4%",
+                icon: CircleDollarSign,
+              },
+              {
+                title: "Orders",
+                value: "24,918",
+                change: "+8.1%",
+                icon: ShoppingBag,
+              },
+              {
+                title: "New Customers",
+                value: "3,274",
+                change: "+14.9%",
+                icon: Users,
+              },
+              {
+                title: "Books In Stock",
+                value: "12,085",
+                change: "+2.2%",
+                icon: BookOpen,
+              },
+            ].map((metric) => (
+              <Card key={metric.title} className="border-zinc-200 bg-white/80 backdrop-blur">
+                <CardHeader className="pb-2">
+                  <CardDescription className="flex items-center justify-between text-xs uppercase tracking-wide">
+                    {metric.title}
+                    <metric.icon className="h-4 w-4 text-zinc-500" />
                   </CardDescription>
-                </CardHeader>
-                <CardContent>{/* <RecentSales /> */}</CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-          {/* ====== ANALYTICS TAB ====== */}
-          <TabsContent value="analytics" className="space-y-4 mt-5">
-            {/* Row 1: Sales Report + Store Overview */}
-            <div className="grid gap-4 lg:grid-cols-7">
-              <Card className="col-span-1 lg:col-span-5">
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle>Sales Report</CardTitle>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground">
-                      Monthly
-                    </span>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </div>
+                  <CardTitle className="text-2xl font-black">{metric.value}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {/* Chart placeholder */}
-                  <div className="flex h-[220px] items-end gap-1">
-                    {[
-                      "Jan",
-                      "Feb",
-                      "Mar",
-                      "Apr",
-                      "May",
-                      "Jun",
-                      "Jul",
-                      "Aug",
-                      "Sep",
-                      "Oct",
-                      "Nov",
-                      "Dec",
-                    ].map((m, i) => {
-                      const heights = [
-                        30, 40, 55, 60, 65, 68, 72, 78, 85, 90, 88, 92,
-                      ];
-                      return (
-                        <div
-                          key={m}
-                          className="flex flex-1 flex-col items-center gap-1"
-                        >
-                          <div
-                            className="w-full rounded-t bg-blue-500/20"
-                            style={{ height: `${heights[i]}%` }}
-                          >
-                            <div
-                              className="h-full w-full rounded-t bg-blue-500"
-                              style={{ opacity: 0.3 + i * 0.06 }}
-                            />
-                          </div>
-                          <span className="text-[10px] text-muted-foreground">
-                            {m}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="col-span-1 lg:col-span-2">
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle>Store Overview</CardTitle>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </CardHeader>
-                <CardContent className="space-y-5">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100 text-orange-500">
-                      <ShoppingCart className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <p className="text-lg font-bold">$89,585</p>
-                      <p className="text-xs text-muted-foreground">
-                        Store Sales
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-100 text-red-500">
-                      <Users className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <p className="text-lg font-bold">$42,455</p>
-                      <p className="text-xs text-muted-foreground">Visits</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100 text-green-600">
-                      <DollarSign className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <p className="text-lg font-bold">$38,625</p>
-                      <p className="text-xs text-muted-foreground">
-                        Avg Earnings
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Row 2: Weekly Stats + Sales History + Best Selling */}
-            <div className="grid gap-4 lg:grid-cols-3">
-              {/* Weekly Stats */}
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-base">Weekly Stats</CardTitle>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex h-[100px] items-end gap-2">
-                    {[65, 80, 55, 90, 70, 85, 60].map((h, i) => (
-                      <div
-                        key={i}
-                        className="flex-1 rounded-t bg-blue-500"
-                        style={{ height: `${h}%` }}
-                      />
-                    ))}
-                  </div>
-                  <Separator className="my-4" />
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <TrendingUp className="h-4 w-4 text-blue-500" />
-                        <div>
-                          <p className="text-sm font-medium">Total Sales</p>
-                          <p className="text-xs text-muted-foreground">
-                            2,458 Today
-                          </p>
-                        </div>
-                      </div>
-                      <span className="font-bold">$5,258</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <TrendingUp className="h-4 w-4 text-green-500" />
-                        <div>
-                          <p className="text-sm font-medium">Total Revenue</p>
-                          <p className="text-xs text-muted-foreground">
-                            Revenue target
-                          </p>
-                        </div>
-                      </div>
-                      <span className="font-bold">$4,958</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Sales History */}
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-base">Sales History</CardTitle>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {[
-                    {
-                      name: "Timothy Boyd",
-                      date: "14 DEC, 2023",
-                      amount: "$750.00",
-                      color: "bg-blue-400",
-                    },
-                    {
-                      name: "Adrian Monino",
-                      date: "23 DEC, 2023",
-                      amount: "$820.00",
-                      color: "bg-blue-500",
-                    },
-                    {
-                      name: "Socrates Itumay",
-                      date: "24 DEC, 2023",
-                      amount: "$180.00",
-                      color: "bg-blue-600",
-                    },
-                    {
-                      name: "Althea Cabardo",
-                      date: "01 DEC, 2023",
-                      amount: "$190.00",
-                      color: "bg-blue-700",
-                    },
-                  ].map((sale, i) => (
-                    <div key={i} className="flex items-center gap-3">
-                      <div
-                        className={`h-2.5 w-2.5 rounded-full ${sale.color}`}
-                      />
-                      <div className="flex-1">
-                        <p className="text-sm font-medium">{sale.name}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {sale.date}
-                        </p>
-                      </div>
-                      <span className="text-sm font-semibold">
-                        {sale.amount}
-                      </span>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-
-              {/* Best Selling */}
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-base">Best Selling</CardTitle>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {[
-                    {
-                      name: "Edifier headphone",
-                      sku: "RWL-H-001",
-                      reviews: 380,
-                      stars: 5,
-                    },
-                    {
-                      name: "Apple watch ultra",
-                      sku: "RWL-H-002",
-                      reviews: 750,
-                      stars: 5,
-                    },
-                    {
-                      name: "Google pixel buds",
-                      sku: "RWL-H-003",
-                      reviews: 420,
-                      stars: 4,
-                    },
-                    {
-                      name: "iPhone 15 pro max",
-                      sku: "RWL-H-004",
-                      reviews: 543,
-                      stars: 5,
-                    },
-                    {
-                      name: "Canon camera kit",
-                      sku: "RWL-H-005",
-                      reviews: 467,
-                      stars: 5,
-                    },
-                  ].map((item, i) => (
-                    <div key={i} className="flex items-center gap-3">
-                      <div className="h-9 w-9 rounded-full bg-muted" />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium truncate">
-                          {item.name}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {item.sku}
-                        </p>
-                      </div>
-                      <div className="text-right shrink-0">
-                        <div className="flex gap-0.5">
-                          {Array.from({ length: 5 }).map((_, s) => (
-                            <Star
-                              key={s}
-                              className={`h-3 w-3 ${s < item.stars ? "fill-yellow-400 text-yellow-400" : "text-muted"}`}
-                            />
-                          ))}
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                          {item.reviews} Reviews
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          {/* ====== SALE PROFILE TAB ====== */}
-          <TabsContent value="sale-profile" className="mt-5">
-            <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
-              {/* Sidebar – Seller profile */}
-              <Card className="h-fit">
-                <CardContent className="pt-6 text-center">
-                  {/* Avatar */}
-                  <div className="relative mx-auto h-24 w-24">
-                    <div className="h-24 w-24 overflow-hidden rounded-full bg-muted">
-                      <img
-                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80"
-                        alt="Seller avatar"
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                    <span className="absolute right-1 bottom-0 flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-[10px] text-white">
-                      ✓
-                    </span>
-                  </div>
-                  <h3 className="mt-3 text-lg font-semibold">Alice Johnson</h3>
-                  <p className="text-sm text-muted-foreground">
-                    5.2k followers
+                  <p className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600">
+                    {metric.change}
+                    <ArrowUpRight className="h-3 w-3" />
                   </p>
-
-                  <div className="mt-4 flex gap-2">
-                    <Button className="flex-1 rounded-full" size="sm">
-                      Follow
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="flex-1 rounded-full"
-                      size="sm"
-                    >
-                      Message
-                    </Button>
-                  </div>
-
-                  <Separator className="my-5" />
-
-                  <div className="space-y-2 text-left text-sm text-muted-foreground">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4" /> Joined 2022-03-15
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Phone className="h-4 w-4" /> +1 (555) 123-4567
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4" /> San Francisco, USA
-                    </div>
-                  </div>
-
-                  <Separator className="my-5" />
-
-                  <div className="text-left">
-                    <h4 className="font-semibold">About</h4>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      Experienced IT professional with a passion for
-                      cybersecurity and network optimization.
-                    </p>
-                  </div>
-
-                  <Separator className="my-5" />
-
-                  <div className="text-left">
-                    <h4 className="font-semibold">Seller Stats</h4>
-                    <div className="mt-2 flex gap-6">
-                      <div className="flex items-center gap-2">
-                        <CreditCard className="h-4 w-4 text-muted-foreground" />
-                        <div>
-                          <p className="text-xs text-muted-foreground">
-                            Items Sold
-                          </p>
-                          <p className="font-bold">150</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                        <div>
-                          <p className="text-xs text-muted-foreground">
-                            Avg Rating
-                          </p>
-                          <p className="font-bold">4.8/5</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <Separator className="my-5" />
-
-                  <div className="text-left">
-                    <h4 className="font-semibold">Favorite Tags</h4>
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {[
-                        "cybersecurity",
-                        "networking",
-                        "cloud",
-                        "devops",
-                        "ai",
-                      ].map((tag) => (
-                        <Badge
-                          key={tag}
-                          variant="secondary"
-                          className="rounded-md text-xs font-normal"
-                        >
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
                 </CardContent>
               </Card>
+            ))}
+          </div>
 
-              {/* Main content – Products */}
-              <div className="space-y-8">
-                {/* Featured Products */}
+          <div className="grid gap-4 xl:grid-cols-[2fr_1fr]">
+            <Card className="border-zinc-200">
+              <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <h2 className="text-xl font-bold">Featured Products</h2>
-                  <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                    {[
-                      {
-                        name: "Wireless Earbuds Pro",
-                        cat: "Wearables",
-                        price: 56.78,
-                        old: 102.8,
-                        rating: 4.5,
-                        tag: "New",
-                      },
-                      {
-                        name: "SmartFit Watch X1",
-                        cat: "Lifestyle",
-                        price: 70.37,
-                        rating: 4.2,
-                      },
-                      {
-                        name: "ErgoBoost Laptop Stand",
-                        cat: "Tech",
-                        price: 119.32,
-                        rating: 4.3,
-                      },
-                      {
-                        name: "ShieldPro Phone Case",
-                        cat: "Audio",
-                        price: 40.21,
-                        rating: 4.5,
-                      },
-                    ].map((p, i) => (
-                      <Card key={i} className="group overflow-hidden">
-                        <div className="relative h-32 bg-gradient-to-br from-neutral-100 to-neutral-200">
-                          {p.tag && (
-                            <Badge className="absolute top-2 left-2 bg-red-500 text-white text-[10px]">
-                              {p.tag}
-                            </Badge>
-                          )}
-                          <Badge
-                            variant="secondary"
-                            className="absolute bottom-2 left-2 text-[10px]"
-                          >
-                            {p.cat}
-                          </Badge>
-                        </div>
-                        <CardContent className="pt-3">
-                          <p className="text-sm font-medium truncate">
-                            {p.name}
-                          </p>
-                          <div className="mt-1 flex items-center justify-between">
-                            <div className="flex items-center gap-1">
-                              {p.old && (
-                                <span className="text-xs text-muted-foreground line-through">
-                                  ${p.old}
-                                </span>
-                              )}
-                              <span className="font-bold">${p.price}</span>
-                            </div>
-                            <span className="flex items-center gap-0.5 rounded bg-neutral-900 px-1.5 py-0.5 text-[10px] font-semibold text-white">
-                              <Star className="h-2.5 w-2.5 fill-white" />{" "}
-                              {p.rating}
-                            </span>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
+                  <CardTitle>Revenue Momentum</CardTitle>
+                  <CardDescription>Area chart from shadcn chart primitives</CardDescription>
                 </div>
 
-                {/* More Products */}
-                <div>
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-bold">More Products</h2>
-                    <button className="flex items-center gap-1 text-sm text-red-500 hover:underline">
-                      ✂ Special Offers
-                    </button>
-                  </div>
-                  <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                    {[
-                      {
-                        name: "PowerBank 20000mAh",
-                        cat: "Lifestyle",
-                        price: 91.19,
-                        rating: 4.9,
-                      },
-                      {
-                        name: "SoundWave Bluetooth Speaker",
-                        cat: "Audio",
-                        price: 94.98,
-                        rating: 4.9,
-                      },
-                      {
-                        name: "FitTrack Pro",
-                        cat: "Tech",
-                        price: 97.12,
-                        rating: 4.9,
-                      },
-                    ].map((p, i) => (
-                      <Card key={i} className="group overflow-hidden">
-                        <div className="relative h-40 bg-gradient-to-br from-neutral-200 to-neutral-300">
-                          <Badge
-                            variant="secondary"
-                            className="absolute bottom-2 left-2 text-[10px]"
-                          >
-                            {p.cat}
-                          </Badge>
-                        </div>
-                        <CardContent className="pt-3">
-                          <p className="text-sm font-medium truncate">
-                            {p.name}
-                          </p>
-                          <div className="mt-1 flex items-center justify-between">
-                            <span className="font-bold">${p.price}</span>
-                            <span className="flex items-center gap-0.5 rounded bg-neutral-900 px-1.5 py-0.5 text-[10px] font-semibold text-white">
-                              <Star className="h-2.5 w-2.5 fill-white" />{" "}
-                              {p.rating}
-                            </span>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
+                <div className="inline-flex rounded-md border p-1">
+                  {[
+                    { label: "3M", value: "3m" as const },
+                    { label: "6M", value: "6m" as const },
+                    { label: "12M", value: "12m" as const },
+                  ].map((item) => (
+                    <Button
+                      key={item.value}
+                      variant={range === item.value ? "default" : "ghost"}
+                      size="sm"
+                      className="h-7 px-3"
+                      onClick={() => setRange(item.value)}
+                    >
+                      {item.label}
+                    </Button>
+                  ))}
                 </div>
-              </div>
-            </div>
-          </TabsContent>
+              </CardHeader>
 
-          {/* ====== CUSTOMER TAB ====== */}
-          <TabsContent value="customer" className="space-y-6 mt-5">
-            {/* Greeting */}
-            <h2 className="text-2xl font-bold">Hello, Devon Lane 👋</h2>
-
-            {/* Stat cards */}
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {[
-                {
-                  label: "Total Balance",
-                  value: "$98,955.00",
-                  change: "+0.48%",
-                  up: true,
-                  icon: Wallet,
-                },
-                {
-                  label: "Total Income",
-                  value: "$24,414.00",
-                  change: "+0.32%",
-                  up: true,
-                  icon: DollarSign,
-                },
-                {
-                  label: "Total Outcome",
-                  value: "$16,245.00",
-                  change: "+0.24%",
-                  up: true,
-                  icon: CreditCard,
-                },
-                {
-                  label: "New Customers",
-                  value: "$2867",
-                  change: "+0.12%",
-                  up: false,
-                  icon: Users,
-                },
-              ].map((stat, i) => (
-                <Card key={i}>
-                  <CardContent className="pt-5">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <stat.icon className="h-4 w-4" />
-                        {stat.label}
-                      </div>
-                      <span
-                        className={`flex items-center gap-0.5 text-xs font-medium ${stat.up ? "text-green-600" : "text-red-500"}`}
-                      >
-                        {stat.change}
-                        {stat.up ? (
-                          <ArrowUpRight className="h-3 w-3" />
-                        ) : (
-                          <ArrowDownRight className="h-3 w-3" />
-                        )}
-                      </span>
-                    </div>
-                    <p className="mt-2 text-2xl font-bold">{stat.value}</p>
-                    <p className="text-xs text-muted-foreground">
-                      Data per 12 Jan 2024
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            {/* Toolbar */}
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="relative w-64">
-                <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input placeholder="Search" className="h-9 pl-9 text-sm" />
-              </div>
-              <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" className="gap-1.5 text-xs">
-                  <Filter className="h-3.5 w-3.5" /> Filters
-                </Button>
-                <Button variant="outline" size="sm" className="text-xs">
-                  Weekly
-                </Button>
-                <div className="flex overflow-hidden rounded-md border">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 rounded-none"
-                  >
-                    <List className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 rounded-none border-l"
-                  >
-                    <LayoutGrid className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            {/* Customer table */}
-            <Card>
-              <CardContent className="p-0">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b text-left text-muted-foreground">
-                        <th className="px-4 py-3 font-medium">Name</th>
-                        <th className="px-4 py-3 font-medium">Email</th>
-                        <th className="px-4 py-3 font-medium">Phone</th>
-                        <th className="px-4 py-3 font-medium">Platform</th>
-                        <th className="px-4 py-3 font-medium">Join Date</th>
-                        <th className="px-4 py-3 font-medium">Status</th>
-                        <th className="px-4 py-3" />
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {[
-                        { status: "Inactive", color: "bg-orange-500" },
-                        { status: "Active", color: "bg-green-500" },
-                        { status: "Active", color: "bg-yellow-500" },
-                        { status: "Inactive", color: "bg-red-500" },
-                        { status: "Active", color: "bg-purple-500" },
-                        { status: "Active", color: "bg-teal-500" },
-                        { status: "Inactive", color: "bg-pink-500" },
-                        { status: "Active", color: "bg-cyan-500" },
-                      ].map((row, i) => (
-                        <tr
-                          key={i}
-                          className="border-b last:border-0 hover:bg-muted/40"
-                        >
-                          <td className="px-4 py-3">
-                            <div className="flex items-center gap-3">
-                              <span
-                                className={`flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold text-white ${row.color}`}
-                              >
-                                JA
-                              </span>
-                              <span className="font-medium">
-                                Jackson Alexander
-                              </span>
-                            </div>
-                          </td>
-                          <td className="px-4 py-3 text-muted-foreground">
-                            jacksonalexander@gmail.com
-                          </td>
-                          <td className="px-4 py-3 text-muted-foreground">
-                            +11 387-6327
-                          </td>
-                          <td className="px-4 py-3 text-muted-foreground">
-                            Outreach
-                          </td>
-                          <td className="px-4 py-3 text-muted-foreground">
-                            24/01/2024
-                          </td>
-                          <td className="px-4 py-3">
-                            <Badge
-                              variant={
-                                row.status === "Active"
-                                  ? "default"
-                                  : "secondary"
-                              }
-                              className={
-                                row.status === "Active"
-                                  ? "bg-green-100 text-green-700 hover:bg-green-100"
-                                  : "bg-red-100 text-red-600 hover:bg-red-100"
-                              }
-                            >
-                              {row.status}
-                            </Badge>
-                          </td>
-                          <td className="px-4 py-3">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+              <CardContent>
+                <ChartContainer config={revenueChartConfig} className="h-[280px] w-full">
+                  <AreaChart data={filteredRevenue} margin={{ left: 8, right: 8 }}>
+                    <defs>
+                      <linearGradient id="grossFill" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="var(--color-gross)" stopOpacity={0.5} />
+                        <stop offset="95%" stopColor="var(--color-gross)" stopOpacity={0.02} />
+                      </linearGradient>
+                      <linearGradient id="netFill" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="var(--color-net)" stopOpacity={0.45} />
+                        <stop offset="95%" stopColor="var(--color-net)" stopOpacity={0.03} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid vertical={false} />
+                    <XAxis
+                      dataKey="date"
+                      tickLine={false}
+                      axisLine={false}
+                      tickMargin={10}
+                      tickFormatter={(value) =>
+                        new Date(value).toLocaleDateString("en-US", { month: "short" })
+                      }
+                    />
+                    <YAxis tickLine={false} axisLine={false} tickMargin={10} />
+                    <ChartTooltip
+                      content={
+                        <ChartTooltipContent
+                          labelFormatter={(value) =>
+                            new Date(value).toLocaleDateString("en-US", {
+                              month: "short",
+                              year: "numeric",
+                            })
+                          }
+                        />
+                      }
+                    />
+                    <Area dataKey="gross" type="natural" stroke="var(--color-gross)" fill="url(#grossFill)" strokeWidth={2} />
+                    <Area dataKey="net" type="natural" stroke="var(--color-net)" fill="url(#netFill)" strokeWidth={2} />
+                    <ChartLegend content={<ChartLegendContent />} />
+                  </AreaChart>
+                </ChartContainer>
               </CardContent>
             </Card>
 
-            {/* Pagination */}
-            <div className="flex items-center justify-between text-sm text-muted-foreground">
-              <span>Showing 8 items per page</span>
-              <div className="flex items-center gap-1">
-                <Button variant="ghost" size="icon" className="h-8 w-8">
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-                {[1, 2, 3, 4].map((p) => (
-                  <Button
-                    key={p}
-                    variant={p === 1 ? "default" : "ghost"}
-                    size="icon"
-                    className={`h-8 w-8 text-xs ${p === 1 ? "bg-neutral-900 text-white" : ""}`}
-                  >
-                    {p}
-                  </Button>
+            <Card className="border-zinc-200">
+              <CardHeader>
+                <CardTitle>Top Inventory Alerts</CardTitle>
+                <CardDescription>Need restock in next 7 days</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {[
+                  { sku: "BK-00291", name: "The Linux Kernel Journey", left: 11 },
+                  { sku: "BK-00318", name: "Next.js In Practice", left: 9 },
+                  { sku: "BK-00412", name: "System Design for APIs", left: 7 },
+                  { sku: "BK-00537", name: "Secure Payment Flows", left: 5 },
+                ].map((item) => (
+                  <div key={item.sku} className="rounded-xl border border-zinc-200 p-3">
+                    <p className="truncate text-sm font-semibold">{item.name}</p>
+                    <div className="mt-1 flex items-center justify-between text-xs text-zinc-500">
+                      <span>{item.sku}</span>
+                      <span className="inline-flex items-center gap-1 font-bold text-amber-600">
+                        <Package className="h-3.5 w-3.5" /> {item.left} left
+                      </span>
+                    </div>
+                  </div>
                 ))}
-                <span>...</span>
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-xs">
-                  12
-                </Button>
-                <Button variant="ghost" size="icon" className="h-8 w-8">
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
-                <span className="ml-2">Go to</span>
-                <Input className="ml-1 h-8 w-14 text-xs" />
-                <span>Page</span>
-              </div>
-            </div>
-          </TabsContent>
-        </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="revenue">
+          <Card className="border-zinc-200">
+            <CardHeader>
+              <CardTitle>Channel Distribution</CardTitle>
+              <CardDescription>Marketplace vs website contribution</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer config={channelChartConfig} className="h-[300px] w-full">
+                <AreaChart data={channelData} margin={{ left: 8, right: 8 }}>
+                  <CartesianGrid vertical={false} />
+                  <XAxis dataKey="month" tickLine={false} axisLine={false} />
+                  <YAxis tickLine={false} axisLine={false} />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Area dataKey="marketplace" stroke="var(--color-marketplace)" fill="var(--color-marketplace)" fillOpacity={0.15} strokeWidth={2} type="monotone" />
+                  <Area dataKey="website" stroke="var(--color-website)" fill="var(--color-website)" fillOpacity={0.15} strokeWidth={2} type="monotone" />
+                  <ChartLegend content={<ChartLegendContent />} />
+                </AreaChart>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="customers">
+          <Card className="border-zinc-200">
+            <CardHeader>
+              <CardTitle>Customer Snapshot</CardTitle>
+              <CardDescription>Quick mock data for active buyers</CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-3">
+              {[
+                { name: "Devon Lane", orders: 28, spend: 4120 },
+                { name: "Wade Warren", orders: 19, spend: 2950 },
+                { name: "Leslie Alexander", orders: 14, spend: 2240 },
+                { name: "Jane Cooper", orders: 11, spend: 1840 },
+              ].map((customer) => (
+                <div key={customer.name} className="flex items-center justify-between rounded-xl border p-3">
+                  <div>
+                    <p className="font-semibold">{customer.name}</p>
+                    <p className="text-xs text-zinc-500">{numberFmt.format(customer.orders)} orders</p>
+                  </div>
+                  <p className="text-sm font-bold">${numberFmt.format(customer.spend)}</p>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
-    </>
+    </div>
   );
 }

@@ -631,7 +631,7 @@
     },
     "shippingMethod": {
       "title": "Shipping method",
-      "homeDelivery": "Home delivery",
+      "homeDelivery": "Ship to Vietnam",
       "eta": "Estimated delivery in 2-3 days",
       "free": "Free"
     },

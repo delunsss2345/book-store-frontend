@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCartStore } from "@/features/cart/store/cart.store";
+import { useHooksStore } from "@/features/hooks/store/hooks.store";
 import { ModalType, useModalStore } from "@/features/modal";
 import { useCreateOrderUserMutation } from "@/features/orders";
 import { useQueryAddress } from "@/features/user-address/hooks/use-query-address-mutation";
@@ -38,6 +39,7 @@ export default function CheckoutUser() {
   const router = useRouter();
   const { onOpen } = useModalStore();
   const clearCart = useCartStore((state) => state.clearCart);
+  const setTimeLeft = useHooksStore((state) => state.setTimeLeft);
   const { mutateAsync: createOrderUser, isPending: isCreatingOrder } =
     useCreateOrderUserMutation();
 
@@ -74,6 +76,7 @@ export default function CheckoutUser() {
           clearCart();
           return t("checkout.toast.success");
         }
+        setTimeLeft(60);
         clearCart();
         router.push({
           pathname: "/checkout/payment",
@@ -170,7 +173,7 @@ export default function CheckoutUser() {
         <FormField
           control={form.control}
           name="paymentGateway"
-          render={({ field }) => (
+          render={() => (
             <FormItem>
               <PaymentCheckout />
             </FormItem>

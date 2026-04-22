@@ -35,6 +35,7 @@ export type CreateGuestOrderResponseData = {
   totalAmount: string;
   bankName: string;
   stk: string;
+  content: string;
   nameAccount: string;
 };
 

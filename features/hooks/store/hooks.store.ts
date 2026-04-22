@@ -1,11 +1,11 @@
 import { create } from "zustand";
 
 type HooksStore = {
-  timeLeft: number;
-  setTimeLeft: (timeLeft: number) => void;
+  timeLeft: number | null;
+  setTimeLeft: (timeLeft: number | null) => void;
 };
 
 export const useHooksStore = create<HooksStore>()((set) => ({
-  timeLeft: 0.5 * 60 * 1000,
-  setTimeLeft: (timeLeft: number) => set({ timeLeft }),
+  timeLeft: null,
+  setTimeLeft: (timeLeft) => set({ timeLeft }),
 }));

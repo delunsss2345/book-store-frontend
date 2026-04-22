@@ -9,23 +9,22 @@ import {
   Copy,
   QrCode,
   ShieldCheck,
-  Loader2,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
+import LoadingState from "@/components/common/LoadingState";
 import { useQueryOrderStatus } from "@/features/hooks/hooks/use-get-order-status";
 import { useGetPaymentByToken } from "@/features/hooks/hooks/use-get-payment-by-token";
-import { CopyCard } from "../CopyCard";
-import { CreateGuestOrderResponseData } from "@/types/response/order.response";
 import { useHooksStore } from "@/features/hooks/store/hooks.store";
-import { LoadingLazy } from "@/components/common/LoadingLazy";
-import LoadingState from "@/components/common/LoadingState";
+import { CreateGuestOrderResponseData } from "@/types/response/order.response";
+import { CopyCard } from "../CopyCard";
 
 function PremiumPaymentContent({ tokenUrl }: { tokenUrl: string }) {
   const t = useTranslations();
+  const locale = useLocale();
   const router = useRouter();
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
@@ -48,25 +47,31 @@ function PremiumPaymentContent({ tokenUrl }: { tokenUrl: string }) {
     },
   });
 
-  const { timeLeft, setTimeLeft } = useHooksStore();
-  // Xử lý đếm ngược
-  useEffect(() => {
-    if (!tokenUrl) return;
-    if (!response?.data?.expiredAt) return;
-    else {
-      const expiry = new Date(response.data.expiredAt).getTime();
-      const now = new Date().getTime();
+  const timeLeft = useHooksStore((state) => state.timeLeft);
+  const setTimeLeft = useHooksStore((state) => state.setTimeLeft);
 
+  // Chặn truy cập lẻ vào payment: phải có timeLeft trong store
+  useEffect(() => {
+    if (timeLeft == null || timeLeft <= 0) {
+      router.replace(`/${locale}/not-found`);
+    }
+  }, [timeLeft, router, locale]);
+
+  // Đồng bộ countdown theo expiredAt
+  useEffect(() => {
+    if (!tokenUrl || !response?.data?.expiredAt) return;
+
+    const expiry = new Date(response.data.expiredAt).getTime();
+    const updateCountdown = () => {
+      const now = new Date().getTime();
       const diff = Math.max(0, Math.floor((expiry - now) / 1000));
       setTimeLeft(diff);
-    }
-    if (timeLeft <= 0) {
-      router.push("/orders");
-      return;
-    }
-    const timer = setInterval(() => setTimeLeft(timeLeft - 1), 1000);
+    };
+
+    updateCountdown();
+    const timer = setInterval(updateCountdown, 1000);
     return () => clearInterval(timer);
-  }, [setTimeLeft, response, timeLeft, tokenUrl, router]);
+  }, [response?.data?.expiredAt, setTimeLeft, tokenUrl]);
 
   // Xử lý khi thanh toán thành công
   useEffect(() => {
@@ -81,6 +86,7 @@ function PremiumPaymentContent({ tokenUrl }: { tokenUrl: string }) {
   };
 
   const countdown = useMemo(() => {
+    if (timeLeft == null) return "--:--";
     const minutes = Math.floor(timeLeft / 60);
     const seconds = (timeLeft % 60).toString().padStart(2, "0");
     return `${minutes}:${seconds}`;
@@ -215,14 +221,14 @@ function PremiumPaymentContent({ tokenUrl }: { tokenUrl: string }) {
                 />
               </div>
 
-              {/* Nội dung chuyển khoản thường dùng chính là orderCode */}
+              {/* Nội dung chuyển khoản thường dùng chính là content */}
               <div className="w-full p-4 rounded-2xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/50 flex items-center justify-between">
                 <div>
                   <span className="text-[10px] uppercase text-blue-600 dark:text-blue-400 font-bold block mb-1">
                     {t("checkout.paymentPage.transferContent")}
                   </span>
                   <span className="text-base font-mono font-bold text-blue-700 dark:text-blue-300">
-                    {payment.orderCode}
+                    {payment.content}
                   </span>
                 </div>
 

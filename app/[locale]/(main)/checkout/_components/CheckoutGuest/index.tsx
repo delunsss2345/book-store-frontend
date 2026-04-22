@@ -18,6 +18,7 @@ import { Info, Truck } from "lucide-react";
 import { CheckoutFooter } from "../CheckoutFooter";
 import { CheckoutHeader } from "../CheckoutHeader";
 import { PaymentCheckout } from "../PaymentCheckout";
+import { ShippingMethodCard } from "../ShippingMethodCard";
 
 import {
   Form,
@@ -42,10 +43,12 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useCartStore } from "@/features/cart/store/cart.store";
+import { useHooksStore } from "@/features/hooks/store/hooks.store";
 
 export function CheckoutGuest() {
   const paymentGateway = useOrderStore((state) => state.paymentGateway);
   const clearCart = useCartStore((state) => state.clearCart);
+  const setTimeLeft = useHooksStore((state) => state.setTimeLeft);
 
   const form = useForm<CreateGuestOrdersAndPaymentInput>({
     resolver: zodResolver(CreateGuestOrdersAndPaymentSchema),
@@ -55,7 +58,7 @@ export function CheckoutGuest() {
       guestEmail: "",
       note: "",
       orderAddress: {
-        country: "vi",
+        country: "vn",
         firstName: "",
         lastName: "",
         addressLine: "",
@@ -86,6 +89,7 @@ export function CheckoutGuest() {
           clearCart();
           return t("checkout.toast.success");
         }
+        setTimeLeft(60);
         router.push(`/${locale}/checkout/payment/${data.tokenUrl}`);
         return t("checkout.toast.success");
       },
@@ -170,9 +174,10 @@ export function CheckoutGuest() {
                 <FormItem>
                   <FormControl>
                     <Select
-                      value={field.value}
+                      value={field.value ?? "vn"}
                       onValueChange={(v) => field.onChange(v)}
-                      defaultValue="vi"
+                      defaultValue="vn"
+                      disabled
                     >
                       <SelectTrigger className="h-12 border-zinc-200 shadow-sm">
                         <SelectValue
@@ -180,11 +185,8 @@ export function CheckoutGuest() {
                         />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem defaultChecked value="vn">
+                        <SelectItem value="vn">
                           {t("checkout.countries.vn")}
-                        </SelectItem>
-                        <SelectItem value="us">
-                          {t("checkout.countries.us")}
                         </SelectItem>
                       </SelectContent>
                     </Select>
@@ -301,6 +303,8 @@ export function CheckoutGuest() {
             />
           </div>
         </section>
+
+        <ShippingMethodCard />
 
         {/* Payment Section */}
         <PaymentCheckout />
