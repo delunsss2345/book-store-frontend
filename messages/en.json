@@ -712,5 +712,66 @@
       "cancelButton": "Cancel",
       "confirmButton": "Confirm add variant"
     }
+  },
+  "library": {
+    "header": {
+      "nav": "My Library"
+    },
+    "page": {
+      "title": "My Library",
+      "subtitle": "Your personal reading space — track progress and capture insights from every book you own.",
+      "booksCount": "{count} books",
+      "loadingText": "Loading your library..."
+    },
+    "empty": {
+      "title": "Your library is empty",
+      "description": "Purchase books to start building your personal reading library.",
+      "cta": "Browse books"
+    },
+    "card": {
+      "notesCount": "{count} notes",
+      "noNotes": "No notes yet",
+      "readingProgress": "Reading progress",
+      "page": "Page {page}",
+      "openBook": "Open book"
+    },
+    "detail": {
+      "backToLibrary": "Back to library",
+      "notesTitle": "My Notes",
+      "notesEmpty": "No notes yet. Add your first note below.",
+      "tabs": {
+        "page_mark": "Page markers",
+        "quote": "Quotes",
+        "other": "Other notes"
+      },
+      "form": {
+        "title": "Add a note",
+        "typeLabel": "Note type",
+        "types": {
+          "page_mark": "Page marker",
+          "quote": "Quote",
+          "other": "Other"
+        },
+        "pageNumberLabel": "Page number",
+        "pageNumberPlaceholder": "e.g. 42",
+        "contentLabel": "Note content",
+        "contentPlaceholder": {
+          "page_mark": "What happened at this page? What do you want to remember?",
+          "quote": "Write the quote here...",
+          "other": "Your thoughts, ideas, or anything worth remembering..."
+        },
+        "submit": "Save note",
+        "submitting": "Saving...",
+        "cancel": "Cancel",
+        "editTitle": "Edit note",
+        "update": "Update note"
+      },
+      "noteCard": {
+        "page": "Page {page}",
+        "edit": "Edit",
+        "delete": "Delete",
+        "deleteConfirm": "Delete note?"
+      }
+    }
   }
 }

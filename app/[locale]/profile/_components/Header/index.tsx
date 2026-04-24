@@ -49,6 +49,12 @@ const Header = () => {
 
           <nav className="hidden md:flex items-center gap-6">
             <Link
+              href={`/${locale}/profile/library`}
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {t("library.header.nav")}
+            </Link>
+            <Link
               href={`/${locale}/orders`}
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
@@ -92,6 +98,13 @@ const Header = () => {
                 <Link href="/profile" className="flex w-full items-center">
                   <Settings className="mr-2 h-4 w-4" />
                   <span>{t("profile.header.menu.profile")}</span>
+                </Link>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem asChild className="cursor-pointer">
+                <Link href="/profile/library" className="flex w-full items-center">
+                  <Package className="mr-2 h-4 w-4" />
+                  <span>{t("library.header.nav")}</span>
                 </Link>
               </DropdownMenuItem>
 
