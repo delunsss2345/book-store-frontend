@@ -1,8 +1,7 @@
 "use client";
 
-import { Heart, Minus, Plus, ShoppingCart } from "lucide-react";
+import { Minus, Plus, ShoppingCart } from "lucide-react";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import * as React from "react";
@@ -11,19 +10,15 @@ import { toast } from "sonner";
 import RecommendedSection from "@/app/[locale]/(main)/_components/RecommendSection";
 import { LoadingLazy } from "@/components/common/LoadingLazy";
 import { Button } from "@/components/ui/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { useAddToCartMutation } from "@/features/cart/hooks";
 import { useBookQuery } from "@/features/catalog/hooks/use-book.mutation";
 import { useCatalogStore } from "@/features/catalog/store/catalog.store";
 import { useWishStore } from "@/features/wish/store/wish.store";
-import { cn } from "@/lib/utils";
 import { FormatAvailability } from "./_components/FormatAvailability";
 import { FormatPicker } from "./_components/FormatPicker";
 import { FormatPrice } from "./_components/FormatPrice";
+import { ProductDescriptionPanel } from "./_components/ProductDescriptionPanel";
+import { ProductGallery } from "./_components/ProductGallery";
 import { WishlistAction } from "./_components/WishlistAction";
 
 export default function DetailPage() {
@@ -46,8 +41,6 @@ export default function DetailPage() {
     useAddToCartMutation();
 
   const [qty, setQty] = React.useState(1);
-  const [readMoreOpen, setReadMoreOpen] = React.useState(true);
-  const [reviewsOpen, setReviewsOpen] = React.useState(false);
 
   React.useEffect(() => {
     if (bookDetail?.variants?.length) {
@@ -97,46 +90,10 @@ export default function DetailPage() {
         </nav>
 
         <div className="mt-6 grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
-          <section className="lg:col-span-5">
-            {" "}
-            <div className=" flex flex-col-reverse gap-4 md:flex-row">
-              <div className="flex flex-row gap-3 overflow-x-auto pb-2 md:w-20 md:flex-col md:overflow-y-visible md:pb-0">
-                {[1, 2, 3].map((i) => (
-                  <button
-                    key={i}
-                    className="relative aspect-[3/4] w-16 flex-shrink-0 overflow-hidden rounded-md border border-neutral-200 transition-all hover:border-black md:w-full"
-                  >
-                    <Image
-                      src={bookDetail?.coverImageUrl}
-                      alt="thumbnail"
-                      fill
-                      className="object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
-
-              {/* Ảnh chính - Thêm max-h để không quá cao trên màn hình lớn */}
-              <div className="relative flex-1">
-                <div className="relative aspect-[3/4] w-full max-w-[450px] mx-auto overflow-hidden rounded-xl bg-[#fdfdfd] shadow-2xl shadow-neutral-200/50">
-                  {bookDetail?.coverImageUrl ? (
-                    <div className="relative h-full w-full p-4 md:p-10">
-                      <Image
-                        src={bookDetail?.coverImageUrl}
-                        alt={bookDetail.title}
-                        fill
-                        priority
-                        className="object-contain drop-shadow-[2px_10px_20px_rgba(0,0,0,0.15)]"
-                        sizes="(max-width: 768px) 100vw, 40vw"
-                      />
-                    </div>
-                  ) : (
-                    <div className="h-full w-full bg-neutral-100 animate-pulse" />
-                  )}
-                </div>
-              </div>
-            </div>
-          </section>
+          <ProductGallery
+            coverImageUrl={bookDetail.coverImageUrl}
+            title={bookDetail.title}
+          />
           <section className="flex flex-col lg:col-span-7 lg:pl-10">
             <div className="border-b border-neutral-100 pb-6">
               <div className="flex items-center justify-between">
@@ -238,98 +195,7 @@ export default function DetailPage() {
         </div>
       </div>
 
-      <section className="mt-20 border-t border-neutral-100">
-        <div className="mx-auto max-w-5xl">
-          {/* Read More Section */}
-          <Collapsible
-            open={readMoreOpen}
-            onOpenChange={setReadMoreOpen}
-            className="border-b border-neutral-100"
-          >
-            <CollapsibleTrigger className="flex w-full items-center justify-between px-6 py-8 text-[13px] font-bold uppercase tracking-[0.2em]">
-              <span>Product Description</span>
-              {readMoreOpen ? (
-                <Minus className="h-4 w-4" />
-              ) : (
-                <Plus className="h-4 w-4" />
-              )}
-            </CollapsibleTrigger>
-            <CollapsibleContent className="px-6 pb-12 transition-all">
-              <div className="grid gap-12 lg:grid-cols-2">
-                <div className="prose prose-neutral max-w-none text-[15px] leading-8 text-neutral-600">
-                  <h3 className="font-serif text-2xl text-neutral-900">
-                    {bookDetail.title}
-                  </h3>
-                  <p className="mt-4">{bookDetail.description}</p>
-                </div>
-                <div className="space-y-6 text-[14px]">
-                  <div className="rounded-sm border border-neutral-100 p-6">
-                    <h4 className="mb-4 font-bold uppercase tracking-widest text-neutral-900">
-                      Specification
-                    </h4>
-                    <dl className="space-y-3">
-                      <div className="flex justify-between border-b border-neutral-50 pb-2">
-                        <dt className="text-neutral-500">Publisher</dt>
-                        <dd className="font-medium">
-                          {bookDetail.publisherName || "—"}
-                        </dd>
-                      </div>
-                      <div className="flex justify-between border-b border-neutral-50 pb-2">
-                        <dt className="text-neutral-500">Format</dt>
-                        <dd className="font-medium">Paperback, 6x9 inches</dd>
-                      </div>
-                      <div className="flex justify-between border-b border-neutral-50 pb-2">
-                        <dt className="text-neutral-500">ISBN-13</dt>
-                        <dd className="font-medium">978-0123456789</dd>
-                      </div>
-                    </dl>
-                  </div>
-                </div>
-              </div>
-            </CollapsibleContent>
-          </Collapsible>
-
-          {/* Reviews Section */}
-          <Collapsible
-            open={reviewsOpen}
-            onOpenChange={setReviewsOpen}
-            className="border-b border-neutral-100"
-          >
-            <CollapsibleTrigger className="flex w-full items-center justify-between px-6 py-8 text-[13px] font-bold uppercase tracking-[0.2em]">
-              <span>Customer Reviews ({bookDetail.ratingCount})</span>
-              {reviewsOpen ? (
-                <Minus className="h-4 w-4" />
-              ) : (
-                <Plus className="h-4 w-4" />
-              )}
-            </CollapsibleTrigger>
-            <CollapsibleContent className="px-6 pb-12">
-              <div className="text-center py-10">
-                <div className="mb-4 flex justify-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Heart
-                      key={i}
-                      className={cn(
-                        "h-5 w-5",
-                        i < (bookDetail.ratingAvg || 0)
-                          ? "fill-black text-black"
-                          : "text-neutral-200",
-                      )}
-                    />
-                  ))}
-                </div>
-                <p className="text-neutral-500">{t("detail.noReviews")}</p>
-                <Button
-                  variant="outline"
-                  className="mt-6 rounded-none px-8 uppercase tracking-widest text-[11px] font-bold"
-                >
-                  Write a review
-                </Button>
-              </div>
-            </CollapsibleContent>
-          </Collapsible>
-        </div>
-      </section>
+      <ProductDescriptionPanel bookDetail={bookDetail} />
 
       {/* RELAXED PRODUCTS */}
       <section className="bg-neutral-50 py-20">

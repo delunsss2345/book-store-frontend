@@ -1,48 +1,48 @@
 {
   "nav": {
-    "books": "SÃ¡ch",
-    "limitedEditions": "PhiÃªn báº£n giá»›i háº¡n",
-    "gifts": "QuÃ  táº·ng",
-    "stores": "Cá»­a hÃ ng",
-    "about": "Vá» chÃºng tÃ´i"
+    "books": "Sách",
+    "limitedEditions": "Phiên bản giới hạn",
+    "gifts": "Quà tặng",
+    "stores": "Cửa hàng",
+    "about": "Về chúng tôi"
   },
   "header": {
-    "searchPlaceholder": "TÃ¬m kiáº¿m",
+    "searchPlaceholder": "Tìm kiếm",
     "aria": {
-      "searchButton": "TÃ¬m kiáº¿m",
-      "language": "NgÃ´n ngá»¯ vÃ  quá»‘c gia",
-      "account": "TÃ i khoáº£n",
-      "wishlist": "YÃªu thÃ­ch",
-      "cart": "Giá» hÃ ng"
+      "searchButton": "Tìm kiếm",
+      "language": "Ngôn ngữ và quốc gia",
+      "account": "Tài khoản",
+      "wishlist": "Yêu thích",
+      "cart": "Giỏ hàng"
     },
     "languageToggle": "VN / EN"
   },
   "common": {
     "badge": {
-      "new": "Má»šI"
+      "new": "MỚI"
     }
   },
   "notFound": {
-    "description": "ChÃºng tÃ´i Ä‘ang biÃªn soáº¡n ná»™i dung cho má»¥c nÃ y. Nhá»¯ng tá»±a sÃ¡ch vÃ  bá»™ sÆ°u táº­p má»›i nháº¥t sáº½ sá»›m Ä‘Æ°á»£c cáº­p nháº­t táº¡i Ä‘Ã¢y.",
-    "backHome": "Trá»Ÿ vá» trang chá»§",
-    "viewBooks": "Xem kho sÃ¡ch"
+    "description": "Chúng tôi đang biên soạn nội dung cho mục này. Những tựa sách và bộ sưu tập mới nhất sẽ sớm được cập nhật tại đây.",
+    "backHome": "Trở về trang chủ",
+    "viewBooks": "Xem kho sách"
   },
   "grid": {
-    "title": "Má»›i & Thá»‹nh hÃ nh"
+    "title": "Mới & Thịnh hành"
   },
   "hero": {
     "slides": {
       "1": {
-        "title": "Massimo Listri. Cung Ä‘iá»‡n Ã",
-        "cta": "KhÃ¡m phÃ¡ ngay"
+        "title": "Massimo Listri. Cung điện Ý",
+        "cta": "Khám phá ngay"
       },
       "2": {
-        "title": "PhÃ¡t hÃ nh má»›i",
+        "title": "Phát hành mới",
         "cta": "Mua ngay"
       },
       "3": {
-        "title": "PhiÃªn báº£n giá»›i háº¡n",
-        "cta": "KhÃ¡m phÃ¡"
+        "title": "Phiên bản giới hạn",
+        "cta": "Khám phá"
       }
     }
   },
@@ -50,54 +50,54 @@
     "items": {
       "1": {
         "title": "Hokusai.",
-        "subtitle": "Ba mÆ°Æ¡i sÃ¡u cáº£nh nÃºi PhÃº SÄ©",
+        "subtitle": "Ba mươi sáu cảnh núi Phú Sĩ",
         "price": "US$ 80"
       },
       "2": {
-        "title": "Tranh in má»™c Nháº­t Báº£n",
+        "title": "Tranh in mộc Nhật Bản",
         "price": "US$ 150"
       },
       "3": {
-        "title": "Trang sá»©c giáº£",
+        "title": "Trang sức giả",
         "price": "US$ 125"
       },
       "4": {
-        "title": "Sophia bá»Ÿi Eisenstaedt",
+        "title": "Sophia bởi Eisenstaedt",
         "price": "US$ 1,000"
       },
       "5": {
-        "title": "Sophia bá»Ÿi Eisenstaedt",
+        "title": "Sophia bởi Eisenstaedt",
         "price": "US$ 1,000"
       },
       "6": {
-        "title": "Sophia bá»Ÿi Eisenstaedt",
+        "title": "Sophia bởi Eisenstaedt",
         "price": "US$ 1,000"
       }
     }
   },
   "quote": {
-    "sectionLabel": "Trang sá»©c giáº£",
-    "textStart": "\"Äá»«ng tiáº¿t kiá»‡m - hÃ£y tháº­t lá»›n: nhá»¯ng mÃ³n trang sá»©c mÃ¡t máº» nháº¥t cá»§a tháº¿ ká»· 20. TASCHEN Ä‘Ã£ xuáº¥t báº£n má»™t táº­p sÃ¡ch minh há»a náº·ng chÃ­n pound vá» chá»§ Ä‘á»: ",
-    "textEm": "Trang sá»©c giáº£",
+    "sectionLabel": "Trang sức giả",
+    "textStart": "\"Đừng tiết kiệm - hãy thật lớn: những món trang sức mát mẻ nhất của thế kỷ 20. TASCHEN đã xuất bản một tập sách minh họa nặng chín pound về chủ đề: ",
+    "textEm": "Trang sức giả",
     "textEnd": ".\"",
     "cite": "Stern",
-    "imageAlt": "Trang sá»©c giáº£",
-    "productTitle": "Trang sá»©c giáº£",
+    "imageAlt": "Trang sức giả",
+    "productTitle": "Trang sức giả",
     "productPrice": "US$ 125"
   },
   "footer": {
-    "tagline": "TASCHEN. SÃ¡ch cho nhá»¯ng ngÆ°á»i láº¡c quan tá»« 1980",
-    "description": "TASCHEN lÃ  nhÃ  xuáº¥t báº£n sÃ¡ch nghá»‡ thuáº­t hÃ ng Ä‘áº§u tháº¿ giá»›i, Ä‘áº·t trá»¥ sá»Ÿ táº¡i Cologne vá»›i cÃ¡c Ä‘á»™i ngÅ© á»Ÿ Berlin, Brussels, Hong Kong, London, Los Angeles, Madrid, Miami, Milan, New York, Paris vÃ  Tokyo. HÆ¡n 40 nÄƒm qua, chÃºng tÃ´i cÃ³ sá»© má»‡nh xuáº¥t báº£n nhá»¯ng cuá»‘n sÃ¡ch minh há»a Ä‘á»•i má»›i vá» nghá»‡ thuáº­t, kiáº¿n trÃºc, thiáº¿t káº¿, thá»i trang, Ä‘iá»‡n áº£nh, lá»‘i sá»‘ng, du lá»‹ch, nhiáº¿p áº£nh vÃ  vÄƒn hÃ³a Ä‘áº¡i chÃºng vÃ  Ä‘Æ°a chÃºng Ä‘áº¿n vá»›i tháº¿ giá»›i. ChÃºng tÃ´i mong muá»‘n trá»Ÿ nÃªn bao hÃ m, Ä‘á»™c láº­p, truyá»n cáº£m há»©ng.",
-    "connectTitle": "Káº¿t ná»‘i",
-    "companyTitle": "CÃ´ng ty",
-    "customerTitle": "ThÃ´ng tin khÃ¡ch hÃ ng",
-    "newsletterTitle": "ÄÄƒng kÃ½ nháº­n báº£n tin:",
-    "emailPlaceholder": "Äá»‹a chá»‰ email cá»§a báº¡n",
-    "submit": "Gá»­i",
+    "tagline": "TASCHEN. Sách cho những người lạc quan từ 1980",
+    "description": "TASCHEN là nhà xuất bản sách nghệ thuật hàng đầu thế giới, đặt trụ sở tại Cologne với các đội ngũ ở Berlin, Brussels, Hong Kong, London, Los Angeles, Madrid, Miami, Milan, New York, Paris và Tokyo. Hơn 40 năm qua, chúng tôi có sứ mệnh xuất bản những cuốn sách minh họa đổi mới về nghệ thuật, kiến trúc, thiết kế, thời trang, điện ảnh, lối sống, du lịch, nhiếp ảnh và văn hóa đại chúng và đưa chúng đến với thế giới. Chúng tôi mong muốn trở nên bao hàm, độc lập, truyền cảm hứng.",
+    "connectTitle": "Kết nối",
+    "companyTitle": "Công ty",
+    "customerTitle": "Thông tin khách hàng",
+    "newsletterTitle": "Đăng ký nhận bản tin:",
+    "emailPlaceholder": "Địa chỉ email của bạn",
+    "submit": "Gửi",
     "links": {
       "connect": {
-        "affiliateProgram": "ChÆ°Æ¡ng trÃ¬nh liÃªn káº¿t",
-        "corporateContacts": "LiÃªn há»‡ doanh nghiá»‡p",
+        "affiliateProgram": "Chương trình liên kết",
+        "corporateContacts": "Liên hệ doanh nghiệp",
         "facebook": "Facebook",
         "instagram": "Instagram",
         "newsletter": "Newsletter",
@@ -105,690 +105,690 @@
         "youtube": "YouTube"
       },
       "company": {
-        "accessibility": "Kháº£ nÄƒng truy cáº­p",
-        "careers": "Tuyá»ƒn dá»¥ng",
-        "terms": "Äiá»u khoáº£n vÃ  Ä‘iá»u kiá»‡n chung",
-        "glossary": "Thuáº­t ngá»¯",
-        "imprint": "ThÃ´ng tin phÃ¡p lÃ½",
-        "privacy": "ChÃ­nh sÃ¡ch quyá»n riÃªng tÆ°",
-        "projectProposals": "Äá» xuáº¥t dá»± Ã¡n"
+        "accessibility": "Khả năng truy cập",
+        "careers": "Tuyển dụng",
+        "terms": "Điều khoản và điều kiện chung",
+        "glossary": "Thuật ngữ",
+        "imprint": "Thông tin pháp lý",
+        "privacy": "Chính sách quyền riêng tư",
+        "projectProposals": "Đề xuất dự án"
       },
       "customer": {
-        "chat": "TrÃ² chuyá»‡n",
-        "customerService": "Dá»‹ch vá»¥ khÃ¡ch hÃ ng",
-        "shippingReturns": "Váº­n chuyá»ƒn & Äá»•i tráº£",
-        "trackOrder": "Theo dÃµi Ä‘Æ¡n hÃ ng",
-        "becomeReseller": "Trá»Ÿ thÃ nh Ä‘áº¡i lÃ½ TASCHEN",
-        "corporateDeals": "Æ¯u Ä‘Ã£i doanh nghiá»‡p",
-        "b2bAccess": "Truy cáº­p cá»­a hÃ ng B2B"
+        "chat": "Trò chuyện",
+        "customerService": "Dịch vụ khách hàng",
+        "shippingReturns": "Vận chuyển & Đổi trả",
+        "trackOrder": "Theo dõi đơn hàng",
+        "becomeReseller": "Trở thành đại lý TASCHEN",
+        "corporateDeals": "Ưu đãi doanh nghiệp",
+        "b2bAccess": "Truy cập cửa hàng B2B"
       }
     },
-    "copyright": "c {year} - TASCHEN GmbH, Hohenzollernring 53, D-50672 Cologne"
+    "copyright": "© {year} - TASCHEN GmbH, Hohenzollernring 53, D-50672 Cologne"
   },
   "profile": {
     "header": {
-      "orderHistory": "Lá»‹ch sá»­ Ä‘Æ¡n hÃ ng",
-      "account": "TÃ i khoáº£n",
-      "myAccount": "TÃ i khoáº£n cá»§a tÃ´i",
-      "manageSettings": "Quáº£n lÃ½ cÃ i Ä‘áº·t",
+      "orderHistory": "Lịch sử đơn hàng",
+      "account": "Tài khoản",
+      "myAccount": "Tài khoản của tôi",
+      "manageSettings": "Quản lý cài đặt",
       "menu": {
-        "profile": "Há»“ sÆ¡",
-        "orders": "ÄÆ¡n hÃ ng",
-        "signOut": "ÄÄƒng xuáº¥t"
+        "profile": "Hồ sơ",
+        "orders": "Đơn hàng",
+        "signOut": "Đăng xuất"
       },
       "countries": {
-        "germany": "Äá»©c",
-        "france": "PhÃ¡p",
-        "unitedStates": "Hoa Ká»³",
-        "unitedKingdom": "VÆ°Æ¡ng quá»‘c Anh"
+        "germany": "Đức",
+        "france": "Pháp",
+        "unitedStates": "Hoa Kỳ",
+        "unitedKingdom": "Vương quốc Anh"
       }
     },
     "links": {
-      "refundPolicy": "ChÃ­nh sÃ¡ch hoÃ n tiá»n",
-      "shipping": "Váº­n chuyá»ƒn",
-      "privacyPolicy": "ChÃ­nh sÃ¡ch quyá»n riÃªng tÆ°",
-      "legalNotice": "ThÃ´ng bÃ¡o phÃ¡p lÃ½",
-      "cancellations": "Há»§y Ä‘Æ¡n",
-      "contactInformation": "ThÃ´ng tin liÃªn há»‡"
+      "refundPolicy": "Chính sách hoàn tiền",
+      "shipping": "Vận chuyển",
+      "privacyPolicy": "Chính sách quyền riêng tư",
+      "legalNotice": "Thông báo pháp lý",
+      "cancellations": "Hủy đơn",
+      "contactInformation": "Thông tin liên hệ"
     },
     "footer": {
-      "copyright": "Â© {year} TASCHEN"
+      "copyright": "© {year} TASCHEN"
     },
     "page": {
-      "title": "Há»“ sÆ¡ cá»§a tÃ´i",
-      "subtitle": "Cáº­p nháº­t thÃ´ng tin cÃ¡ nhÃ¢n vÃ  Ä‘á»‹a chá»‰ giao hÃ ng cá»§a báº¡n.",
-      "overviewTag": "Tá»•ng quan tÃ i khoáº£n",
-      "nameLabel": "Há» vÃ  tÃªn",
+      "title": "Hồ sơ của tôi",
+      "subtitle": "Cập nhật thông tin cá nhân và địa chỉ giao hàng của bạn.",
+      "overviewTag": "Tổng quan tài khoản",
+      "nameLabel": "Họ và tên",
       "emailLabel": "Email",
-      "phoneLabel": "Sá»‘ Ä‘iá»‡n thoáº¡i",
-      "notProvided": "ChÆ°a cáº­p nháº­t",
-      "addressStatsTitle": "Tráº¡ng thÃ¡i Ä‘á»‹a chá»‰",
-      "addressStatsDescription": "Chá»n má»™t Ä‘á»‹a chá»‰ máº·c Ä‘á»‹nh Ä‘á»ƒ thanh toÃ¡n nhanh hÆ¡n.",
-      "totalAddresses": "Äá»‹a chá»‰ Ä‘Ã£ lÆ°u",
-      "defaultAddress": "Äá»‹a chá»‰ máº·c Ä‘á»‹nh",
-      "noneDefaultAddress": "ChÆ°a cÃ³ Ä‘á»‹a chá»‰ máº·c Ä‘á»‹nh",
-      "addressesTitle": "Sá»• Ä‘á»‹a chá»‰",
-      "addressesDescription": "Quáº£n lÃ½ danh sÃ¡ch Ä‘á»‹a chá»‰ giao hÃ ng vÃ  chá»n Ä‘á»‹a chá»‰ máº·c Ä‘á»‹nh.",
-      "addAddress": "ThÃªm Ä‘á»‹a chá»‰",
-      "hideAddressForm": "ÄÃ³ng biá»ƒu máº«u",
-      "emptyAddressesTitle": "ChÆ°a cÃ³ Ä‘á»‹a chá»‰ nÃ o",
-      "emptyAddressesDescription": "ThÃªm Ä‘á»‹a chá»‰ giao hÃ ng Ä‘áº§u tiÃªn Ä‘á»ƒ Ä‘áº·t hÃ ng nhanh hÆ¡n.",
-      "defaultBadge": "Máº·c Ä‘á»‹nh",
-      "setAsDefault": "Äáº·t lÃ m máº·c Ä‘á»‹nh",
+      "phoneLabel": "Số điện thoại",
+      "notProvided": "Chưa cập nhật",
+      "addressStatsTitle": "Trạng thái địa chỉ",
+      "addressStatsDescription": "Chọn một địa chỉ mặc định để thanh toán nhanh hơn.",
+      "totalAddresses": "Địa chỉ đã lưu",
+      "defaultAddress": "Địa chỉ mặc định",
+      "noneDefaultAddress": "Chưa có địa chỉ mặc định",
+      "addressesTitle": "Sổ địa chỉ",
+      "addressesDescription": "Quản lý danh sách địa chỉ giao hàng và chọn địa chỉ mặc định.",
+      "addAddress": "Thêm địa chỉ",
+      "hideAddressForm": "Đóng biểu mẫu",
+      "emptyAddressesTitle": "Chưa có địa chỉ nào",
+      "emptyAddressesDescription": "Thêm địa chỉ giao hàng đầu tiên để đặt hàng nhanh hơn.",
+      "defaultBadge": "Mặc định",
+      "setAsDefault": "Đặt làm mặc định",
       "form": {
-        "title": "Äá»‹a chá»‰ má»›i",
-        "description": "Nháº­p thÃ´ng tin ngÆ°á»i nháº­n vÃ  Ä‘á»‹a Ä‘iá»ƒm giao hÃ ng.",
-        "addressTypeLabel": "Loáº¡i Ä‘á»‹a chá»‰",
-        "recipientNameLabel": "TÃªn ngÆ°á»i nháº­n",
-        "phoneNumberLabel": "Sá»‘ Ä‘iá»‡n thoáº¡i",
-        "addressDetailLabel": "Äá»‹a chá»‰ chi tiáº¿t",
-        "wardLabel": "PhÆ°á»ng/XÃ£",
-        "districtLabel": "Quáº­n/Huyá»‡n",
-        "cityLabel": "Tá»‰nh/ThÃ nh phá»‘",
-        "setAsDefaultLabel": "DÃ¹ng Ä‘á»‹a chá»‰ nÃ y lÃ m máº·c Ä‘á»‹nh",
-        "requiredError": "Vui lÃ²ng nháº­p Ä‘áº§y Ä‘á»§ thÃ´ng tin Ä‘á»‹a chá»‰.",
-        "submit": "LÆ°u Ä‘á»‹a chá»‰",
-        "cancel": "Há»§y",
-        "loading": "Äang lÆ°u Ä‘á»‹a chá»‰...",
-        "success": "ThÃªm Ä‘á»‹a chá»‰ thÃ nh cÃ´ng!",
-        "error": "KhÃ´ng thá»ƒ thÃªm Ä‘á»‹a chá»‰. Vui lÃ²ng thá»­ láº¡i."
+        "title": "Địa chỉ mới",
+        "description": "Nhập thông tin người nhận và địa điểm giao hàng.",
+        "addressTypeLabel": "Loại địa chỉ",
+        "recipientNameLabel": "Tên người nhận",
+        "phoneNumberLabel": "Số điện thoại",
+        "addressDetailLabel": "Địa chỉ chi tiết",
+        "wardLabel": "Phường/Xã",
+        "districtLabel": "Quận/Huyện",
+        "cityLabel": "Tỉnh/Thành phố",
+        "setAsDefaultLabel": "Dùng địa chỉ này làm mặc định",
+        "requiredError": "Vui lòng nhập đầy đủ thông tin địa chỉ.",
+        "submit": "Lưu địa chỉ",
+        "cancel": "Hủy",
+        "loading": "Đang lưu địa chỉ...",
+        "success": "Thêm địa chỉ thành công!",
+        "error": "Không thể thêm địa chỉ. Vui lòng thử lại."
       },
       "addressTypes": {
-        "HOME": "NhÃ ",
-        "OFFICE": "VÄƒn phÃ²ng",
-        "OTHER": "KhÃ¡c"
+        "HOME": "Nhà",
+        "OFFICE": "Văn phòng",
+        "OTHER": "Khác"
       }
     }
   },
   "dashboard": {
     "products": {
-      "title": "Sáº£n pháº©m",
+      "title": "Sản phẩm",
       "summary": {
-        "totalProducts": "Tá»•ng sá»‘ sáº£n pháº©m",
-        "activeProducts": "Sáº£n pháº©m Ä‘ang hoáº¡t Ä‘á»™ng",
-        "totalAuthors": "Tá»•ng sá»‘ tÃ¡c giáº£",
-        "totalPublishers": "Tá»•ng sá»‘ nhÃ  xuáº¥t báº£n"
+        "totalProducts": "Tổng số sản phẩm",
+        "activeProducts": "Sản phẩm đang hoạt động",
+        "totalAuthors": "Tổng số tác giả",
+        "totalPublishers": "Tổng số nhà xuất bản"
       },
       "table": {
         "columns": {
-          "title": "TiÃªu Ä‘á»",
-          "pageCount": "Sá»‘ trang",
+          "title": "Tiêu đề",
+          "pageCount": "Số trang",
           "coverImageUrl": "Cover Image URL",
-          "status": "Tráº¡ng thÃ¡i",
-          "actions": "Thao tÃ¡c"
+          "status": "Trạng thái",
+          "actions": "Thao tác"
         },
         "status": {
           "active": "Active",
           "inactive": "Inactive"
         },
-        "empty": "ChÆ°a cÃ³ sÃ¡ch Ä‘á»ƒ hiá»ƒn thá»‹."
+        "empty": "Chưa có sách để hiển thị."
       },
       "actions": {
-        "view": "Xem chi tiáº¿t",
-        "edit": "Chá»‰nh sá»­a",
-        "delete": "XÃ³a",
-        "addTranslation": "ThÃªm báº£n dá»‹ch"
+        "view": "Xem chi tiết",
+        "edit": "Chỉnh sửa",
+        "delete": "Xóa",
+        "addTranslation": "Thêm bản dịch"
       },
       "pagination": {
-        "itemsPerPage": "Hiá»ƒn thá»‹ {count} má»¥c má»—i trang",
-        "summary": "Hiá»ƒn thá»‹ {perPage} má»¥c má»—i trang cá»§a {total}",
-        "prev": "Trang trÆ°á»›c",
+        "itemsPerPage": "Hiển thị {count} mục mỗi trang",
+        "summary": "Hiển thị {perPage} mục mỗi trang của {total}",
+        "prev": "Trang trước",
         "next": "Trang sau",
-        "goToPage": "Äáº¿n trang"
+        "goToPage": "Đến trang"
       },
       "create": {
         "toast": {
-          "scanLoading": "Äang quÃ©t dá»¯ liá»‡u ISBN...",
-          "scanSuccess": "ÄÃ£ náº¡p dá»¯ liá»‡u tá»« ISBN.",
-          "scanError": "KhÃ´ng thá»ƒ quÃ©t dá»¯ liá»‡u ISBN.",
-          "createLoading": "Äang táº¡o sÃ¡ch...",
-          "createSuccess": "Táº¡o sÃ¡ch thÃ nh cÃ´ng",
-          "createError": "Táº¡o sÃ¡ch tháº¥t báº¡i"
+          "scanLoading": "Đang quét dữ liệu ISBN...",
+          "scanSuccess": "Đã nạp dữ liệu từ ISBN.",
+          "scanError": "Không thể quét dữ liệu ISBN.",
+          "createLoading": "Đang tạo sách...",
+          "createSuccess": "Tạo sách thành công",
+          "createError": "Tạo sách thất bại"
         },
-        "contentTitle": "Ná»™i dung hiá»ƒn thá»‹",
-        "languageVietnamese": "Tiáº¿ng Viá»‡t",
-        "languageEnglish": "Tiáº¿ng Anh",
-        "loadedData": "ÄÃ£ náº¡p dá»¯ liá»‡u",
-        "bookTitleLabel": "TiÃªu Ä‘á» sÃ¡ch *",
-        "bookTitlePlaceholder": "TÃªn sÃ¡ch sáº½ hiá»ƒn thá»‹ trÃªn web...",
-        "tip": "Máº¹o: kiá»ƒm tra láº¡i dáº¥u cÃ¢u/viáº¿t hoa trÆ°á»›c khi lÆ°u.",
-        "descriptionLabel": "MÃ´ táº£ chi tiáº¿t",
-        "descriptionPlaceholder": "Ná»™i dung giá»›i thiá»‡u vá» sÃ¡ch...",
-        "variantPriceTitle": "Biáº¿n thá»ƒ & GiÃ¡ bÃ¡n",
-        "defaultBadge": "Máº·c Ä‘á»‹nh",
-        "variantCount": "{count} biáº¿n thá»ƒ",
-        "creationStatus": "Tráº¡ng thÃ¡i táº¡o",
-        "creationStatusDescription": "Sau khi táº¡o, dá»¯ liá»‡u máº·c Ä‘á»‹nh sáº½ Inactive vÃ  cáº§n phÃª duyá»‡t Ä‘á»ƒ public.",
+        "contentTitle": "Nội dung hiển thị",
+        "languageVietnamese": "Tiếng Việt",
+        "languageEnglish": "Tiếng Anh",
+        "loadedData": "Đã nạp dữ liệu",
+        "bookTitleLabel": "Tiêu đề sách *",
+        "bookTitlePlaceholder": "Tên sách sẽ hiển thị trên web...",
+        "tip": "Mẹo: kiểm tra lại dấu câu/viết hoa trước khi lưu.",
+        "descriptionLabel": "Mô tả chi tiết",
+        "descriptionPlaceholder": "Nội dung giới thiệu về sách...",
+        "variantPriceTitle": "Biến thể & Giá bán",
+        "defaultBadge": "Mặc định",
+        "variantCount": "{count} biến thể",
+        "creationStatus": "Trạng thái tạo",
+        "creationStatusDescription": "Sau khi tạo, dữ liệu mặc định sẽ Inactive và cần phê duyệt để public.",
         "header": {
-          "title": "ThÃªm sÃ¡ch má»›i",
-          "subtitle": "Äiá»n thÃ´ng tin chi tiáº¿t Ä‘á»ƒ táº¡o sáº£n pháº©m trÃªn há»‡ thá»‘ng.",
-          "cancel": "Há»§y",
-          "save": "LÆ°u sÃ¡ch"
+          "title": "Thêm sách mới",
+          "subtitle": "Điền thông tin chi tiết để tạo sản phẩm trên hệ thống.",
+          "cancel": "Hủy",
+          "save": "Lưu sách"
         },
         "magicFill": {
-          "title": "NHáº¬P ISBN Äá»‚ ÄIá»€N NHANH (MAGIC FILL)",
-          "scanning": "Äang quÃ©t dá»¯ liá»‡u...",
-          "languagePlaceholder": "NgÃ´n ngá»¯",
-          "languageVietnamese": "Tiáº¿ng Viá»‡t",
+          "title": "NHẬP ISBN ĐỂ ĐIỀN NHANH (MAGIC FILL)",
+          "scanning": "Đang quét dữ liệu...",
+          "languagePlaceholder": "Ngôn ngữ",
+          "languageVietnamese": "Tiếng Việt",
           "languageEnglish": "English",
-          "isbnPlaceholder": "VÃ­ dá»¥: 9780135398548",
-          "scanButton": "QuÃ©t dá»¯ liá»‡u",
-          "hint": "Dá»¯ liá»‡u sáº½ tá»± fill sang cÃ¡c khá»‘i: ná»™i dung, áº£nh bÃ¬a, thÃ´ng sá»‘,â€¦"
+          "isbnPlaceholder": "Ví dụ: 9780135398548",
+          "scanButton": "Quét dữ liệu",
+          "hint": "Dữ liệu sẽ tự fill sang các khối: nội dung, ảnh bìa, thông số,…"
         },
         "imagePreview": {
-          "title": "áº¢nh bÃ¬a & Preview",
-          "emptyTitle": "ChÆ°a cÃ³ áº£nh bÃ¬a",
-          "emptyDescription": "DÃ¡n URL hoáº·c dÃ¹ng Magic Fill",
-          "urlLabel": "ÄÆ°á»ng dáº«n áº£nh (URL)",
-          "tip": "<b>Máº¹o:</b> áº£nh tá»‰ lá»‡ <b>3:4</b> (vÃ­ dá»¥ 600x800px) hiá»ƒn thá»‹ Ä‘áº¹p nháº¥t."
+          "title": "Ảnh bìa & Preview",
+          "emptyTitle": "Chưa có ảnh bìa",
+          "emptyDescription": "Dán URL hoặc dùng Magic Fill",
+          "urlLabel": "Đường dẫn ảnh (URL)",
+          "tip": "<b>Mẹo:</b> ảnh tỉ lệ <b>3:4</b> (ví dụ 600x800px) hiển thị đẹp nhất."
         },
         "physicalSpecs": {
-          "title": "ThÃ´ng sá»‘ ká»¹ thuáº­t & Xuáº¥t báº£n",
-          "dimensionLabel": "KÃ­ch thÆ°á»›c",
-          "dimensionHint": "cm / g (náº¿u cÃ³)",
-          "widthLabel": "Rá»™ng (cm)",
+          "title": "Thông số kỹ thuật & Xuất bản",
+          "dimensionLabel": "Kích thước",
+          "dimensionHint": "cm / g (nếu có)",
+          "widthLabel": "Rộng (cm)",
           "heightLabel": "Cao (cm)",
-          "thicknessLabel": "DÃ y (cm)",
-          "weightLabel": "Náº·ng (g)",
-          "publishLabel": "Xuáº¥t báº£n",
-          "authorLabel": "TÃ¡c giáº£",
-          "authorPlaceholder": "TÃªn tÃ¡c giáº£...",
-          "publisherLabel": "NhÃ  xuáº¥t báº£n",
-          "publisherPlaceholder": "TÃªn nhÃ  xuáº¥t báº£n...",
-          "publishYearLabel": "NÄƒm XB",
-          "pageCountLabel": "Sá»‘ trang",
-          "badgesLabel": "NhÃ£n gáº¯n kÃ¨m (Badges)",
+          "thicknessLabel": "Dày (cm)",
+          "weightLabel": "Nặng (g)",
+          "publishLabel": "Xuất bản",
+          "authorLabel": "Tác giả",
+          "authorPlaceholder": "Tên tác giả...",
+          "publisherLabel": "Nhà xuất bản",
+          "publisherPlaceholder": "Tên nhà xuất bản...",
+          "publishYearLabel": "Năm XB",
+          "pageCountLabel": "Số trang",
+          "badgesLabel": "Nhãn gắn kèm (Badges)",
           "badges": {
-            "bestSeller": "BÃ¡n cháº¡y",
-            "newArrival": "Má»›i vá»"
+            "bestSeller": "Bán chạy",
+            "newArrival": "Mới về"
           },
-          "addBadge": "ThÃªm nhÃ£n",
-          "footerAlert": "Dá»¯ liá»‡u sau khi táº¡o sáº½ á»Ÿ tráº¡ng thÃ¡i <b>Inactive</b>. Báº¡n cáº§n phÃª duyá»‡t Ä‘á»ƒ cÃ´ng khai."
+          "addBadge": "Thêm nhãn",
+          "footerAlert": "Dữ liệu sau khi tạo sẽ ở trạng thái <b>Inactive</b>. Bạn cần phê duyệt để công khai."
         },
         "variant": {
           "validation": {
-            "isbnRequired": "ISBN khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng",
-            "costPriceRequired": "GiÃ¡ nháº­p khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng",
-            "priceRequired": "GiÃ¡ bÃ¡n khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng",
-            "currencyCodeRequired": "MÃ£ tiá»n tá»‡ khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng"
+            "isbnRequired": "ISBN không được để trống",
+            "costPriceRequired": "Giá nhập không được để trống",
+            "priceRequired": "Giá bán không được để trống",
+            "currencyCodeRequired": "Mã tiền tệ không được để trống"
           },
-          "empty": "ChÆ°a cÃ³ biáº¿n thá»ƒ. ThÃªm biáº¿n thá»ƒ Ä‘á»ƒ thiáº¿t láº­p giÃ¡ bÃ¡n & tá»“n kho.",
-          "addNew": "ThÃªm biáº¿n thá»ƒ má»›i",
-          "formTitle": "Táº¡o biáº¿n thá»ƒ",
-          "basicInfo": "ThÃ´ng tin cÆ¡ báº£n",
-          "formatLabel": "Äá»‹nh dáº¡ng",
+          "empty": "Chưa có biến thể. Thêm biến thể để thiết lập giá bán & tồn kho.",
+          "addNew": "Thêm biến thể mới",
+          "formTitle": "Tạo biến thể",
+          "basicInfo": "Thông tin cơ bản",
+          "formatLabel": "Định dạng",
           "formats": {
-            "paperback": "BÃ¬a má»m",
-            "hardcover": "BÃ¬a cá»©ng"
+            "paperback": "Bìa mềm",
+            "hardcover": "Bìa cứng"
           },
-          "stockLabel": "Tá»“n kho",
+          "stockLabel": "Tồn kho",
           "stockShort": "Kho",
-          "isbnLabel": "MÃ£ ISBN",
-          "pricingAndEdition": "GiÃ¡ & tÃ¡i báº£n",
-          "costPriceLabel": "GiÃ¡ nháº­p",
-          "priceLabel": "GiÃ¡ bÃ¡n",
-          "editionLabel": "TÃ¡i báº£n láº§n",
-          "cancel": "Há»§y",
-          "save": "LÆ°u biáº¿n thá»ƒ"
+          "isbnLabel": "Mã ISBN",
+          "pricingAndEdition": "Giá & tái bản",
+          "costPriceLabel": "Giá nhập",
+          "priceLabel": "Giá bán",
+          "editionLabel": "Tái bản lần",
+          "cancel": "Hủy",
+          "save": "Lưu biến thể"
         }
       }
     },
     "customers": {
-      "title": "KhÃ¡ch hÃ ng",
-      "subtitle": "Quáº£n lÃ½ danh sÃ¡ch khÃ¡ch hÃ ng vÃ  quyá»n háº¡n.",
+      "title": "Khách hàng",
+      "subtitle": "Quản lý danh sách khách hàng và quyền hạn.",
       "summary": {
-        "totalCustomers": "Tá»•ng sá»‘ khÃ¡ch hÃ ng",
-        "activeLastDay": "KhÃ¡ch hÃ ng hoáº¡t Ä‘á»™ng trong 1 ngÃ y qua"
+        "totalCustomers": "Tổng số khách hàng",
+        "activeLastDay": "Khách hàng hoạt động trong 1 ngày qua"
       },
       "table": {
         "columns": {
-          "customer": "KhÃ¡ch hÃ ng",
-          "firstName": "TÃªn",
-          "lastName": "Há»",
+          "customer": "Khách hàng",
+          "firstName": "Tên",
+          "lastName": "Họ",
           "email": "Email",
-          "isEmailVerified": "ÄÃ£ xÃ¡c minh email",
-          "role": "Vai trÃ²"
+          "isEmailVerified": "Đã xác minh email",
+          "role": "Vai trò"
         },
         "emailVerified": {
-          "true": "ÄÃ£ xÃ¡c minh",
-          "false": "ChÆ°a xÃ¡c minh"
+          "true": "Đã xác minh",
+          "false": "Chưa xác minh"
         },
-        "empty": "ChÆ°a cÃ³ khÃ¡ch hÃ ng Ä‘á»ƒ hiá»ƒn thá»‹."
+        "empty": "Chưa có khách hàng để hiển thị."
       },
       "roles": {
-        "GUEST": "KhÃ¡ch",
-        "ADMIN": "Quáº£n trá»‹ viÃªn",
-        "STAFF": "NhÃ¢n viÃªn",
-        "CUSTOMER": "KhÃ¡ch hÃ ng",
+        "GUEST": "Khách",
+        "ADMIN": "Quản trị viên",
+        "STAFF": "Nhân viên",
+        "CUSTOMER": "Khách hàng",
         "WAREHOUSE": "Kho"
       },
       "pagination": {
-        "itemsPerPage": "Hiá»ƒn thá»‹ {count} má»¥c má»—i trang",
-        "prev": "Trang trÆ°á»›c",
+        "itemsPerPage": "Hiển thị {count} mục mỗi trang",
+        "prev": "Trang trước",
         "next": "Trang sau",
-        "goToPage": "Äáº¿n trang"
+        "goToPage": "Đến trang"
       }
     },
     "categories": {
-      "title": "Danh má»¥c",
-      "subtitle": "Quáº£n lÃ½ cÃ¡c phÃ¢n loáº¡i sáº£n pháº©m cá»§a báº¡n.",
+      "title": "Danh mục",
+      "subtitle": "Quản lý các phân loại sản phẩm của bạn.",
       "summary": {
-        "totalCategories": "Tá»•ng sá»‘ danh má»¥c",
-        "activeCategories": "Danh má»¥c Ä‘ang hoáº¡t Ä‘á»™ng"
+        "totalCategories": "Tổng số danh mục",
+        "activeCategories": "Danh mục đang hoạt động"
       },
-      "addButton": "ThÃªm danh má»¥c",
-      "searchPlaceholder": "TÃ¬m kiáº¿m danh má»¥c...",
-      "empty": "KhÃ´ng cÃ³ dá»¯ liá»‡u.",
+      "addButton": "Thêm danh mục",
+      "searchPlaceholder": "Tìm kiếm danh mục...",
+      "empty": "Không có dữ liệu.",
       "pagination": {
-        "prev": "TrÆ°á»›c",
+        "prev": "Trước",
         "next": "Sau"
       },
       "status": {
-        "active": "Hoáº¡t Ä‘á»™ng",
-        "inactive": "Táº¡m áº©n"
+        "active": "Hoạt động",
+        "inactive": "Tạm ẩn"
       },
       "table": {
         "columns": {
-          "name": "TÃªn danh má»¥c",
-          "slug": "ÄÆ°á»ng dáº«n (Slug)",
-          "count": "Sá»‘ sáº£n pháº©m",
-          "sortOrder": "Thá»© tá»±",
-          "status": "Tráº¡ng thÃ¡i",
-          "actions": "Thao tÃ¡c"
+          "name": "Tên danh mục",
+          "slug": "Đường dẫn (Slug)",
+          "count": "Số sản phẩm",
+          "sortOrder": "Thứ tự",
+          "status": "Trạng thái",
+          "actions": "Thao tác"
         },
         "actions": {
-          "label": "HÃ nh Ä‘á»™ng",
-          "edit": "Sá»­a danh má»¥c",
-          "delete": "XÃ³a danh má»¥c"
+          "label": "Hành động",
+          "edit": "Sửa danh mục",
+          "delete": "Xóa danh mục"
         }
       },
       "dialog": {
-        "title": "ThÃªm danh má»¥c má»›i",
-        "description": "Nháº­p thÃ´ng tin chi tiáº¿t cho danh má»¥c sáº£n pháº©m má»›i táº¡i Ä‘Ã¢y.",
-        "nameLabel": "TÃªn danh má»¥c",
-        "namePlaceholder": "VÃ­ dá»¥: Äá»“ gia dá»¥ng",
-        "save": "LÆ°u thay Ä‘á»•i"
+        "title": "Thêm danh mục mới",
+        "description": "Nhập thông tin chi tiết cho danh mục sản phẩm mới tại đây.",
+        "nameLabel": "Tên danh mục",
+        "namePlaceholder": "Ví dụ: Đồ gia dụng",
+        "save": "Lưu thay đổi"
       }
     },
     "orders": {
-      "title": "ÄÆ¡n hÃ ng",
-      "subtitle": "Theo dÃµi vÃ  quáº£n lÃ½ cÃ¡c giao dá»‹ch tá»« khÃ¡ch hÃ ng.",
-      "exportExcel": "Xuáº¥t Excel",
-      "searchPlaceholder": "TÃ¬m mÃ£ Ä‘Æ¡n, email...",
-      "filterButton": "Lá»c Ä‘Æ¡n hÃ ng",
+      "title": "Đơn hàng",
+      "subtitle": "Theo dõi và quản lý các giao dịch từ khách hàng.",
+      "exportExcel": "Xuất Excel",
+      "searchPlaceholder": "Tìm mã đơn, email...",
+      "filterButton": "Lọc đơn hàng",
       "table": {
         "columns": {
-          "orderCode": "MÃ£ Ä‘Æ¡n hÃ ng",
-          "customer": "KhÃ¡ch hÃ ng",
-          "status": "Tráº¡ng thÃ¡i",
-          "payment": "Thanh toÃ¡n",
-          "totalAmount": "Tá»•ng tiá»n",
-          "placedAt": "NgÃ y Ä‘áº·t",
-          "actions": "Thao tÃ¡c"
+          "orderCode": "Mã đơn hàng",
+          "customer": "Khách hàng",
+          "status": "Trạng thái",
+          "payment": "Thanh toán",
+          "totalAmount": "Tổng tiền",
+          "placedAt": "Ngày đặt",
+          "actions": "Thao tác"
         },
-        "empty": "ChÆ°a cÃ³ Ä‘Æ¡n hÃ ng Ä‘á»ƒ hiá»ƒn thá»‹.",
+        "empty": "Chưa có đơn hàng để hiển thị.",
         "actions": {
-          "label": "HÃ nh Ä‘á»™ng",
-          "exportPdf": "Xuáº¥t hÃ³a Ä‘Æ¡n (PDF)",
-          "cancelOrder": "Há»§y Ä‘Æ¡n hÃ ng"
+          "label": "Hành động",
+          "exportPdf": "Xuất hóa đơn (PDF)",
+          "cancelOrder": "Hủy đơn hàng"
         }
       },
       "details": {
-        "view": "Xem chi tiáº¿t",
-        "order": "ÄÆ¡n hÃ ng",
-        "description": "Chi tiáº¿t cÃ¡c sáº£n pháº©m vÃ  tráº¡ng thÃ¡i thanh toÃ¡n.",
-        "customer": "KhÃ¡ch hÃ ng",
-        "products": "Sáº£n pháº©m ({count})",
+        "view": "Xem chi tiết",
+        "order": "Đơn hàng",
+        "description": "Chi tiết các sản phẩm và trạng thái thanh toán.",
+        "customer": "Khách hàng",
+        "products": "Sản phẩm ({count})",
         "quantity": "SL",
-        "subtotal": "Táº¡m tÃ­nh",
-        "total": "Tá»•ng cá»™ng"
+        "subtotal": "Tạm tính",
+        "total": "Tổng cộng"
       }
     }
   },
   "dashboard_products": {
     "edit": {
-      "mockTitle": "Clean Code - MÃ£ Sáº¡ch",
-      "editing": "Chá»‰nh sá»­a",
-      "viewLive": "Xem thá»±c táº¿",
-      "deleteBook": "XÃ³a Ä‘áº§u sÃ¡ch",
-      "cancel": "Há»§y",
-      "updateChanges": "Cáº­p nháº­t thay Ä‘á»•i",
-      "translationContent": "Ná»™i dung dá»‹ch thuáº­t",
-      "aiRewrite": "AI Dá»‹ch láº¡i",
-      "bookTitle": "TiÃªu Ä‘á» sÃ¡ch",
-      "slug": "ÄÆ°á»ng dáº«n (Slug)",
-      "description": "MÃ´ táº£ chi tiáº¿t",
-      "oldSummary": "Ná»™i dung tÃ³m táº¯t cÅ© cá»§a cuá»‘n sÃ¡ch...",
-      "variantsTitle": "Danh sÃ¡ch biáº¿n thá»ƒ (Variants)",
-      "addFormat": "ThÃªm Ä‘á»‹nh dáº¡ng má»›i",
+      "mockTitle": "Clean Code - Mã Sạch",
+      "editing": "Chỉnh sửa",
+      "viewLive": "Xem thực tế",
+      "deleteBook": "Xóa đầu sách",
+      "cancel": "Hủy",
+      "updateChanges": "Cập nhật thay đổi",
+      "translationContent": "Nội dung dịch thuật",
+      "aiRewrite": "AI Dịch lại",
+      "bookTitle": "Tiêu đề sách",
+      "slug": "Đường dẫn (Slug)",
+      "description": "Mô tả chi tiết",
+      "oldSummary": "Nội dung tóm tắt cũ của cuốn sách...",
+      "variantsTitle": "Danh sách biến thể (Variants)",
+      "addFormat": "Thêm định dạng mới",
       "table": {
-        "format": "Äá»‹nh dáº¡ng",
-        "costPrice": "GiÃ¡ nháº­p",
-        "price": "GiÃ¡ bÃ¡n",
+        "format": "Định dạng",
+        "costPrice": "Giá nhập",
+        "price": "Giá bán",
         "stock": "Kho"
       },
       "formats": {
-        "paperback": "BÃ¬a má»m",
-        "hardcover": "BÃ¬a cá»©ng"
+        "paperback": "Bìa mềm",
+        "hardcover": "Bìa cứng"
       },
-      "releaseStatus": "Tráº¡ng thÃ¡i má»Ÿ bÃ¡n",
-      "releaseStatusDescription": "Cho phÃ©p sÃ¡ch xuáº¥t hiá»‡n trÃªn Store",
-      "lastUpdated": "Cáº­p nháº­t láº§n cuá»‘i: 2 phÃºt trÆ°á»›c",
-      "currentCover": "áº¢nh bÃ¬a hiá»‡n táº¡i",
-      "changeImage": "Thay Ä‘á»•i áº£nh",
-      "originalImageUrl": "URL áº¢nh gá»‘c",
-      "specifications": "ThÃ´ng sá»‘ ká»¹ thuáº­t",
-      "weight": "CÃ¢n náº·ng (g)",
-      "pageCount": "Sá»‘ trang",
-      "publisher": "NhÃ  xuáº¥t báº£n",
-      "publicationYear": "NÄƒm xuáº¥t báº£n",
-      "currentLabels": "NhÃ£n Ä‘ang gáº¯n",
-      "bestSeller": "BÃ¡n cháº¡y",
-      "attachNewLabel": "Gáº¯n nhÃ£n má»›i"
+      "releaseStatus": "Trạng thái mở bán",
+      "releaseStatusDescription": "Cho phép sách xuất hiện trên Store",
+      "lastUpdated": "Cập nhật lần cuối: 2 phút trước",
+      "currentCover": "Ảnh bìa hiện tại",
+      "changeImage": "Thay đổi ảnh",
+      "originalImageUrl": "URL Ảnh gốc",
+      "specifications": "Thông số kỹ thuật",
+      "weight": "Cân nặng (g)",
+      "pageCount": "Số trang",
+      "publisher": "Nhà xuất bản",
+      "publicationYear": "Năm xuất bản",
+      "currentLabels": "Nhãn đang gắn",
+      "bestSeller": "Bán chạy",
+      "attachNewLabel": "Gắn nhãn mới"
     }
   },
   "auth": {
     "emailLabel": "Email",
     "emailPlaceholder": "Email",
-    "passwordLabel": "Máº­t kháº©u",
-    "passwordPlaceholder": "Máº­t kháº©u",
-    "confirmPasswordLabel": "XÃ¡c nháº­n máº­t kháº©u",
-    "confirmPasswordPlaceholder": "XÃ¡c nháº­n máº­t kháº©u",
-    "newPasswordLabel": "Máº­t kháº©u má»›i",
-    "firstNameLabel": "TÃªn",
-    "firstNamePlaceholder": "TÃªn",
-    "lastNameLabel": "Há»",
-    "lastNamePlaceholder": "Há»",
-    "verifyTokenLabel": "MÃ£ xÃ¡c minh",
-    "verifyTokenPlaceholder": "Nháº­p mÃ£ xÃ¡c minh",
-    "registerTitle": "Táº¡o tÃ i khoáº£n",
-    "registerSubtitle": "Nháº­p thÃ´ng tin Ä‘á»ƒ báº¯t Ä‘áº§u.",
-    "loginTitle": "ÄÄƒng nháº­p",
-    "loginSubtitle": "ÄÄƒng nháº­p vÃ o tÃ i khoáº£n cá»§a báº¡n.",
-    "loginLoading": "Äang Ä‘Äƒng nháº­p...",
-    "noAccount": "ChÆ°a cÃ³ tÃ i khoáº£n?",
-    "signUp": "ÄÄƒng kÃ½",
-    "hasAccount": "ÄÃ£ cÃ³ tÃ i khoáº£n?",
-    "signIn": "ÄÄƒng nháº­p",
-    "forgotTitle": "QuÃªn máº­t kháº©u",
-    "forgotSubtitle": "ChÃºng tÃ´i sáº½ gá»­i liÃªn káº¿t Ä‘áº·t láº¡i máº­t kháº©u.",
-    "forgotLink": "QuÃªn máº­t kháº©u?",
-    "passwordResetTitle": "Äáº·t láº¡i máº­t kháº©u",
-    "passwordResetSubtitle": "Nháº­p máº­t kháº©u má»›i cho tÃ i khoáº£n cá»§a báº¡n.",
-    "verifyTitle": "XÃ¡c minh tÃ i khoáº£n",
-    "verifySubtitle": "Nháº­p mÃ£ xÃ¡c minh Ä‘Ã£ gá»­i qua email.",
-    "sendVerifyEmail": "Gá»­i email xÃ¡c minh",
-    "sending": "Äang gá»­i...",
-    "submit": "Tiáº¿p tá»¥c",
-    "submitting": "Äang Ä‘Äƒng nháº­p...",
-    "registerSubmit": "Táº¡o tÃ i khoáº£n",
-    "registering": "Äang táº¡o tÃ i khoáº£n...",
-    "forgotSubmit": "Gá»­i liÃªn káº¿t",
-    "forgotSubmitting": "Äang gá»­i...",
-    "resetSubmit": "Äáº·t láº¡i máº­t kháº©u",
-    "processing": "Äang xá»­ lÃ½...",
-    "verifySubmit": "XÃ¡c minh",
-    "verifying": "Äang xÃ¡c minh...",
-    "verifyingToken": "Äang xÃ¡c minh email...",
-    "loggingOut": "Äang Ä‘Äƒng xuáº¥t...",
-    "validating": "Äang xÃ¡c thá»±c...",
-    "resetting": "Äang Ä‘áº·t láº¡i máº­t kháº©u...",
+    "passwordLabel": "Mật khẩu",
+    "passwordPlaceholder": "Mật khẩu",
+    "confirmPasswordLabel": "Xác nhận mật khẩu",
+    "confirmPasswordPlaceholder": "Xác nhận mật khẩu",
+    "newPasswordLabel": "Mật khẩu mới",
+    "firstNameLabel": "Tên",
+    "firstNamePlaceholder": "Tên",
+    "lastNameLabel": "Họ",
+    "lastNamePlaceholder": "Họ",
+    "verifyTokenLabel": "Mã xác minh",
+    "verifyTokenPlaceholder": "Nhập mã xác minh",
+    "registerTitle": "Tạo tài khoản",
+    "registerSubtitle": "Nhập thông tin để bắt đầu.",
+    "loginTitle": "Đăng nhập",
+    "loginSubtitle": "Đăng nhập vào tài khoản của bạn.",
+    "loginLoading": "Đang đăng nhập...",
+    "noAccount": "Chưa có tài khoản?",
+    "signUp": "Đăng ký",
+    "hasAccount": "Đã có tài khoản?",
+    "signIn": "Đăng nhập",
+    "forgotTitle": "Quên mật khẩu",
+    "forgotSubtitle": "Chúng tôi sẽ gửi liên kết đặt lại mật khẩu.",
+    "forgotLink": "Quên mật khẩu?",
+    "passwordResetTitle": "Đặt lại mật khẩu",
+    "passwordResetSubtitle": "Nhập mật khẩu mới cho tài khoản của bạn.",
+    "verifyTitle": "Xác minh tài khoản",
+    "verifySubtitle": "Nhập mã xác minh đã gửi qua email.",
+    "sendVerifyEmail": "Gửi email xác minh",
+    "sending": "Đang gửi...",
+    "submit": "Tiếp tục",
+    "submitting": "Đang đăng nhập...",
+    "registerSubmit": "Tạo tài khoản",
+    "registering": "Đang tạo tài khoản...",
+    "forgotSubmit": "Gửi liên kết",
+    "forgotSubmitting": "Đang gửi...",
+    "resetSubmit": "Đặt lại mật khẩu",
+    "processing": "Đang xử lý...",
+    "verifySubmit": "Xác minh",
+    "verifying": "Đang xác minh...",
+    "verifyingToken": "Đang xác minh email...",
+    "loggingOut": "Đang đăng xuất...",
+    "validating": "Đang xác thực...",
+    "resetting": "Đang đặt lại mật khẩu...",
     "success": {
-      "register": "ÄÄƒng kÃ½ thÃ nh cÃ´ng. HÃ£y kiá»ƒm tra email Ä‘á»ƒ nháº­n mÃ£ xÃ¡c minh.",
-      "verify": "XÃ¡c minh thÃ nh cÃ´ng. Báº¡n cÃ³ thá»ƒ Ä‘Äƒng nháº­p.",
-      "forgot": "Náº¿u email tá»“n táº¡i, chÃºng tÃ´i sáº½ gá»­i hÆ°á»›ng dáº«n Ä‘áº·t láº¡i Ä‘áº¿n {email}.",
-      "resend": "Náº¿u email tá»“n táº¡i, chÃºng tÃ´i Ä‘Ã£ gá»­i láº¡i email xÃ¡c minh tá»›i {email}.",
-      "login": "ÄÄƒng nháº­p thÃ nh cÃ´ng!",
-      "logout": "ÄÄƒng xuáº¥t thÃ nh cÃ´ng!",
-      "reset": "Äáº·t láº¡i máº­t kháº©u thÃ nh cÃ´ng. Báº¡n cÃ³ thá»ƒ Ä‘Äƒng nháº­p.",
-      "validating": "LiÃªn káº¿t há»£p lá»‡."
+      "register": "Đăng ký thành công. Hãy kiểm tra email để nhận mã xác minh.",
+      "verify": "Xác minh thành công. Bạn có thể đăng nhập.",
+      "forgot": "Nếu email tồn tại, chúng tôi sẽ gửi hướng dẫn đặt lại đến {email}.",
+      "resend": "Nếu email tồn tại, chúng tôi đã gửi lại email xác minh tới {email}.",
+      "login": "Đăng nhập thành công!",
+      "logout": "Đăng xuất thành công!",
+      "reset": "Đặt lại mật khẩu thành công. Bạn có thể đăng nhập.",
+      "validating": "Liên kết hợp lệ."
     },
     "errors": {
-      "emailInvalid": "Email khÃ´ng há»£p lá»‡",
-      "passwordMin": "Máº­t kháº©u tá»‘i thiá»ƒu {count} kÃ½ tá»±",
-      "required": "Báº¯t buá»™c",
-      "passwordMismatch": "Máº­t kháº©u khÃ´ng khá»›p",
-      "requestFailed": "CÃ³ lá»—i xáº£y ra. Vui lÃ²ng thá»­ láº¡i.",
-      "missingVerifyId": "Thiáº¿u mÃ£ Ä‘á»‹nh danh xÃ¡c minh.",
-      "verifyTokenInvalid": "Token xÃ¡c minh khÃ´ng há»£p lá»‡ hoáº·c Ä‘Ã£ háº¿t háº¡n.",
-      "invalidLink": "LiÃªn káº¿t khÃ´ng há»£p lá»‡!"
+      "emailInvalid": "Email không hợp lệ",
+      "passwordMin": "Mật khẩu tối thiểu {count} ký tự",
+      "required": "Bắt buộc",
+      "passwordMismatch": "Mật khẩu không khớp",
+      "requestFailed": "Có lỗi xảy ra. Vui lòng thử lại.",
+      "missingVerifyId": "Thiếu mã định danh xác minh.",
+      "verifyTokenInvalid": "Token xác minh không hợp lệ hoặc đã hết hạn.",
+      "invalidLink": "Liên kết không hợp lệ!"
     }
   },
   "detail": {
-    "bookNotFound": "KhÃ´ng tÃ¬m tháº¥y thÃ´ng tin sÃ¡ch.",
-    "noReviews": "ChÆ°a cÃ³ Ä‘Ã¡nh giÃ¡ nÃ o cho sáº£n pháº©m nÃ y.",
-    "pricePerBook": "/ cuá»‘n",
+    "bookNotFound": "Không tìm thấy thông tin sách.",
+    "noReviews": "Chưa có đánh giá nào cho sản phẩm này.",
+    "pricePerBook": "/ cuốn",
     "toast": {
-      "addToCartLoading": "Äang thÃªm vÃ o giá» hÃ ng...",
-      "addToCartSuccess": "ÄÃ£ thÃªm vÃ o giá» hÃ ng.",
-      "addToCartError": "KhÃ´ng thá»ƒ thÃªm vÃ o giá» hÃ ng."
+      "addToCartLoading": "Đang thêm vào giỏ hàng...",
+      "addToCartSuccess": "Đã thêm vào giỏ hàng.",
+      "addToCartError": "Không thể thêm vào giỏ hàng."
     }
   },
   "cart": {
     "page": {
-      "loadError": "KhÃ´ng thá»ƒ táº£i giá» hÃ ng.",
-      "empty": "Giá» hÃ ng cá»§a báº¡n Ä‘ang trá»‘ng."
+      "loadError": "Không thể tải giỏ hàng.",
+      "empty": "Giỏ hàng của bạn đang trống."
     },
     "toast": {
-      "addItemLoading": "Äang thÃªm sáº£n pháº©m...",
-      "addItemSuccess": "ÄÃ£ thÃªm sáº£n pháº©m vÃ o giá» hÃ ng.",
-      "addItemError": "KhÃ´ng thá»ƒ thÃªm sáº£n pháº©m vÃ o giá» hÃ ng."
+      "addItemLoading": "Đang thêm sản phẩm...",
+      "addItemSuccess": "Đã thêm sản phẩm vào giỏ hàng.",
+      "addItemError": "Không thể thêm sản phẩm vào giỏ hàng."
     }
   },
   "wishlist": {
     "page": {
-      "title": "Danh sÃ¡ch yÃªu thÃ­ch",
-      "addAllToCart": "ThÃªm táº¥t cáº£ vÃ o giá»",
-      "empty": "Danh sÃ¡ch yÃªu thÃ­ch Ä‘ang trá»‘ng.",
-      "loadError": "KhÃ´ng thá»ƒ táº£i danh sÃ¡ch yÃªu thÃ­ch."
+      "title": "Danh sách yêu thích",
+      "addAllToCart": "Thêm tất cả vào giỏ",
+      "empty": "Danh sách yêu thích đang trống.",
+      "loadError": "Không thể tải danh sách yêu thích."
     }
   },
   "orders": {
     "page": {
-      "title": "Lá»‹ch sá»­ Ä‘Æ¡n hÃ ng",
-      "subtitle": "Xem vÃ  quáº£n lÃ½ cÃ¡c Ä‘Æ¡n hÃ ng cá»§a báº¡n",
-      "noOrders": "Báº¡n chÆ°a cÃ³ Ä‘Æ¡n hÃ ng nÃ o",
-      "itemsCount": "Sá»‘ lÆ°á»£ng sáº£n pháº©m",
-      "total": "Tá»•ng cá»™ng",
-      "shippingAddress": "Äá»‹a chá»‰ giao hÃ ng",
-      "viewDetails": "Xem chi tiáº¿t",
-      "buyAgain": "Mua láº¡i"
+      "title": "Lịch sử đơn hàng",
+      "subtitle": "Xem và quản lý các đơn hàng của bạn",
+      "noOrders": "Bạn chưa có đơn hàng nào",
+      "itemsCount": "Số lượng sản phẩm",
+      "total": "Tổng cộng",
+      "shippingAddress": "Địa chỉ giao hàng",
+      "viewDetails": "Xem chi tiết",
+      "buyAgain": "Mua lại"
     },
     "status": {
-      "delivered": "ÄÃ£ giao",
-      "shipping": "Äang giao",
-      "processing": "Äang xá»­ lÃ½",
-      "cancelled": "ÄÃ£ há»§y"
+      "delivered": "Đã giao",
+      "shipping": "Đang giao",
+      "processing": "Đang xử lý",
+      "cancelled": "Đã hủy"
     }
   },
   "checkout": {
-    "title": "ThÃ´ng tin thanh toÃ¡n",
-    "userTitle": "Thanh toÃ¡n",
-    "backToCart": "Quay láº¡i giá» hÃ ng",
-    "hasAccount": "ÄÃ£ cÃ³ tÃ i khoáº£n?",
-    "signIn": "ÄÄƒng nháº­p",
-    "contactEmail": "Email liÃªn há»‡",
-    "newsletter": "Nháº­n thÃ´ng tin cáº­p nháº­t vá» Ä‘Æ¡n hÃ ng vÃ  Æ°u Ä‘Ã£i má»›i nháº¥t",
-    "shippingTitle": "Äá»‹a chá»‰ giao hÃ ng",
-    "addNewAddress": "ThÃªm Ä‘á»‹a chá»‰ má»›i",
-    "countryPlaceholder": "Quá»‘c gia/ VÃ¹ng",
+    "title": "Thông tin thanh toán",
+    "userTitle": "Thanh toán",
+    "backToCart": "Quay lại giỏ hàng",
+    "hasAccount": "Đã có tài khoản?",
+    "signIn": "Đăng nhập",
+    "contactEmail": "Email liên hệ",
+    "newsletter": "Nhận thông tin cập nhật về đơn hàng và ưu đãi mới nhất",
+    "shippingTitle": "Địa chỉ giao hàng",
+    "addNewAddress": "Thêm địa chỉ mới",
+    "countryPlaceholder": "Quốc gia / Vùng",
     "countries": {
-      "vn": "Viá»‡t Nam",
+      "vn": "Việt Nam",
       "us": "United States"
     },
-    "firstNamePlaceholder": "Há» vÃ  tÃªn Ä‘á»‡m",
-    "lastNamePlaceholder": "TÃªn",
-    "addressPlaceholder": "Äá»‹a chá»‰ chi tiáº¿t (Sá»‘ nhÃ , tÃªn Ä‘Æ°á»ng...)",
-    "cityPlaceholder": "Tá»‰nh / ThÃ nh phá»‘",
-    "postalCodePlaceholder": "MÃ£ bÆ°u chÃ­nh (TÃ¹y chá»n)",
-    "phonePlaceholder": "Sá»‘ Ä‘iá»‡n thoáº¡i",
-    "paymentTitle": "PhÆ°Æ¡ng thá»©c thanh toÃ¡n",
-    "secureText": "ThÃ´ng tin cá»§a báº¡n luÃ´n Ä‘Æ°á»£c báº£o máº­t vÃ  mÃ£ hÃ³a",
-    "secureTextHigh": "Báº£o máº­t thanh toÃ¡n theo tiÃªu chuáº©n quá»‘c táº¿",
-    "placeOrder": "Äáº·t hÃ ng ngay",
-    "submitButton": "HoÃ n táº¥t Ä‘áº·t hÃ ng",
+    "firstNamePlaceholder": "Họ và tên đệm",
+    "lastNamePlaceholder": "Tên",
+    "addressPlaceholder": "Địa chỉ chi tiết (Số nhà, tên đường...)",
+    "cityPlaceholder": "Tỉnh / Thành phố",
+    "postalCodePlaceholder": "Mã bưu chính (Tùy chọn)",
+    "phonePlaceholder": "Số điện thoại",
+    "paymentTitle": "Phương thức thanh toán",
+    "secureText": "Thông tin của bạn luôn được bảo mật và mã hóa",
+    "secureTextHigh": "Bảo mật thanh toán theo tiêu chuẩn quốc tế",
+    "placeOrder": "Đặt hàng ngay",
+    "submitButton": "Hoàn tất đặt hàng",
     "orderSummary": {
-      "title": "TÃ³m táº¯t Ä‘Æ¡n hÃ ng",
-      "productFallback": "Sáº£n pháº©m",
-      "discountPlaceholder": "Nháº­p mÃ£ giáº£m giÃ¡",
-      "apply": "Ãp dá»¥ng",
-      "subtotalWithCount": "Táº¡m tÃ­nh ({count} sáº£n pháº©m)",
-      "shippingFee": "PhÃ­ váº­n chuyá»ƒn",
-      "freeShipping": "Miá»…n phÃ­",
-      "total": "Tá»•ng cá»™ng",
-      "vatIncluded": "ÄÃ£ bao gá»“m VAT"
+      "title": "Tóm tắt đơn hàng",
+      "productFallback": "Sản phẩm",
+      "discountPlaceholder": "Nhập mã giảm giá",
+      "apply": "Áp dụng",
+      "subtotalWithCount": "Tạm tính ({count} sản phẩm)",
+      "shippingFee": "Phí vận chuyển",
+      "freeShipping": "Miễn phí",
+      "total": "Tổng cộng",
+      "vatIncluded": "Đã bao gồm VAT"
     },
     "paymentMethod": {
-      "sepayRichTitle": "sepay",
-      "sepayCompactTitle": "Thanh toÃ¡n qua sepay",
-      "sepayRichDescription": "Thanh toÃ¡n an toÃ n qua cá»•ng sepay",
-      "sepayCompactDescription": "Tháº» ná»™i Ä‘á»‹a, Visa, Mastercard, JCB, QR Code",
-      "codTitle": "Thanh toÃ¡n khi nháº­n hÃ ng (COD)",
-      "codRichDescription": "Kiá»ƒm tra hÃ ng trÆ°á»›c khi thanh toÃ¡n",
-      "codCompactDescription": "Báº¡n sáº½ thanh toÃ¡n báº±ng tiá»n máº·t khi shipper giao hÃ ng"
+      "sepayRichTitle": "SePay",
+      "sepayCompactTitle": "Thanh toán qua SePay",
+      "sepayRichDescription": "Thanh toán an toàn qua cổng SePay",
+      "sepayCompactDescription": "Thẻ nội địa, Visa, Mastercard, JCB, QR Code",
+      "codTitle": "Thanh toán khi nhận hàng (COD)",
+      "codRichDescription": "Kiểm tra hàng trước khi thanh toán",
+      "codCompactDescription": "Bạn sẽ thanh toán bằng tiền mặt khi shipper giao hàng"
     },
     "shippingMethod": {
-      "title": "PhÆ°Æ¡ng thá»©c váº­n chuyá»ƒn",
-      "homeDelivery": "Giao hÃ ng tá»›i Viá»‡t Nam",
-      "eta": "Dá»± kiáº¿n nháº­n hÃ ng sau 2-3 ngÃ y",
-      "free": "Miá»…n phÃ­"
+      "title": "Phương thức vận chuyển",
+      "homeDelivery": "Giao hàng tới Việt Nam",
+      "eta": "Dự kiến nhận hàng sau 2-3 ngày",
+      "free": "Miễn phí"
     },
     "paymentPage": {
-      "back": "Quay láº¡i",
-      "orderBadge": "ÄÆ¡n hÃ ng dá»‹ch vá»¥",
-      "title": "Thanh toÃ¡n Ä‘Æ¡n hÃ ng",
-      "subtotal": "Táº¡m tÃ­nh",
-      "shippingFee": "PhÃ­ váº­n chuyá»ƒn",
-      "total": "Tá»•ng thanh toÃ¡n",
-      "secureNote": "Há»‡ thá»‘ng thanh toÃ¡n tá»± Ä‘á»™ng qua <strong>SePay</strong>. Giao dá»‹ch an toÃ n, báº£o máº­t vÃ  Ä‘Æ°á»£c xÃ¡c nháº­n ngay láº­p tá»©c.",
-      "waiting": "Chá» thanh toÃ¡n",
-      "scanToComplete": "QuÃ©t mÃ£ Ä‘á»ƒ hoÃ n táº¥t",
-      "waitingScan": "Äang chá» quÃ©t...",
-      "bank": "NgÃ¢n hÃ ng",
-      "bankFullName": "NgÃ¢n hÃ ng QuÃ¢n Äá»™i",
-      "accountNumber": "Sá»‘ tÃ i khoáº£n",
-      "transferContent": "Ná»™i dung chuyá»ƒn khoáº£n (Báº¯t buá»™c)",
-      "confirmTransfer": "TÃ´i Ä‘Ã£ chuyá»ƒn khoáº£n thÃ nh cÃ´ng"
+      "back": "Quay lại",
+      "orderBadge": "Đơn hàng dịch vụ",
+      "title": "Thanh toán đơn hàng",
+      "subtotal": "Tạm tính",
+      "shippingFee": "Phí vận chuyển",
+      "total": "Tổng thanh toán",
+      "secureNote": "Hệ thống thanh toán tự động qua <strong>SePay</strong>. Giao dịch an toàn, bảo mật và được xác nhận ngay lập tức.",
+      "waiting": "Chờ thanh toán",
+      "scanToComplete": "Quét mã để hoàn tất",
+      "waitingScan": "Đang chờ quét...",
+      "bank": "Ngân hàng",
+      "bankFullName": "Ngân hàng Quân Đội",
+      "accountNumber": "Số tài khoản",
+      "transferContent": "Nội dung chuyển khoản (Bắt buộc)",
+      "confirmTransfer": "Tôi đã chuyển khoản thành công"
     },
     "toast": {
-      "loading": "Äang xá»­ lÃ½ Ä‘Æ¡n hÃ ng...",
-      "success": "ÄÆ¡n hÃ ng Ä‘Ã£ Ä‘Æ°á»£c táº¡o thÃ nh cÃ´ng!",
-      "error": "KhÃ´ng thá»ƒ táº¡o Ä‘Æ¡n hÃ ng. Vui lÃ²ng thá»­ láº¡i."
+      "loading": "Đang xử lý đơn hàng...",
+      "success": "Đơn hàng đã được tạo thành công!",
+      "error": "Không thể tạo đơn hàng. Vui lòng thử lại."
     }
   },
   "modal": {
     "addTranslateBook": {
-      "title": "Dá»‹ch thuáº­t ná»™i dung",
-      "subtitle": "Quáº£n lÃ½ Ä‘a ngÃ´n ngá»¯ cho Ä‘áº§u sÃ¡ch",
-      "languageLabel": "NGÃ”N NGá»®:",
-      "languagePlaceholder": "Chá»n ngÃ´n ngá»¯",
+      "title": "Dịch thuật nội dung",
+      "subtitle": "Quản lý đa ngôn ngữ cho đầu sách",
+      "languageLabel": "NGÔN NGỮ:",
+      "languagePlaceholder": "Chọn ngôn ngữ",
       "languages": {
-        "vi": "Tiáº¿ng Viá»‡t",
+        "vi": "Tiếng Việt",
         "en": "English",
         "ja": "Japanese"
       },
-      "isbnPlaceholder": "Nháº­p ISBN Ä‘á»ƒ láº¥y thÃ´ng tin gá»‘c...",
-      "checkButton": "Kiá»ƒm tra",
-      "aiButton": "AI Dá»‹ch thuáº­t",
-      "bookTitleLabel": "TiÃªu Ä‘á» sÃ¡ch",
-      "bookTitlePlaceholder": "TÃªn sÃ¡ch sau khi dá»‹ch...",
-      "aiBookTitle": "SÃ¡ch Láº­p TrÃ¬nh React Cho NgÆ°á»i Má»›i",
-      "descriptionLabel": "MÃ´ táº£ chi tiáº¿t (Description)",
-      "descriptionPlaceholder": "Ná»™i dung mÃ´ táº£ ná»™i dung cuá»‘n sÃ¡ch...",
-      "aiDescription": "ÄÃ¢y lÃ  cuá»‘n sÃ¡ch hÆ°á»›ng dáº«n chi tiáº¿t vá» React tá»« cÆ¡ báº£n Ä‘áº¿n nÃ¢ng cao, phÃ¹ há»£p cho má»i trÃ¬nh Ä‘á»™...",
-      "cancelButton": "Há»§y bá»",
-      "saveButton": "LÆ°u báº£n dá»‹ch"
+      "isbnPlaceholder": "Nhập ISBN để lấy thông tin gốc...",
+      "checkButton": "Kiểm tra",
+      "aiButton": "AI Dịch thuật",
+      "bookTitleLabel": "Tiêu đề sách",
+      "bookTitlePlaceholder": "Tên sách sau khi dịch...",
+      "aiBookTitle": "Sách Lập Trình React Cho Người Mới",
+      "descriptionLabel": "Mô tả chi tiết (Description)",
+      "descriptionPlaceholder": "Nội dung mô tả nội dung cuốn sách...",
+      "aiDescription": "Đây là cuốn sách hướng dẫn chi tiết về React từ cơ bản đến nâng cao, phù hợp cho mọi trình độ...",
+      "cancelButton": "Hủy bỏ",
+      "saveButton": "Lưu bản dịch"
     },
     "addVariant": {
-      "title": "ThÃªm biáº¿n thá»ƒ sÃ¡ch",
-      "subtitle": "Quáº£n lÃ½ Ä‘á»‹nh dáº¡ng, giÃ¡ bÃ¡n vÃ  kho váº­n",
-      "isbnPlaceholder": "Nháº­p ISBN Ä‘á»ƒ Ä‘iá»n nhanh Ä‘á»‹nh dáº¡ng...",
-      "checkCodeButton": "Kiá»ƒm tra mÃ£",
-      "printInfo": "ThÃ´ng tin báº£n in",
-      "bookFormatLabel": "Äá»‹nh dáº¡ng sÃ¡ch (Format)",
-      "bookFormatPlaceholder": "Chá»n Ä‘á»‹nh dáº¡ng...",
+      "title": "Thêm biến thể sách",
+      "subtitle": "Quản lý định dạng, giá bán và kho vận",
+      "isbnPlaceholder": "Nhập ISBN để điền nhanh định dạng...",
+      "checkCodeButton": "Kiểm tra mã",
+      "printInfo": "Thông tin bản in",
+      "bookFormatLabel": "Định dạng sách (Format)",
+      "bookFormatPlaceholder": "Chọn định dạng...",
       "formats": {
-        "paperback": "BÃ¬a má»m (Paperback)",
-        "hardcover": "BÃ¬a cá»©ng (Hardcover)",
-        "ebook": "SÃ¡ch Ä‘iá»‡n tá»­ (E-Book)",
-        "audiobook": "SÃ¡ch nÃ³i (Audiobook)"
+        "paperback": "Bìa mềm (Paperback)",
+        "hardcover": "Bìa cứng (Hardcover)",
+        "ebook": "Sách điện tử (E-Book)",
+        "audiobook": "Sách nói (Audiobook)"
       },
-      "editionLabel": "Láº§n tÃ¡i báº£n",
-      "editionPlaceholder": "VÃ­ dá»¥: 1",
-      "stockLabel": "Tá»“n kho",
-      "releaseStatus": "Tráº¡ng thÃ¡i má»Ÿ bÃ¡n",
-      "releaseStatusDescription": "Cho phÃ©p khÃ¡ch hÃ ng Ä‘áº·t mua báº£n nÃ y",
-      "financeAndIsbn": "TÃ i chÃ­nh & ISBN",
-      "officialIsbnLabel": "MÃ£ ISBN chÃ­nh thá»©c",
-      "costPriceLabel": "GiÃ¡ nháº­p (Cost Price)",
-      "listPriceLabel": "GiÃ¡ bÃ¡n niÃªm yáº¿t (Price)",
-      "currencyLabel": "MÃ£ tiá» n tá»‡",
+      "editionLabel": "Lần tái bản",
+      "editionPlaceholder": "Ví dụ: 1",
+      "stockLabel": "Tồn kho",
+      "releaseStatus": "Trạng thái mở bán",
+      "releaseStatusDescription": "Cho phép khách hàng đặt mua bản này",
+      "financeAndIsbn": "Tài chính & ISBN",
+      "officialIsbnLabel": "Mã ISBN chính thức",
+      "costPriceLabel": "Giá nhập (Cost Price)",
+      "listPriceLabel": "Giá bán niêm yết (Price)",
+      "currencyLabel": "Mã tiền tệ",
       "currencies": {
-        "vnd": "VNÄ  - Viá»‡t Nam Ä á»“ng",
-        "usd": "USD - Ä Ã´ la Má»¹"
+        "vnd": "VNĐ - Việt Nam Đồng",
+        "usd": "USD - Đô la Mỹ"
       },
-      "cancelButton": "Há»§y bá» ",
-      "confirmButton": "XÃ¡c nháº­n thÃªm biáº¿n thá»ƒ"
+      "cancelButton": "Hủy bỏ",
+      "confirmButton": "Xác nhận thêm biến thể"
     }
   },
   "library": {
     "header": {
-      "nav": "Thu Vien"
+      "nav": "Thư Viện"
     },
     "page": {
-      "title": "Thu Vien Ca Nhan",
-      "subtitle": "Khong gian doc sach rieng cua ban - theo doi tien trinh va luu lai nhung cau trich dan y nghia.",
-      "booksCount": "{count} cuon sach",
-      "loadingText": "Dang tai thu vien..."
+      "title": "Thư Viện Cá Nhân",
+      "subtitle": "Không gian đọc sách riêng của bạn - theo dõi tiến trình và lưu lại những câu trích dẫn ý nghĩa.",
+      "booksCount": "{count} cuốn sách",
+      "loadingText": "Đang tải thư viện..."
     },
     "empty": {
-      "title": "Thu vien cua ban dang trong",
-      "description": "Mua sach de bat dau xay dung thu vien doc sach cua rieng ban.",
-      "cta": "Kham pha sach"
+      "title": "Thư viện của bạn đang trống",
+      "description": "Mua sách để bắt đầu xây dựng thư viện đọc sách của riêng bạn.",
+      "cta": "Khám phá sách"
     },
     "card": {
-      "notesCount": "{count} ghi chu",
-      "noNotes": "Chua co ghi chu",
-      "readingProgress": "Tien trinh doc",
+      "notesCount": "{count} ghi chú",
+      "noNotes": "Chưa có ghi chú",
+      "readingProgress": "Tiến trình đọc",
       "page": "Trang {page}",
-      "openBook": "Mo sach"
+      "openBook": "Mở sách"
     },
     "detail": {
-      "backToLibrary": "Quay lai thu vien",
-      "notesTitle": "Ghi Chu Cua Toi",
-      "notesEmpty": "Chua co ghi chu nao. Hay them ghi chu dau tien ben duoi.",
+      "backToLibrary": "Quay lại thư viện",
+      "notesTitle": "Ghi Chú Của Tôi",
+      "notesEmpty": "Chưa có ghi chú nào. Hãy thêm ghi chú đầu tiên bên dưới.",
       "tabs": {
         "page_mark": "Ghi trang",
-        "quote": "Cau trich dan",
-        "other": "Ghi chu khac"
+        "quote": "Câu trích dẫn",
+        "other": "Ghi chú khác"
       },
       "form": {
-        "title": "Them ghi chu",
-        "typeLabel": "Loai ghi chu",
+        "title": "Thêm ghi chú",
+        "typeLabel": "Loại ghi chú",
         "types": {
           "page_mark": "Ghi trang",
-          "quote": "Cau trich dan",
-          "other": "Khac"
+          "quote": "Câu trích dẫn",
+          "other": "Khác"
         },
-        "pageNumberLabel": "So trang",
+        "pageNumberLabel": "Số trang",
         "pageNumberPlaceholder": "VD: 42",
-        "contentLabel": "Noi dung ghi chu",
+        "contentLabel": "Nội dung ghi chú",
         "contentPlaceholder": {
-          "page_mark": "Chuyen gi xay ra o trang nay? Ban muon ghi nho dieu gi?",
-          "quote": "Viet cau trich dan vao day...",
-          "other": "Suy nghi, y tuong hoac bat cu dieu gi dang nho..."
+          "page_mark": "Chuyện gì xảy ra ở trang này? Bạn muốn ghi nhớ điều gì?",
+          "quote": "Viết câu trích dẫn vào đây...",
+          "other": "Suy nghĩ, ý tưởng hoặc bất cứ điều gì đáng nhớ..."
         },
-        "submit": "Luu ghi chu",
-        "submitting": "Dang luu...",
-        "cancel": "Huy",
-        "editTitle": "Chinh sua ghi chu",
-        "update": "Cap nhat ghi chu"
+        "submit": "Lưu ghi chú",
+        "submitting": "Đang lưu...",
+        "cancel": "Hủy",
+        "editTitle": "Chỉnh sửa ghi chú",
+        "update": "Cập nhật ghi chú"
       },
       "noteCard": {
         "page": "Trang {page}",
-        "edit": "Chinh sua",
-        "delete": "Xoa",
-        "deleteConfirm": "Xoa ghi chu?"
+        "edit": "Chỉnh sửa",
+        "delete": "Xóa",
+        "deleteConfirm": "Xóa ghi chú?"
       }
     }
   }
