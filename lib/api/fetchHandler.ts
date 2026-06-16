@@ -1,4 +1,4 @@
-import { envConfig } from "@/config/env.config"; // import cấu hình môi trường để lấy URL BE
+import { envConfig } from "@/src/config/env.config"; // import cấu hình môi trường để lấy URL BE
 import { ApiResponse } from "@/types/response/base.response";
 import { HttpStatusCode } from "axios"; // dùng enum status code để so sánh HTTP status
 import { cookies } from "next/headers"; // lấy cookies server-side từ Next
