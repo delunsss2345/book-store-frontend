@@ -4,7 +4,7 @@ import { OrderStatus } from "@/constants/enums/order";
 import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
 import { Separator } from "@/src/components/ui/separator";
-import type { OrderSummary } @/src/constants / enums / orderorder.response";
+import { OrderSummary } from "@/src/types/response/order.response";
 import { ArrowUpRight, ChevronRight, Package } from "lucide-react";
 
 type OrderCardProps = {
