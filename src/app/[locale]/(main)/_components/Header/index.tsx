@@ -20,64 +20,65 @@ import ProfileButton from "./ProfileButton";
 import SearchBar from "./Search";
 import SettingsTranslation from "./SettingTranslation";
 import { WishlistHeader } from "./WishlistHeader";
+import { useLocale, useTranslations } from "next-intl";
 
 const Header = () => {
   const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const locale = useLocale();
+  const t = useTranslations();
 
   return (
-    <header
-      className="sticky top-0 z-50 w-full border-b border-zinc-100 bg-white"
-      style={{
-        paddingLeft: "var(--container-px)",
-        paddingRight: "var(--container-px)",
-      }}
-    >
-      <div className="mx-auto flex h-16 w-full items-center justify-between gap-6">
+    <header className="sticky top-0 z-20 border-b border-line bg-surface/95 backdrop-blur">
+      <div className="flex h-16 items-center justify-between gap-6 px-6 lg:px-10">
         <div className="flex-1">
           {isMobile ? (
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
-                <button className="-ml-2 rounded-full p-2 transition-colors hover:bg-zinc-50">
+                <button className="-ml-2 rounded-full p-2 text-ink transition-colors hover:bg-paper">
                   <Menu size={24} strokeWidth={1.5} />
                 </button>
               </SheetTrigger>
 
               <SheetContent side="left" className="w-[300px] p-0 sm:w-[400px]">
-                <SheetHeader className="border-b p-6 text-left">
-                  <SheetTitle className="text-2xl font-black tracking-tighter">
-                    TASCHEN
+                <SheetHeader className="border-b border-line p-6 text-left">
+                  <SheetTitle className="text-[24px] font-black tracking-tightest">
+                    Velora
                   </SheetTitle>
                 </SheetHeader>
 
                 <div className="flex flex-col py-4">
                   <MobileNavLink
-                    href="/books"
-                    label="Books"
+                    href={`/${locale}/books`}
+                    label={t("header.nav.books") || "Books"}
                     onClick={() => setOpen(false)}
                   />
 
                   <MobileNavLink
-                    href="/orders"
-                    label="Orders"
+                    href={`/${locale}/orders`}
+                    label={t("profile.header.menu.orders") || "Orders"}
                     onClick={() => setOpen(false)}
                   />
 
-                  <div className="mt-8 flex flex-col gap-6 border-t border-zinc-100 px-6 pt-8">
+                  <div className="mt-8 flex flex-col gap-6 border-t border-line px-6 pt-8">
                     <div className="flex items-center gap-4">
                       <SearchBar />
-                      <span className="text-sm font-medium">Search</span>
+                      <span className="text-[13px] font-medium text-ink">
+                        {t("header.mobile.search") || "Search"}
+                      </span>
                     </div>
                     <div className="flex items-center gap-4">
                       <SettingsTranslation />
-                      <span className="text-sm font-medium">
-                        Language / Currency
+                      <span className="text-[13px] font-medium text-ink">
+                        {t("header.mobile.language") || "Language / Currency"}
                       </span>
                     </div>
                     <div className="flex items-center gap-4">
                       <ProfileButton />
-                      <span className="text-sm font-medium">My Account</span>
+                      <span className="text-[13px] font-medium text-ink">
+                        {t("header.mobile.account") || "My Account"}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -88,31 +89,29 @@ const Header = () => {
           )}
         </div>
 
-        <div className="flex-none">
-          <Link
-            href="/"
-            className="text-2xl font-black tracking-tighter md:text-3xl"
-          >
-            TASCHEN
-          </Link>
-        </div>
+        <Link
+          href={`/${locale}`}
+          className="text-[24px] font-black tracking-tightest md:text-[26px] flex-none text-ink"
+        >
+          Velora
+        </Link>
 
-        <div className="flex flex-1 items-center justify-end gap-1 md:gap-3">
+        <div className="flex flex-1 items-center justify-end gap-0.5">
           {!isMobile && (
-            <div className="flex items-center gap-2">
+            <>
               <SearchBar />
               <SettingsTranslation />
               <ProfileButton />
               <NotificationDropdown />
               <button
                 type="button"
-                onClick={() => router.push("/orders")}
-                className="rounded-full p-2 transition-colors hover:bg-zinc-50"
+                onClick={() => router.push(`/${locale}/orders`)}
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full text-ink transition hover:bg-paper"
                 aria-label="Orders"
               >
-                <Package size={20} strokeWidth={1.5} />
+                <Package size={18} strokeWidth={1.5} />
               </button>
-            </div>
+            </>
           )}
 
           <WishlistHeader />

@@ -17,7 +17,7 @@ export function LoadingLazy() {
               fontStretch: "70%", // Ép chữ hẹp lại hơn nữa cho vibe "condensed luxury"
             }}
           >
-            TASCHEN
+            Velora
           </h1>
 
           {/* HIỆU ỨNG MỚI: Dải sáng quét sắc nét lộ chữ (Revealing Shine) */}
@@ -40,7 +40,7 @@ export function LoadingLazy() {
               backgroundSize: "200% 100%",
             }}
           >
-            TASCHEN
+            Velora
           </div>
         </div>
 

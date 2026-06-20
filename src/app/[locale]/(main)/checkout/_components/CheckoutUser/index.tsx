@@ -100,22 +100,20 @@ export default function CheckoutUser() {
         <section className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <MapPin className="h-5 w-5 text-zinc-800" />
-              <h3 className="text-lg font-bold">
+              <MapPin className="h-5 w-5 text-ink" />
+              <h3 className="text-[17px] font-bold">
                 {t("checkout.shippingTitle")}
               </h3>
             </div>
 
-            <Button
+            <button
               onClick={() => onOpen(ModalType.CREATE_ADDRESS)}
               type="button"
-              variant="ghost"
-              size="sm"
-              className="h-8 font-semibold text-blue-600 hover:text-blue-700"
+              className="inline-flex h-8 items-center gap-1 text-[13px] font-semibold text-accent hover:text-accent/80"
             >
-              <Plus className="mr-1 h-4 w-4" />
+              <Plus className="h-4 w-4" />
               {t("checkout.addNewAddress")}
-            </Button>
+            </button>
           </div>
 
           {addresses && addresses.length > 0 ? (
@@ -129,8 +127,8 @@ export default function CheckoutUser() {
                     onValueChange={(value) => field.onChange(Number(value))}
                   >
                     <FormControl>
-                      <SelectTrigger className="flex h-auto w-full items-center justify-between rounded-2xl border-2 border-zinc-900 bg-white px-5 py-10 text-left shadow-sm transition-all">
-                        <SelectValue className="black" />
+                      <SelectTrigger className="flex h-auto w-full items-center justify-between rounded-2xl border-2 border-ink bg-surface px-5 py-6 text-left transition-all">
+                        <SelectValue className="text-ink" />
                       </SelectTrigger>
                     </FormControl>
 
@@ -170,20 +168,25 @@ export default function CheckoutUser() {
 
         <ShippingMethodCard />
 
-        <FormField
-          control={form.control}
-          name="paymentGateway"
-          render={() => (
-            <FormItem>
-              <PaymentCheckout />
-            </FormItem>
-          )}
-        />
+        <section className="space-y-4">
+          <h3 className="text-[17px] font-bold">
+            {t("checkout.paymentTitle")}
+          </h3>
+          <FormField
+            control={form.control}
+            name="paymentGateway"
+            render={() => (
+              <FormItem>
+                <PaymentCheckout />
+              </FormItem>
+            )}
+          />
+        </section>
 
         <CheckoutFooter
-          buttonText={t("checkout.placeOrder")}
-          secureText={t("checkout.secureTextHigh")}
-          buttonClassName="h-16 w-full rounded-2xl bg-zinc-900 text-lg font-bold text-white shadow-xl shadow-zinc-200 transition-all hover:-translate-y-0.5 hover:bg-zinc-800 active:translate-y-0"
+          buttonText="Place order now"
+          secureText="Payment security follows international standards"
+          buttonClassName="btn-ink h-16 w-full rounded-2xl text-[17px] shadow-xl shadow-line-2/50"
           disabled={isCreatingOrder}
         />
       </form>

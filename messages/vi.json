@@ -47,6 +47,13 @@
     }
   },
   "home": {
+    "newAndTrending": "Mới và nổi bật",
+    "handpicked": "Được tuyển chọn cho bộ sưu tập của bạn",
+    "empty": "Các kệ sách hiện đang được bổ sung.",
+    "error": {
+      "fetch": "Đã xảy ra lỗi khi tải danh sách sách.",
+      "tryAgain": "Thử lại"
+    },
     "items": {
       "1": {
         "title": "Hokusai.",
@@ -77,7 +84,7 @@
   },
   "quote": {
     "sectionLabel": "Trang sức giả",
-    "textStart": "\"Đừng tiết kiệm - hãy thật lớn: những món trang sức mát mẻ nhất của thế kỷ 20. TASCHEN đã xuất bản một tập sách minh họa nặng chín pound về chủ đề: ",
+    "textStart": "\"Đừng tiết kiệm - hãy thật lớn: những món trang sức mát mẻ nhất của thế kỷ 20. Velora đã xuất bản một tập sách minh họa nặng chín pound về chủ đề: ",
     "textEm": "Trang sức giả",
     "textEnd": ".\"",
     "cite": "Stern",
@@ -86,8 +93,8 @@
     "productPrice": "US$ 125"
   },
   "footer": {
-    "tagline": "TASCHEN. Sách cho những người lạc quan từ 1980",
-    "description": "TASCHEN là nhà xuất bản sách nghệ thuật hàng đầu thế giới, đặt trụ sở tại Cologne với các đội ngũ ở Berlin, Brussels, Hong Kong, London, Los Angeles, Madrid, Miami, Milan, New York, Paris và Tokyo. Hơn 40 năm qua, chúng tôi có sứ mệnh xuất bản những cuốn sách minh họa đổi mới về nghệ thuật, kiến trúc, thiết kế, thời trang, điện ảnh, lối sống, du lịch, nhiếp ảnh và văn hóa đại chúng và đưa chúng đến với thế giới. Chúng tôi mong muốn trở nên bao hàm, độc lập, truyền cảm hứng.",
+    "tagline": "Velora. Sách cho những người lạc quan từ 1980",
+    "description": "Velora là nhà xuất bản sách nghệ thuật hàng đầu thế giới, đặt trụ sở tại Cologne với các đội ngũ ở Berlin, Brussels, Hong Kong, London, Los Angeles, Madrid, Miami, Milan, New York, Paris và Tokyo. Hơn 40 năm qua, chúng tôi có sứ mệnh xuất bản những cuốn sách minh họa đổi mới về nghệ thuật, kiến trúc, thiết kế, thời trang, điện ảnh, lối sống, du lịch, nhiếp ảnh và văn hóa đại chúng và đưa chúng đến với thế giới. Chúng tôi mong muốn trở nên bao hàm, độc lập, truyền cảm hứng.",
     "connectTitle": "Kết nối",
     "companyTitle": "Công ty",
     "customerTitle": "Thông tin khách hàng",
@@ -118,12 +125,12 @@
         "customerService": "Dịch vụ khách hàng",
         "shippingReturns": "Vận chuyển & Đổi trả",
         "trackOrder": "Theo dõi đơn hàng",
-        "becomeReseller": "Trở thành đại lý TASCHEN",
+        "becomeReseller": "Trở thành đại lý Velora",
         "corporateDeals": "Ưu đãi doanh nghiệp",
         "b2bAccess": "Truy cập cửa hàng B2B"
       }
     },
-    "copyright": "© {year} - TASCHEN GmbH, Hohenzollernring 53, D-50672 Cologne"
+    "copyright": "© {year} - Velora GmbH, Hohenzollernring 53, D-50672 Cologne"
   },
   "profile": {
     "header": {
@@ -131,6 +138,7 @@
       "account": "Tài khoản",
       "myAccount": "Tài khoản của tôi",
       "manageSettings": "Quản lý cài đặt",
+      "sessions": "Phiên đăng nhập",
       "menu": {
         "profile": "Hồ sơ",
         "orders": "Đơn hàng",
@@ -152,7 +160,7 @@
       "contactInformation": "Thông tin liên hệ"
     },
     "footer": {
-      "copyright": "© {year} TASCHEN"
+      "copyright": "© {year} Velora"
     },
     "page": {
       "title": "Hồ sơ của tôi",
@@ -198,6 +206,19 @@
         "OFFICE": "Văn phòng",
         "OTHER": "Khác"
       }
+    },
+    "session": {
+      "title": "Phiên đăng nhập",
+      "description": "Quản lý các phiên đăng nhập và thiết bị của bạn.",
+      "signOutAll": "Đăng xuất khỏi tất cả các phiên khác",
+      "activeSessions": "Phiên đang hoạt động",
+      "warning": "Nếu bạn không nhận ra một thiết bị, bạn nên đăng xuất ngay lập tức và thay đổi mật khẩu của mình.",
+      "thisDevice": "Thiết bị này",
+      "current": "Phiên hiện tại",
+      "activeNow": "Đang hoạt động",
+      "otherSessions": "Các phiên khác",
+      "lastActive": "Hoạt động lần cuối",
+      "signOut": "Đăng xuất"
     }
   },
   "dashboard": {
@@ -488,6 +509,15 @@
     }
   },
   "auth": {
+    "brand": {
+      "eyebrow": "Sách cho những người lạc quan · Từ 1980",
+      "loginTitle": "Mang nghệ thuật thế giới về nhà.",
+      "loginDescription": "Những cuốn sách minh họa đổi mới về nghệ thuật, kiến trúc, thiết kế, nhiếp ảnh và văn hóa đại chúng — được tuyển chọn cho những người sành điệu hiện đại.",
+      "registerQuote": "\"Những món trang sức tuyệt vời nhất của thế kỷ 20.\"",
+      "registerCite": "— Stern, về Trang sức giả"
+    },
+    "join": "Tham gia Velora",
+    "welcomeBack": "Chào mừng trở lại",
     "emailLabel": "Email",
     "emailPlaceholder": "Email",
     "passwordLabel": "Mật khẩu",
@@ -790,6 +820,31 @@
         "delete": "Xóa",
         "deleteConfirm": "Xóa ghi chú?"
       }
+    }
+  },
+  "catalog": {
+    "title": "Tất cả Tựa sách",
+    "home": "Trang chủ",
+    "books": "Sách ({count} sản phẩm)",
+    "sortAndFilter": "Sắp xếp & Lọc",
+    "sortBy": "Sắp xếp theo",
+    "themes": "Chủ đề",
+    "price": "Giá",
+    "height": "Chiều cao",
+    "applyFilters": "Áp dụng",
+    "priceRanges": {
+      "all": "Tất cả",
+      "under50": "Dưới US$ 50",
+      "50to100": "US$ 50 đến US$ 100",
+      "100to500": "US$ 100 đến US$ 500",
+      "over500": "Trên US$ 500"
+    },
+    "sortOptions": {
+      "bestSelling": "Bán chạy nhất",
+      "priceLowToHigh": "Giá, từ thấp đến cao",
+      "priceHighToLow": "Giá, từ cao đến thấp",
+      "titleAZ": "Tiêu đề, A-Z",
+      "titleZA": "Tiêu đề, Z-A"
     }
   }
 }

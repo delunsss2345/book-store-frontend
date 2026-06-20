@@ -1,47 +1,33 @@
-import { Button } from "@/src/components/ui/button";
-import { CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card";
-import { Plus, X } from "lucide-react";
+"use client";
+import { Plus } from "lucide-react";
+import { ModalType, useModalStore } from "@/features/modal";
 
 interface AddressHeaderProps {
   t: any;
-  isAddingAddress: boolean;
-  onToggle: () => void;
 }
 
-export const AddressHeader = ({
-  t,
-  isAddingAddress,
-  onToggle,
-}: AddressHeaderProps) => {
+export const AddressHeader = ({ t }: AddressHeaderProps) => {
+  const { onOpen } = useModalStore();
+
   return (
-    <CardHeader className="gap-4 border-b pb-6 sm:flex sm:flex-row sm:items-start sm:justify-between">
-      <div className="space-y-1">
-        <CardTitle className="text-base">
+    <div className="flex flex-col sm:flex-row items-start justify-between gap-4 border-b border-line p-6">
+      <div>
+        <h3 className="text-[15px] font-semibold text-ink">
           {t("profile.page.addressesTitle")}
-        </CardTitle>
-        <CardDescription>
+        </h3>
+        <p className="mt-1 text-[13px] text-ink-3">
           {t("profile.page.addressesDescription")}
-        </CardDescription>
+        </p>
       </div>
 
-      <Button
+      <button
         type="button"
-        variant={isAddingAddress ? "outline" : "default"}
-        onClick={onToggle}
-        className="shrink-0"
+        onClick={() => onOpen(ModalType.CREATE_ADDRESS)}
+        className="btn-ink h-9 gap-2 rounded-lg px-4 text-[13px] flex items-center justify-center shrink-0"
       >
-        {isAddingAddress ? (
-          <>
-            <X className="mr-2 h-4 w-4" />
-            {t("profile.page.hideAddressForm")}
-          </>
-        ) : (
-          <>
-            <Plus className="mr-2 h-4 w-4" />
-            {t("profile.page.addAddress")}
-          </>
-        )}
-      </Button>
-    </CardHeader>
+        <Plus className="mr-1 h-4 w-4" />
+        {t("profile.page.addAddress")}
+      </button>
+    </div>
   );
 };

@@ -2,36 +2,34 @@
 
 import { ShipFee } from "@/src/constants/enums/order";
 import { fmt } from "@/utils/format-number-vi";
-import { Truck } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 export function ShippingMethodCard() {
   const t = useTranslations();
 
   return (
-    <section className="space-y-2">
-      <div className="flex items-center gap-2">
-        <Truck className="h-5 w-5 text-zinc-800" />
-        <h3 className="text-lg font-bold">
-          {t("checkout.shippingMethod.title")}
-        </h3>
-      </div>
+    <section className="space-y-3">
+      <h3 className="text-[17px] font-bold">
+        {t("checkout.shippingMethod.title")}
+      </h3>
 
-      <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
+      <div className="flex items-center justify-between rounded-2xl border-2 border-ink bg-surface px-5 py-4">
         <div className="flex items-center gap-3">
-          <div className="h-2 w-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
+          <span className="flex h-5 w-5 items-center justify-center rounded-full border-2 border-ink">
+            <span className="h-2.5 w-2.5 rounded-full bg-ink"></span>
+          </span>
           <div>
-            <p className="text-sm font-semibold text-zinc-900">
+            <p className="text-[14px] font-semibold">
               {t("checkout.shippingMethod.homeDelivery")}
             </p>
-            <p className="text-xs text-zinc-500">
+            <p className="text-[12px] text-ink-3">
               {t("checkout.shippingMethod.eta")}
             </p>
           </div>
         </div>
 
-        <span className="text-sm font-bold uppercase text-green-600">
-          {fmt(ShipFee)}
+        <span className="text-[13px] font-bold text-ok">
+          {ShipFee === 0 ? "Free" : fmt(ShipFee)}
         </span>
       </div>
     </section>

@@ -120,3 +120,17 @@ export type AdminOrderDetails = {
 };
 
 export type AdminOrderDetailResponse = ApiResponse<AdminOrderDetails>;
+
+export type AdminBook = {
+  id: string;
+  coverImageUrl?: string | null;
+  translation: any;
+  pageCount?: number | null;
+  isActive?: boolean;
+};
+
+export type AdminBookListResponse = {
+  data: {
+    items: AdminBook[];
+  };
+};

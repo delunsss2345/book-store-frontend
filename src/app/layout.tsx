@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Fraunces, Inter } from "next/font/google";
 
-import { Suspense } from "react";
 import "./globals.css";
-import Providers from "./providers";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   subsets: ["latin"],
+  style: ["normal", "italic"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -27,15 +28,9 @@ export default function RootLayout({
 }>) {
   return (
     <html>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Providers>
-          <Suspense>
-            {children}
-          </Suspense>
-          <div id="modal-layer"></div>
-        </Providers>
+      <body className={`${fraunces.variable} ${inter.variable} antialiased`}>
+        {children}
+        <div id="modal-layer"></div>
       </body>
     </html>
   );

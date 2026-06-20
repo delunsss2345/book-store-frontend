@@ -19,7 +19,7 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="relative hidden w-90 items-center md:flex">
+    <div className="relative hidden w-64 items-center md:flex">
       <Input
         value={text}
         onChange={(e) => setText(e.target.value)}
@@ -29,14 +29,14 @@ const SearchBar = () => {
             handleSubmit();
           }
         }}
-        className="h-10 rounded-md pr-10 text-sm"
+        className="h-9 rounded-full border-line bg-surface px-4 pr-10 text-[13px] text-ink placeholder:text-ink-3 focus-visible:ring-1 focus-visible:ring-ink/20"
         placeholder={t("header.searchPlaceholder")}
       />
 
       <button
         onClick={handleSubmit}
         type="button"
-        className="absolute right-2 inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-muted"
+        className="absolute right-1 inline-flex h-7 w-7 items-center justify-center rounded-full text-ink transition hover:bg-paper"
         aria-label={t("header.aria.searchButton")}
       >
         <Search className="h-4 w-4" />

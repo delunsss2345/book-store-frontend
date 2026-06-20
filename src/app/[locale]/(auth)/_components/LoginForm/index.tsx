@@ -5,7 +5,6 @@ import { z } from "zod";
 
 import useTranslator from "@/hooks/use-translator";
 import { FormMessageI18n } from "@/src/components/common/FormMessageI18n";
-import { Button } from "@/src/components/ui/button";
 import {
   Form,
   FormControl,
@@ -14,6 +13,9 @@ import {
   FormLabel,
 } from "@/src/components/ui/form";
 import { Input } from "@/src/components/ui/input";
+import Link from "next/link";
+import { useLocale } from "next-intl";
+import { Loader2 } from "lucide-react";
 
 type TranslatorFn = ReturnType<typeof useTranslator>["t"];
 
@@ -32,6 +34,7 @@ type LoginFormProps = {
 
 const LoginForm = ({ isLoading, onSubmit }: LoginFormProps) => {
   const { t } = useTranslator();
+  const locale = useLocale();
   const loginSchema = React.useMemo(() => getLoginSchema(t), [t]);
   const form = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
@@ -51,12 +54,13 @@ const LoginForm = ({ isLoading, onSubmit }: LoginFormProps) => {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t("auth.emailLabel")}</FormLabel>
+              <FormLabel className="flabel">{t("auth.emailLabel")}</FormLabel>
               <FormControl>
                 <Input
                   type="email"
                   placeholder={t("auth.emailPlaceholder")}
                   autoComplete="email"
+                  className="field"
                   {...field}
                 />
               </FormControl>
@@ -70,12 +74,13 @@ const LoginForm = ({ isLoading, onSubmit }: LoginFormProps) => {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t("auth.passwordLabel")}</FormLabel>
+              <FormLabel className="flabel">{t("auth.passwordLabel")}</FormLabel>
               <FormControl>
                 <Input
                   type="password"
                   placeholder={t("auth.passwordPlaceholder")}
                   autoComplete="current-password"
+                  className="field"
                   {...field}
                 />
               </FormControl>
@@ -84,10 +89,23 @@ const LoginForm = ({ isLoading, onSubmit }: LoginFormProps) => {
           )}
         />
 
-        <Button type="submit" className="w-full cursor-pointer" disabled={isLoading}>
-          {isLoading ? t("auth.loginLoading") : t("auth.signIn")}
-        </Button>
+        <div className="flex justify-end">
+          <Link
+            href={`/${locale}/forgot-password`}
+            className="text-[13px] font-medium text-ink-3 underline-offset-4 hover:text-accent hover:underline"
+          >
+            {t("auth.forgotLink")}
+          </Link>
+        </div>
 
+        <button
+          type="submit"
+          className="btn-ink h-11 w-full rounded-lg text-[14px]"
+          disabled={isLoading}
+        >
+          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {isLoading ? t("auth.loginLoading") : t("auth.signIn")}
+        </button>
       </form>
     </Form>
   );

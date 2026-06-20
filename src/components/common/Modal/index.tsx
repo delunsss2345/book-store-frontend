@@ -40,13 +40,15 @@ export function ModalHost() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
-              className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-white dark:bg-slate-950 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 custom-scrollbar"
+              className={`relative w-full max-h-[90vh] overflow-y-auto bg-surface rounded-2xl shadow-2xl border border-line custom-scrollbar ${
+                type === ModalType.CREATE_ADDRESS ? "max-w-lg" : "max-w-3xl"
+              }`}
             >
               <button
                 onClick={onClose}
-                className="absolute right-4 top-4 z-10 p-2 rounded-full bg-slate-100/50 dark:bg-slate-800/50 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors group"
+                className="absolute right-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-md text-ink-3 transition hover:bg-paper"
               >
-                <X className="w-5 h-5 text-slate-500 group-hover:text-slate-900 dark:group-hover:text-slate-100" />
+                <X className="w-4 h-4" />
               </button>
 
               <div className="p-6 md:p-8">

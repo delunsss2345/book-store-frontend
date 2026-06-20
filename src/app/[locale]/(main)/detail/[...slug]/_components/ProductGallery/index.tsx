@@ -9,12 +9,12 @@ export function ProductGallery({
 }) {
   return (
     <section className="lg:col-span-5">
-      <div className=" flex flex-col-reverse gap-4 md:flex-row">
+      <div className="flex flex-col-reverse gap-4 md:flex-row">
         <div className="flex flex-row gap-3 overflow-x-auto pb-2 md:w-20 md:flex-col md:overflow-y-visible md:pb-0">
           {[1, 2, 3].map((i) => (
             <button
               key={i}
-              className="relative aspect-[3/4] w-16 flex-shrink-0 overflow-hidden rounded-md border border-neutral-200 transition-all hover:border-black md:w-full"
+              className="relative aspect-[3/4] w-16 flex-shrink-0 overflow-hidden rounded-md border border-line transition-all hover:border-ink md:w-full"
             >
               {coverImageUrl && (
                 <Image
@@ -28,11 +28,10 @@ export function ProductGallery({
           ))}
         </div>
 
-        {/* Ảnh chính - Thêm max-h để không quá cao trên màn hình lớn */}
         <div className="relative flex-1">
-          <div className="relative aspect-[3/4] w-full max-w-[450px] mx-auto overflow-hidden rounded-xl bg-[#fdfdfd] shadow-2xl shadow-neutral-200/50">
+          <div className="relative mx-auto aspect-[3/4] w-full max-w-[440px] overflow-hidden rounded-xl bg-paper p-6 shadow-2xl shadow-line-2/40 md:p-10">
             {coverImageUrl ? (
-              <div className="relative h-full w-full p-4 md:p-10">
+              <div className="relative h-full w-full">
                 <Image
                   src={coverImageUrl}
                   alt={title}
@@ -43,7 +42,7 @@ export function ProductGallery({
                 />
               </div>
             ) : (
-              <div className="h-full w-full bg-neutral-100 animate-pulse" />
+              <div className="h-full w-full bg-surface animate-pulse" />
             )}
           </div>
         </div>

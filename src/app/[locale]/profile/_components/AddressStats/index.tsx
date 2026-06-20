@@ -1,11 +1,3 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/src/components/ui/card";
-
 interface AddressStatsProps {
   totalAddresses: number;
   defaultAddress: any; // Thay bằng type Address của bạn
@@ -20,41 +12,38 @@ export const AddressStats = ({
   t,
 }: AddressStatsProps) => {
   return (
-    <Card className="border-border/70">
-      <CardHeader>
-        <CardTitle className="text-base">
-          {t("profile.page.addressStatsTitle")}
-        </CardTitle>
-        <CardDescription>
-          {t("profile.page.addressStatsDescription")}
-        </CardDescription>
-      </CardHeader>
+    <div className="card p-6">
+      <h3 className="text-[15px] font-semibold">
+        {t("profile.page.addressStatsTitle")}
+      </h3>
+      <p className="mt-1 text-[13px] text-ink-3">
+        {t("profile.page.addressStatsDescription")}
+      </p>
 
-      <CardContent className="space-y-4">
+      <div className="mt-4 space-y-4">
         {/* Total Addresses */}
-        <div className="rounded-lg border bg-background p-4">
-          <p className="text-sm text-muted-foreground">
+        <div className="rounded-lg border border-line bg-paper/50 p-4">
+          <p className="text-[13px] text-ink-3">
             {t("profile.page.totalAddresses")}
           </p>
-          <p className="mt-2 text-2xl font-semibold">{totalAddresses}</p>
+          <p className="display mt-2 text-[26px] font-semibold">{totalAddresses}</p>
         </div>
 
         {/* Default Address Summary */}
-        <div className="rounded-lg border bg-background p-4">
-          <p className="text-sm text-muted-foreground">
+        <div className="rounded-lg border border-line bg-paper/50 p-4">
+          <p className="text-[13px] text-ink-3">
             {t("profile.page.defaultAddress")}
           </p>
-          <p className="mt-2 text-sm font-medium">
-            {defaultAddress?.recipientName ||
-              t("profile.page.noneDefaultAddress")}
+          <p className="mt-2 text-[14px] font-medium text-ink">
+            {defaultAddress?.recipientName || t("profile.page.noneDefaultAddress")}
           </p>
           {defaultAddress && (
-            <p className="mt-1 text-xs text-muted-foreground">
+            <p className="mt-1 text-[12px] text-ink-3">
               {formatAddress(defaultAddress)}
             </p>
           )}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };

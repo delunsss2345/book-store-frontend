@@ -1,14 +1,6 @@
 "use client";
 
 import BooksGridSkeletonCard from "@/src/app/[locale]/(main)/books/_components/BookGridSkeleton";
-import { Button } from "@/src/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/src/components/ui/sheet";
 import { useBooksQuery } from "@/features/catalog/hooks/use-books.mutation";
 import {
   selectorBooksLimit,
@@ -22,17 +14,20 @@ import { useCatalogStore } from "@/features/catalog/store/catalog.store";
 import { SlidersHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useLocale } from "next-intl";
 import { useEffect, useState } from "react";
 import BookCard from "../_components/BookCard";
 import { BooksPagination } from "./_components/BooksPagiantion";
 import { FilterContent } from "./_components/FilterContent";
 import { sortOptions } from "./_components/filter.data";
 
+import useTranslator from "@/hooks/use-translator";
+
 export default function AllTitlesPage() {
+  const { t } = useTranslator();
   const [sortOpen, setSortOpen] = useState(false);
   const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
   const [selectedPrice, setSelectedPrice] = useState("All Prices");
-  const [showStickyBtn, setShowStickyBtn] = useState(false);
   const booksPage = useCatalogStore(selectorBooksPage);
   const booksLimit = useCatalogStore(selectorBooksLimit);
   const booksTotal = useCatalogStore(selectorBooksTotal);
@@ -41,20 +36,13 @@ export default function AllTitlesPage() {
   const setBooksMeta = useCatalogStore(selectorSetBooksMeta);
   const slugCategory = useSearchParams().get("search");
   const keyword = useSearchParams().get("keyword");
+  const locale = useLocale();
   const { data: bookList, isPending } = useBooksQuery({
     page: booksPage,
     limit: booksLimit,
     ...(slugCategory && { slugCategory }),
     ...(keyword && { keyword }),
   });
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowStickyBtn(window.scrollY > 300);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   useEffect(() => {
     if (bookList) {
@@ -79,94 +67,68 @@ export default function AllTitlesPage() {
   const books = bookList?.items ?? [];
 
   return (
-    <div className="container-main w-full pb-16">
-      {/* Breadcrumb */}
-      <div className="flex items-center gap-2 py-4 text-xs text-zinc-500">
-        <Link href="/" className="hover:text-zinc-900">
-          Home
-        </Link>
-        <span>/</span>
-        <span className="text-zinc-700">Books ({booksTotal} Items)</span>
-      </div>
+    <div className="relative bg-paper w-full min-h-screen">
+      <div className="mx-auto ">
+        <div className="grid grid-cols-1 gap-0 lg:grid-cols-[300px_1fr]">
+          {/* Sidebar Filter */}
+          <FilterContent {...filterProps} />
 
-      {/* Header row */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-lg font-bold tracking-tight">All Titles</h1>
+          {/* Main Grid Area */}
+          <div className="px-6 py-7 lg:px-10">
+            {/* Breadcrumb */}
+            <div className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-ink-3">
+              <Link href={`/${locale}`} className="hover:text-ink">
+                {t("catalog.home")}
+              </Link>
+              <span>/</span>
+              <span className="text-ink-2">{t("catalog.books", { count: booksTotal })}</span>
+            </div>
 
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button
-              variant="default"
-              className="gap-2 rounded-none bg-zinc-900 px-5 text-xs uppercase tracking-wider text-white hover:bg-zinc-800"
-            >
-              <SlidersHorizontal className="h-4 w-4" />
-              Sort and Filter
-            </Button>
-          </SheetTrigger>
+            {/* Header row */}
+            <div className="mt-3 flex items-center justify-between">
+              <h1 className="display text-[26px] font-semibold tracking-tight text-ink">
+                {t("catalog.title")}
+              </h1>
 
-          <SheetContent side="right" className="w-[360px] overflow-y-auto p-0">
-            <SheetHeader className="border-b px-6 py-4">
-              <SheetTitle className="text-sm font-bold">
-                Sort and Filter
-              </SheetTitle>
-            </SheetHeader>
-            <FilterContent {...filterProps} />
-          </SheetContent>
-        </Sheet>
-      </div>
+              {/* Mobile Filter Button */}
+              <button className="btn-ink h-9 flex items-center justify-center gap-2 rounded-none px-4 text-[11px] uppercase tracking-wider lg:hidden">
+                <SlidersHorizontal className="h-4 w-4" />
+                {t("catalog.sortAndFilter")}
+              </button>
+            </div>
 
-      {/* Book grid */}
-      <div className="mt-8">
-        <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 lg:grid-cols-4 bg-transparent">
-          {isPending
-            ? Array.from({ length: 12 }).map((_, index) => (
-              <BooksGridSkeletonCard key={`books-skeleton-${index}`} />
-            ))
-            : books.map((book) => (
-              <BookCard
-                key={book.id}
-                title={book.title}
-                subtitle={book.title}
-                price={Number(book.price ?? 0)}
-                bookVariantId={Number(book.bookVariantId ?? 0)}
-                currency={book.currencyCode ?? "VND"}
-                imageUrl={book.coverImageUrl ?? undefined}
-                href={`/detail/${book.slug ?? book.id}`}
-                variant="compact"
+            {/* Book grid */}
+            <div className="mt-7 grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-3 xl:grid-cols-4">
+              {isPending
+                ? Array.from({ length: 12 }).map((_, index) => (
+                    <BooksGridSkeletonCard key={`books-skeleton-${index}`} />
+                  ))
+                : books.map((book) => (
+                    <BookCard
+                      key={book.id}
+                      title={book.title}
+                      subtitle={book.title}
+                      price={Number(book.price ?? 0)}
+                      bookVariantId={Number(book.bookVariantId ?? 0)}
+                      currency={book.currencyCode ?? "VND"}
+                      imageUrl={book.coverImageUrl ?? undefined}
+                      href={`/${locale}/detail/${book.slug ?? book.id}`}
+                      variant="compact"
+                    />
+                  ))}
+            </div>
+
+            {/* Pagination */}
+            <div className="mt-12">
+              <BooksPagination
+                page={booksPage}
+                totalPages={booksTotalPages}
+                onPageChange={setBooksPage}
               />
-            ))}
+            </div>
+          </div>
         </div>
-
-        {/* Pagination */}
-        <BooksPagination
-          page={booksPage}
-          totalPages={booksTotalPages}
-          onPageChange={setBooksPage}
-        />
       </div>
-
-      {/* Sticky floating filter button — appears on scroll */}
-      {showStickyBtn && (
-        <Sheet>
-          <SheetTrigger asChild>
-            <button
-              className="fixed bottom-8 right-8 z-40 flex h-14 w-14 items-center justify-center rounded border border-zinc-200 bg-white shadow-lg transition-transform hover:scale-105"
-              aria-label="Sort and Filter"
-            >
-              <SlidersHorizontal className="h-5 w-5 text-zinc-700" />
-            </button>
-          </SheetTrigger>
-
-          <SheetContent side="right" className="w-[360px] overflow-y-auto p-0">
-            <SheetHeader className="border-b px-6 py-4">
-              <SheetTitle className="text-sm font-bold">
-                Sort and Filter
-              </SheetTitle>
-            </SheetHeader>
-            <FilterContent {...filterProps} />
-          </SheetContent>
-        </Sheet>
-      )}
     </div>
   );
 }

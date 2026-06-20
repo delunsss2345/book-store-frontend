@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, LogOut, Package, Settings, User } from "lucide-react";
+import { ChevronDown, LogOut, Package, Settings, User, Laptop } from "lucide-react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -41,10 +41,10 @@ const Header = () => {
         {/* Left Side: Logo & Main Nav */}
         <div className="flex items-center gap-8">
           <Link
-            href="/"
+            href={`/${locale}`}
             className="text-xl font-bold tracking-tighter hover:opacity-80 transition-opacity"
           >
-            TASCHEN
+            Velora
           </Link>
 
           <nav className="hidden md:flex items-center gap-6">
@@ -60,6 +60,12 @@ const Header = () => {
             >
               {t("profile.header.orderHistory")}
             </Link>
+            <Link
+              href={`/${locale}/profile/settings/session`}
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {t("profile.header.sessions") || "Sessions & Devices"}
+            </Link>
           </nav>
         </div>
 
@@ -69,7 +75,7 @@ const Header = () => {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="relative h-10 w-full justify-start gap-2 px-2 hover:bg-accent"
+                className="relative h-10 w-full justify-start gap-2 px-2 hover:bg-muted"
               >
                 <div className="flex h-7 w-7 items-center justify-center rounded-full bg-muted">
                   <User className="h-4 w-4" />
@@ -95,23 +101,30 @@ const Header = () => {
               <DropdownMenuSeparator />
 
               <DropdownMenuItem asChild className="cursor-pointer">
-                <Link href="/profile" className="flex w-full items-center">
+                <Link href={`/${locale}/profile`} className="flex w-full items-center">
                   <Settings className="mr-2 h-4 w-4" />
                   <span>{t("profile.header.menu.profile")}</span>
                 </Link>
               </DropdownMenuItem>
 
               <DropdownMenuItem asChild className="cursor-pointer">
-                <Link href="/profile/library" className="flex w-full items-center">
+                <Link href={`/${locale}/profile/library`} className="flex w-full items-center">
                   <Package className="mr-2 h-4 w-4" />
                   <span>{t("library.header.nav")}</span>
                 </Link>
               </DropdownMenuItem>
 
               <DropdownMenuItem asChild className="cursor-pointer">
-                <Link href="/orders" className="flex w-full items-center">
+                <Link href={`/${locale}/orders`} className="flex w-full items-center">
                   <Package className="mr-2 h-4 w-4" />
                   <span>{t("profile.header.menu.orders")}</span>
+                </Link>
+              </DropdownMenuItem>
+              
+              <DropdownMenuItem asChild className="cursor-pointer">
+                <Link href={`/${locale}/profile/settings/session`} className="flex w-full items-center">
+                  <Laptop className="mr-2 h-4 w-4" />
+                  <span>{t("profile.header.sessions") || "Sessions"}</span>
                 </Link>
               </DropdownMenuItem>
 

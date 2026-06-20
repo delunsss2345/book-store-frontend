@@ -17,10 +17,10 @@ export function OrderSummary({ cart, subtotal }: OrderSummaryProps) {
 
   return (
     <aside className="relative">
-      <div className="sticky top-6 w-full rounded-3xl border border-zinc-200 bg-white/70 p-6 backdrop-blur-xl shadow-sm">
-        <h3 className="mb-6 text-lg font-bold tracking-tight text-zinc-900 flex items-center gap-2">
+      <div className="sticky top-6 w-full rounded-3xl border border-line bg-surface/70 p-6 backdrop-blur-xl shadow-sm">
+        <h3 className="mb-6 text-[17px] font-bold tracking-tight text-ink flex items-center gap-2">
           {t("checkout.orderSummary.title")}
-          <span className="rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium text-zinc-500">
+          <span className="rounded-full bg-paper px-2.5 py-0.5 text-[12px] font-medium text-ink-3">
             {cart.items.length}
           </span>
         </h3>
@@ -50,13 +50,13 @@ export function OrderSummary({ cart, subtotal }: OrderSummaryProps) {
                 </div>
 
                 <div className="flex flex-1 flex-col justify-center min-w-0">
-                  <p className="line-clamp-1 text-sm font-semibold text-zinc-800 group-hover:text-zinc-900">
+                  <p className="line-clamp-1 text-[14px] font-semibold text-ink">
                     {title}
                   </p>
-                  <p className="mt-0.5 text-[10px] font-medium uppercase tracking-wider text-zinc-400">
+                  <p className="mt-0.5 text-[10px] font-medium uppercase tracking-wider text-ink-3">
                     {item.variant.format}
                   </p>
-                  <p className="mt-1 text-sm font-bold text-zinc-900">
+                  <p className="mt-1 text-[14px] font-bold text-ink">
                     {fmt(price * item.quantity)}
                   </p>
                 </div>
@@ -65,51 +65,48 @@ export function OrderSummary({ cart, subtotal }: OrderSummaryProps) {
           })}
         </div>
 
-        <Separator className="my-6 bg-zinc-100" />
+        <div className="my-6 hairline" />
 
         {/* Promo Code Section */}
         <div className="space-y-3">
-          <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+          <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-ink-3">
             <TicketPercent className="h-3.5 w-3.5" />
             Promo Code
           </div>
           <div className="flex gap-2">
-            <Input
+            <input
               placeholder={t("checkout.orderSummary.discountPlaceholder")}
-              className="h-11 flex-1 rounded-xl border-zinc-200 bg-white text-sm focus-visible:ring-zinc-900"
+              className="field flex-1 rounded-xl"
             />
-            <Button
-              variant="outline"
-              className="h-11 rounded-xl border-zinc-900 px-5 text-xs font-bold uppercase tracking-wider hover:bg-zinc-900 hover:text-white transition-all"
-            >
+            <button className="btn-outline h-11 rounded-xl px-5 text-[12px]">
               {t("checkout.orderSummary.apply")}
-            </Button>
+            </button>
           </div>
         </div>
 
-        <div className="mt-8 space-y-3.5 border-t border-zinc-100 pt-6">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-zinc-500">Subtotal</span>
-            <span className="font-medium text-zinc-900">{fmt(subtotal)}</span>
+        <div className="mt-8 space-y-3.5 border-t border-line pt-6 text-[14px]">
+          <div className="flex items-center justify-between">
+            <span className="text-ink-3">Subtotal</span>
+            <span className="font-medium text-ink">{fmt(subtotal)}</span>
           </div>
 
-          <div className="flex items-center justify-between text-sm">
-            <span className="flex items-center gap-1.5 text-zinc-500">
+          <div className="flex items-center justify-between">
+            <span className="flex items-center gap-1.5 text-ink-3">
               Shipping
-              <Info className="h-3.5 w-3.5 text-zinc-300" />
+              <Info className="h-3.5 w-3.5 text-line-2" />
             </span>
-            <span className="font-bold text-emerald-600">
+            <span className="font-bold text-ok">
               {!ShipFee ? "Free" : fmt(ShipFee)}
             </span>
           </div>
 
           <div className="flex items-end justify-between pt-2">
-            <span className="text-base font-bold text-zinc-900">Total</span>
+            <span className="text-[16px] font-bold text-ink">Total</span>
             <div className="text-right">
-              <span className="block text-[10px] font-bold uppercase tracking-tighter text-zinc-400 leading-none">
+              <span className="block text-[10px] font-bold uppercase tracking-tighter text-ink-3 leading-none">
                 Vat Included
               </span>
-              <span className="text-2xl font-black tracking-tight text-zinc-900">
+              <span className="text-[24px] font-black tracking-tight text-ink">
                 {fmt(total)}
               </span>
             </div>

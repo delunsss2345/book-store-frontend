@@ -75,49 +75,52 @@ export default function DetailPage() {
   };
 
   return (
-    <main className="w-full bg-white text-neutral-900">
-      <div className="container-main py-4">
-        <nav className="flex items-center gap-2 overflow-hidden text-[11px] font-medium uppercase tracking-widest text-neutral-500 md:text-[12px]">
-          <Link href="/" className="hover:text-black transition-colors">
-            Home
+    <div className="bg-surface">
+      <div className="px-6 py-6 lg:px-10">
+        <nav className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-widest text-ink-3">
+          <Link href={`/${locale}`} className="hover:text-ink transition-colors">
+            {t("catalog.breadcrumbs.home")}
           </Link>
-          <span className="text-neutral-300">/</span>
-          <Link href="/catalog" className="hover:text-black transition-colors">
-            Books
+          <span className="text-line-2">/</span>
+          <Link href={`/${locale}/books`} className="hover:text-ink transition-colors">
+            {t("catalog.breadcrumbs.books")}
           </Link>
-          <span className="text-neutral-300">/</span>
-          <span className="truncate text-neutral-900">{bookDetail.title}</span>
+          <span className="text-line-2">/</span>
+          <span className="text-ink truncate">{bookDetail.title}</span>
         </nav>
 
         <div className="mt-6 grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
-          <ProductGallery
-            coverImageUrl={bookDetail.coverImageUrl}
-            title={bookDetail.title}
-          />
-          <section className="flex flex-col lg:col-span-7 lg:pl-10">
-            <div className="border-b border-neutral-100 pb-6">
+          <div className="lg:col-span-5">
+            <ProductGallery
+              coverImageUrl={bookDetail.coverImageUrl}
+              title={bookDetail.title}
+            />
+          </div>
+          
+          <section className="flex flex-col lg:col-span-7 lg:pl-6">
+            <div className="border-b border-line pb-6">
               <div className="flex items-center justify-between">
-                <span className="text-[12px] font-bold tracking-[0.2em] text-red-600 uppercase">
-                  {bookDetail.categories?.[0]?.name}
+                <span className="text-[12px] font-bold tracking-[0.2em] text-accent uppercase">
+                  {bookDetail.categories?.[0]?.name || "Fine Art"}
                 </span>
-                <span className="text-[12px] text-neutral-400 italic">
+                <span className="text-[12px] text-ink-3 italic">
                   SKU: {bookDetail.id.slice(0, 8)}
                 </span>
               </div>
 
-              <h1 className="mt-3 font-serif text-3xl leading-tight tracking-tight md:text-4xl">
+              <h1 className="display mt-3 text-[32px] font-semibold leading-tight tracking-tight md:text-[40px] text-ink">
                 {bookDetail.title}
               </h1>
 
               <div className="mt-6 flex items-baseline justify-between">
-                <div className="scale-110 origin-left">
+                <div className="origin-left">
                   <FormatPrice />
                 </div>
                 <WishlistAction />
               </div>
             </div>
 
-            <div className="mt-8 space-y-8">
+            <div className="mt-6 space-y-6">
               <div className="space-y-4">
                 <FormatPicker
                   variants={bookDetail.variants}
@@ -127,69 +130,70 @@ export default function DetailPage() {
               </div>
 
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                <div className="flex h-12 w-full items-center justify-between rounded-md border border-neutral-200 px-2 sm:w-32">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 rounded-sm hover:bg-neutral-100"
+                <div className="flex h-12 w-full items-center justify-between rounded-lg border border-line px-2 sm:w-32">
+                  <button
+                    className="flex h-8 w-8 items-center justify-center rounded-md hover:bg-paper"
                     onClick={() => setQty((p) => Math.max(1, p - 1))}
                   >
                     <Minus className="h-4 w-4" />
-                  </Button>
-                  <span className="text-sm font-medium">{qty}</span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 rounded-sm hover:bg-neutral-100"
+                  </button>
+                  <span className="text-[14px] font-medium">{qty}</span>
+                  <button
+                    className="flex h-8 w-8 items-center justify-center rounded-md hover:bg-paper"
                     onClick={() => setQty((p) => p + 1)}
                   >
                     <Plus className="h-4 w-4" />
-                  </Button>
+                  </button>
                 </div>
 
-                <Button
-                  onClick={() => {
-                    handleAddToCart(qty);
-                  }}
+                <button
+                  onClick={() => handleAddToCart(qty)}
                   disabled={isAdding}
-                  className="h-12 flex-1 rounded-md bg-neutral-900 text-[14px] font-bold uppercase tracking-widest text-white transition-all hover:bg-neutral-800 active:scale-[0.98]"
+                  className="btn-ink h-12 flex-1 rounded-lg text-[13px] font-bold uppercase tracking-[0.15em] flex items-center justify-center gap-2"
                 >
-                  <ShoppingCart className="mr-2 h-4 w-4" />
-                  Add to Cart
-                </Button>
+                  <ShoppingCart className="h-4 w-4" />
+                  Add to cart
+                </button>
+                
+                <Link
+                  href={`/${locale}/checkout`}
+                  className="btn-accent flex h-12 flex-1 items-center justify-center gap-2 rounded-lg text-[13px] font-bold uppercase tracking-[0.15em]"
+                >
+                  Buy now
+                </Link>
               </div>
-            </div>
 
-            <div className="mt-10 space-y-6 rounded-lg bg-neutral-50 p-6">
-              <div className="text-[14px] leading-relaxed text-neutral-700">
-                <p className="line-clamp-4">{bookDetail.description}</p>
-              </div>
+              <div className="space-y-4 rounded-xl bg-paper p-5">
+                <p className="line-clamp-4 text-[14px] leading-7 text-ink-2">
+                  {bookDetail.description}
+                </p>
 
-              <div className="grid grid-cols-2 gap-4 border-t border-neutral-200 pt-6 text-[12px] uppercase tracking-wider text-neutral-500">
-                <div>
-                  <p className="font-bold text-neutral-900">Pages</p>
-                  <p className="mt-1">{bookDetail.pageCount || "N/A"}</p>
+                <div className="grid grid-cols-2 gap-4 border-t border-line pt-6 text-[12px] uppercase tracking-wider text-ink-3">
+                  <div>
+                    <p className="font-bold text-ink">Pages</p>
+                    <p className="mt-1">{bookDetail.pageCount || "N/A"}</p>
+                  </div>
+                  <div>
+                    <p className="font-bold text-ink">Weight</p>
+                    <p className="mt-1">
+                      {bookDetail.weightGrams
+                        ? `${(bookDetail.weightGrams / 1000).toFixed(2)} kg`
+                        : "N/A"}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-bold text-neutral-900">Weight</p>
-                  <p className="mt-1">
-                    {bookDetail.weightGrams
-                      ? `${(bookDetail.weightGrams / 1000).toFixed(2)} kg`
-                      : "N/A"}
-                  </p>
-                </div>
               </div>
-            </div>
 
-            {/* Quote block */}
-            <div className="mt-12 border-l-2 border-neutral-900 pl-6 py-2">
-              <p className="text-lg font-serif italic text-neutral-800 leading-relaxed">
-                &ldquo;Strategy without tactics is the slowest route to victory.
-                Tactics without strategy is the noise before defeat.&rdquo;
-              </p>
-              <cite className="mt-4 block text-[12px] font-bold uppercase tracking-widest text-neutral-500 not-italic">
-                — Sun Tzu, The Art of War
-              </cite>
+              {/* Quote block */}
+              <div className="border-l-2 border-ink pl-6 py-1">
+                <p className="display text-[18px] italic leading-relaxed text-ink-2">
+                  &ldquo;Strategy without tactics is the slowest route to victory.
+                  Tactics without strategy is the noise before defeat.&rdquo;
+                </p>
+                <cite className="mt-3 block text-[12px] font-bold uppercase tracking-widest text-ink-3 not-italic">
+                  — Sun Tzu, The Art of War
+                </cite>
+              </div>
             </div>
           </section>
         </div>
@@ -197,15 +201,15 @@ export default function DetailPage() {
 
       <ProductDescriptionPanel bookDetail={bookDetail} />
 
-      {/* RELAXED PRODUCTS */}
-      <section className="bg-neutral-50 py-20">
-        <div className="container-main">
+      {/* RECOMMENDED PRODUCTS */}
+      <section className="bg-paper px-6 py-12 lg:px-10 border-t border-line">
+        <div className="mx-auto max-w-5xl">
           <RecommendedSection
             books={bookDetail?.recommend ?? []}
-            title="Các sản phẩm tương tự"
+            title={t("detail.recommendedTitle")}
           />
         </div>
       </section>
-    </main>
+    </div>
   );
 }

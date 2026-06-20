@@ -5,6 +5,7 @@ import axios, {
   type AxiosRequestConfig,
   type InternalAxiosRequestConfig,
 } from "axios";
+import { isPublicApi } from "./isPublicPath";
 
 const baseURL = envConfig.NEXT_PUBLIC_BASE_API ?? "";
 
@@ -40,6 +41,8 @@ axiosInstance.interceptors.response.use(
       _retry?: boolean;
     };
 
+    const isPublicRoute = isPublicApi(originalRequest.url);
+    if (isPublicRoute) return;
     // Chỉ xử lý 401 và không phải request refresh-token (tránh loop)
     if (
       error.response?.status !== 401 ||
@@ -60,7 +63,7 @@ axiosInstance.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      await refreshInstance.post("auth/refresh-token");
+      // await refreshInstance.post("auth/refresh-token");
       processQueue(null);
       // retry request (gọi là tất cả request lỗi cũ)
       return axiosInstance(originalRequest);

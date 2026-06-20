@@ -6,7 +6,6 @@ import { z } from "zod";
 
 import useTranslator from "@/hooks/use-translator";
 import { FormMessageI18n } from "@/src/components/common/FormMessageI18n";
-import { Button } from "@/src/components/ui/button";
 import {
   Form,
   FormControl,
@@ -15,6 +14,7 @@ import {
   FormLabel,
 } from "@/src/components/ui/form";
 import { Input } from "@/src/components/ui/input";
+import { Loader2 } from "lucide-react";
 
 type TranslatorFn = ReturnType<typeof useTranslator>["t"];
 
@@ -59,12 +59,13 @@ const ForgotPasswordForm = ({
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t("auth.emailLabel")}</FormLabel>
+              <FormLabel className="flabel">{t("auth.emailLabel")}</FormLabel>
               <FormControl>
                 <Input
                   type="email"
                   placeholder={t("auth.emailPlaceholder")}
                   autoComplete="email"
+                  className="field"
                   {...field}
                 />
               </FormControl>
@@ -73,9 +74,14 @@ const ForgotPasswordForm = ({
           )}
         />
 
-        <Button type="submit" className="w-full" disabled={isLoading}>
+        <button
+          type="submit"
+          className="btn-ink h-11 w-full rounded-lg text-[13px] mt-5"
+          disabled={isLoading}
+        >
+          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {isLoading ? t("auth.forgotSubmitting") : t("auth.forgotSubmit")}
-        </Button>
+        </button>
       </form>
     </Form>
   );

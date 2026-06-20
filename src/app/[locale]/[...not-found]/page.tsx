@@ -54,7 +54,7 @@ export default function DashboardNotFound() {
 
       {/* Footer mờ mờ cho đúng chất Dashboard */}
       <div className="absolute bottom-10 text-[10px] font-medium uppercase tracking-[0.3em] text-zinc-300">
-        TASCHEN © 2024 — Digital Catalog
+        Velora © 2024 — Digital Catalog
       </div>
     </div>
   );

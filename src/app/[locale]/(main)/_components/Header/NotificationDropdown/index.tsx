@@ -43,11 +43,11 @@ export default function NotificationDropdown() {
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="relative rounded-full p-2 transition-colors hover:bg-zinc-50"
+          className="relative inline-flex h-9 w-9 items-center justify-center rounded-full text-ink transition hover:bg-paper"
           aria-label="Notifications"
         >
-          <Bell size={20} strokeWidth={1.5} />
-          <span className="absolute right-1 top-1 size-2 rounded-full bg-rose-500" />
+          <Bell className="h-[18px] w-[18px]" />
+          <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-accent" />
         </button>
       </DropdownMenuTrigger>
 

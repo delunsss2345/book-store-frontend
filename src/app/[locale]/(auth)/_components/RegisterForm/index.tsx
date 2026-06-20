@@ -5,7 +5,6 @@ import { z } from "zod";
 
 import useTranslator from "@/hooks/use-translator";
 import { FormMessageI18n } from "@/src/components/common/FormMessageI18n";
-import { Button } from "@/src/components/ui/button";
 import {
   Form,
   FormControl,
@@ -14,6 +13,7 @@ import {
   FormLabel,
 } from "@/src/components/ui/form";
 import { Input } from "@/src/components/ui/input";
+import { Loader2 } from "lucide-react";
 
 type TranslatorFn = ReturnType<typeof useTranslator>["t"];
 
@@ -62,53 +62,58 @@ const RegisterForm = ({ isLoading = false, onSubmit }: RegisterFormProps) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="firstName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t("auth.firstNameLabel")}</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder={t("auth.firstNamePlaceholder")}
-                  autoComplete="given-name"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessageI18n />
-            </FormItem>
-          )}
-        />
+        <div className="grid grid-cols-2 gap-3">
+          <FormField
+            control={form.control}
+            name="firstName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="flabel">{t("auth.firstNameLabel")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={t("auth.firstNamePlaceholder")}
+                    autoComplete="given-name"
+                    className="field"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessageI18n />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="lastName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t("auth.lastNameLabel")}</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder={t("auth.lastNamePlaceholder")}
-                  autoComplete="family-name"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessageI18n />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="lastName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="flabel">{t("auth.lastNameLabel")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={t("auth.lastNamePlaceholder")}
+                    autoComplete="family-name"
+                    className="field"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessageI18n />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t("auth.emailLabel")}</FormLabel>
+              <FormLabel className="flabel">{t("auth.emailLabel")}</FormLabel>
               <FormControl>
                 <Input
                   type="email"
                   placeholder={t("auth.emailPlaceholder")}
                   autoComplete="email"
+                  className="field"
                   {...field}
                 />
               </FormControl>
@@ -122,12 +127,13 @@ const RegisterForm = ({ isLoading = false, onSubmit }: RegisterFormProps) => {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t("auth.passwordLabel")}</FormLabel>
+              <FormLabel className="flabel">{t("auth.passwordLabel")}</FormLabel>
               <FormControl>
                 <Input
                   type="password"
                   placeholder={t("auth.passwordPlaceholder")}
                   autoComplete="new-password"
+                  className="field"
                   {...field}
                 />
               </FormControl>
@@ -141,12 +147,13 @@ const RegisterForm = ({ isLoading = false, onSubmit }: RegisterFormProps) => {
           name="confirmPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t("auth.confirmPasswordLabel")}</FormLabel>
+              <FormLabel className="flabel">{t("auth.confirmPasswordLabel")}</FormLabel>
               <FormControl>
                 <Input
                   type="password"
                   placeholder={t("auth.confirmPasswordPlaceholder")}
                   autoComplete="new-password"
+                  className="field"
                   {...field}
                 />
               </FormControl>
@@ -155,9 +162,14 @@ const RegisterForm = ({ isLoading = false, onSubmit }: RegisterFormProps) => {
           )}
         />
 
-        <Button type="submit" className="w-full" disabled={isLoading}>
+        <button
+          type="submit"
+          className="btn-ink h-11 w-full rounded-lg text-[14px] mt-2"
+          disabled={isLoading}
+        >
+          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {isLoading ? t("auth.registering") : t("auth.registerSubmit")}
-        </Button>
+        </button>
       </form>
     </Form>
   );

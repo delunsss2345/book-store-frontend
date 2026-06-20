@@ -20,22 +20,22 @@ export function CheckoutFooter({
   const t = useTranslations();
 
   return (
-    <>
-      <Button
+    <div>
+      <button
         type="submit"
         disabled={disabled}
         className={
           buttonClassName ??
-          "h-14 w-full rounded-xl bg-zinc-900 text-base font-bold text-white shadow-lg shadow-zinc-200 transition-all hover:bg-zinc-800 active:scale-[0.98]"
+          "btn-ink h-16 w-full rounded-2xl text-[17px] shadow-xl shadow-line-2/50"
         }
       >
         {buttonText}
-      </Button>
+      </button>
 
-      <p className="mt-4 flex items-center justify-center gap-1.5 text-xs text-zinc-400">
-        <ShieldCheck className="h-3.5 w-3.5" />
+      <p className="mt-3 flex items-center justify-center gap-1.5 text-[12px] text-ink-3">
+        <ShieldCheck className="h-4 w-4" />
         {secureText ?? t("checkout.secureText")}
       </p>
-    </>
+    </div>
   );
 }

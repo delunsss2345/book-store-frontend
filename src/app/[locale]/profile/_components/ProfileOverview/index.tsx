@@ -1,5 +1,4 @@
-import { Card, CardContent } from "@/src/components/ui/card";
-import { Mail, Phone, User } from "lucide-react";
+import { BadgeCheck, Mail, Pencil, Phone, User } from "lucide-react";
 
 interface ProfileOverviewProps {
   fullName: string;
@@ -14,19 +13,44 @@ export const ProfileOverview = ({
   phoneNumber,
   t,
 }: ProfileOverviewProps) => {
+  const initials = fullName
+    .split(" ")
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
   return (
-    <Card className="overflow-hidden border-border/70 py-0">
-      {/* Banner Section */}
-      <div className="bg-gradient-to-r from-zinc-900 via-zinc-800 to-zinc-700 px-6 py-7 text-zinc-100">
-        <p className="text-xs uppercase tracking-[0.2em] text-zinc-300">
-          {t("profile.page.overviewTag")}
-        </p>
-        <p className="mt-3 text-2xl font-semibold text-white">{fullName}</p>
-        <p className="mt-2 text-sm text-zinc-200">{email ?? "N/A"}</p>
+    <div className="card overflow-hidden">
+      <div className="relative overflow-hidden bg-gradient-to-r from-ink via-[#2a2620] to-[#3a342c] px-6 py-7 text-white">
+        <div className="flex items-center gap-4">
+          <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-white/10 text-[22px] font-semibold ring-2 ring-white/25">
+            {initials || "U"}
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="text-[11px] uppercase tracking-[0.2em] text-white/55">
+              {t("profile.page.overviewTag")}
+            </p>
+            <p className="display mt-1 flex items-center gap-2 text-[24px] font-semibold">
+              {fullName}
+              <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-white/80">
+                <BadgeCheck className="h-3 w-3" />
+                Verified
+              </span>
+            </p>
+            <p className="mt-1 text-[13px] text-white/70">
+              {email ?? "N/A"}
+            </p>
+          </div>
+          <button className="btn-soft hidden h-9 shrink-0 items-center gap-1.5 rounded-lg px-3 text-[12px] sm:inline-flex text-ink hover:text-ink">
+            <Pencil className="h-3.5 w-3.5" />
+            Edit profile
+          </button>
+        </div>
       </div>
 
       {/* Details Grid */}
-      <CardContent className="grid gap-4 p-6 sm:grid-cols-2">
+      <div className="grid gap-4 p-6 sm:grid-cols-2">
         <InfoBox
           icon={<User className="h-4 w-4" />}
           label={t("profile.page.nameLabel")}
@@ -43,18 +67,18 @@ export const ProfileOverview = ({
           value={phoneNumber || t("profile.page.notProvided")}
           className="sm:col-span-2"
         />
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
-// Helper component nhỏ để tránh lặp code trong nội bộ file
+// Helper component
 const InfoBox = ({ icon, label, value, className }: any) => (
-  <div className={`rounded-lg border bg-background p-4 ${className}`}>
-    <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground">
+  <div className={`rounded-lg border border-line bg-paper/50 p-4 ${className || ""}`}>
+    <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-ink-3">
       {icon}
       <span>{label}</span>
     </div>
-    <p className="mt-2 text-sm font-medium">{value}</p>
+    <p className="mt-2 text-[14px] font-medium text-ink">{value}</p>
   </div>
 );

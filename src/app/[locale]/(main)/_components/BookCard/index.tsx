@@ -27,17 +27,17 @@ const formatPrice = (price: number, currency: string) =>
 
 const S: Record<
   BookCardVariant,
-  { figure: string; title: string; subtitle: string }
+  { title: string; subtitle: string; price: string }
 > = {
   default: {
-    figure: "h-[380px]",
-    title: "text-[22px]",
-    subtitle: "text-[18px]",
+    title: "text-[18px]",
+    subtitle: "text-[14px]",
+    price: "text-[16px]",
   },
   compact: {
-    figure: "h-[280px]",
-    title: "text-[18px]",
-    subtitle: "text-[16px]",
+    title: "text-[16px]",
+    subtitle: "text-[13px]",
+    price: "text-[14px]",
   },
 };
 
@@ -59,60 +59,53 @@ function CardInner({
   return (
     <article
       className={cn(
-        "group/card flex flex-col h-full p-2 transition-all duration-300",
+        "group/card block transition-all duration-300",
         className,
       )}
     >
-      <figure
-        className={cn(
-          "relative overflow-hidden rounded-md transition-all duration-500",
-          style.figure,
-        )}
-      >
+      <div className="aspect-[3/4] overflow-hidden rounded-md bg-surface relative">
         {imageUrl ? (
           <img
-            className="h-full w-full object-contain p-4 transition-transform duration-700 ease-out group-hover/card:scale-105"
+            className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover/card:scale-105"
             src={imageUrl}
             alt={`${title} cover`}
             loading="lazy"
             draggable={false}
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-sm text-neutral-400">
+          <div className="flex h-full w-full items-center justify-center text-[13px] text-ink-3">
             No image
           </div>
         )}
 
-        {/* Badge: Bo góc và chỉnh lại vị trí cho sang hơn */}
         {badge && (
           <div className="absolute top-4 left-4 z-10">
-            <span className="bg-white/90 backdrop-blur-sm px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-900 shadow-sm border border-neutral-100 rounded-full">
+            <span className="bg-white/90 backdrop-blur-sm px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-ink shadow-sm border border-line rounded-full">
               {badge}
             </span>
           </div>
         )}
-      </figure>
+      </div>
 
-      {/* Thông tin Text: Căn chỉnh lại khoảng cách */}
-      <div className="flex flex-col flex-grow mt-6 px-2 text-center">
+      <div className="mt-4 text-center">
         <h3
           className={cn(
-            "font-serif leading-tight text-neutral-900 line-clamp-2",
+            "display font-semibold leading-tight text-ink line-clamp-2",
             style.title,
           )}
         >
-          <strong className="font-semibold tracking-tight">{title}</strong>
+          {title}
         </h3>
         <p
           className={cn(
-            "mt-2 leading-relaxed text-neutral-500 line-clamp-1 italic",
+            "mt-0.5 italic text-ink-3 line-clamp-1",
             style.subtitle,
           )}
         >
           {subtitle}
         </p>
 
-        <p className="mt-4 text-[18px] font-medium tracking-tighter text-neutral-900">
+        <p className={cn("mt-2 font-medium text-ink", style.price)}>
           {formatPrice(price, currency)}
         </p>
       </div>
@@ -134,9 +127,9 @@ function CardInner({
             );
           }}
           className={cn(
-            "cursor-pointer w-full py-3 px-6 text-[12px] font-bold tracking-[0.15em] uppercase transition-all duration-300",
-            "border border-neutral-900 bg-transparent text-neutral-900",
-            "hover:bg-neutral-900 hover:text-white",
+            "cursor-pointer w-full py-3 px-6 text-[11px] font-bold tracking-[0.15em] uppercase transition-all duration-300",
+            "border border-ink bg-transparent text-ink",
+            "hover:bg-ink hover:text-white",
             "translate-y-4 opacity-0 group-hover/card:translate-y-0 group-hover/card:opacity-100",
           )}
         >
@@ -157,11 +150,8 @@ export default function BookCard(props: BookCardProps) {
 
   return (
     <div
-      onClick={() => setTimeout(() => router.push(`/${locale}${href}`), 700)}
-      className={cn(
-        "group block h-full cursor-pointer transition-transform duration-500 ease-[cubic-bezier(0.33,1,0.68,1)]",
-        "hover:-translate-y-2",
-      )}
+      onClick={() => setTimeout(() => router.push(`/${locale}${href}`), 200)}
+      className="group block cursor-pointer"
       aria-label={`${title} ${subtitle}`}
     >
       {inner}

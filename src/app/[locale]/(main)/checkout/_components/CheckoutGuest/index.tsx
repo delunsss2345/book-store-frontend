@@ -105,9 +105,9 @@ export function CheckoutGuest() {
         <CheckoutHeader
           title={t("checkout.title")}
           right={
-            <p className="text-sm text-zinc-500">
+            <p className="text-[14px] text-ink-3">
               {t("checkout.hasAccount")}{" "}
-              <a href="#" className="font-medium text-blue-600 hover:underline">
+              <a href="#" className="font-semibold text-accent hover:underline">
                 {t("checkout.signIn")}
               </a>
             </p>
@@ -121,14 +121,14 @@ export function CheckoutGuest() {
             name="guestEmail"
             render={({ field }) => (
               <FormItem className="grid gap-2">
-                <FormLabel className="text-sm font-medium">
+                <FormLabel className="flabel">
                   {t("checkout.contactEmail")}
                 </FormLabel>
                 <FormControl>
                   <Input
                     type="email"
                     placeholder="your-email@example.com"
-                    className="h-12 border-zinc-200 shadow-sm focus:border-zinc-900 focus:ring-zinc-900"
+                    className="field"
                     {...field}
                   />
                 </FormControl>
@@ -148,7 +148,7 @@ export function CheckoutGuest() {
                     onCheckedChange={(v) => field.onChange(!!v)}
                   />
                 </FormControl>
-                <Label className="text-sm leading-none text-zinc-600">
+                <Label className="text-[13px] text-ink-2">
                   {t("checkout.newsletter")}
                 </Label>
               </FormItem>
@@ -158,11 +158,11 @@ export function CheckoutGuest() {
 
         {/* Shipping Section */}
         <section className="space-y-6">
-          <div className="flex items-center gap-2 border-b pb-2">
-            <Truck className="h-5 w-5 text-zinc-800" />
-            <h2 className="text-lg font-semibold">
+          <div className="flex items-center gap-2">
+            <Truck className="h-5 w-5 text-ink" />
+            <h3 className="text-[17px] font-bold">
               {t("checkout.shippingTitle")}
-            </h2>
+            </h3>
           </div>
 
           <div className="grid gap-4">
@@ -179,7 +179,7 @@ export function CheckoutGuest() {
                       defaultValue="vn"
                       disabled
                     >
-                      <SelectTrigger className="h-12 border-zinc-200 shadow-sm">
+                      <SelectTrigger className="field">
                         <SelectValue
                           placeholder={t("checkout.countryPlaceholder")}
                         />
@@ -205,7 +205,7 @@ export function CheckoutGuest() {
                     <FormControl>
                       <Input
                         placeholder={t("checkout.firstNamePlaceholder")}
-                        className="h-12 border-zinc-200 shadow-sm"
+                        className="field"
                         {...field}
                       />
                     </FormControl>
@@ -221,7 +221,7 @@ export function CheckoutGuest() {
                     <FormControl>
                       <Input
                         placeholder={t("checkout.lastNamePlaceholder")}
-                        className="h-12 border-zinc-200 shadow-sm"
+                        className="field"
                         {...field}
                       />
                     </FormControl>
@@ -239,7 +239,7 @@ export function CheckoutGuest() {
                   <FormControl>
                     <Input
                       placeholder={t("checkout.addressPlaceholder")}
-                      className="h-12 border-zinc-200 shadow-sm"
+                      className="field"
                       {...field}
                     />
                   </FormControl>
@@ -257,7 +257,7 @@ export function CheckoutGuest() {
                     <FormControl>
                       <Input
                         placeholder={t("checkout.cityPlaceholder")}
-                        className="h-12 border-zinc-200 shadow-sm"
+                        className="field"
                         {...field}
                       />
                     </FormControl>
@@ -274,7 +274,7 @@ export function CheckoutGuest() {
                     <FormControl>
                       <Input
                         placeholder={t("checkout.postalCodePlaceholder")}
-                        className="h-12 border-zinc-200 shadow-sm"
+                        className="field"
                         {...field}
                       />
                     </FormControl>
@@ -292,7 +292,7 @@ export function CheckoutGuest() {
                   <FormControl>
                     <Input
                       placeholder={t("checkout.phonePlaceholder")}
-                      className="h-12 border-zinc-200 pr-10 shadow-sm"
+                      className="field pr-10"
                       {...field}
                     />
                   </FormControl>
@@ -306,12 +306,17 @@ export function CheckoutGuest() {
 
         <ShippingMethodCard />
 
-        {/* Payment Section */}
-        <PaymentCheckout />
+        <section className="space-y-4">
+          <h3 className="text-[17px] font-bold">
+            {t("checkout.paymentTitle")}
+          </h3>
+          <PaymentCheckout />
+        </section>
 
-        {/* Footer submit */}
         <CheckoutFooter
-          buttonText={t("checkout.submitButton")}
+          buttonText="Place order now"
+          secureText="Payment security follows international standards"
+          buttonClassName="btn-ink h-16 w-full rounded-2xl text-[17px] shadow-xl shadow-line-2/50"
           disabled={isOrdering}
         />
       </form>

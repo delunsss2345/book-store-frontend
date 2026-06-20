@@ -3,6 +3,7 @@
 import { useTransition } from "react";
 import { LOCALE_COOKIE_KEY, type Locale } from "@/lib/i18n/config";
 import useTranslator from "@/hooks/use-translator";
+import { Globe } from "lucide-react";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -19,11 +20,9 @@ const SettingsTranslation = () => {
     startTransition(() => {
       const segments = pathname.split("/");
 
-      // If current locale is in URL (e.g. /en/...), replace it
       if (segments[1] === currentLocale) {
         segments[1] = nextLanguage;
       } else {
-        // Default locale has no prefix, insert the new locale
         segments.splice(1, 0, nextLanguage);
       }
       const nextPathname = segments.join("/");
@@ -42,14 +41,15 @@ const SettingsTranslation = () => {
   return (
     <button
       type="button"
-      className={`hidden whitespace-nowrap text-sm hover:opacity-70 md:inline-flex cursor-pointer transition-opacity ${
+      className={`inline-flex h-9 items-center gap-1 rounded-full px-2.5 text-[12px] font-medium text-ink transition hover:bg-paper ${
         isPending ? "opacity-50 pointer-events-none" : "opacity-100"
       }`}
       aria-label={t("header.aria.language")}
       onClick={handleLanguageChange}
       disabled={isPending}
     >
-      {isPending ? "..." : t("header.languageToggle")}
+      <Globe className="h-[18px] w-[18px]" />
+      <span className="hidden lg:inline">{currentLocale.toUpperCase()}/{nextLanguage.toUpperCase()}</span>
     </button>
   );
 };

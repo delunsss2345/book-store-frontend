@@ -44,6 +44,10 @@ export const routing = defineRouting({
       vi: "/profile/change-password",
       en: "/profile/change-password",
     },
+    "/profile/settings/session": {
+      vi: "/profile/settings/session",
+      en: "/profile/settings/session",
+    },
 
     // ────────────────────────────────────────────────
     // Role-scoped Dashboard (IMPORTANT: prefix /[role])

@@ -45,11 +45,11 @@ const CartSheet = () => {
       <SheetTrigger asChild>
         <button
           type="button"
-          className="inline-flex h-9 items-center justify-center gap-2 rounded-sm px-2 hover:bg-muted"
+          className="inline-flex h-9 items-center gap-1.5 rounded-full bg-ink px-3 text-white transition hover:bg-ink/90"
           aria-label={t("header.aria.cart")}
         >
-          <span className="text-sm">{cart?.items?.length ?? 0}</span>
-          <ShoppingBag className="h-5 w-5" />
+          <ShoppingBag className="h-[17px] w-[17px]" />
+          <span className="text-[12px] font-semibold">{cart?.items?.length ?? 0}</span>
         </button>
       </SheetTrigger>
 

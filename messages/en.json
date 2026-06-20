@@ -47,6 +47,13 @@
     }
   },
   "home": {
+    "newAndTrending": "New & Trending",
+    "handpicked": "Handpicked for your collection",
+    "empty": "The shelves are currently being restocked.",
+    "error": {
+      "fetch": "Something went wrong while fetching the books.",
+      "tryAgain": "Try again"
+    },
     "items": {
       "1": {
         "title": "Hokusai.",
@@ -77,7 +84,7 @@
   },
   "quote": {
     "sectionLabel": "Costume Jewelry",
-    "textStart": "\"Don't skimp - go big: the coolest jewels of the 20th century. TASCHEN has published a nine pound illustrated volume on the subject: ",
+    "textStart": "\"Don't skimp - go big: the coolest jewels of the 20th century. Velora has published a nine pound illustrated volume on the subject: ",
     "textEm": "Costume Jewelry",
     "textEnd": ".\"",
     "cite": "Stern",
@@ -86,8 +93,8 @@
     "productPrice": "US$ 125"
   },
   "footer": {
-    "tagline": "TASCHEN. Books for Optimists Since 1980",
-    "description": "TASCHEN is the world's leading art-book publisher, headquartered in Cologne with teams in Berlin, Brussels, Hong Kong, London, Los Angeles, Madrid, Miami, Milan, New York, Paris and Tokyo. For more than 40 years, we have been on a mission to publish innovative illustrated books on art, architecture, design, fashion, film, lifestyle, travel, photography and pop culture and to bring them to the world. We aspire to be inclusive, independent, inspirational.",
+    "tagline": "Velora. Books for Optimists Since 1980",
+    "description": "Velora is the world's leading art-book publisher, headquartered in Cologne with teams in Berlin, Brussels, Hong Kong, London, Los Angeles, Madrid, Miami, Milan, New York, Paris and Tokyo. For more than 40 years, we have been on a mission to publish innovative illustrated books on art, architecture, design, fashion, film, lifestyle, travel, photography and pop culture and to bring them to the world. We aspire to be inclusive, independent, inspirational.",
     "connectTitle": "Connect",
     "companyTitle": "Company",
     "customerTitle": "Customer Information",
@@ -118,12 +125,12 @@
         "customerService": "Customer Service",
         "shippingReturns": "Shipping & Returns",
         "trackOrder": "Track Your Order",
-        "becomeReseller": "Become a TASCHEN Reseller",
+        "becomeReseller": "Become a Velora Reseller",
         "corporateDeals": "Corporate Deals",
         "b2bAccess": "B2B Shop Access"
       }
     },
-    "copyright": "c {year} - TASCHEN GmbH, Hohenzollernring 53, D-50672 Cologne"
+    "copyright": "c {year} - Velora GmbH, Hohenzollernring 53, D-50672 Cologne"
   },
   "profile": {
     "header": {
@@ -131,6 +138,7 @@
       "account": "Account",
       "myAccount": "My Account",
       "manageSettings": "Manage your settings",
+      "sessions": "Sessions",
       "menu": {
         "profile": "Profile",
         "orders": "Orders",
@@ -152,7 +160,7 @@
       "contactInformation": "Contact information"
     },
     "footer": {
-      "copyright": "\u00a9 {year} TASCHEN"
+      "copyright": "\u00a9 {year} Velora"
     },
     "page": {
       "title": "My Profile",
@@ -198,6 +206,19 @@
         "OFFICE": "Office",
         "OTHER": "Other"
       }
+    },
+    "session": {
+      "title": "Sessions",
+      "description": "Manage your active sessions and devices.",
+      "signOutAll": "Sign out of all other sessions",
+      "activeSessions": "Active sessions",
+      "warning": "If you don't recognize a device, you should sign out immediately and change your password.",
+      "thisDevice": "This device",
+      "current": "Current session",
+      "activeNow": "Active now",
+      "otherSessions": "Other sessions",
+      "lastActive": "Last active",
+      "signOut": "Sign out"
     }
   },
   "dashboard": {
@@ -488,6 +509,15 @@
     }
   },
   "auth": {
+    "brand": {
+      "eyebrow": "Books for Optimists · Since 1980",
+      "loginTitle": "Bring the world's art home.",
+      "loginDescription": "Innovative illustrated books on art, architecture, design, photography and pop culture — curated for the modern connoisseur.",
+      "registerQuote": "\"The coolest jewels of the 20th century.\"",
+      "registerCite": "— Stern, on Costume Jewelry"
+    },
+    "join": "Join Velora",
+    "welcomeBack": "Welcome back",
     "emailLabel": "Email",
     "emailPlaceholder": "Email",
     "passwordLabel": "Password",
@@ -772,6 +802,31 @@
         "delete": "Delete",
         "deleteConfirm": "Delete note?"
       }
+    }
+  },
+  "catalog": {
+    "title": "All Titles",
+    "home": "Home",
+    "books": "Books ({count} items)",
+    "sortAndFilter": "Sort & Filter",
+    "sortBy": "Sort by",
+    "themes": "Themes",
+    "price": "Price",
+    "height": "Height",
+    "applyFilters": "Apply Filters",
+    "priceRanges": {
+      "all": "All Prices",
+      "under50": "Under US$ 50",
+      "50to100": "US$ 50 to US$ 100",
+      "100to500": "US$ 100 to US$ 500",
+      "over500": "More than US$ 500"
+    },
+    "sortOptions": {
+      "bestSelling": "best-selling titles",
+      "priceLowToHigh": "price, low to high",
+      "priceHighToLow": "price, high to low",
+      "titleAZ": "title, A-Z",
+      "titleZA": "title, Z-A"
     }
   }
 }

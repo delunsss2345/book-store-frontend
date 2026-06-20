@@ -4,6 +4,8 @@ import useTranslator from "@/hooks/use-translator";
 import { A11y, Autoplay, Navigation, Pagination, EffectFade } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { cn } from "@/lib/utils";
+import { Sparkles } from "lucide-react";
+import Link from "next/link";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -13,36 +15,36 @@ import "swiper/css/effect-fade";
 type SlideItem = {
   id: string;
   title: string;
+  subtitle: string;
   cta: string;
   href: string;
-  bookImage: string;
-  bgClass: string; // Sử dụng class thay vì mã màu phức tạp
+  bgImage: string;
 };
 
 const slides: SlideItem[] = [
   {
     id: "1",
-    title: "The Gourmand's Mushroom",
+    subtitle: "Featured Edition",
+    title: "Massimo Listri.\nItalian Palaces",
     cta: "Discover Now",
     href: "/detail/1",
-    bookImage: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=600&q=80",
-    bgClass: "bg-[#f3f3f3] text-zinc-900", // Tông màu trung tính sang trọng
+    bgImage: "https://images.unsplash.com/photo-1545989253-02cc26577f88?auto=format&fit=crop&w=1400&q=80",
   },
   {
     id: "2",
-    title: "Frida Kahlo. The Complete Paintings",
-    cta: "Discover Now",
+    subtitle: "Just in",
+    title: "New Releases",
+    cta: "Shop Now",
     href: "/detail/2",
-    bookImage: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80",
-    bgClass: "bg-[#e5e7eb] text-zinc-900",
+    bgImage: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=1400&q=80",
   },
   {
     id: "3",
-    title: "Caravaggio. The Complete Works",
-    cta: "Discover Now",
+    subtitle: "Collector's shelf",
+    title: "Limited Editions",
+    cta: "Explore",
     href: "/detail/3",
-    bookImage: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=600&q=80",
-    bgClass: "bg-[#d1d5db] text-zinc-900",
+    bgImage: "https://images.unsplash.com/photo-1518998053901-5348d3961a04?auto=format&fit=crop&w=1400&q=80",
   },
 ];
 
@@ -52,26 +54,70 @@ const Hero = () => {
   return (
     <section className="relative w-full overflow-hidden border-b border-zinc-100">
       <style jsx global>{`
+        .hero-swiper .swiper-pagination {
+          text-align: left;
+          padding-left: 2.5rem;
+          padding-bottom: 1rem;
+        }
+        @media (min-width: 768px) {
+          .hero-swiper .swiper-pagination {
+            padding-left: 4rem;
+          }
+        }
         .hero-swiper .swiper-pagination-bullet {
           width: 8px;
           height: 8px;
-          background: #000;
-          opacity: 0.2;
+          background: #fff;
+          opacity: 0.4;
+          transition: opacity 0.3s ease;
         }
         .hero-swiper .swiper-pagination-bullet-active {
           opacity: 1;
-          background: #000;
+          background: #fff;
         }
         .hero-swiper .swiper-button-next,
         .hero-swiper .swiper-button-prev {
-          color: #000;
-          transform: scale(0.7);
+          display: none;
         }
-        .hero-swiper .swiper-button-next:after,
-        .hero-swiper .swiper-button-prev:after {
-          font-weight: bold;
+        @keyframes marquee {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+        .animate-marquee {
+          animation: marquee 20s linear infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .animate-marquee {
+            animation: none;
+          }
         }
       `}</style>
+
+      {/* Marquee announcement strip */}
+      <div className="overflow-hidden bg-zinc-950 py-3 text-white">
+        <div className="flex w-max animate-marquee hover:[animation-play-state:paused]">
+          {[...Array(2)].map((_, i) => (
+            <span
+              key={i}
+              className="inline-flex items-center gap-10 px-5 text-xs font-semibold uppercase tracking-[0.22em]"
+              aria-hidden={i !== 0}
+            >
+              <span>Free shipping over US$ 200</span>
+              <Sparkles className="h-3 w-3 text-primary" />
+              <span>New arrivals every Thursday</span>
+              <Sparkles className="h-3 w-3 text-primary" />
+              <span>Limited editions restocked</span>
+              <Sparkles className="h-3 w-3 text-primary" />
+              <span>Books for Optimists since 1980</span>
+              <Sparkles className="h-3 w-3 text-primary" />
+            </span>
+          ))}
+        </div>
+      </div>
 
       <Swiper
         modules={[Navigation, Pagination, A11y, Autoplay, EffectFade]}
@@ -80,63 +126,36 @@ const Hero = () => {
         autoplay={{ delay: 5000, disableOnInteraction: false }}
         effect="fade"
         loop
-        className="hero-swiper w-full"
+        className="hero-swiper relative h-[440px] w-full lg:h-[600px]"
       >
         {slides.map((s) => (
           <SwiperSlide key={s.id}>
-            <div className={cn("relative w-full py-12 md:py-20", s.bgClass)}>
-              <div className="container-main grid grid-cols-1 items-center gap-10 md:grid-cols-2">
-                
-                {/* Cột 1: Chữ - Căn trái cho chuyên nghiệp */}
-                <div className="order-2 flex flex-col items-center text-center md:order-1 md:items-start md:text-left">
-                  <span className="mb-4 text-xs font-bold uppercase tracking-[0.3em] opacity-50">
-                    Featured Edition
-                  </span>
-                  <h2 className="font-serif text-4xl font-medium leading-[1.1] tracking-tight text-zinc-900 sm:text-6xl">
-                    {s.title}
-                  </h2>
-                  <p className="mt-6 max-w-md text-lg text-zinc-600">
-                    Explore the definitive collection of masterpieces, curated for the modern connoisseur.
-                  </p>
-                  
-                  <div className="mt-10">
-                    <a
-                      href={s.href}
-                      className="inline-flex h-12 items-center justify-center border-2 border-zinc-900 bg-zinc-900 px-8 text-sm font-bold uppercase tracking-widest text-white transition-all hover:bg-transparent hover:text-zinc-900"
-                    >
-                      {s.cta}
-                    </a>
-                  </div>
-                </div>
-
-                {/* Cột 2: Sách - Hiệu ứng 3D nhẹ nhàng */}
-                <div className="order-1 flex justify-center md:order-2 md:justify-end">
-                  <div className="relative group/book">
-                    <div
-                      className="relative h-[350px] w-[240px] shadow-2xl transition-transform duration-1000 ease-out sm:h-[450px] sm:w-[310px]"
-                      style={{
-                        transform: "perspective(1500px) rotateY(-8deg) rotateX(2deg)",
-                        boxShadow: "-15px 20px 40px rgba(0,0,0,0.2)",
-                      }}
-                    >
-                      {/* Spine giả lập nhẹ */}
-                      <div className="absolute left-0 top-0 z-10 h-full w-[10px] bg-black/10" />
-                      
-                      <img
-                        src={s.bookImage}
-                        alt={s.title}
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                    {/* Đổ bóng mặt bàn mờ */}
-                    <div className="absolute -bottom-6 left-1/2 h-4 w-[90%] -translate-x-1/2 rounded-[100%] bg-black/10 blur-xl" />
-                  </div>
-                </div>
-
+            <div className="relative h-full w-full overflow-hidden group">
+              <img
+                src={s.bgImage}
+                alt={s.title}
+                className="absolute inset-0 h-full w-full object-cover transition-transform duration-[10000ms] ease-linear scale-100 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/90 via-zinc-950/40 to-transparent"></div>
+              
+              <div className="absolute inset-0 flex flex-col justify-center px-10 text-white md:px-16 container-main">
+                <span className="text-sm font-semibold tracking-wider text-white/70 uppercase">
+                  {s.subtitle}
+                </span>
+                <h2 className="mt-3 max-w-xl text-4xl font-medium leading-[1.05] sm:text-5xl whitespace-pre-line">
+                  {s.title}
+                </h2>
+                <Link
+                  href={s.href}
+                  className="mt-8 inline-flex h-12 w-fit items-center border border-white px-8 text-[11px] font-bold uppercase tracking-[0.2em] text-white transition hover:bg-white hover:text-zinc-950"
+                >
+                  {s.cta}
+                </Link>
               </div>
             </div>
           </SwiperSlide>
         ))}
+
       </Swiper>
     </section>
   );

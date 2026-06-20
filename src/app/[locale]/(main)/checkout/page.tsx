@@ -38,13 +38,15 @@ export default function CheckoutPage() {
   if (!cart) return null;
 
   return (
-    <div className="min-h-screen bg-zinc-50/50">
-      <div className="container-main mx-auto w-full px-4 py-10">
-        <div className="grid gap-16 lg:grid-cols-[1fr_450px]">
-          {user ? <CheckoutUser /> : <CheckoutGuest />}
-          <OrderSummary cart={cart} subtotal={subtotal} />
+    <section className="bg-paper min-h-screen pb-20">
+      <div className="mx-auto max-w-[1240px] px-5 pt-10">
+        <div className="bg-paper px-6 py-10 lg:px-12">
+          <div className="grid gap-14 lg:grid-cols-[1fr_400px]">
+            {user ? <CheckoutUser /> : <CheckoutGuest />}
+            <OrderSummary cart={cart} subtotal={subtotal} />
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

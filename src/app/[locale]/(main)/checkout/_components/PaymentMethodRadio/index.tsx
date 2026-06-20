@@ -3,62 +3,79 @@
 import { useOrderStore } from "@/features/orders";
 import { RadioGroup, RadioGroupItem } from "@/src/components/ui/radio-group";
 import { PaymentGateway } from "@/validation/order-address/orderAddressValidation";
-import { Banknote, Landmark } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-type Props = {
-  variant?: "rich" | "compact";
-};
-
-export function PaymentMethodRadio({ variant = "rich" }: Props) {
+export function PaymentMethodRadio() {
   const t = useTranslations();
   const gateway = useOrderStore((s) => s.paymentGateway);
   const setPaymentGateway = useOrderStore((s) => s.setPaymentGateway);
-
-  const itemClass =
-    variant === "rich"
-      ? "flex cursor-pointer items-center gap-4 p-5 hover:bg-zinc-50"
-      : "flex cursor-pointer items-center gap-4 p-4 hover:bg-zinc-50";
-
-  const iconSize = variant === "rich" ? 20 : 18;
 
   return (
     <RadioGroup
       value={gateway}
       onValueChange={(v) => setPaymentGateway(v as PaymentGateway)}
-      className="gap-0 overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm"
+      className="grid gap-3 sm:grid-cols-2"
     >
-      {/* SEPAY - MB Bank style */}
-      <label htmlFor={PaymentGateway.SEPAY} className={`${itemClass} border-b`}>
+      {/* SEPAY */}
+      <label
+        htmlFor={PaymentGateway.SEPAY}
+        className={`flex cursor-pointer items-start gap-3 rounded-2xl bg-surface p-5 transition-colors ${
+          gateway === PaymentGateway.SEPAY
+            ? "border-2 border-ink"
+            : "border border-line hover:border-ink/40"
+        }`}
+      >
         <RadioGroupItem
           value={PaymentGateway.SEPAY}
           id={PaymentGateway.SEPAY}
+          className="sr-only"
         />
-
-        <div className="flex items-center gap-3 flex-1">
-          <div className="flex h-9 w-9 items-center justify-center rounded-md bg-[#005BAC] text-white">
-            <Landmark size={iconSize} strokeWidth={2} />
-          </div>
-
-          <p className="text-sm font-bold text-zinc-900">
-            {variant === "rich"
-              ? t("checkout.paymentMethod.sepayRichTitle")
-              : t("checkout.paymentMethod.sepayCompactTitle")}
+        <span
+          className={`mt-0.5 flex h-5 w-5 items-center justify-center rounded-full border-2 ${
+            gateway === PaymentGateway.SEPAY ? "border-ink" : "border-line"
+          }`}
+        >
+          {gateway === PaymentGateway.SEPAY && (
+            <span className="h-2.5 w-2.5 rounded-full bg-ink"></span>
+          )}
+        </span>
+        <div>
+          <p className="text-[14px] font-semibold">sepay</p>
+          <p className="mt-0.5 text-[12px] text-ink-3">
+            Domestic cards, Visa, Mastercard, JCB, QR Code
           </p>
         </div>
       </label>
 
       {/* COD */}
-      <label htmlFor={PaymentGateway.COD} className={itemClass}>
-        <RadioGroupItem value={PaymentGateway.COD} id={PaymentGateway.COD} />
-
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-md bg-zinc-100 text-zinc-700">
-            <Banknote size={iconSize} strokeWidth={2} />
-          </div>
-
-          <p className="text-sm font-bold text-zinc-900">
+      <label
+        htmlFor={PaymentGateway.COD}
+        className={`flex cursor-pointer items-start gap-3 rounded-2xl bg-surface p-5 transition-colors ${
+          gateway === PaymentGateway.COD
+            ? "border-2 border-ink"
+            : "border border-line hover:border-ink/40"
+        }`}
+      >
+        <RadioGroupItem
+          value={PaymentGateway.COD}
+          id={PaymentGateway.COD}
+          className="sr-only"
+        />
+        <span
+          className={`mt-0.5 flex h-5 w-5 items-center justify-center rounded-full border-2 ${
+            gateway === PaymentGateway.COD ? "border-ink" : "border-line"
+          }`}
+        >
+          {gateway === PaymentGateway.COD && (
+            <span className="h-2.5 w-2.5 rounded-full bg-ink"></span>
+          )}
+        </span>
+        <div>
+          <p className="text-[14px] font-semibold">
             {t("checkout.paymentMethod.codTitle")}
+          </p>
+          <p className="mt-0.5 text-[12px] text-ink-3">
+            You will pay cash when the shipper delivers
           </p>
         </div>
       </label>

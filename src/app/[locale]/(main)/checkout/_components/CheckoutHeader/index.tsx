@@ -25,14 +25,14 @@ export function CheckoutHeader({
     <div>
       <button
         onClick={() => router.push(`/${locale}${backHref}`)}
-        className="mb-4 flex items-center text-sm text-zinc-500 transition-colors hover:text-zinc-900"
+        className="mb-4 flex items-center text-[13px] text-ink-3 transition hover:text-ink"
       >
         <ChevronLeft className="mr-1 h-4 w-4" />
         {backText ?? t("checkout.backToCart")}
       </button>
 
       <div className="flex items-baseline justify-between gap-4">
-        <h2 className="text-3xl font-extrabold tracking-tight text-zinc-900">
+        <h2 className="display text-[30px] font-semibold tracking-tight text-ink">
           {title}
         </h2>
         {right}

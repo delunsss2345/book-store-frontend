@@ -1,7 +1,4 @@
-"use client";
-
 import { cn } from "@/lib/utils";
-import { Button } from "@/src/components/ui/button";
 import {
   Collapsible,
   CollapsibleContent,
@@ -22,97 +19,92 @@ export function ProductDescriptionPanel({
   const [reviewsOpen, setReviewsOpen] = React.useState(false);
 
   return (
-    <section className="mt-20 border-t border-neutral-100">
-      <div className="mx-auto max-w-5xl">
-        {/* Read More Section */}
-        <Collapsible
-          open={readMoreOpen}
-          onOpenChange={setReadMoreOpen}
-          className="border-b border-neutral-100"
-        >
-          <CollapsibleTrigger className="flex w-full items-center justify-between px-6 py-8 text-[13px] font-bold uppercase tracking-[0.2em]">
-            <span>Product Description</span>
-            {readMoreOpen ? (
-              <Minus className="h-4 w-4" />
-            ) : (
-              <Plus className="h-4 w-4" />
-            )}
-          </CollapsibleTrigger>
-          <CollapsibleContent className="px-6 pb-12 transition-all">
-            <div className="grid gap-12 lg:grid-cols-2">
-              <div className="prose prose-neutral max-w-none text-[15px] leading-8 text-neutral-600">
-                <h3 className="font-serif text-2xl text-neutral-900">
-                  {bookDetail.title}
-                </h3>
-                <p className="mt-4">{bookDetail.description}</p>
-              </div>
-              <div className="space-y-6 text-[14px]">
-                <div className="rounded-sm border border-neutral-100 p-6">
-                  <h4 className="mb-4 font-bold uppercase tracking-widest text-neutral-900">
-                    Specification
-                  </h4>
-                  <dl className="space-y-3">
-                    <div className="flex justify-between border-b border-neutral-50 pb-2">
-                      <dt className="text-neutral-500">Publisher</dt>
-                      <dd className="font-medium">
-                        {bookDetail.publisherName || "—"}
-                      </dd>
-                    </div>
-                    <div className="flex justify-between border-b border-neutral-50 pb-2">
-                      <dt className="text-neutral-500">Format</dt>
-                      <dd className="font-medium">Paperback, 6x9 inches</dd>
-                    </div>
-                    <div className="flex justify-between border-b border-neutral-50 pb-2">
-                      <dt className="text-neutral-500">ISBN-13</dt>
-                      <dd className="font-medium">978-0123456789</dd>
-                    </div>
-                  </dl>
+    <div className="mx-auto mt-12 max-w-5xl border-t border-line">
+      {/* Read More Section */}
+      <Collapsible
+        open={readMoreOpen}
+        onOpenChange={setReadMoreOpen}
+        className="border-b border-line"
+      >
+        <CollapsibleTrigger className="flex w-full items-center justify-between py-5 text-[13px] font-bold uppercase tracking-[0.2em] text-ink">
+          <span>Product Description</span>
+          {readMoreOpen ? (
+            <Minus className="h-4 w-4" />
+          ) : (
+            <Plus className="h-4 w-4" />
+          )}
+        </CollapsibleTrigger>
+        <CollapsibleContent className="pb-10 transition-all">
+          <div className="grid gap-12 lg:grid-cols-2">
+            <div>
+              <h3 className="display text-[24px] font-semibold text-ink">
+                {bookDetail.title}
+              </h3>
+              <p className="mt-4 text-[15px] leading-8 text-ink-2">
+                {bookDetail.description}
+              </p>
+            </div>
+            <div className="rounded-md border border-line p-6 text-[14px]">
+              <h4 className="mb-4 font-bold uppercase tracking-widest text-ink">
+                Specification
+              </h4>
+              <dl className="space-y-3">
+                <div className="flex justify-between border-b border-line pb-2">
+                  <dt className="text-ink-3">Publisher</dt>
+                  <dd className="font-medium text-ink">
+                    {bookDetail.publisherName || "Velora"}
+                  </dd>
                 </div>
-              </div>
+                <div className="flex justify-between border-b border-line pb-2">
+                  <dt className="text-ink-3">Format</dt>
+                  <dd className="font-medium text-ink">Hardcover, XXL</dd>
+                </div>
+                <div className="flex justify-between border-b border-line pb-2">
+                  <dt className="text-ink-3">ISBN-13</dt>
+                  <dd className="font-medium text-ink">978-3836574204</dd>
+                </div>
+              </dl>
             </div>
-          </CollapsibleContent>
-        </Collapsible>
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
 
-        {/* Reviews Section */}
-        <Collapsible
-          open={reviewsOpen}
-          onOpenChange={setReviewsOpen}
-          className="border-b border-neutral-100"
-        >
-          <CollapsibleTrigger className="flex w-full items-center justify-between px-6 py-8 text-[13px] font-bold uppercase tracking-[0.2em]">
-            <span>Customer Reviews ({bookDetail.ratingCount})</span>
-            {reviewsOpen ? (
-              <Minus className="h-4 w-4" />
-            ) : (
-              <Plus className="h-4 w-4" />
-            )}
-          </CollapsibleTrigger>
-          <CollapsibleContent className="px-6 pb-12">
-            <div className="text-center py-10">
-              <div className="mb-4 flex justify-center gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <Heart
-                    key={i}
-                    className={cn(
-                      "h-5 w-5",
-                      i < (bookDetail.ratingAvg || 0)
-                        ? "fill-black text-black"
-                        : "text-neutral-200",
-                    )}
-                  />
-                ))}
-              </div>
-              <p className="text-neutral-500">{t("detail.noReviews")}</p>
-              <Button
-                variant="outline"
-                className="mt-6 rounded-none px-8 uppercase tracking-widest text-[11px] font-bold"
-              >
-                Write a review
-              </Button>
+      {/* Reviews Section */}
+      <Collapsible
+        open={reviewsOpen}
+        onOpenChange={setReviewsOpen}
+        className="border-b border-line"
+      >
+        <CollapsibleTrigger className="flex w-full items-center justify-between py-5 text-[13px] font-bold uppercase tracking-[0.2em] text-ink">
+          <span>Customer Reviews ({bookDetail.ratingCount || 0})</span>
+          {reviewsOpen ? (
+            <Minus className="h-4 w-4" />
+          ) : (
+            <Plus className="h-4 w-4" />
+          )}
+        </CollapsibleTrigger>
+        <CollapsibleContent className="pb-10">
+          <div className="text-center py-10">
+            <div className="mb-4 flex justify-center gap-1">
+              {[...Array(5)].map((_, i) => (
+                <Heart
+                  key={i}
+                  className={cn(
+                    "h-5 w-5",
+                    i < (bookDetail.ratingAvg || 0)
+                      ? "fill-ink text-ink"
+                      : "text-line-2",
+                  )}
+                />
+              ))}
             </div>
-          </CollapsibleContent>
-        </Collapsible>
-      </div>
-    </section>
+            <p className="text-ink-3">{t("detail.noReviews")}</p>
+            <button className="btn-outline mt-6 rounded-lg px-8 py-3 text-[11px] font-bold uppercase tracking-widest text-ink">
+              Write a review
+            </button>
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
+    </div>
   );
 }

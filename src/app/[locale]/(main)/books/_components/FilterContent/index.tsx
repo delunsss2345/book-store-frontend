@@ -1,9 +1,9 @@
 "use client";
 
-import { Button } from "@/src/components/ui/button";
-import { Separator } from "@/src/components/ui/separator";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, SlidersHorizontal } from "lucide-react";
 import { languages, priceRanges, sortOptions, themes } from "../filter.data";
+
+import useTranslator from "@/hooks/use-translator";
 
 export function FilterContent({
   sortOpen,
@@ -20,26 +20,35 @@ export function FilterContent({
   selectedPrice: string;
   setSelectedPrice: (v: string) => void;
 }) {
+  const { t } = useTranslator();
+  
   return (
-    <div className="space-y-6 px-6 py-5">
-      {/* Sort by */}
-      <div>
-        <h3 className="text-sm font-bold">Sort by</h3>
+    <aside className="hidden border-r border-line bg-surface px-6 py-8 lg:block">
+      <div className="flex items-center justify-between">
+        <h3 className="display text-[18px] font-semibold">{t("catalog.sortAndFilter")}</h3>
+        <SlidersHorizontal className="h-4 w-4 text-ink-3" />
+      </div>
+
+      <div className="mt-6">
+        <p className="text-[12px] font-bold uppercase tracking-wider text-ink">
+          {t("catalog.sortBy")}
+        </p>
         <div className="relative mt-2">
           <button
-            className="flex w-[200px] items-center justify-between border px-3 py-2 text-sm"
+            className="flex w-full items-center justify-between rounded-lg border border-line bg-paper px-3 py-2.5 text-[13px]"
             onClick={() => setSortOpen(!sortOpen)}
           >
             <span>{selectedSort}</span>
-            <ChevronDown className="h-4 w-4" />
+            <ChevronDown className="h-4 w-4 text-ink-3" />
           </button>
           {sortOpen && (
-            <div className="absolute left-0 top-full z-10 w-[200px] border bg-white shadow-md">
+            <div className="absolute left-0 top-full z-10 mt-1 w-full rounded-lg border border-line bg-white shadow-lg overflow-hidden">
               {sortOptions.map((opt) => (
                 <button
                   key={opt}
-                  className={`block w-full px-3 py-2 text-left text-sm hover:bg-zinc-50 ${opt === selectedSort ? "font-bold" : ""
-                    }`}
+                  className={`block w-full px-3 py-2 text-left text-[13px] hover:bg-paper ${
+                    opt === selectedSort ? "font-bold text-ink" : "text-ink-2"
+                  }`}
                   onClick={() => {
                     setSelectedSort(opt);
                     setSortOpen(false);
@@ -53,46 +62,50 @@ export function FilterContent({
         </div>
       </div>
 
-      <Separator />
+      <div className="my-6 h-px w-full bg-line" />
 
       {/* Themes */}
       <div>
-        <h3 className="text-sm font-bold">Themes</h3>
-        <div className="mt-3 space-y-2.5">
+        <p className="text-[12px] font-bold uppercase tracking-wider text-ink">
+          {t("catalog.themes")}
+        </p>
+        <div className="mt-3 space-y-2.5 text-[13px] text-ink-2">
           {themes.map((t) => (
             <label
               key={t.label}
-              className="flex cursor-pointer items-center gap-2.5 text-sm"
+              className="flex cursor-pointer items-center gap-2.5"
             >
               <input
                 type="checkbox"
-                className="h-4 w-4 rounded border-zinc-300"
+                className="h-4 w-4 accent-ink"
               />
               <span>
-                {t.label} <span className="text-zinc-400">({t.count})</span>
+                {t.label} <span className="text-ink-3">({t.count})</span>
               </span>
             </label>
           ))}
         </div>
       </div>
 
-      <Separator />
+      <div className="my-6 h-px w-full bg-line" />
 
       {/* Price */}
       <div>
-        <h3 className="text-sm font-bold">Price</h3>
-        <div className="mt-3 space-y-2.5">
+        <p className="text-[12px] font-bold uppercase tracking-wider text-ink">
+          {t("catalog.price")}
+        </p>
+        <div className="mt-3 space-y-2.5 text-[13px] text-ink-2">
           {priceRanges.map((p) => (
             <label
               key={p}
-              className="flex cursor-pointer items-center gap-2.5 text-sm"
+              className="flex cursor-pointer items-center gap-2.5"
             >
               <input
                 type="radio"
                 name="price"
                 checked={selectedPrice === p}
                 onChange={() => setSelectedPrice(p)}
-                className="h-4 w-4 border-zinc-300"
+                className="h-4 w-4 accent-ink"
               />
               <span>{p}</span>
             </label>
@@ -100,68 +113,28 @@ export function FilterContent({
         </div>
       </div>
 
-      <Separator />
-
-      {/* Width */}
-      <div>
-        <h3 className="text-sm font-bold">Width</h3>
-        <p className="mt-2 text-right text-xs text-zinc-500">10 cm - 70 cm</p>
-        <input
-          type="range"
-          min={10}
-          max={70}
-          defaultValue={70}
-          className="mt-1 w-full accent-zinc-900"
-        />
-      </div>
-
-      <Separator />
+      <div className="my-6 h-px w-full bg-line" />
 
       {/* Height */}
       <div>
-        <h3 className="text-sm font-bold">Height</h3>
-        <p className="mt-2 text-right text-xs text-zinc-500">13 cm - 70 cm</p>
+        <div className="flex items-center justify-between">
+          <p className="text-[12px] font-bold uppercase tracking-wider text-ink">
+            {t("catalog.height")}
+          </p>
+          <span className="text-[11px] text-ink-3">13 – 70 cm</span>
+        </div>
         <input
           type="range"
-          min={13}
-          max={70}
-          defaultValue={70}
-          className="mt-1 w-full accent-zinc-900"
+          min="13"
+          max="70"
+          defaultValue="70"
+          className="mt-2 w-full accent-ink"
         />
       </div>
 
-      <Separator />
-
-      {/* Language */}
-      <div>
-        <h3 className="text-sm font-bold">Language</h3>
-        <div className="mt-3 space-y-2.5">
-          {languages.map((l) => (
-            <label
-              key={l.label}
-              className="flex cursor-pointer items-center gap-2.5 text-sm"
-            >
-              <input
-                type="checkbox"
-                className="h-4 w-4 rounded border-zinc-300"
-              />
-              <span>
-                {l.label} <span className="text-zinc-400">({l.count})</span>
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
-
-      {/* Apply button */}
-      <div className="pb-4 pt-2">
-        <Button
-          variant="outline"
-          className="w-full rounded-none border-zinc-900 text-xs uppercase tracking-wider"
-        >
-          Apply Filters
-        </Button>
-      </div>
-    </div>
+      <button className="btn-outline mt-7 h-11 w-full rounded-none text-[11px] font-bold uppercase tracking-[0.15em]">
+        {t("catalog.applyFilters")}
+      </button>
+    </aside>
   );
 }

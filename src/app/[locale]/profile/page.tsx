@@ -114,18 +114,18 @@ const ProfilePage = () => {
   };
 
   return (
-    <section className="min-h-[calc(100vh-80px)] bg-gradient-to-b from-muted/40 to-background">
-      <div className="mx-auto max-w-6xl px-4 py-10">
+    <div className="bg-paper min-h-screen">
+      <div className="mx-auto max-w-5xl px-6 py-10">
         <div className="mb-6">
-          <h1 className="font-semibold tracking-tight">
+          <h1 className="display text-[28px] font-semibold tracking-tight">
             {t("profile.page.title")}
           </h1>
-          <p className="mt-2 text-sm text-muted-foreground">
+          <p className="mt-2 text-[14px] text-ink-2">
             {t("profile.page.subtitle")}
           </p>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+        <div className="mb-6 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
           <ProfileOverview
             fullName={fullName}
             email={currentUser?.email}
@@ -141,20 +141,10 @@ const ProfilePage = () => {
           />
         </div>
 
-        <Card className="mt-6 border-border/70">
-          <AddressHeader
-            t={t}
-            isAddingAddress={isAddingAddress}
-            onToggle={() => setIsAddingAddress(!isAddingAddress)}
-          />
+        <div className="card mt-6">
+          <AddressHeader t={t} />
 
-          <CardContent className="space-y-5 pt-6">
-            {isAddingAddress ? (
-              <AddressForm
-                onToggle={() => setIsAddingAddress(!isAddingAddress)}
-              />
-            ) : null}
-
+          <div className="p-6">
             {addresses?.length === 0 ? (
               <AddressEmptyState t={t} />
             ) : (
@@ -167,10 +157,10 @@ const ProfilePage = () => {
                 onDelete={handleDeleteAddress}
               />
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
-    </section>
+    </div>
   );
 };
 

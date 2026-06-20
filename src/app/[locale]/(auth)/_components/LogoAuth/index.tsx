@@ -10,7 +10,7 @@ export function LogoAuth() {
       onClick={() => router.push(`/${locale}`)}
       className="mb-6 text-center cursor-pointer"
     >
-      <div className="text-4xl font-extrabold tracking-wide">TASCHEN</div>
+      <div className="text-4xl font-extrabold tracking-wide">Velora</div>
     </div>
   );
 }

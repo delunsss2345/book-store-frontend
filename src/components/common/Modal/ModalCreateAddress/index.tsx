@@ -65,27 +65,30 @@ export default function ModalCreateAddress(_props: { onClose: () => void }) {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col mx-auto max-w-lg">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-slate-800">
+        <h2 className="display text-[22px] font-semibold text-ink">
           {t("profile.page.form.title")}
         </h2>
       </div>
+      <p className="mt-1 text-[13px] text-ink-3">
+        Fill in recipient and location details.
+      </p>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="grid gap-4">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="mt-5 grid gap-4 sm:grid-cols-2">
           <FormField
             control={form.control}
             name="addressType"
             render={({ field }) => (
               <FormItem className="sm:col-span-2">
-                <FormLabel>{t("profile.page.form.addressTypeLabel")}</FormLabel>
+                <FormLabel className="flabel">{t("profile.page.form.addressTypeLabel")}</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger className="mt-1.5 w-full">
+                    <SelectTrigger className="field flex h-11 w-full items-center justify-between rounded-lg border border-line bg-white px-4 text-[14px]">
                       <SelectValue
                         placeholder={t("profile.page.form.addressTypeLabel")}
                       />
@@ -109,11 +112,11 @@ export default function ModalCreateAddress(_props: { onClose: () => void }) {
             name="recipientName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
+                <FormLabel className="flabel">
                   {t("profile.page.form.recipientNameLabel")}
                 </FormLabel>
                 <FormControl>
-                  <Input {...field} className="mt-1.5" />
+                  <Input {...field} className="field" />
                 </FormControl>
                 <FormMessageI18n />
               </FormItem>
@@ -125,9 +128,9 @@ export default function ModalCreateAddress(_props: { onClose: () => void }) {
             name="phoneNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("profile.page.form.phoneNumberLabel")}</FormLabel>
+                <FormLabel className="flabel">{t("profile.page.form.phoneNumberLabel")}</FormLabel>
                 <FormControl>
-                  <Input {...field} className="mt-1.5" />
+                  <Input {...field} className="field" />
                 </FormControl>
                 <FormMessageI18n />
               </FormItem>
@@ -139,11 +142,11 @@ export default function ModalCreateAddress(_props: { onClose: () => void }) {
             name="addressDetail"
             render={({ field }) => (
               <FormItem className="sm:col-span-2">
-                <FormLabel>
+                <FormLabel className="flabel">
                   {t("profile.page.form.addressDetailLabel")}
                 </FormLabel>
                 <FormControl>
-                  <Input {...field} className="mt-1.5" />
+                  <Input {...field} className="field" placeholder="Street, house number…" />
                 </FormControl>
                 <FormMessageI18n />
               </FormItem>
@@ -155,9 +158,9 @@ export default function ModalCreateAddress(_props: { onClose: () => void }) {
             name="ward"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("profile.page.form.wardLabel")}</FormLabel>
+                <FormLabel className="flabel">{t("profile.page.form.wardLabel")}</FormLabel>
                 <FormControl>
-                  <Input {...field} className="mt-1.5" />
+                  <Input {...field} className="field" placeholder="Ward" />
                 </FormControl>
                 <FormMessageI18n />
               </FormItem>
@@ -169,9 +172,9 @@ export default function ModalCreateAddress(_props: { onClose: () => void }) {
             name="district"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("profile.page.form.districtLabel")}</FormLabel>
+                <FormLabel className="flabel">{t("profile.page.form.districtLabel")}</FormLabel>
                 <FormControl>
-                  <Input {...field} className="mt-1.5" />
+                  <Input {...field} className="field" placeholder="District" />
                 </FormControl>
                 <FormMessageI18n />
               </FormItem>
@@ -183,22 +186,22 @@ export default function ModalCreateAddress(_props: { onClose: () => void }) {
             name="city"
             render={({ field }) => (
               <FormItem className="sm:col-span-2">
-                <FormLabel>{t("profile.page.form.cityLabel")}</FormLabel>
+                <FormLabel className="flabel">{t("profile.page.form.cityLabel")}</FormLabel>
                 <FormControl>
-                  <Input {...field} className="mt-1.5" />
+                  <Input {...field} className="field" placeholder="City" />
                 </FormControl>
                 <FormMessageI18n />
               </FormItem>
             )}
           />
 
-          <div className="flex flex-wrap gap-2 pt-2">
-            <Button disabled={isLoadingCreateAddress} type="submit">
+          <div className="flex flex-wrap gap-2 pt-1 sm:col-span-2">
+            <button disabled={isLoadingCreateAddress} type="submit" className="btn-ink h-11 rounded-lg px-6 text-[14px]">
               {t("profile.page.form.submit")}
-            </Button>
-            <Button onClick={_props.onClose} type="button" variant="ghost">
+            </button>
+            <button onClick={_props.onClose} type="button" className="btn-soft h-11 rounded-lg px-6 text-[14px]">
               {t("profile.page.form.cancel")}
-            </Button>
+            </button>
           </div>
         </form>
       </Form>

@@ -10,11 +10,11 @@ const ProfileButton = () => {
   return (
     <button
       type="button"
-      className="inline-flex h-9 w-9 items-center justify-center rounded-sm hover:bg-muted"
+      className="inline-flex h-9 w-9 items-center justify-center rounded-full text-ink transition hover:bg-paper"
       aria-label={t("header.aria.account")}
     >
       <Link href={`/${local}/profile`}>
-        <User className="h-5 w-5" />
+        <User className="h-[18px] w-[18px]" />
       </Link>
     </button>
   );

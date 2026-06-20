@@ -37,30 +37,36 @@ const WishlistPage = () => {
   }
 
   return (
-    <div className="container-main w-full py-8 min-h-[50vh]">
-      <div className="flex flex-wrap items-center gap-3">
-        <h1 className="text-3xl font-semibold tracking-tight">{t("wishlist.page.title")}</h1>
-        <Button variant="outline" className="h-10 rounded-sm px-4 text-base">
-          {t("wishlist.page.addAllToCart")}
-        </Button>
-      </div>
+    <div className="bg-paper min-h-screen">
+      <div className="px-6 py-10 lg:px-10 max-w-7xl mx-auto">
+        <div className="flex flex-wrap items-center gap-4">
+          <h1 className="display text-[30px] font-semibold tracking-tight text-ink">
+            {t("wishlist.page.title")}
+          </h1>
+          <button className="btn-soft h-10 rounded-sm px-4 text-[13px] text-ink">
+            {t("wishlist.page.addAllToCart")}
+          </button>
+        </div>
 
-      <div className="mt-10 grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {wishlist &&
-          wishlist?.items.map((item: WishItem) => (
-            <BookCard
-              key={item.id}
-              title={item.variant.book.translations[0].title}
-              subtitle={item.variant.book.translations[0].description ?? ""}
-              price={0}
-              bookVariantId={Number(item.variant.id)}
-              imageUrl={item.variant.book?.coverImageUrl ?? ""}
-              href={`/detail/${item.variant.book.id}`}
-            />
-          ))}
-        {wishlist?.items.length === 0 && (
-          <p className="mt-4 text-base">{t("wishlist.page.empty")}</p>
-        )}
+        <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-3 xl:grid-cols-4">
+          {wishlist &&
+            wishlist?.items.map((item: WishItem) => (
+              <BookCard
+                key={item.id}
+                title={item.variant.book.translations[0].title}
+                subtitle={item.variant.book.translations[0].description ?? ""}
+                price={0}
+                bookVariantId={Number(item.variant.id)}
+                imageUrl={item.variant.book?.coverImageUrl ?? ""}
+                href={`/detail/${item.variant.book.id}`}
+              />
+            ))}
+          {wishlist?.items.length === 0 && (
+            <p className="mt-4 text-[14px] text-ink-3 col-span-full">
+              {t("wishlist.page.empty")}
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );
