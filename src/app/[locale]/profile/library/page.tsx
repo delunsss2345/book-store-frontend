@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useLibraryBooks } from "@/features/library/hooks/use-library-books";
 import { EmptyLibrary } from "./_components/EmptyLibrary";
 import { LibraryGrid } from "./_components/LibraryGrid";
+import { CardSkeleton } from "@/src/components/common/Skeletons";
 
 export default function LibraryPage() {
   const t = useTranslations("library");
@@ -35,9 +36,10 @@ export default function LibraryPage() {
 
         {/* Content */}
         {isLoading ? (
-          <div className="flex items-center justify-center gap-2 py-24 text-muted-foreground">
-            <Loader2 className="h-5 w-5 animate-spin" />
-            <span className="text-sm">{t("page.loadingText")}</span>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <CardSkeleton key={i} />
+            ))}
           </div>
         ) : isEmpty ? (
           <EmptyLibrary />

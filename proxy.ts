@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { routing } from "./i18n/routing";
 import { Locale, SUPPORTED_LOCALES } from "./lib/i18n/config";
 
-export default createMiddleware(routing);
+const intlMiddleware = createMiddleware(routing);
 
 type JwtPayload = {
   sub: string;
@@ -20,6 +20,7 @@ export async function proxy(request: NextRequest) {
   const language = cookieStore.get("appLanguage")?.value || "vi";
   const token = cookieStore.get("accessToken")?.value || "";
   const header = await headers();
+  const intlResponse = intlMiddleware(request);
   if (!SUPPORTED_LOCALES.includes(locale as Locale)) {
     return NextResponse.redirect(
       new URL(`/${language}${pathname}`, request.url),
@@ -34,7 +35,7 @@ export async function proxy(request: NextRequest) {
   if (token) {
     try {
       decode = jwtDecode(token);
-    } catch (error : any) {
+    } catch (error: any) {
       if (process.env.NODE_ENV === "development") {
         console.log(error.response.data.message);
         header.delete("authorization");
@@ -83,7 +84,7 @@ export async function proxy(request: NextRequest) {
         return NextResponse.redirect(base);
     }
   }
-  const response = NextResponse.next();
+  const response = NextResponse.next(intlResponse);
   return response;
 }
 export const config = {

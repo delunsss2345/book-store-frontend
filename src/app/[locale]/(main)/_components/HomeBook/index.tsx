@@ -6,14 +6,7 @@ import { PricedBook } from "@/types/response/catalog.response";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import BookCard from "../BookCard";
-
-const SkeletonCard = () => (
-  <div className="flex flex-col gap-4 animate-pulse">
-    <div className="aspect-[3/4] w-full rounded-md bg-neutral-100" />
-    <div className="h-4 w-2/3 self-center rounded bg-neutral-100" />
-    <div className="h-4 w-1/2 self-center rounded bg-neutral-100" />
-  </div>
-);
+import { BookCardSkeleton } from "@/src/components/common/Skeletons";
 
 export function HomeBook() {
   const { data: home, isPending, isError } = useHomeQuery();
@@ -39,7 +32,7 @@ export function HomeBook() {
         {isPending && (
           <div className="grid grid-cols-2 gap-x-8 gap-y-12 md:grid-cols-3 lg:grid-cols-4">
             {[...Array(8)].map((_, i) => (
-              <SkeletonCard key={i} />
+              <BookCardSkeleton key={i} />
             ))}
           </div>
         )}
@@ -77,7 +70,8 @@ export function HomeBook() {
         {isError && (
           <div className="mt-12 flex flex-col items-center justify-center rounded-xl border border-neutral-100 bg-neutral-50/50 p-16 text-center">
             <p className="text-sm font-medium text-neutral-600">
-              {t("home.error.fetch") || "Something went wrong while fetching the books."}
+              {t("home.error.fetch") ||
+                "Something went wrong while fetching the books."}
             </p>
             <button
               onClick={() => window.location.reload()}

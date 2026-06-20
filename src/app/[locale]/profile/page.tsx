@@ -19,6 +19,7 @@ import { AddressHeader } from "./_components/AddressHeader";
 import { AddressList } from "./_components/AddressList";
 import { AddressStats } from "./_components/AddressStats";
 import { ProfileOverview } from "./_components/ProfileOverview";
+import { ListSkeleton } from "@/src/components/common/Skeletons";
 
 const ADDRESS_TYPES = ["HOME", "OFFICE", "OTHER"] as const;
 
@@ -61,16 +62,7 @@ const getEmptyAddressForm = (): AddressFormState => ({
 const isAddressType = (value: string): value is AddressType =>
   ADDRESS_TYPES.includes(value as AddressType);
 
-const generateAddressId = () => {
-  if (
-    typeof crypto !== "undefined" &&
-    typeof crypto.randomUUID === "function"
-  ) {
-    return crypto.randomUUID();
-  }
 
-  return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-};
 
 const formatAddress = (address: AddressItem) =>
   [address.addressDetail, address.ward, address.district, address.city]
@@ -80,7 +72,7 @@ const formatAddress = (address: AddressItem) =>
 const ProfilePage = () => {
   const { t } = useTranslator();
   const currentUser = useAuthStore(selectorCurrentUser);
-  const { data: addresses } = useQueryAddress();
+  const { data: addresses, isPending: isAddressesLoading } = useQueryAddress();
   const { mutateAsync: setDefaultAddress } = useSetDefaultAddressMutation();
   const { mutateAsync: deleteAddress } = useDeleteUserAddressMutation();
   const [isAddingAddress, setIsAddingAddress] = useState(false);
@@ -145,7 +137,9 @@ const ProfilePage = () => {
           <AddressHeader t={t} />
 
           <div className="p-6">
-            {addresses?.length === 0 ? (
+            {isAddressesLoading ? (
+              <ListSkeleton count={2} />
+            ) : addresses?.length === 0 ? (
               <AddressEmptyState t={t} />
             ) : (
               <AddressList

@@ -3,6 +3,7 @@
 import { useWishlistQuery } from "@/features/wish/hooks";
 import { Button } from "@/src/components/ui/button";
 import { Skeleton } from "@/src/components/ui/skeleton";
+import { CardSkeleton } from "@/src/components/common/Skeletons";
 import { WishItem } from "@/types/response/wish.response";
 import { useTranslations } from "next-intl";
 import BookCard from "../_components/BookCard";
@@ -15,13 +16,9 @@ const WishlistPage = () => {
     return (
       <div className="container-main w-full py-8 min-h-[50vh] space-y-6">
         <Skeleton className="h-10 w-56" />
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-3 xl:grid-cols-4">
           {Array.from({ length: 4 }).map((_, index) => (
-            <div key={index} className="space-y-3 rounded-md border p-3">
-              <Skeleton className="h-64 w-full" />
-              <Skeleton className="h-5 w-3/4" />
-              <Skeleton className="h-4 w-1/2" />
-            </div>
+            <CardSkeleton key={index} className="border-none shadow-none p-0" />
           ))}
         </div>
       </div>
