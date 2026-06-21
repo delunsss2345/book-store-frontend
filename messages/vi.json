@@ -167,6 +167,7 @@
       "title": "Hồ sơ của tôi",
       "subtitle": "Cập nhật thông tin cá nhân và địa chỉ giao hàng của bạn.",
       "overviewTag": "Tổng quan tài khoản",
+      "editProfile": "Sửa hồ sơ",
       "nameLabel": "Họ và tên",
       "emailLabel": "Email",
       "phoneLabel": "Số điện thoại",
@@ -206,6 +207,40 @@
         "HOME": "Nhà",
         "OFFICE": "Văn phòng",
         "OTHER": "Khác"
+      }
+    },
+    "settings": {
+      "title": "Cài đặt",
+      "subtitle": "Quản lý thông tin cá nhân, bảo mật và phiên đăng nhập.",
+      "nav": {
+        "personalInfo": "Thông tin cá nhân",
+        "security": "Bảo mật",
+        "sessions": "Phiên và thiết bị"
+      },
+      "personalInfo": {
+        "title": "Thông tin cá nhân",
+        "description": "Cập nhật tên, email và số điện thoại của bạn.",
+        "firstName": "Tên",
+        "lastName": "Họ",
+        "email": "Địa chỉ email",
+        "verify": "Xác minh",
+        "verified": "Đã xác minh",
+        "phone": "Số điện thoại",
+        "addPhone": "Thêm số điện thoại",
+        "save": "Lưu thay đổi",
+        "success": "Cập nhật thông tin cá nhân thành công",
+        "error": "Không thể cập nhật thông tin cá nhân"
+      },
+      "security": {
+        "title": "Bảo mật",
+        "description": "Quản lý mật khẩu và bảo mật tài khoản của bạn.",
+        "changePassword": "Đổi mật khẩu",
+        "currentPassword": "Mật khẩu hiện tại",
+        "newPassword": "Mật khẩu mới",
+        "confirmNewPassword": "Xác nhận mật khẩu mới",
+        "updatePassword": "Cập nhật mật khẩu",
+        "success": "Cập nhật mật khẩu thành công",
+        "error": "Không thể cập nhật mật khẩu"
       }
     },
     "session": {

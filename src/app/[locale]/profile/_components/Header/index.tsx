@@ -101,7 +101,7 @@ const Header = () => {
               <DropdownMenuSeparator />
 
               <DropdownMenuItem asChild className="cursor-pointer">
-                <Link href={`/${locale}/profile`} className="flex w-full items-center">
+                <Link href={`/${locale}/profile/settings`} className="flex w-full items-center">
                   <Settings className="mr-2 h-4 w-4" />
                   <span>{t("profile.header.menu.profile")}</span>
                 </Link>

@@ -167,6 +167,7 @@
       "title": "My Profile",
       "subtitle": "Keep your personal information and delivery addresses up to date.",
       "overviewTag": "Account Overview",
+      "editProfile": "Edit profile",
       "nameLabel": "Full name",
       "emailLabel": "Email",
       "phoneLabel": "Phone number",
@@ -206,6 +207,40 @@
         "HOME": "Home",
         "OFFICE": "Office",
         "OTHER": "Other"
+      }
+    },
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Manage your personal information, security and session.",
+      "nav": {
+        "personalInfo": "Personal Information",
+        "security": "Security",
+        "sessions": "Sessions & Devices"
+      },
+      "personalInfo": {
+        "title": "Personal Information",
+        "description": "Update your name, email and phone number.",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "email": "Email address",
+        "verify": "Verify",
+        "verified": "Verified",
+        "phone": "Phone number",
+        "addPhone": "Add phone number",
+        "save": "Save changes",
+        "success": "Personal information updated successfully",
+        "error": "Failed to update personal information"
+      },
+      "security": {
+        "title": "Security",
+        "description": "Manage your password and account security.",
+        "changePassword": "Change password",
+        "currentPassword": "Current password",
+        "newPassword": "New password",
+        "confirmNewPassword": "Confirm new password",
+        "updatePassword": "Update password",
+        "success": "Password updated successfully",
+        "error": "Failed to update password"
       }
     },
     "session": {

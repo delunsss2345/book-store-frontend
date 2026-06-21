@@ -1,4 +1,5 @@
 import { BadgeCheck, Mail, Pencil, Phone, User } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 
 interface ProfileOverviewProps {
   fullName: string;
@@ -42,10 +43,13 @@ export const ProfileOverview = ({
               {email ?? "N/A"}
             </p>
           </div>
-          <button className="btn-soft hidden h-9 shrink-0 items-center gap-1.5 rounded-lg px-3 text-[12px] sm:inline-flex text-ink hover:text-ink">
+          <Link 
+            href="/profile/settings"
+            className="btn-soft hidden h-9 shrink-0 items-center gap-1.5 rounded-lg px-3 text-[12px] sm:inline-flex text-ink hover:text-ink"
+          >
             <Pencil className="h-3.5 w-3.5" />
-            Edit profile
-          </button>
+            {t("profile.page.editProfile") || "Edit profile"}
+          </Link>
         </div>
       </div>
 
