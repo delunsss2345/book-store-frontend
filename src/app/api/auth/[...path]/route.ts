@@ -105,8 +105,8 @@ async function proxyToBackend(request: NextRequest, context: RouteContext) {
         statusText: backendResponse.statusText,
         headers: responseHeaders,
       });
-      console.log(backendResponse.headers);
-      appendSetCookies(response, backendResponse);
+      console.log("Backend Headers: ", backendResponse.headers);
+      appendSetCookies(response, backendResponse); // nó tự đính rồi không cần set thủ công
 
       // Save tokens to Next.js cookies if they exist in the response
       if (data?.data?.accessToken) {

@@ -8,7 +8,7 @@ type BookCardVariant = "default" | "compact";
 
 type BookCardProps = {
   title: string;
-  subtitle: string;
+  description: string;
   price: number;
   currency?: string;
   badge?: string;
@@ -43,7 +43,7 @@ const S: Record<
 
 function CardInner({
   title,
-  subtitle,
+  description,
   price,
   currency = "US$",
   badge,
@@ -58,10 +58,7 @@ function CardInner({
 
   return (
     <article
-      className={cn(
-        "group/card block transition-all duration-300",
-        className,
-      )}
+      className={cn("group/card block transition-all duration-300", className)}
     >
       <div className="aspect-[3/4] overflow-hidden rounded-md bg-surface relative">
         {imageUrl ? (
@@ -102,7 +99,7 @@ function CardInner({
             style.subtitle,
           )}
         >
-          {subtitle}
+          {description}
         </p>
 
         <p className={cn("mt-2 font-medium text-ink", style.price)}>
@@ -142,7 +139,7 @@ function CardInner({
 
 export default function BookCard(props: BookCardProps) {
   const router = useRouter();
-  const { href, title, subtitle } = props;
+  const { href, title, description } = props;
   const locale = useLocale();
   const inner = <CardInner {...props} />;
 
@@ -152,7 +149,7 @@ export default function BookCard(props: BookCardProps) {
     <div
       onClick={() => setTimeout(() => router.push(`/${locale}${href}`), 200)}
       className="group block cursor-pointer"
-      aria-label={`${title} ${subtitle}`}
+      aria-label={`${title} ${description}`}
     >
       {inner}
     </div>
