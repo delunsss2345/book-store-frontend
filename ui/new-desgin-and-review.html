@@ -1,0 +1,1306 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Velora · New Design + Codebase Review — Missing Pages, Modals, Components, Animation, Architecture</title>
+    <meta
+      name="description"
+      content="Companion to ui-desgin.html and dashboard-desgin.html: the missing pages (404, error, command palette, notifications, RBAC, reviews, chat), a unified modal/component/animation system, and a grounded frontend architecture risk review with fix code."
+    />
+
+    <!-- Fonts: Fraunces (display serif) + Inter (UI sans) + JetBrains Mono (data/code) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..600&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind Play CDN (mirrors the app's utility-class workflow) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "system-ui", "-apple-system", "Segoe UI", "sans-serif"],
+              serif: ["Fraunces", "Georgia", "Times New Roman", "serif"],
+              mono: ["JetBrains Mono", "ui-monospace", "monospace"],
+            },
+            colors: {
+              canvas: "#E9E4DB",
+              paper: "#F7F5F0",
+              surface: "#FFFFFF",
+              ink: { DEFAULT: "#1A1714", 2: "#57514A", 3: "#938A7E" },
+              line: { DEFAULT: "#E7E2D8", 2: "#D8D1C4" },
+              accent: { DEFAULT: "#A41E22", soft: "#F4E7E4" },
+              ok: "#3F6F52",
+            },
+            maxWidth: { container: "1540px" },
+            letterSpacing: { tightest: "-0.04em" },
+          },
+        },
+      };
+    </script>
+
+    <style type="text/tailwindcss">
+      @layer base {
+        html { scroll-behavior: smooth; }
+        body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+        [data-lucide] { width: 1em; height: 1em; stroke-width: 1.75; }
+      }
+      @layer components {
+        .display { font-family: "Fraunces", Georgia, serif; font-optical-sizing: auto; }
+        .eyebrow { @apply text-[11px] font-semibold uppercase tracking-[0.24em] text-ink-3; }
+
+        /* doc chrome */
+        .toc-link { @apply rounded-full px-3 py-1.5 text-[12px] font-medium text-white/55 transition hover:text-white hover:bg-white/10 whitespace-nowrap; }
+        .toc-link.active { @apply bg-paper text-ink hover:bg-paper; }
+        .group-tag { @apply text-[10px] font-semibold uppercase tracking-[0.2em] text-white/35 pr-1; }
+        .frame-label { @apply mb-3 flex flex-wrap items-center gap-x-3 gap-y-1; }
+        .frame-label h2 { @apply display text-[22px] font-semibold text-ink leading-none; }
+        .frame-label .route { @apply rounded-md border border-line-2/70 bg-paper px-2 py-0.5 font-mono text-[11px] text-ink-3; }
+        .frame-label .tag-new { @apply rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white; }
+        .frame-label .tag-fix { @apply rounded-full bg-ink px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white; }
+
+        .frame { @apply rounded-[20px] border border-line bg-surface overflow-hidden;
+          box-shadow: 0 50px 100px -55px rgba(26,23,20,.55), 0 12px 30px -22px rgba(26,23,20,.35); }
+        .winbar { @apply flex items-center gap-2 border-b border-line bg-[#FBFAF7] px-4 py-3; }
+        .wdot { @apply h-3 w-3 rounded-full; }
+        .url { @apply mx-auto flex max-w-[60%] items-center gap-2 truncate rounded-md border border-line bg-paper px-3 py-1 text-[11px] text-ink-3; }
+
+        /* buttons */
+        .btn { @apply inline-flex items-center justify-center gap-2 font-semibold transition-all duration-200 select-none; }
+        .btn-ink { @apply inline-flex items-center justify-center gap-2 font-semibold transition-all duration-200 bg-ink text-white hover:bg-ink/[.88] active:scale-[.99]; }
+        .btn-outline { @apply inline-flex items-center justify-center gap-2 font-semibold transition-all duration-200 border border-ink/80 text-ink hover:bg-ink hover:text-white; }
+        .btn-soft { @apply inline-flex items-center justify-center gap-2 font-semibold transition-all duration-200 border border-line bg-paper text-ink hover:border-ink/30; }
+        .btn-accent { @apply inline-flex items-center justify-center gap-2 font-semibold transition-all duration-200 bg-accent text-white hover:bg-accent/90; }
+        .btn-ghost { @apply inline-flex items-center justify-center gap-2 font-semibold transition-all duration-200 text-ink-2 hover:bg-paper hover:text-ink; }
+
+        /* forms */
+        .field { @apply h-10 w-full rounded-lg border border-line bg-white px-3.5 text-[13.5px] text-ink placeholder:text-ink-3/70 outline-none transition focus:border-ink/40 focus:ring-4 focus:ring-ink/[.06]; }
+        .flabel { @apply mb-1.5 block text-[12.5px] font-medium text-ink-2; }
+        .card { @apply rounded-2xl border border-line bg-surface; }
+        .chip { @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold; }
+        .hairline { @apply h-px w-full bg-line; }
+
+        /* badges */
+        .bdg { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11.5px] font-semibold; }
+        .bdg-green { @apply bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20; }
+        .bdg-amber { @apply bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/20; }
+        .bdg-blue { @apply bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-600/20; }
+        .bdg-red { @apply bg-accent-soft text-accent ring-1 ring-inset ring-accent/20; }
+        .bdg-gray { @apply bg-line/50 text-ink-2 ring-1 ring-inset ring-line-2; }
+        .bdg-purple { @apply bg-purple-50 text-purple-700 ring-1 ring-inset ring-purple-600/20; }
+
+        /* severity dots for the review */
+        .sev { @apply inline-flex h-2.5 w-2.5 rounded-full ring-2 ring-white; }
+        .sev-crit { @apply bg-accent; }
+        .sev-high { @apply bg-amber-500; }
+        .sev-med  { @apply bg-blue-500; }
+        .sev-low  { @apply bg-ink-3; }
+
+        /* review card */
+        .risk { @apply rounded-2xl border border-line bg-surface overflow-hidden; }
+        .risk-h { @apply flex flex-wrap items-center gap-2.5 border-b border-line bg-[#FBFAF7] px-5 py-3.5; }
+        .risk-b { @apply px-5 py-4 text-[13.5px] leading-relaxed text-ink-2; }
+        .kbd { @apply inline-flex h-5 min-w-[20px] items-center justify-center rounded border border-line-2 bg-paper px-1.5 font-mono text-[11px] text-ink-2; }
+        .seg { @apply inline-flex items-center gap-1 rounded-xl border border-line bg-paper p-1; }
+        .seg button { @apply rounded-lg px-3.5 py-1.5 text-[13px] font-semibold text-ink-2 transition; }
+        .seg button.on { @apply bg-surface text-ink shadow-sm; }
+      }
+    </style>
+
+    <!-- plain CSS: animation lab, skeletons, code blocks -->
+    <style>
+      @keyframes vshimmer { 100% { transform: translateX(100%); } }
+      .sk { position: relative; overflow: hidden; border-radius: 6px; background: #E2DCD0; }
+      .sk::after {
+        content: ""; position: absolute; inset: 0; transform: translateX(-100%);
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,.65), transparent);
+        animation: vshimmer 1.5s infinite;
+      }
+      @keyframes vspin { to { transform: rotate(360deg); } }
+      .spin { animation: vspin .8s linear infinite; }
+
+      /* code blocks */
+      pre.code {
+        margin: 0; padding: 16px 18px; border-radius: 14px; overflow-x: auto;
+        background: #1A1714; color: #EDE7DC;
+        font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 12.5px; line-height: 1.65;
+        border: 1px solid rgba(255,255,255,.08);
+      }
+      pre.code .c { color: #938A7E; font-style: italic; }       /* comment */
+      pre.code .k { color: #E59A9C; }                            /* keyword (claret-tint) */
+      pre.code .s { color: #A9C5A0; }                            /* string */
+      pre.code .f { color: #E7C98B; }                            /* function / type */
+      pre.code .m { color: #8FB7D6; }                            /* number / const */
+      pre.code .del { color: #E98A8C; }                          /* removed line */
+      pre.code .add { color: #A9C5A0; }                          /* added line */
+
+      /* ---- animation lab demos ---- */
+      @keyframes a-fade-up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+      @keyframes a-scale-in { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: none; } }
+      @keyframes a-slide-right { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: none; } }
+      @keyframes a-pop { 0% { transform: scale(.6); opacity: 0; } 60% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
+      @keyframes a-pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(164,30,34,.45); } 70% { box-shadow: 0 0 0 12px rgba(164,30,34,0); } 100% { box-shadow: 0 0 0 0 rgba(164,30,34,0); } }
+      @keyframes a-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+      @keyframes a-underline { from { background-size: 0% 2px; } to { background-size: 100% 2px; } }
+      @keyframes a-shimmer-text { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+      @keyframes a-checkdraw { to { stroke-dashoffset: 0; } }
+
+      .lab:hover .demo-fade-up { animation: a-fade-up .6s cubic-bezier(.22,1,.36,1) both; }
+      .lab:hover .demo-scale-in { animation: a-scale-in .5s cubic-bezier(.22,1,.36,1) both; }
+      .lab:hover .demo-slide-right { animation: a-slide-right .5s cubic-bezier(.22,1,.36,1) both; }
+      .lab:hover .demo-pop { animation: a-pop .55s cubic-bezier(.34,1.56,.64,1) both; }
+      .demo-pulse { animation: a-pulse-ring 1.8s ease-out infinite; }
+      .demo-float { animation: a-float 3s ease-in-out infinite; }
+      .demo-underline {
+        background-image: linear-gradient(#A41E22, #A41E22);
+        background-repeat: no-repeat; background-position: 0 100%; background-size: 0% 2px;
+        transition: background-size .35s cubic-bezier(.22,1,.36,1);
+      }
+      .lab:hover .demo-underline { background-size: 100% 2px; }
+      .demo-shimmer-text {
+        background: linear-gradient(90deg,#938A7E 0%,#1A1714 50%,#938A7E 100%);
+        background-size: 200% auto; -webkit-background-clip: text; background-clip: text;
+        -webkit-text-fill-color: transparent; animation: a-shimmer-text 2.6s linear infinite;
+      }
+      .demo-lift { transition: transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s; }
+      .lab:hover .demo-lift { transform: translateY(-6px); box-shadow: 0 24px 40px -24px rgba(26,23,20,.5); }
+      .check svg path { stroke-dasharray: 26; stroke-dashoffset: 26; }
+      .lab:hover .check svg path { animation: a-checkdraw .5s .1s ease forwards; }
+
+      details > summary { list-style: none; cursor: pointer; }
+      details > summary::-webkit-details-marker { display: none; }
+      details[open] .chev { transform: rotate(90deg); }
+      .chev { transition: transform .2s; }
+    </style>
+  </head>
+
+  <body class="bg-canvas font-sans text-ink antialiased">
+    <!-- ============================ STICKY DOC NAV ============================ -->
+    <header class="sticky top-0 z-50 border-b border-black/30 bg-ink/95 backdrop-blur supports-[backdrop-filter]:bg-ink/85">
+      <div class="mx-auto flex max-w-container items-center gap-4 px-5 py-3">
+        <a href="#top" class="flex shrink-0 items-center gap-2">
+          <span class="text-[19px] font-black tracking-tightest text-white">Velora</span>
+          <span class="hidden rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white sm:inline">New + Review</span>
+        </a>
+        <nav class="flex flex-1 items-center gap-1 overflow-x-auto" style="scrollbar-width:none">
+          <span class="group-tag hidden lg:inline">Missing pages</span>
+          <a class="toc-link" href="#notfound">404</a>
+          <a class="toc-link" href="#error">Error</a>
+          <a class="toc-link" href="#coming">Coming&nbsp;soon</a>
+          <a class="toc-link" href="#palette">Command&nbsp;⌘K</a>
+          <a class="toc-link" href="#notifs">Notifications</a>
+          <a class="toc-link" href="#rbac">Roles&nbsp;&amp;&nbsp;Perms</a>
+          <a class="toc-link" href="#review-write">Write&nbsp;review</a>
+          <a class="toc-link" href="#chat">Chat</a>
+          <span class="group-tag hidden lg:inline">System</span>
+          <a class="toc-link" href="#modals">Modals</a>
+          <a class="toc-link" href="#components">Components</a>
+          <a class="toc-link" href="#animation">Animation</a>
+          <span class="group-tag hidden lg:inline">Engineering</span>
+          <a class="toc-link" href="#review">Risk&nbsp;review</a>
+          <a class="toc-link" href="#architecture">Architecture</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- ============================ HERO ============================ -->
+    <section id="top" class="mx-auto max-w-container px-5 pt-14 pb-6">
+      <div class="grid items-end gap-8 lg:grid-cols-[1.4fr_1fr]">
+        <div>
+          <span class="eyebrow">Companion file · 2026-06-21</span>
+          <h1 class="display mt-3 text-[44px] font-semibold leading-[1.02] tracking-tight md:text-[60px]">
+            The missing pages,<br />a unified system,<br />and an honest review.
+          </h1>
+          <p class="mt-5 max-w-2xl text-[15px] leading-relaxed text-ink-2">
+            This sheet extends <span class="font-mono text-[12.5px] text-ink">ui-desgin.html</span> and
+            <span class="font-mono text-[12.5px] text-ink">dashboard-desgin.html</span> without repeating them. It adds the surfaces
+            those two never drew — empty/error states, a <span class="text-ink">⌘K</span> command palette, the notifications center, RBAC, review authoring and live chat —
+            then formalizes the <span class="text-ink">modal</span>, <span class="text-ink">component</span> and
+            <span class="text-ink">animation</span> language, and closes with a code-grounded
+            <a href="#review" class="text-accent underline decoration-accent/30 underline-offset-2">frontend risk review</a>.
+          </p>
+          <div class="mt-6 flex flex-wrap gap-2.5">
+            <a href="#notfound" class="btn-ink rounded-full px-5 py-2.5 text-[13px]">Jump to new pages</a>
+            <a href="#review" class="btn-soft rounded-full px-5 py-2.5 text-[13px]">Jump to the review</a>
+          </div>
+        </div>
+
+        <div class="card p-5">
+          <div class="flex items-center justify-between">
+            <span class="eyebrow">Scope at a glance</span>
+            <i data-lucide="layers" class="text-[18px] text-ink-3"></i>
+          </div>
+          <dl class="mt-4 space-y-3 text-[13px]">
+            <div class="flex items-center justify-between border-b border-line pb-3">
+              <dt class="text-ink-2">New page designs</dt><dd class="font-semibold text-ink">8 surfaces</dd>
+            </div>
+            <div class="flex items-center justify-between border-b border-line pb-3">
+              <dt class="text-ink-2">System patterns</dt><dd class="font-semibold text-ink">Modal · Component · Motion</dd>
+            </div>
+            <div class="flex items-center justify-between border-b border-line pb-3">
+              <dt class="text-ink-2">Code reviewed</dt><dd class="font-mono text-[12px] text-ink">213 .tsx · 14 modals</dd>
+            </div>
+            <div class="flex items-center justify-between">
+              <dt class="text-ink-2">Risks logged</dt>
+              <dd class="flex items-center gap-2">
+                <span class="bdg bdg-red">4 critical</span><span class="bdg bdg-amber">6 high</span>
+              </dd>
+            </div>
+          </dl>
+          <p class="mt-4 text-[12px] leading-relaxed text-ink-3">
+            Tokens, fonts and component classes are inherited verbatim from
+            <span class="font-mono">globals.css</span> — nothing here forks the design system.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div class="mx-auto max-w-container px-5"><div class="hairline"></div></div>
+
+    <!-- ============================================================= -->
+    <!-- ====================  PART 1 — MISSING PAGES  ================ -->
+    <!-- ============================================================= -->
+    <div class="mx-auto max-w-container px-5 pt-10">
+      <span class="eyebrow text-accent">Part 1</span>
+      <h2 class="display mt-2 text-[30px] font-semibold tracking-tight">Pages the mockups never drew</h2>
+      <p class="mt-2 max-w-3xl text-[14px] text-ink-2">
+        Each frame below maps to a real route or component already present in
+        <span class="font-mono text-[12px]">src/</span> — they simply had no high-fidelity design. Routes are shown as they exist in the app.
+      </p>
+    </div>
+
+    <!-- ---------- 404 / not-found ---------- -->
+    <section id="notfound" class="mx-auto max-w-container scroll-mt-24 px-5 py-8">
+      <div class="frame-label">
+        <span class="eyebrow">System state</span>
+        <h2>404 — Not Found</h2>
+        <span class="route">src/app/[locale]/not-found.tsx</span>
+        <span class="tag-new">New design</span>
+      </div>
+      <div class="frame">
+        <div class="winbar">
+          <span class="wdot bg-[#FF5F57]"></span><span class="wdot bg-[#FEBC2E]"></span><span class="wdot bg-[#28C840]"></span>
+          <span class="url"><i data-lucide="lock" class="text-[11px]"></i> velora.store/vi/khong-ton-tai</span>
+        </div>
+        <div class="grid items-stretch md:grid-cols-2">
+          <!-- editorial left -->
+          <div class="flex flex-col justify-center gap-6 bg-paper px-10 py-16">
+            <div>
+              <span class="display block text-[120px] font-semibold leading-none text-ink/90">404</span>
+              <div class="mt-2 h-1 w-16 rounded bg-accent"></div>
+            </div>
+            <h3 class="display text-[26px] font-semibold leading-tight">
+              This page wandered off<br />the shelf.
+            </h3>
+            <p class="max-w-sm text-[14px] leading-relaxed text-ink-2">
+              The title you were looking for may have been moved, sold out, or never catalogued. Let's get you back to the stacks.
+            </p>
+            <div class="flex flex-wrap gap-2.5">
+              <a class="btn-ink rounded-full px-5 py-2.5 text-[13px]"><i data-lucide="home" class="text-[15px]"></i> Back home</a>
+              <a class="btn-soft rounded-full px-5 py-2.5 text-[13px]"><i data-lucide="search" class="text-[15px]"></i> Browse catalog</a>
+            </div>
+          </div>
+          <!-- spine illustration right -->
+          <div class="relative flex items-center justify-center overflow-hidden bg-ink px-10 py-16">
+            <div class="flex items-end gap-2.5">
+              <div class="h-40 w-9 rounded-t bg-[#2A2521]"></div>
+              <div class="h-52 w-9 rounded-t bg-accent/80"></div>
+              <div class="h-36 w-9 rounded-t bg-[#3A332C]"></div>
+              <div class="h-60 w-9 -rotate-2 rounded-t bg-paper/90"></div>
+              <div class="h-44 w-9 rounded-t bg-[#2A2521]"></div>
+              <div class="h-28 w-9 rounded-t bg-accent/50"></div>
+            </div>
+            <div class="absolute bottom-8 right-9 font-mono text-[11px] text-white/30">// shelf · row 04 · not found</div>
+          </div>
+        </div>
+      </div>
+      <p class="mt-3 text-[12px] text-ink-3">
+        <i data-lucide="info" class="inline text-[12px]"></i>
+        Notes: serif numeral keeps the editorial tone; right panel reuses the home "book spine" motif so the 404 never feels like a dead end.
+      </p>
+    </section>
+
+    <!-- ---------- Error boundary ---------- -->
+    <section id="error" class="mx-auto max-w-container scroll-mt-24 px-5 py-8">
+      <div class="frame-label">
+        <span class="eyebrow">System state</span>
+        <h2>Error boundary — 500 / segment crash</h2>
+        <span class="route">error.tsx · global-error.tsx</span>
+        <span class="tag-new">Missing in repo</span>
+      </div>
+      <div class="grid gap-5 lg:grid-cols-[1.3fr_1fr]">
+        <div class="frame">
+          <div class="winbar">
+            <span class="wdot bg-[#FF5F57]"></span><span class="wdot bg-[#FEBC2E]"></span><span class="wdot bg-[#28C840]"></span>
+            <span class="url">velora.store/vi/…</span>
+          </div>
+          <div class="flex flex-col items-center gap-5 px-10 py-16 text-center">
+            <span class="grid h-16 w-16 place-items-center rounded-2xl bg-accent-soft">
+              <i data-lucide="unplug" class="text-[26px] text-accent"></i>
+            </span>
+            <h3 class="display text-[26px] font-semibold">Something broke on our end</h3>
+            <p class="max-w-md text-[14px] leading-relaxed text-ink-2">
+              An unexpected error interrupted this view. Your cart and account are safe. You can retry the action or head back home.
+            </p>
+            <div class="flex flex-wrap justify-center gap-2.5">
+              <button class="btn-ink rounded-full px-5 py-2.5 text-[13px]"><i data-lucide="rotate-cw" class="text-[15px]"></i> Try again</button>
+              <a class="btn-soft rounded-full px-5 py-2.5 text-[13px]">Go home</a>
+            </div>
+            <details class="mt-2 w-full max-w-md text-left">
+              <summary class="flex items-center gap-1.5 text-[12px] font-semibold text-ink-3">
+                <i data-lucide="chevron-right" class="chev text-[13px]"></i> Technical details (dev only)
+              </summary>
+              <pre class="code mt-3 text-[11.5px]"><span class="c">// digest surfaced to the user, full stack logged server-side</span>
+Error digest: <span class="m">a91f3c2e</span>
+  at ProductGallery (detail/[...slug])
+  at renderWithHooks</pre>
+            </details>
+          </div>
+        </div>
+        <div class="card p-5">
+          <span class="eyebrow">Why this matters</span>
+          <p class="mt-3 text-[13px] leading-relaxed text-ink-2">
+            The app ships <span class="font-mono text-[12px]">not-found.tsx</span> but <span class="text-ink font-semibold">no <span class="font-mono text-[12px]">error.tsx</span></span>.
+            In the App Router an unhandled throw in any client component (e.g. a failed query in
+            <span class="font-mono text-[12px]">ProductGallery</span>) bubbles to Next's bare default error page — off-brand and unrecoverable without a hard reload.
+          </p>
+          <div class="mt-4 hairline"></div>
+          <p class="mt-4 text-[12.5px] font-semibold text-ink">Minimum set to add</p>
+          <ul class="mt-2 space-y-2 text-[13px] text-ink-2">
+            <li class="flex gap-2"><i data-lucide="check" class="mt-0.5 text-[14px] text-ok"></i> <span class="font-mono text-[12px]">app/[locale]/error.tsx</span> — segment reset</li>
+            <li class="flex gap-2"><i data-lucide="check" class="mt-0.5 text-[14px] text-ok"></i> <span class="font-mono text-[12px]">app/global-error.tsx</span> — root fallback</li>
+            <li class="flex gap-2"><i data-lucide="check" class="mt-0.5 text-[14px] text-ok"></i> Per-feature <span class="font-mono text-[12px]">loading.tsx</span> for Suspense</li>
+          </ul>
+          <pre class="code mt-4"><span class="c">// app/[locale]/error.tsx</span>
+<span class="s">"use client"</span>;
+<span class="k">export default function</span> <span class="f">Error</span>({ error, reset }) {
+  <span class="k">return</span> <span class="f">&lt;ErrorState</span> digest={error.digest} onRetry={reset} <span class="f">/&gt;</span>;
+}</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- Coming soon ---------- -->
+    <section id="coming" class="mx-auto max-w-container scroll-mt-24 px-5 py-8">
+      <div class="frame-label">
+        <span class="eyebrow">System state</span>
+        <h2>Coming soon</h2>
+        <span class="route">(dashboard)/coming-soon/page.tsx</span>
+        <span class="tag-new">Redesign</span>
+      </div>
+      <div class="frame">
+        <div class="winbar">
+          <span class="wdot bg-[#FF5F57]"></span><span class="wdot bg-[#FEBC2E]"></span><span class="wdot bg-[#28C840]"></span>
+          <span class="url">velora.store/vi/admin/promotions</span>
+        </div>
+        <div class="relative grid place-items-center px-10 py-20">
+          <div class="pointer-events-none absolute inset-0 opacity-[0.04]"
+               style="background-image: radial-gradient(circle at 1px 1px, #1A1714 1px, transparent 0); background-size: 22px 22px;"></div>
+          <div class="relative flex max-w-lg flex-col items-center text-center">
+            <span class="chip bg-accent-soft text-accent">
+              <span class="sev sev-crit demo-pulse !ring-accent-soft"></span> In progress
+            </span>
+            <h3 class="display mt-5 text-[34px] font-semibold leading-tight">Promotions &amp; Campaigns</h3>
+            <p class="mt-3 text-[14px] leading-relaxed text-ink-2">
+              Coupon rules, scheduled discounts and bundle pricing are being wired to the catalog. Want a heads-up when it ships?
+            </p>
+            <form class="mt-6 flex w-full max-w-sm items-center gap-2">
+              <input class="field" placeholder="you@velora.store" />
+              <button class="btn-ink shrink-0 rounded-lg px-4 py-2 text-[13px]">Notify me</button>
+            </form>
+            <div class="mt-7 flex items-center gap-2 text-[12px] text-ink-3">
+              <span class="font-mono">ETA</span><span class="h-3 w-px bg-line-2"></span><span>Q3 · 2026</span>
+              <span class="h-3 w-px bg-line-2"></span><span class="text-ok font-semibold">62% complete</span>
+            </div>
+            <div class="mt-2 h-1.5 w-full max-w-sm overflow-hidden rounded-full bg-line">
+              <div class="h-full w-[62%] rounded-full bg-ok"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- Command palette ⌘K ---------- -->
+    <section id="palette" class="mx-auto max-w-container scroll-mt-24 px-5 py-8">
+      <div class="frame-label">
+        <span class="eyebrow">Power surface</span>
+        <h2>Command palette · semantic search</h2>
+        <span class="route">cmdk · use-search-sematic · use-search-isbn</span>
+        <span class="tag-new">New design</span>
+      </div>
+      <div class="frame">
+        <div class="relative bg-paper px-6 py-12">
+          <!-- dimmed page hint -->
+          <div class="pointer-events-none absolute inset-0 bg-ink/5 backdrop-blur-[1px]"></div>
+          <div class="relative mx-auto w-full max-w-2xl overflow-hidden rounded-2xl border border-line bg-surface shadow-2xl">
+            <!-- input row -->
+            <div class="flex items-center gap-3 border-b border-line px-4 py-3.5">
+              <i data-lucide="search" class="text-[18px] text-ink-3"></i>
+              <input class="flex-1 bg-transparent text-[15px] text-ink placeholder:text-ink-3 outline-none" placeholder="Search books, orders, customers… or ask anything" value="nhà giả kim" />
+              <span class="kbd">esc</span>
+            </div>
+            <!-- results -->
+            <div class="max-h-[360px] overflow-y-auto p-2">
+              <p class="px-3 pb-1 pt-2 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink-3">Semantic matches</p>
+              <a class="flex items-center gap-3 rounded-lg bg-ink px-3 py-2.5 text-white">
+                <span class="grid h-9 w-7 place-items-center rounded bg-white/15 text-[10px]">📖</span>
+                <span class="flex-1">
+                  <span class="block text-[13.5px] font-semibold">Nhà Giả Kim — Paulo Coelho</span>
+                  <span class="block text-[11.5px] text-white/55">Tiểu thuyết · còn 24 bản · ⭐ 4.8</span>
+                </span>
+                <span class="font-mono text-[11px] text-white/50">↵ open</span>
+              </a>
+              <a class="mt-1 flex items-center gap-3 rounded-lg px-3 py-2.5 hover:bg-paper">
+                <span class="grid h-9 w-7 place-items-center rounded bg-paper text-[10px]">📖</span>
+                <span class="flex-1">
+                  <span class="block text-[13.5px] font-semibold text-ink">Hành trình của nhà giả kim trẻ</span>
+                  <span class="block text-[11.5px] text-ink-3">Kỹ năng sống · còn 8 bản</span>
+                </span>
+                <span class="bdg bdg-blue">94% match</span>
+              </a>
+
+              <p class="px-3 pb-1 pt-4 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink-3">Quick actions</p>
+              <div class="grid grid-cols-2 gap-1">
+                <a class="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[13px] text-ink-2 hover:bg-paper"><i data-lucide="scan-barcode" class="text-[16px] text-ink-3"></i> Tra cứu theo ISBN</a>
+                <a class="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[13px] text-ink-2 hover:bg-paper"><i data-lucide="package-plus" class="text-[16px] text-ink-3"></i> Tạo sách mới</a>
+                <a class="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[13px] text-ink-2 hover:bg-paper"><i data-lucide="receipt-text" class="text-[16px] text-ink-3"></i> Mở đơn hàng #…</a>
+                <a class="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[13px] text-ink-2 hover:bg-paper"><i data-lucide="refresh-cw" class="text-[16px] text-ink-3"></i> Reindex tìm kiếm</a>
+              </div>
+            </div>
+            <!-- footer -->
+            <div class="flex items-center justify-between border-t border-line bg-[#FBFAF7] px-4 py-2.5 text-[11px] text-ink-3">
+              <span class="flex items-center gap-2"><span class="kbd">↑</span><span class="kbd">↓</span> navigate <span class="kbd">↵</span> select</span>
+              <span class="flex items-center gap-1.5"><i data-lucide="sparkles" class="text-[12px] text-accent"></i> Semantic ranking on</span>
+            </div>
+          </div>
+          <p class="relative mt-4 text-center text-[12px] text-ink-3">Trigger with <span class="kbd">⌘</span><span class="kbd">K</span> / <span class="kbd">Ctrl</span><span class="kbd">K</span> — wraps the existing <span class="font-mono text-[11px]">cmdk</span> dependency already in package.json.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- Notifications center ---------- -->
+    <section id="notifs" class="mx-auto max-w-container scroll-mt-24 px-5 py-8">
+      <div class="frame-label">
+        <span class="eyebrow">Header surface</span>
+        <h2>Notifications center</h2>
+        <span class="route">Header/NotificationDropdown · NotificationItem</span>
+        <span class="tag-new">Full-page + dropdown</span>
+      </div>
+      <div class="grid gap-5 lg:grid-cols-[1fr_1.25fr]">
+        <!-- dropdown -->
+        <div class="frame">
+          <div class="winbar"><span class="wdot bg-[#FF5F57]"></span><span class="wdot bg-[#FEBC2E]"></span><span class="wdot bg-[#28C840]"></span><span class="url">dropdown · 380px</span></div>
+          <div class="bg-paper p-6">
+            <div class="mx-auto max-w-sm overflow-hidden rounded-2xl border border-line bg-surface shadow-xl">
+              <div class="flex items-center justify-between border-b border-line px-4 py-3">
+                <span class="text-[14px] font-semibold text-ink">Notifications</span>
+                <button class="text-[12px] font-semibold text-accent hover:underline">Mark all read</button>
+              </div>
+              <div class="divide-y divide-line">
+                <div class="flex gap-3 bg-accent-soft/40 px-4 py-3">
+                  <span class="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-ok/10 text-ok"><i data-lucide="truck" class="text-[15px]"></i></span>
+                  <div class="flex-1">
+                    <p class="text-[13px] leading-snug text-ink"><span class="font-semibold">Order #A2F91</span> is out for delivery.</p>
+                    <p class="mt-0.5 text-[11.5px] text-ink-3">2 min ago</p>
+                  </div>
+                  <span class="mt-1 h-2 w-2 shrink-0 rounded-full bg-accent"></span>
+                </div>
+                <div class="flex gap-3 px-4 py-3">
+                  <span class="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-blue-50 text-blue-600"><i data-lucide="star" class="text-[15px]"></i></span>
+                  <div class="flex-1">
+                    <p class="text-[13px] leading-snug text-ink-2">Your review for <span class="font-semibold text-ink">Đắc Nhân Tâm</span> was published.</p>
+                    <p class="mt-0.5 text-[11.5px] text-ink-3">1 h ago</p>
+                  </div>
+                </div>
+                <div class="flex gap-3 px-4 py-3">
+                  <span class="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-amber-50 text-amber-600"><i data-lucide="percent" class="text-[15px]"></i></span>
+                  <div class="flex-1">
+                    <p class="text-[13px] leading-snug text-ink-2">A book on your wishlist dropped <span class="font-semibold text-ink">-20%</span>.</p>
+                    <p class="mt-0.5 text-[11.5px] text-ink-3">Yesterday</p>
+                  </div>
+                </div>
+              </div>
+              <a class="block border-t border-line px-4 py-2.5 text-center text-[12.5px] font-semibold text-ink hover:bg-paper">View all</a>
+            </div>
+          </div>
+        </div>
+        <!-- empty + grouped full page -->
+        <div class="frame">
+          <div class="winbar"><span class="wdot bg-[#FF5F57]"></span><span class="wdot bg-[#FEBC2E]"></span><span class="wdot bg-[#28C840]"></span><span class="url">/vi/notifications</span></div>
+          <div class="grid grid-cols-2">
+            <div class="border-r border-line p-6">
+              <p class="eyebrow mb-3">Empty state</p>
+              <div class="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-line-2 bg-paper px-5 py-10 text-center">
+                <span class="grid h-14 w-14 place-items-center rounded-full bg-surface text-ink-3"><i data-lucide="bell-off" class="text-[24px]"></i></span>
+                <p class="text-[13.5px] font-semibold text-ink">You're all caught up</p>
+                <p class="text-[12px] text-ink-3">New order updates and offers will show here.</p>
+              </div>
+            </div>
+            <div class="p-6">
+              <p class="eyebrow mb-3">Grouped · Today</p>
+              <div class="space-y-3">
+                <div class="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-ink-3"><span class="h-px flex-1 bg-line"></span> Today <span class="h-px flex-1 bg-line"></span></div>
+                <div class="flex gap-2.5"><span class="mt-0.5 h-2 w-2 rounded-full bg-accent"></span><p class="text-[12.5px] text-ink-2"><span class="font-semibold text-ink">Order shipped</span> · 09:14</p></div>
+                <div class="flex gap-2.5"><span class="mt-0.5 h-2 w-2 rounded-full bg-line-2"></span><p class="text-[12.5px] text-ink-3">Password changed · 08:02</p></div>
+                <div class="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-ink-3"><span class="h-px flex-1 bg-line"></span> Earlier <span class="h-px flex-1 bg-line"></span></div>
+                <div class="flex gap-2.5"><span class="mt-0.5 h-2 w-2 rounded-full bg-line-2"></span><p class="text-[12.5px] text-ink-3">Welcome to Velora 👋</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- RBAC ---------- -->
+    <section id="rbac" class="mx-auto max-w-container scroll-mt-24 px-5 py-8">
+      <div class="frame-label">
+        <span class="eyebrow">Admin · missing UI</span>
+        <h2>Roles &amp; Permissions</h2>
+        <span class="route">features/role · permission · role-permission</span>
+        <span class="tag-new">No page exists yet</span>
+      </div>
+      <div class="frame">
+        <div class="winbar"><span class="wdot bg-[#FF5F57]"></span><span class="wdot bg-[#FEBC2E]"></span><span class="wdot bg-[#28C840]"></span><span class="url">/vi/admin/access-control</span></div>
+        <div class="grid md:grid-cols-[230px_1fr]">
+          <!-- roles list -->
+          <div class="border-r border-line bg-[#FBFAF7] p-4">
+            <div class="flex items-center justify-between">
+              <span class="eyebrow">Roles</span>
+              <button class="grid h-7 w-7 place-items-center rounded-lg border border-line bg-surface text-ink-2 hover:text-ink"><i data-lucide="plus" class="text-[15px]"></i></button>
+            </div>
+            <div class="mt-3 space-y-1">
+              <button class="flex w-full items-center justify-between rounded-lg bg-ink px-3 py-2 text-[13px] font-medium text-white">ADMIN <span class="rounded-full bg-white/20 px-1.5 text-[10px]">all</span></button>
+              <button class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-[13px] font-medium text-ink-2 hover:bg-paper">STAFF <span class="text-[11px] text-ink-3">18</span></button>
+              <button class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-[13px] font-medium text-ink-2 hover:bg-paper">WAREHOUSE <span class="text-[11px] text-ink-3">9</span></button>
+              <button class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-[13px] font-medium text-ink-2 hover:bg-paper">SALE <span class="text-[11px] text-ink-3">12</span></button>
+            </div>
+          </div>
+          <!-- permission matrix -->
+          <div class="p-5">
+            <div class="mb-4 flex items-center justify-between">
+              <div>
+                <h3 class="display text-[18px] font-semibold">STAFF · permissions</h3>
+                <p class="text-[12px] text-ink-3">Toggle capabilities per resource. Inherited rules shown dimmed.</p>
+              </div>
+              <button class="btn-ink rounded-lg px-4 py-2 text-[12.5px]">Save changes</button>
+            </div>
+            <table class="w-full text-left text-[13px]">
+              <thead>
+                <tr class="border-b border-line text-[11px] uppercase tracking-wider text-ink-3">
+                  <th class="py-2">Resource</th><th class="py-2 text-center">Read</th><th class="py-2 text-center">Create</th><th class="py-2 text-center">Update</th><th class="py-2 text-center">Delete</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-line/70">
+                <script type="text/template"></script>
+                <tr><td class="py-2.5 font-medium text-ink">Books</td>
+                  <td class="text-center"><span class="inline-block h-5 w-9 rounded-full bg-ok p-0.5"><span class="block h-4 w-4 translate-x-4 rounded-full bg-white"></span></span></td>
+                  <td class="text-center"><span class="inline-block h-5 w-9 rounded-full bg-ok p-0.5"><span class="block h-4 w-4 translate-x-4 rounded-full bg-white"></span></span></td>
+                  <td class="text-center"><span class="inline-block h-5 w-9 rounded-full bg-ok p-0.5"><span class="block h-4 w-4 translate-x-4 rounded-full bg-white"></span></span></td>
+                  <td class="text-center"><span class="inline-block h-5 w-9 rounded-full bg-line-2 p-0.5"><span class="block h-4 w-4 rounded-full bg-white"></span></span></td></tr>
+                <tr><td class="py-2.5 font-medium text-ink">Orders</td>
+                  <td class="text-center"><span class="inline-block h-5 w-9 rounded-full bg-ok p-0.5"><span class="block h-4 w-4 translate-x-4 rounded-full bg-white"></span></span></td>
+                  <td class="text-center"><span class="inline-block h-5 w-9 rounded-full bg-line-2 p-0.5"><span class="block h-4 w-4 rounded-full bg-white"></span></span></td>
+                  <td class="text-center"><span class="inline-block h-5 w-9 rounded-full bg-ok p-0.5"><span class="block h-4 w-4 translate-x-4 rounded-full bg-white"></span></span></td>
+                  <td class="text-center"><span class="inline-block h-5 w-9 rounded-full bg-line-2 p-0.5"><span class="block h-4 w-4 rounded-full bg-white"></span></span></td></tr>
+                <tr><td class="py-2.5 font-medium text-ink">Customers</td>
+                  <td class="text-center"><span class="inline-block h-5 w-9 rounded-full bg-ok p-0.5"><span class="block h-4 w-4 translate-x-4 rounded-full bg-white"></span></span></td>
+                  <td class="text-center"><span class="inline-block h-5 w-9 rounded-full bg-line-2 p-0.5"><span class="block h-4 w-4 rounded-full bg-white"></span></span></td>
+                  <td class="text-center"><span class="inline-block h-5 w-9 rounded-full bg-line-2 p-0.5"><span class="block h-4 w-4 rounded-full bg-white"></span></span></td>
+                  <td class="text-center"><span class="inline-block h-5 w-9 rounded-full bg-line-2 p-0.5"><span class="block h-4 w-4 rounded-full bg-white"></span></span></td></tr>
+                <tr><td class="py-2.5 font-medium text-ink">Suppliers</td>
+                  <td class="text-center"><span class="inline-block h-5 w-9 rounded-full bg-ok p-0.5"><span class="block h-4 w-4 translate-x-4 rounded-full bg-white"></span></span></td>
+                  <td class="text-center"><span class="inline-block h-5 w-9 rounded-full bg-ok p-0.5"><span class="block h-4 w-4 translate-x-4 rounded-full bg-white"></span></span></td>
+                  <td class="text-center"><span class="inline-block h-5 w-9 rounded-full bg-ok p-0.5"><span class="block h-4 w-4 translate-x-4 rounded-full bg-white"></span></span></td>
+                  <td class="text-center"><span class="inline-block h-5 w-9 rounded-full bg-line-2 p-0.5"><span class="block h-4 w-4 rounded-full bg-white"></span></span></td></tr>
+              </tbody>
+            </table>
+            <p class="mt-4 flex items-center gap-1.5 text-[11.5px] text-ink-3"><i data-lucide="shield-check" class="text-[13px] text-ok"></i> Changes are diffed against role defaults before submit — mirrors <span class="font-mono text-[11px]">use-create-role-permission-mutation</span>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- Write a review ---------- -->
+    <section id="review-write" class="mx-auto max-w-container scroll-mt-24 px-5 py-8">
+      <div class="frame-label">
+        <span class="eyebrow">Storefront · missing UI</span>
+        <h2>Write a review</h2>
+        <span class="route">features/review · use-create-review-draft-mutation</span>
+        <span class="tag-new">New design</span>
+      </div>
+      <div class="grid gap-5 lg:grid-cols-2">
+        <div class="frame">
+          <div class="winbar"><span class="wdot bg-[#FF5F57]"></span><span class="wdot bg-[#FEBC2E]"></span><span class="wdot bg-[#28C840]"></span><span class="url">detail/… · review composer</span></div>
+          <div class="p-6">
+            <div class="flex items-center gap-3">
+              <div class="h-14 w-10 rounded bg-paper ring-1 ring-line"></div>
+              <div>
+                <p class="text-[14px] font-semibold text-ink">Tuổi Trẻ Đáng Giá Bao Nhiêu</p>
+                <p class="text-[12px] text-ink-3">Rosie Nguyễn · Bìa mềm</p>
+              </div>
+            </div>
+            <div class="mt-5">
+              <p class="flabel">Your rating</p>
+              <div class="flex gap-1.5 text-accent">
+                <i data-lucide="star" class="text-[26px] fill-accent"></i>
+                <i data-lucide="star" class="text-[26px] fill-accent"></i>
+                <i data-lucide="star" class="text-[26px] fill-accent"></i>
+                <i data-lucide="star" class="text-[26px] fill-accent"></i>
+                <i data-lucide="star" class="text-[26px] text-line-2"></i>
+              </div>
+            </div>
+            <div class="mt-4">
+              <p class="flabel">Title</p>
+              <input class="field" value="A gentle, honest nudge" />
+            </div>
+            <div class="mt-4">
+              <p class="flabel">Review</p>
+              <textarea class="field !h-28 py-2.5" >Read it in two sittings. The advice is simple but the framing makes it land…</textarea>
+              <div class="mt-1.5 flex items-center justify-between text-[11.5px] text-ink-3"><span>Drafts autosave</span><span>148 / 2000</span></div>
+            </div>
+            <div class="mt-4 flex items-center justify-between">
+              <label class="flex items-center gap-2 text-[12.5px] text-ink-2"><input type="checkbox" class="h-4 w-4 rounded border-line-2 accent-[#1A1714]" checked /> Verified purchase</label>
+              <div class="flex gap-2">
+                <button class="btn-soft rounded-lg px-4 py-2 text-[12.5px]">Save draft</button>
+                <button class="btn-ink rounded-lg px-4 py-2 text-[12.5px]">Publish</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- states -->
+        <div class="space-y-5">
+          <div class="card p-5">
+            <p class="eyebrow mb-3">Submitting · optimistic</p>
+            <div class="flex items-center gap-3 rounded-xl border border-line bg-paper px-4 py-3">
+              <span class="check grid h-9 w-9 place-items-center rounded-full bg-ok/10 text-ok">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+              </span>
+              <div><p class="text-[13px] font-semibold text-ink">Posting your review…</p><p class="text-[11.5px] text-ink-3">Appears instantly, confirmed in the background.</p></div>
+            </div>
+          </div>
+          <div class="card p-5">
+            <p class="eyebrow mb-3">Already reviewed · locked</p>
+            <div class="flex items-center gap-3 rounded-xl border border-dashed border-line-2 px-4 py-3 text-ink-3">
+              <i data-lucide="lock" class="text-[18px]"></i>
+              <p class="text-[12.5px]">You reviewed this title on 12 Apr. <a class="font-semibold text-ink underline">Edit your review</a></p>
+            </div>
+          </div>
+          <div class="card p-5">
+            <p class="eyebrow mb-3">Not purchased · gated</p>
+            <div class="flex items-center gap-3 rounded-xl bg-amber-50 px-4 py-3 ring-1 ring-inset ring-amber-600/20">
+              <i data-lucide="info" class="text-[18px] text-amber-600"></i>
+              <p class="text-[12.5px] text-amber-800">Only verified buyers can rate. <a class="font-semibold underline">Buy this book</a> to leave a review.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- Chat widget ---------- -->
+    <section id="chat" class="mx-auto max-w-container scroll-mt-24 px-5 py-8">
+      <div class="frame-label">
+        <span class="eyebrow">Storefront</span>
+        <h2>Support chat widget</h2>
+        <span class="route">(main)/_components/ChatWidget</span>
+        <span class="tag-new">Redesign</span>
+      </div>
+      <div class="frame">
+        <div class="relative bg-paper px-6 py-10" style="min-height:420px">
+          <div class="pointer-events-none absolute inset-0 opacity-[0.04]" style="background-image: radial-gradient(circle at 1px 1px, #1A1714 1px, transparent 0); background-size: 22px 22px;"></div>
+          <!-- open panel -->
+          <div class="relative ml-auto flex w-full max-w-sm flex-col overflow-hidden rounded-3xl border border-line bg-surface shadow-2xl">
+            <div class="flex items-center gap-3 bg-ink px-4 py-3.5 text-white">
+              <span class="relative grid h-9 w-9 place-items-center rounded-full bg-white/15"><i data-lucide="sparkles" class="text-[16px]"></i><span class="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-ok ring-2 ring-ink"></span></span>
+              <div class="flex-1"><p class="text-[13.5px] font-semibold">Velora Assistant</p><p class="text-[11px] text-white/55">Typically replies in minutes</p></div>
+              <button class="text-white/60 hover:text-white"><i data-lucide="minus" class="text-[18px]"></i></button>
+            </div>
+            <div class="flex flex-col gap-3 px-4 py-5">
+              <div class="max-w-[80%] rounded-2xl rounded-tl-sm bg-paper px-3.5 py-2.5 text-[13px] text-ink-2">Hi! Looking for a recommendation or tracking an order?</div>
+              <div class="ml-auto max-w-[80%] rounded-2xl rounded-tr-sm bg-ink px-3.5 py-2.5 text-[13px] text-white">Where is my order #A2F91?</div>
+              <div class="flex items-center gap-1.5 px-1">
+                <span class="h-2 w-2 animate-bounce rounded-full bg-ink-3" style="animation-delay:0ms"></span>
+                <span class="h-2 w-2 animate-bounce rounded-full bg-ink-3" style="animation-delay:120ms"></span>
+                <span class="h-2 w-2 animate-bounce rounded-full bg-ink-3" style="animation-delay:240ms"></span>
+              </div>
+            </div>
+            <div class="mt-auto flex flex-wrap gap-1.5 px-4 pb-2">
+              <button class="chip border border-line bg-paper text-ink-2 hover:border-ink/30">Track my order</button>
+              <button class="chip border border-line bg-paper text-ink-2 hover:border-ink/30">Return policy</button>
+            </div>
+            <div class="flex items-center gap-2 border-t border-line px-3 py-2.5">
+              <input class="flex-1 bg-transparent text-[13px] outline-none placeholder:text-ink-3" placeholder="Type a message…" />
+              <button class="grid h-9 w-9 place-items-center rounded-full bg-ink text-white"><i data-lucide="send" class="text-[15px]"></i></button>
+            </div>
+          </div>
+          <!-- FAB -->
+          <button class="demo-float absolute bottom-6 right-6 grid h-14 w-14 place-items-center rounded-full bg-accent text-white shadow-xl demo-pulse">
+            <i data-lucide="message-circle" class="text-[24px]"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <div class="mx-auto max-w-container px-5"><div class="hairline"></div></div>
+
+    <!-- ============================================================= -->
+    <!-- ====================  PART 2 — SYSTEM  ======================= -->
+    <!-- ============================================================= -->
+    <div class="mx-auto max-w-container px-5 pt-10">
+      <span class="eyebrow text-accent">Part 2</span>
+      <h2 class="display mt-2 text-[30px] font-semibold tracking-tight">A system, not one-off screens</h2>
+      <p class="mt-2 max-w-3xl text-[14px] text-ink-2">Formalizing the three pattern families that recur across every surface — so future pages compose instead of reinvent.</p>
+    </div>
+
+    <!-- ---------- Modal design ---------- -->
+    <section id="modals" class="mx-auto max-w-container scroll-mt-24 px-5 py-8">
+      <div class="frame-label">
+        <span class="eyebrow">Pattern family</span>
+        <h2>Modal system</h2>
+        <span class="route">components/common/Modal/* · 14 variants</span>
+        <span class="tag-fix">Unify</span>
+      </div>
+
+      <!-- anatomy -->
+      <div class="grid gap-5 lg:grid-cols-[1.1fr_1fr]">
+        <div class="frame">
+          <div class="winbar"><span class="wdot bg-[#FF5F57]"></span><span class="wdot bg-[#FEBC2E]"></span><span class="wdot bg-[#28C840]"></span><span class="url">Modal anatomy · standard shell</span></div>
+          <div class="relative bg-paper p-8">
+            <div class="absolute inset-0 bg-slate-900/30 backdrop-blur-[2px]"></div>
+            <div class="relative mx-auto w-full max-w-md overflow-hidden rounded-2xl border border-line bg-surface shadow-2xl">
+              <div class="flex items-start justify-between gap-4 px-6 pt-6">
+                <div>
+                  <p class="eyebrow text-accent">Confirm</p>
+                  <h3 class="display mt-1 text-[20px] font-semibold">Modal title goes here</h3>
+                </div>
+                <button class="grid h-8 w-8 place-items-center rounded-md text-ink-3 hover:bg-paper"><i data-lucide="x" class="text-[16px]"></i></button>
+              </div>
+              <div class="px-6 py-4 text-[13.5px] leading-relaxed text-ink-2">Body region scrolls when tall (<span class="font-mono text-[12px]">max-h-[90vh]</span>). Header and footer stay pinned.</div>
+              <div class="flex justify-end gap-2 border-t border-line bg-[#FBFAF7] px-6 py-3.5">
+                <button class="btn-soft rounded-lg px-4 py-2 text-[12.5px]">Cancel</button>
+                <button class="btn-ink rounded-lg px-4 py-2 text-[12.5px]">Confirm</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card p-5">
+          <span class="eyebrow">Anatomy contract</span>
+          <ul class="mt-3 space-y-2.5 text-[13px] text-ink-2">
+            <li class="flex gap-2.5"><span class="mt-1 h-1.5 w-1.5 rounded-full bg-accent"></span><b class="text-ink">Overlay</b> — <span class="font-mono text-[12px]">bg-slate-900/40 backdrop-blur-md</span>, closes on click.</li>
+            <li class="flex gap-2.5"><span class="mt-1 h-1.5 w-1.5 rounded-full bg-accent"></span><b class="text-ink">Panel</b> — <span class="font-mono text-[12px]">rounded-2xl border-line</span>, width token per size.</li>
+            <li class="flex gap-2.5"><span class="mt-1 h-1.5 w-1.5 rounded-full bg-accent"></span><b class="text-ink">Header</b> — eyebrow + serif title + close.</li>
+            <li class="flex gap-2.5"><span class="mt-1 h-1.5 w-1.5 rounded-full bg-accent"></span><b class="text-ink">Footer</b> — pinned, primary right-aligned.</li>
+            <li class="flex gap-2.5"><span class="mt-1 h-1.5 w-1.5 rounded-full bg-accent"></span><b class="text-ink">Motion</b> — spring scale-in (already in <span class="font-mono text-[12px]">ModalHost</span>).</li>
+          </ul>
+          <div class="mt-4 hairline"></div>
+          <p class="mt-3 text-[12.5px] font-semibold text-ink">Size tokens</p>
+          <div class="mt-2 flex flex-wrap gap-2 text-[11.5px]">
+            <span class="bdg bdg-gray font-mono">sm · max-w-md</span>
+            <span class="bdg bdg-gray font-mono">md · max-w-lg</span>
+            <span class="bdg bdg-gray font-mono">lg · max-w-3xl</span>
+            <span class="bdg bdg-gray font-mono">xl · max-w-5xl</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- variants row -->
+      <div class="mt-5 grid gap-5 md:grid-cols-3">
+        <!-- destructive confirm -->
+        <div class="card overflow-hidden">
+          <div class="border-b border-line bg-[#FBFAF7] px-4 py-2.5"><span class="eyebrow">Destructive confirm</span></div>
+          <div class="p-5">
+            <span class="grid h-11 w-11 place-items-center rounded-full bg-accent-soft text-accent"><i data-lucide="trash-2" class="text-[18px]"></i></span>
+            <h4 class="display mt-3 text-[17px] font-semibold">Delete this book?</h4>
+            <p class="mt-1 text-[12.5px] text-ink-2">This removes all variants and cannot be undone.</p>
+            <div class="mt-4 flex gap-2">
+              <button class="btn-soft flex-1 rounded-lg py-2 text-[12.5px]">Cancel</button>
+              <button class="btn-accent flex-1 rounded-lg py-2 text-[12.5px]">Delete</button>
+            </div>
+          </div>
+        </div>
+        <!-- form modal -->
+        <div class="card overflow-hidden">
+          <div class="border-b border-line bg-[#FBFAF7] px-4 py-2.5"><span class="eyebrow">Form modal</span></div>
+          <div class="p-5">
+            <h4 class="display text-[17px] font-semibold">Add supplier</h4>
+            <div class="mt-3 space-y-2.5">
+              <input class="field" placeholder="Supplier name" />
+              <input class="field" placeholder="Contact email" />
+            </div>
+            <button class="btn-ink mt-4 w-full rounded-lg py-2 text-[12.5px]">Create supplier</button>
+          </div>
+        </div>
+        <!-- detail / drawer -->
+        <div class="card overflow-hidden">
+          <div class="border-b border-line bg-[#FBFAF7] px-4 py-2.5"><span class="eyebrow">Detail · scrollable</span></div>
+          <div class="p-5">
+            <div class="flex items-center justify-between"><h4 class="display text-[17px] font-semibold">Order #A2F91</h4><span class="bdg bdg-green">Confirmed</span></div>
+            <div class="mt-3 space-y-2">
+              <div class="flex justify-between text-[12.5px]"><span class="text-ink-3">Items</span><span class="font-mono text-ink">3</span></div>
+              <div class="flex justify-between text-[12.5px]"><span class="text-ink-3">Total</span><span class="font-mono text-ink">412.000₫</span></div>
+              <div class="sk h-8 w-full"></div>
+              <div class="sk h-8 w-3/4"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <details class="mt-5 rounded-2xl border border-line bg-surface px-5 py-4">
+        <summary class="flex items-center gap-2 text-[13px] font-semibold text-ink">
+          <i data-lucide="chevron-right" class="chev text-[15px] text-ink-3"></i> Proposed: collapse 14 modals into one registry (less bundle, less switch)
+        </summary>
+        <div class="mt-4 grid gap-4 lg:grid-cols-2">
+          <pre class="code"><span class="c">// today — ModalHost eager-imports all 14 + a long switch</span>
+<span class="k">import</span> ModalBookDetail <span class="k">from</span> <span class="s">"./ModalBookDetail"</span>;
+<span class="k">import</span> ModalAddVariant <span class="k">from</span> <span class="s">"./ModalAddVariant"</span>;
+<span class="c">/* …12 more, all in the initial chunk… */</span>
+{type === ModalType.BOOK_DETAIL && <span class="f">&lt;ModalBookDetail/&gt;</span>}
+{type === ModalType.BOOK_ADD_VARIANT && <span class="f">&lt;ModalAddVariant/&gt;</span>}
+<span class="c">/* …12 more ternaries… */</span></pre>
+          <pre class="code"><span class="c">// proposed — lazy registry, one lookup, code-split</span>
+<span class="k">const</span> registry = {
+  [ModalType.BOOK_DETAIL]: <span class="f">lazy</span>(() => <span class="k">import</span>(<span class="s">"./ModalBookDetail"</span>)),
+  [ModalType.ADD_SUPPLIER]: <span class="f">lazy</span>(() => <span class="k">import</span>(<span class="s">"./ModalAddSupplier"</span>)),
+  <span class="c">// …</span>
+};
+<span class="k">const</span> Active = registry[type];
+<span class="k">return</span> Active && (
+  <span class="f">&lt;Suspense</span> fallback={<span class="f">&lt;ModalSkeleton/&gt;</span>}<span class="f">&gt;</span>
+    <span class="f">&lt;Active</span> onClose={onClose} <span class="f">/&gt;</span>
+  <span class="f">&lt;/Suspense&gt;</span>
+);</pre>
+        </div>
+        <p class="mt-3 text-[12.5px] text-ink-3">Each modal becomes its own async chunk; the storefront stops shipping admin-only modal code to every visitor.</p>
+      </details>
+    </section>
+
+    <!-- ---------- Component design ---------- -->
+    <section id="components" class="mx-auto max-w-container scroll-mt-24 px-5 py-8">
+      <div class="frame-label">
+        <span class="eyebrow">Pattern family</span>
+        <h2>Component library</h2>
+        <span class="route">components/ui · components/common</span>
+      </div>
+
+      <div class="grid gap-5 lg:grid-cols-3">
+        <!-- buttons -->
+        <div class="card p-5">
+          <span class="eyebrow">Buttons</span>
+          <div class="mt-4 flex flex-wrap items-center gap-2">
+            <button class="btn-ink rounded-lg px-4 py-2 text-[13px]">Primary</button>
+            <button class="btn-outline rounded-lg px-4 py-2 text-[13px]">Outline</button>
+            <button class="btn-soft rounded-lg px-4 py-2 text-[13px]">Soft</button>
+          </div>
+          <div class="mt-2 flex flex-wrap items-center gap-2">
+            <button class="btn-accent rounded-lg px-4 py-2 text-[13px]">Accent</button>
+            <button class="btn-ghost rounded-lg px-4 py-2 text-[13px]">Ghost</button>
+            <button class="btn-ink rounded-full px-4 py-2 text-[13px]"><i data-lucide="plus" class="text-[14px]"></i> Icon</button>
+          </div>
+          <div class="mt-2 flex flex-wrap items-center gap-2">
+            <button class="btn-ink rounded-lg px-4 py-2 text-[13px] opacity-50" disabled>Disabled</button>
+            <button class="btn-ink rounded-lg px-4 py-2 text-[13px]"><span class="spin"><i data-lucide="loader-2" class="text-[14px]"></i></span> Loading</button>
+          </div>
+        </div>
+        <!-- badges -->
+        <div class="card p-5">
+          <span class="eyebrow">Badges &amp; status</span>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="bdg bdg-green">In stock</span>
+            <span class="bdg bdg-amber">Low</span>
+            <span class="bdg bdg-red">Out</span>
+            <span class="bdg bdg-blue">New</span>
+            <span class="bdg bdg-purple">Pre-order</span>
+            <span class="bdg bdg-gray">Draft</span>
+          </div>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="chip bg-accent-soft text-accent"><span class="sev sev-crit !ring-accent-soft"></span> Live</span>
+            <span class="chip bg-paper text-ink-2 border border-line"><i data-lucide="truck" class="text-[13px]"></i> Shipping</span>
+            <span class="chip bg-ok/10 text-ok"><i data-lucide="check" class="text-[13px]"></i> Paid</span>
+          </div>
+        </div>
+        <!-- inputs -->
+        <div class="card p-5">
+          <span class="eyebrow">Form controls</span>
+          <div class="mt-4 space-y-3">
+            <input class="field" placeholder="Default input" />
+            <input class="field border-accent ring-4 ring-accent/10" value="Focused / error" />
+            <div class="flex items-center gap-3">
+              <span class="inline-block h-6 w-11 rounded-full bg-ink p-0.5"><span class="block h-5 w-5 translate-x-5 rounded-full bg-white transition"></span></span>
+              <span class="inline-block h-6 w-11 rounded-full bg-line-2 p-0.5"><span class="block h-5 w-5 rounded-full bg-white"></span></span>
+              <label class="flex items-center gap-2 text-[12.5px] text-ink-2"><input type="checkbox" class="h-4 w-4 rounded border-line-2 accent-[#1A1714]" checked/> Checkbox</label>
+            </div>
+          </div>
+        </div>
+        <!-- book card -->
+        <div class="card p-5">
+          <span class="eyebrow">Book card</span>
+          <div class="mt-4 lab w-32">
+            <div class="demo-lift overflow-hidden rounded-xl border border-line bg-surface">
+              <div class="aspect-[3/4] bg-gradient-to-br from-paper to-line"></div>
+              <div class="p-2.5">
+                <p class="truncate text-[12px] font-semibold text-ink">Nhà Giả Kim</p>
+                <p class="text-[11px] text-ink-3">79.000₫</p>
+              </div>
+            </div>
+          </div>
+          <p class="mt-3 text-[11.5px] text-ink-3">Hover lifts the card (see Animation).</p>
+        </div>
+        <!-- toast -->
+        <div class="card p-5">
+          <span class="eyebrow">Toasts (sonner)</span>
+          <div class="mt-4 space-y-2">
+            <div class="flex items-center gap-2.5 rounded-xl border border-line bg-surface px-3.5 py-2.5 shadow-sm"><i data-lucide="check-circle-2" class="text-[16px] text-ok"></i><span class="text-[12.5px] text-ink">Added to cart</span></div>
+            <div class="flex items-center gap-2.5 rounded-xl border border-line bg-surface px-3.5 py-2.5 shadow-sm"><i data-lucide="alert-circle" class="text-[16px] text-accent"></i><span class="text-[12.5px] text-ink">Payment failed — retry</span></div>
+          </div>
+        </div>
+        <!-- empty state -->
+        <div class="card p-5">
+          <span class="eyebrow">Empty state</span>
+          <div class="mt-4 flex flex-col items-center gap-2 rounded-xl border border-dashed border-line-2 bg-paper py-7 text-center">
+            <i data-lucide="inbox" class="text-[26px] text-ink-3"></i>
+            <p class="text-[12.5px] font-semibold text-ink">Nothing here yet</p>
+            <button class="btn-soft mt-1 rounded-lg px-3 py-1.5 text-[12px]">Add the first one</button>
+          </div>
+        </div>
+      </div>
+
+      <p class="mt-4 text-[12px] text-ink-3"><i data-lucide="info" class="inline text-[12px]"></i> All built on the Radix primitives already installed (avatar, dialog, dropdown, popover, select, switch, tabs, tooltip…) — no new dependencies required.</p>
+    </section>
+
+    <!-- ---------- Animation design ---------- -->
+    <section id="animation" class="mx-auto max-w-container scroll-mt-24 px-5 py-8">
+      <div class="frame-label">
+        <span class="eyebrow">Pattern family</span>
+        <h2>Motion language</h2>
+        <span class="route">framer-motion · tw-animate-css</span>
+      </div>
+      <p class="mb-4 text-[13px] text-ink-2"><i data-lucide="mouse-pointer-click" class="inline text-[13px]"></i> Hover any tile to play. All easings use <span class="font-mono text-[12px]">cubic-bezier(.22,1,.36,1)</span> (decelerate) or a soft spring for entrances.</p>
+      <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+        <div class="lab card grid h-36 place-items-center p-4"><div class="demo-fade-up text-center"><div class="mx-auto mb-2 h-10 w-10 rounded-xl bg-ink"></div><p class="text-[12px] font-semibold">Fade&nbsp;up</p><p class="text-[10.5px] text-ink-3">entrances · 0.6s</p></div></div>
+        <div class="lab card grid h-36 place-items-center p-4"><div class="demo-scale-in text-center"><div class="mx-auto mb-2 h-10 w-10 rounded-xl bg-accent"></div><p class="text-[12px] font-semibold">Scale&nbsp;in</p><p class="text-[10.5px] text-ink-3">modals · 0.5s</p></div></div>
+        <div class="lab card grid h-36 place-items-center p-4"><div class="demo-slide-right text-center"><div class="mx-auto mb-2 h-10 w-10 rounded-xl bg-ok"></div><p class="text-[12px] font-semibold">Slide&nbsp;in</p><p class="text-[10.5px] text-ink-3">drawers · 0.5s</p></div></div>
+        <div class="lab card grid h-36 place-items-center p-4"><div class="demo-pop text-center"><div class="mx-auto mb-2 grid h-10 w-10 place-items-center rounded-full bg-accent text-white"><i data-lucide="heart" class="text-[18px]"></i></div><p class="text-[12px] font-semibold">Pop</p><p class="text-[10.5px] text-ink-3">wishlist · spring</p></div></div>
+
+        <div class="lab card grid h-36 place-items-center p-4"><div class="text-center"><div class="demo-float mx-auto mb-2 h-10 w-10 rounded-xl bg-ink"></div><p class="text-[12px] font-semibold">Float</p><p class="text-[10.5px] text-ink-3">FAB · loop</p></div></div>
+        <div class="lab card grid h-36 place-items-center p-4"><div class="text-center"><span class="demo-pulse mx-auto mb-2 grid h-10 w-10 place-items-center rounded-full bg-accent text-white"><i data-lucide="bell" class="text-[16px]"></i></span><p class="text-[12px] font-semibold">Pulse&nbsp;ring</p><p class="text-[10.5px] text-ink-3">alerts · loop</p></div></div>
+        <div class="lab card grid h-36 place-items-center p-4"><div class="text-center"><span class="demo-shimmer-text display text-[22px] font-semibold">Velora</span><p class="mt-1 text-[12px] font-semibold">Shimmer text</p><p class="text-[10.5px] text-ink-3">loading titles</p></div></div>
+        <div class="lab card grid h-36 place-items-center p-4"><div class="text-center"><span class="check mx-auto mb-2 grid h-10 w-10 place-items-center rounded-full bg-ok/10 text-ok"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span><p class="text-[12px] font-semibold">Check draw</p><p class="text-[10.5px] text-ink-3">success · 0.5s</p></div></div>
+
+        <div class="lab card grid h-36 place-items-center p-4"><a class="demo-underline text-[15px] font-semibold text-ink">Hover&nbsp;link</a><p class="mt-2 text-[12px] font-semibold">Underline grow</p></div>
+        <div class="lab card grid h-36 place-items-center p-4"><div class="demo-lift h-16 w-12 rounded-lg border border-line bg-gradient-to-br from-paper to-line"></div><p class="mt-2 text-[12px] font-semibold">Card lift</p></div>
+        <div class="card grid h-36 place-items-center gap-2 p-4"><div class="sk h-3 w-20"></div><div class="sk h-3 w-24"></div><div class="sk h-3 w-16"></div><p class="text-[12px] font-semibold">Shimmer skeleton</p></div>
+        <div class="card grid h-36 place-items-center p-4"><span class="spin grid h-9 w-9 place-items-center rounded-full border-2 border-line border-t-ink"></span><p class="mt-2 text-[12px] font-semibold">Spinner</p></div>
+      </div>
+
+      <div class="mt-5 grid gap-5 lg:grid-cols-3">
+        <div class="card p-5 lg:col-span-2">
+          <span class="eyebrow">Stagger recipe — list entrance</span>
+          <pre class="code mt-3"><span class="c">// framer-motion · used for book grids, order lists, notifications</span>
+<span class="k">const</span> list = { show: { transition: { staggerChildren: <span class="m">0.05</span> } } };
+<span class="k">const</span> item = {
+  hidden: { opacity: <span class="m">0</span>, y: <span class="m">14</span> },
+  show:   { opacity: <span class="m">1</span>, y: <span class="m">0</span>, transition: { duration: <span class="m">0.5</span>, ease: [<span class="m">.22</span>,<span class="m">1</span>,<span class="m">.36</span>,<span class="m">1</span>] } },
+};
+<span class="f">&lt;motion.ul</span> variants={list} initial=<span class="s">"hidden"</span> animate=<span class="s">"show"</span><span class="f">&gt;</span>
+  {books.map(b => <span class="f">&lt;motion.li</span> key={b.id} variants={item}<span class="f">/&gt;</span>)}
+<span class="f">&lt;/motion.ul&gt;</span></pre>
+        </div>
+        <div class="card p-5">
+          <span class="eyebrow">Principles</span>
+          <ul class="mt-3 space-y-2 text-[12.5px] text-ink-2">
+            <li class="flex gap-2"><i data-lucide="gauge" class="mt-0.5 text-[14px] text-ink-3"></i> Entrances ≤ 600ms; exits faster.</li>
+            <li class="flex gap-2"><i data-lucide="move-diagonal" class="mt-0.5 text-[14px] text-ink-3"></i> Animate transform/opacity only.</li>
+            <li class="flex gap-2"><i data-lucide="accessibility" class="mt-0.5 text-[14px] text-ink-3"></i> Respect <span class="font-mono text-[11px]">prefers-reduced-motion</span>.</li>
+            <li class="flex gap-2"><i data-lucide="repeat" class="mt-0.5 text-[14px] text-ink-3"></i> Loops only for status (pulse/float).</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="mx-auto max-w-container px-5"><div class="hairline"></div></div>
+
+    <!-- ============================================================= -->
+    <!-- ====================  PART 3 — REVIEW  ======================= -->
+    <!-- ============================================================= -->
+    <div class="mx-auto max-w-container px-5 pt-10">
+      <span class="eyebrow text-accent">Part 3</span>
+      <h2 class="display mt-2 text-[30px] font-semibold tracking-tight">Frontend risk review</h2>
+      <p class="mt-2 max-w-3xl text-[14px] text-ink-2">
+        Grounded in the actual source — every item cites a real file. Severity reflects user/security impact × likelihood. Each card carries a proposed fix.
+      </p>
+      <!-- legend -->
+      <div class="mt-4 flex flex-wrap items-center gap-4 text-[12px] text-ink-2">
+        <span class="flex items-center gap-1.5"><span class="sev sev-crit"></span> Critical</span>
+        <span class="flex items-center gap-1.5"><span class="sev sev-high"></span> High</span>
+        <span class="flex items-center gap-1.5"><span class="sev sev-med"></span> Medium</span>
+        <span class="flex items-center gap-1.5"><span class="sev sev-low"></span> Low</span>
+      </div>
+    </div>
+
+    <section id="review" class="mx-auto max-w-container scroll-mt-24 px-5 py-8 space-y-5">
+
+      <!-- R1 -->
+      <div class="risk">
+        <div class="risk-h">
+          <span class="sev sev-crit"></span>
+          <span class="font-mono text-[11px] text-ink-3">R-01</span>
+          <h3 class="text-[15px] font-semibold text-ink">Token refresh is commented out — every 401 logs the user out</h3>
+          <span class="ml-auto route">src/utils/http.ts:66</span>
+        </div>
+        <div class="risk-b">
+          <p>The 401 interceptor sets up the refresh queue but the actual refresh call is disabled, so <span class="text-ink font-semibold">any expired access token drops straight to <span class="font-mono text-[12px]">clearSession()</span> + <span class="font-mono text-[12px]">localStorage.clear()</span></span>. The session-keep-alive the whole queue exists for never runs. The matching <span class="font-mono text-[12px]">proxy.ts</span> comment ("refreshtoken lỗi là bị lag luôn") confirms this is a live pain point.</p>
+          <div class="mt-3 grid gap-4 lg:grid-cols-2">
+            <pre class="code"><span class="c">// now — refresh never happens</span>
+<span class="k">try</span> {
+  <span class="del">// await refreshInstance.post("auth/refresh-token");</span>
+  <span class="f">processQueue</span>(<span class="m">null</span>);
+  <span class="k">return</span> <span class="f">axiosInstance</span>(originalRequest);
+}</pre>
+            <pre class="code"><span class="c">// fix — actually refresh, then drain queue</span>
+<span class="k">try</span> {
+  <span class="add">await refreshInstance.post("auth/refresh-token");</span>
+  <span class="f">processQueue</span>(<span class="m">null</span>);
+  <span class="k">return</span> <span class="f">axiosInstance</span>(originalRequest);
+} <span class="k">catch</span> (e) { <span class="f">processQueue</span>(e); <span class="c">/* then clear */</span> }</pre>
+          </div>
+          <p class="mt-3 text-[12.5px] text-ink-3"><b class="text-ink">Impact:</b> users kicked out mid-session on every token expiry. <b class="text-ink">Fix effort:</b> ~1 line + verify the backend refresh route is wired through the proxy.</p>
+        </div>
+      </div>
+
+      <!-- R2 -->
+      <div class="risk">
+        <div class="risk-h">
+          <span class="sev sev-crit"></span>
+          <span class="font-mono text-[11px] text-ink-3">R-02</span>
+          <h3 class="text-[15px] font-semibold text-ink">Public-route interceptor swallows errors &amp; returns <span class="font-mono text-[13px]">undefined</span></h3>
+          <span class="ml-auto route">src/utils/http.ts:45</span>
+        </div>
+        <div class="risk-b">
+          <p>On a failed request to a "public" path the interceptor does <span class="font-mono text-[12px]">if (isPublicRoute) return;</span> — returning <span class="font-mono text-[12px]">undefined</span> instead of rejecting. Callers awaiting <span class="font-mono text-[12px]">response.data</span> then read properties of <span class="font-mono text-[12px]">undefined</span>, turning a recoverable network error into a render crash with no error surfaced.</p>
+          <pre class="code mt-3"><span class="c">// fix — preserve the rejection so React Query can retry / show error UI</span>
+<span class="k">const</span> isPublicRoute = <span class="f">isPublicApi</span>(originalRequest.url);
+<span class="del">if (isPublicRoute) return;                       // swallows the error</span>
+<span class="add">if (isPublicRoute) return Promise.reject(error); // let callers handle it</span></pre>
+          <p class="mt-3 text-[12.5px] text-ink-3">Pairs with <a href="#error" class="text-accent underline">R-?? the missing <span class="font-mono">error.tsx</span></a> — even after this fix, an error boundary should catch the throw.</p>
+        </div>
+      </div>
+
+      <!-- R3 -->
+      <div class="risk">
+        <div class="risk-h">
+          <span class="sev sev-crit"></span>
+          <span class="font-mono text-[11px] text-ink-3">R-03</span>
+          <h3 class="text-[15px] font-semibold text-ink">Middleware crashes on malformed JWT (dev) &amp; mis-guards routes</h3>
+          <span class="ml-auto route">proxy.ts:38</span>
+        </div>
+        <div class="risk-b">
+          <p>The <span class="font-mono text-[12px]">catch</span> block reads <span class="font-mono text-[12px]">error.response.data.message</span> — but <span class="font-mono text-[12px]">jwtDecode</span> throws a plain <span class="font-mono text-[12px]">InvalidTokenError</span> with no <span class="font-mono text-[12px]">.response</span>, so the catch itself throws (a second error inside error handling). Separately, the guard only protects <span class="font-mono text-[12px]">/profile</span> and paths ending in <span class="font-mono text-[12px]">/dashboard</span> — deep admin routes like <span class="font-mono text-[12px]">/admin/books/create</span> are not gated at the edge.</p>
+          <div class="mt-3 grid gap-4 lg:grid-cols-2">
+            <pre class="code"><span class="c">// now — catch assumes an axios-shaped error</span>
+<span class="k">catch</span> (error: <span class="f">any</span>) {
+  <span class="k">if</span> (NODE_ENV === <span class="s">"development"</span>) {
+    <span class="del">console.log(error.response.data.message); // throws</span>
+    header.delete(<span class="s">"authorization"</span>);
+  }
+}</pre>
+            <pre class="code"><span class="c">// fix — treat any decode failure as "no session"</span>
+<span class="k">catch</span> {
+  decode = <span class="m">null</span>;
+  cookieStore.delete(<span class="s">"accessToken"</span>);
+}
+<span class="c">// + widen matcher to /admin/:path*, /staff/:path* …</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- R4 -->
+      <div class="risk">
+        <div class="risk-h">
+          <span class="sev sev-crit"></span>
+          <span class="font-mono text-[11px] text-ink-3">R-04</span>
+          <h3 class="text-[15px] font-semibold text-ink">Auth/session persisted in <span class="font-mono text-[13px]">localStorage</span></h3>
+          <span class="ml-auto route">auth.store.ts:32 · http.ts:75</span>
+        </div>
+        <div class="risk-b">
+          <p>The Zustand auth store persists <span class="font-mono text-[12px]">user</span> to <span class="font-mono text-[12px]">localStorage</span> and logout does a blanket <span class="font-mono text-[12px]">localStorage.clear()</span>. Tokens already live in cookies (good — the proxy reads <span class="font-mono text-[12px]">accessToken</span> cookie), so user identity in localStorage is XSS-readable and can drift out of sync with the cookie. <span class="font-mono text-[12px]">localStorage.clear()</span> also nukes unrelated keys (cart, language, guest session).</p>
+          <ul class="mt-3 space-y-1.5 text-[12.5px]">
+            <li class="flex gap-2"><i data-lucide="arrow-right" class="mt-0.5 text-[13px] text-accent"></i> Keep tokens in <span class="font-mono text-[12px]">httpOnly</span> cookies only; hydrate <span class="font-mono text-[12px]">user</span> from <span class="font-mono text-[12px]">/auth/me</span> on load.</li>
+            <li class="flex gap-2"><i data-lucide="arrow-right" class="mt-0.5 text-[13px] text-accent"></i> Replace <span class="font-mono text-[12px]">localStorage.clear()</span> with targeted <span class="font-mono text-[12px]">removeItem("auth-storage")</span>.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- R5 -->
+      <div class="risk">
+        <div class="risk-h">
+          <span class="sev sev-high"></span>
+          <span class="font-mono text-[11px] text-ink-3">R-05</span>
+          <h3 class="text-[15px] font-semibold text-ink">20 <span class="font-mono text-[13px]">page.tsx</span> are <span class="font-mono text-[13px]">"use client"</span> — Server Components left on the table</h3>
+          <span class="ml-auto route">grep: 20 / page.tsx</span>
+        </div>
+        <div class="risk-b">
+          <p>In an App Router app, route entrypoints should default to Server Components and fetch data server-side; marking the page itself <span class="font-mono text-[12px]">"use client"</span> ships the whole subtree to the browser and forfeits streaming + server data. 23 components fetch inside <span class="font-mono text-[12px]">useEffect</span>, which is the client-waterfall pattern RSC is meant to remove.</p>
+          <p class="mt-2 text-[12.5px] text-ink-3"><b class="text-ink">Pattern:</b> keep <span class="font-mono text-[12px]">page.tsx</span> as a server component that prefetches via React Query's <span class="font-mono text-[12px]">HydrationBoundary</span>, and push <span class="font-mono text-[12px]">"use client"</span> down to the smallest interactive leaf (the existing <span class="font-mono text-[12px]">*DashboardClient.tsx</span> split already does this in places — make it the rule).</p>
+        </div>
+      </div>
+
+      <!-- R6 -->
+      <div class="risk">
+        <div class="risk-h">
+          <span class="sev sev-high"></span>
+          <span class="font-mono text-[11px] text-ink-3">R-06</span>
+          <h3 class="text-[15px] font-semibold text-ink">Single global <span class="font-mono text-[13px]">ModalHost</span> eager-loads 14 modals</h3>
+          <span class="ml-auto route">components/common/Modal/index.tsx</span>
+        </div>
+        <div class="risk-b">
+          <p>Every visitor — including anonymous storefront users — downloads all 14 admin/staff modals (book editor, goods-receipt, purchase-order, approvals) because <span class="font-mono text-[12px]">ModalHost</span> statically imports them and renders a 14-branch ternary. See the <a href="#modals" class="text-accent underline">lazy registry proposal</a> for the fix; expect a meaningful storefront bundle drop.</p>
+        </div>
+      </div>
+
+      <!-- R7 -->
+      <div class="risk">
+        <div class="risk-h">
+          <span class="sev sev-high"></span>
+          <span class="font-mono text-[11px] text-ink-3">R-07</span>
+          <h3 class="text-[15px] font-semibold text-ink">No <span class="font-mono text-[13px]">error.tsx</span> / Suspense boundaries</h3>
+          <span class="ml-auto route">app/[locale]/*</span>
+        </div>
+        <div class="risk-b">
+          <p>Only <span class="font-mono text-[12px]">not-found.tsx</span> exists. A throw in any client query renders Next's unstyled default error screen. Add segment <span class="font-mono text-[12px]">error.tsx</span>, a root <span class="font-mono text-[12px]">global-error.tsx</span>, and per-route <span class="font-mono text-[12px]">loading.tsx</span> — designs provided in <a href="#error" class="text-accent underline">Part 1</a>.</p>
+        </div>
+      </div>
+
+      <!-- R8 -->
+      <div class="risk">
+        <div class="risk-h">
+          <span class="sev sev-med"></span>
+          <span class="font-mono text-[11px] text-ink-3">R-08</span>
+          <h3 class="text-[15px] font-semibold text-ink">27 <span class="font-mono text-[13px]">: any</span> annotations &amp; 11 stray <span class="font-mono text-[13px]">console.log</span></h3>
+          <span class="ml-auto route">grep · src/**</span>
+        </div>
+        <div class="risk-b">
+          <p>Type-safety leaks (notably in error branches like <span class="font-mono text-[12px]">catch (error: any)</span>) and leftover <span class="font-mono text-[12px]">console.log</span> in <span class="font-mono text-[12px]">http.ts</span> ship to production. Add an ESLint rule (<span class="font-mono text-[12px]">no-console</span>, <span class="font-mono text-[12px]">@typescript-eslint/no-explicit-any</span>) at <span class="font-mono text-[12px]">warn</span> and burn the list down.</p>
+        </div>
+      </div>
+
+      <!-- R9 -->
+      <div class="risk">
+        <div class="risk-h">
+          <span class="sev sev-med"></span>
+          <span class="font-mono text-[11px] text-ink-3">R-09</span>
+          <h3 class="text-[15px] font-semibold text-ink">Filenames &amp; types drift from domain spelling</h3>
+          <span class="ml-auto route">BooksPagiantion · OrderSummany · ModelShow*</span>
+        </div>
+        <div class="risk-b">
+          <p>Typos baked into paths (<span class="font-mono text-[12px]">BooksPagiantion</span>, <span class="font-mono text-[12px]">OrderSummany</span>, <span class="font-mono text-[12px]">ModelPurchaseOrderDetail</span> vs "Modal", <span class="font-mono text-[12px]">use-search-sematic</span>) make grep/refactor unreliable and read as unpolished. Low risk individually, but they compound. Rename on the next touch of each file.</p>
+        </div>
+      </div>
+
+      <!-- R10 -->
+      <div class="risk">
+        <div class="risk-h">
+          <span class="sev sev-low"></span>
+          <span class="font-mono text-[11px] text-ink-3">R-10</span>
+          <h3 class="text-[15px] font-semibold text-ink">Hardcoded UI strings alongside i18n</h3>
+          <span class="ml-auto route">Header/index.tsx · others</span>
+        </div>
+        <div class="risk-b">
+          <p>The app is fully wired for <span class="font-mono text-[12px]">next-intl</span>, yet fallbacks like <span class="font-mono text-[12px]">t("header.nav.books") || "Books"</span> and bare <span class="font-mono text-[12px]">aria-label="Orders"</span> leak English into a vi/en product. Move the remaining literals into <span class="font-mono text-[12px]">messages/*</span> so locale switching is complete.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- Architecture proposal ---------- -->
+    <section id="architecture" class="mx-auto max-w-container scroll-mt-24 px-5 py-8">
+      <div class="frame-label">
+        <span class="eyebrow">Optimized target</span>
+        <h2>Frontend architecture — proposed shape</h2>
+      </div>
+
+      <div class="grid gap-5 lg:grid-cols-[1.1fr_1fr]">
+        <div class="card overflow-hidden">
+          <div class="border-b border-line bg-[#FBFAF7] px-5 py-3"><span class="eyebrow">Layered data flow</span></div>
+          <div class="p-5">
+            <div class="space-y-2.5 font-mono text-[12px]">
+              <div class="flex items-center gap-2 rounded-lg bg-ink px-3 py-2.5 text-white"><i data-lucide="server" class="text-[15px]"></i> Server Component (page.tsx) · prefetch + Hydrate</div>
+              <div class="ml-5 flex items-center gap-2 rounded-lg border border-line bg-paper px-3 py-2.5"><i data-lucide="git-branch" class="text-[15px] text-ink-3"></i> HydrationBoundary → client leaf</div>
+              <div class="ml-10 flex items-center gap-2 rounded-lg border border-line bg-surface px-3 py-2.5"><i data-lucide="layers" class="text-[15px] text-ink-3"></i> feature hook (useXQuery) · React Query</div>
+              <div class="ml-[60px] flex items-center gap-2 rounded-lg border border-line bg-surface px-3 py-2.5"><i data-lucide="box" class="text-[15px] text-ink-3"></i> service (axios http) → /api proxy</div>
+              <div class="ml-20 flex items-center gap-2 rounded-lg border border-line bg-surface px-3 py-2.5"><i data-lucide="database" class="text-[15px] text-ink-3"></i> Zustand only for true client state (cart, modal, ui)</div>
+            </div>
+            <p class="mt-4 text-[12.5px] text-ink-2">Keep the existing <span class="font-mono text-[11px]">features/*/{hooks,services,store,selector}</span> convention — it's clean. The change is <b>where</b> fetching starts (server) and <b>what</b> Zustand holds (UI state, not server cache).</p>
+          </div>
+        </div>
+
+        <div class="space-y-5">
+          <div class="card p-5">
+            <span class="eyebrow">Strengths to keep</span>
+            <ul class="mt-3 space-y-1.5 text-[13px] text-ink-2">
+              <li class="flex gap-2"><i data-lucide="check" class="mt-0.5 text-[14px] text-ok"></i> Consistent feature-folder architecture (hooks/services/store/selector).</li>
+              <li class="flex gap-2"><i data-lucide="check" class="mt-0.5 text-[14px] text-ok"></i> Clean BFF proxy with hop-by-hop header stripping &amp; cookie passthrough.</li>
+              <li class="flex gap-2"><i data-lucide="check" class="mt-0.5 text-[14px] text-ok"></i> Design tokens already centralized in <span class="font-mono text-[11px]">globals.css</span> + Radix UI base.</li>
+              <li class="flex gap-2"><i data-lucide="check" class="mt-0.5 text-[14px] text-ok"></i> i18n routing + role-based dashboard segmentation.</li>
+            </ul>
+          </div>
+          <div class="card p-5">
+            <span class="eyebrow">Sequenced roadmap</span>
+            <ol class="mt-3 space-y-2 text-[13px] text-ink-2">
+              <li class="flex gap-2.5"><span class="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-accent text-[10px] font-bold text-white">1</span> Fix auth: enable refresh (R-01), stop swallowing errors (R-02), harden middleware (R-03).</li>
+              <li class="flex gap-2.5"><span class="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-ink text-[10px] font-bold text-white">2</span> Add <span class="font-mono text-[11px]">error.tsx</span>/<span class="font-mono text-[11px]">loading.tsx</span> + move secrets out of localStorage (R-04/07).</li>
+              <li class="flex gap-2.5"><span class="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-ink text-[10px] font-bold text-white">3</span> Lazy modal registry + push <span class="font-mono text-[11px]">"use client"</span> to leaves (R-05/06).</li>
+              <li class="flex gap-2.5"><span class="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-ink-3 text-[10px] font-bold text-white">4</span> Lint cleanup, renames, finish i18n (R-08/09/10).</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <!-- scorecard -->
+      <div class="mt-5 grid grid-cols-2 gap-4 md:grid-cols-4">
+        <div class="card p-4"><p class="stat-k text-[11px] uppercase tracking-wider text-ink-3">Architecture</p><p class="display mt-2 text-[26px] font-semibold">B+</p><p class="text-[12px] text-ink-3">clean layering</p></div>
+        <div class="card p-4"><p class="stat-k text-[11px] uppercase tracking-wider text-ink-3">Auth &amp; security</p><p class="display mt-2 text-[26px] font-semibold text-accent">C−</p><p class="text-[12px] text-ink-3">refresh + storage</p></div>
+        <div class="card p-4"><p class="stat-k text-[11px] uppercase tracking-wider text-ink-3">Performance</p><p class="display mt-2 text-[26px] font-semibold">B−</p><p class="text-[12px] text-ink-3">RSC + bundle wins</p></div>
+        <div class="card p-4"><p class="stat-k text-[11px] uppercase tracking-wider text-ink-3">Design system</p><p class="display mt-2 text-[26px] font-semibold text-ok">A−</p><p class="text-[12px] text-ink-3">tokens consistent</p></div>
+      </div>
+    </section>
+
+    <!-- ============================ FOOTER ============================ -->
+    <footer class="mt-10 border-t border-line bg-ink">
+      <div class="mx-auto flex max-w-container flex-col gap-3 px-5 py-10 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p class="display text-[20px] font-semibold text-white">Velora — New Design &amp; Review</p>
+          <p class="mt-1 text-[12.5px] text-white/50">Companion to ui-desgin.html &amp; dashboard-desgin.html · generated 2026-06-21</p>
+        </div>
+        <div class="flex flex-wrap gap-2 text-[11px] text-white/60">
+          <span class="rounded-full border border-white/15 px-3 py-1">Next 16 · React 19</span>
+          <span class="rounded-full border border-white/15 px-3 py-1">Tailwind v4</span>
+          <span class="rounded-full border border-white/15 px-3 py-1">Radix · framer-motion</span>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      lucide.createIcons();
+      // active TOC highlight
+      const links = [...document.querySelectorAll(".toc-link")];
+      const map = new Map(links.map((l) => [l.getAttribute("href").slice(1), l]));
+      const obs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              links.forEach((l) => l.classList.remove("active"));
+              map.get(e.target.id)?.classList.add("active");
+            }
+          });
+        },
+        { rootMargin: "-45% 0px -50% 0px" }
+      );
+      document.querySelectorAll("section[id]").forEach((s) => obs.observe(s));
+    </script>
+  </body>
+</html>

@@ -54,7 +54,7 @@ export function HomeBook() {
                 <BookCard
                   key={b.id}
                   title={b.title}
-                  subtitle={b.title} // Bạn có thể đổi thành b.author nếu có
+                  subtitle={b.description} // Bạn có thể đổi thành b.author nếu có
                   price={book.price}
                   currency="VND"
                   imageUrl={b.coverImageUrl}

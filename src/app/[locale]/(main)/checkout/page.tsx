@@ -39,7 +39,7 @@ export default function CheckoutPage() {
 
   return (
     <section className="bg-paper min-h-screen pb-20">
-      <div className="mx-auto max-w-[1240px] px-5 pt-10">
+      <div className="mx-auto max-w-[1540px] px-5 pt-10">
         <div className="bg-paper px-6 py-10 lg:px-12">
           <div className="grid gap-14 lg:grid-cols-[1fr_400px]">
             {user ? <CheckoutUser /> : <CheckoutGuest />}

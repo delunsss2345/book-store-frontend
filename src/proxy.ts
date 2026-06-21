@@ -2,8 +2,8 @@ import { jwtDecode } from "jwt-decode";
 import createMiddleware from "next-intl/middleware";
 import { cookies, headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { routing } from "./i18n/routing";
-import { Locale, SUPPORTED_LOCALES } from "./lib/i18n/config";
+import { routing } from "../i18n/routing";
+import { Locale, SUPPORTED_LOCALES } from "../lib/i18n/config";
 
 const intlMiddleware = createMiddleware(routing);
 
@@ -15,11 +15,16 @@ type JwtPayload = {
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
   const locale = pathname.split("/")[1];
+
   const cookieStore = await cookies();
-  const language = cookieStore.get("appLanguage")?.value || "vi";
-  const token = cookieStore.get("accessToken")?.value || "";
+  const language = cookieStore.get("NEXT_LOCALE")?.value || "vi";
+
+  const token = cookieStore.get("rt")?.value || "";
+
   const header = await headers();
+
   const intlResponse = intlMiddleware(request);
   if (!SUPPORTED_LOCALES.includes(locale as Locale)) {
     return NextResponse.redirect(
@@ -35,9 +40,8 @@ export async function proxy(request: NextRequest) {
   if (token) {
     try {
       decode = jwtDecode(token);
-    } catch (error: any) {
+    } catch {
       if (process.env.NODE_ENV === "development") {
-        console.log(error.response.data.message);
         header.delete("authorization");
         cookieStore.delete("accessToken");
       }
@@ -45,7 +49,6 @@ export async function proxy(request: NextRequest) {
   }
 
   const base = new URL(`/${language}`, request.url);
-
   if (
     pathname.endsWith("/dashboard") &&
     !decode?.roles?.includes(
