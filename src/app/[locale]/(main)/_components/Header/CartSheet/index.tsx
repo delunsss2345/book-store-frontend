@@ -21,9 +21,8 @@ import { Minus, Plus, ShoppingBag } from "lucide-react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
 import * as React from "react";
-const currency = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
+const numberFormatter = new Intl.NumberFormat("en-US", {
+  style: "decimal",
   maximumFractionDigits: 0,
 });
 
@@ -95,7 +94,7 @@ const CartSheet = () => {
                             {title}
                           </p>
                           <p className="mt-1 text-base font-semibold sm:text-lg">
-                            {currency.format(parseInt(price))}
+                            {numberFormatter.format(parseInt(price))} {item.variant.currencyCode}
                           </p>
                         </div>
 
@@ -163,7 +162,7 @@ const CartSheet = () => {
             <div className="mb-4 grid grid-cols-[1fr_auto_auto] items-center gap-3 text-sm sm:text-base">
               <p>Subtotal</p>
               <p className="justify-self-end text-xl font-semibold sm:text-2xl">
-                {currency.format(subtotal)}
+                {numberFormatter.format(subtotal)} {items[0]?.variant.currencyCode ?? ""}
               </p>
             </div>
 

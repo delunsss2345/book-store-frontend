@@ -16,6 +16,7 @@ import ModalBookVariantPricing from "./ModalShowVariant";
 import ModelShowSpecEdit from "./ModalShowSpecEdit";
 import ModelShowOrderDetailAdmin from "./ModelShowOrderDetailAdmin";
 import ModalApproveOrderAdmin from "./ModalApprovalOrderAdmin";
+import ModalSelectAddress from "./ModalSelectAddress";
 
 export function ModalHost() {
   const { getIsOpen, onClose, getType } = useModalStore();
@@ -41,7 +42,7 @@ export function ModalHost() {
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
               className={`relative w-full max-h-[90vh] overflow-y-auto bg-surface rounded-2xl shadow-2xl border border-line custom-scrollbar ${
-                type === ModalType.CREATE_ADDRESS ? "max-w-lg" : "max-w-3xl"
+                type === ModalType.CREATE_ADDRESS || type === ModalType.SELECT_ADDRESS ? "max-w-lg" : "max-w-3xl"
               }`}
             >
               <button
@@ -87,6 +88,16 @@ export function ModalHost() {
                 )}
                 {type === ModalType.ORDER_APPROVAL_ADMIN && (
                   <ModalApproveOrderAdmin />
+                )}
+                {type === ModalType.SELECT_ADDRESS && (
+                  <ModalSelectAddress
+                    onClose={onClose}
+                    selectedAddressId={useModalStore.getState().selectedAddressId}
+                    onSelect={(addressId) => {
+                      const cb = useModalStore.getState().selectAddressCallback;
+                      if (cb) cb(addressId);
+                    }}
+                  />
                 )}
               </div>
             </motion.div>

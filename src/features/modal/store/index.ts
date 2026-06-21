@@ -18,6 +18,7 @@ export enum ModalType {
   SHOW_BOOK_SPECIFICATIONS_EDIT = "BOOK_SPECIFICATIONS",
   ORDER_DETAIL_ADMIN = "ORDER_DETAIL_ADMIN",
   ORDER_APPROVAL_ADMIN = "ORDER_APPROVAL_ADMIN",
+  SELECT_ADDRESS = "SELECT_ADDRESS",
 }
 
 export type ApproveOrderAdmin = {
@@ -33,6 +34,8 @@ interface ModalStore {
   goodsReceiptId: string | null;
   orderShowDetailId: string | null;
   actionApproveOrder: ApproveOrderAdmin | null;
+  selectedAddressId: number;
+  selectAddressCallback: ((addressId: number) => void) | null;
   setActionApproveOrder: (actionApproveOrder: ApproveOrderAdmin) => void;
   setOrderShowDetailId: (orderShowDetailId: string | null) => void;
   setBookDetail: (bookDetail: AdminBook | null) => void;
@@ -41,6 +44,7 @@ interface ModalStore {
   getIsOpen: () => boolean;
   getType: () => ModalType;
   onOpen: (type: ModalType) => void;
+  onOpenSelectAddress: (selectedId: number, cb: (addressId: number) => void) => void;
   onClose: () => void;
 }
 
@@ -62,9 +66,13 @@ export const useModalStore = create<ModalStore>((set, get) => ({
   goodsReceiptId: null,
   setGoodsReceiptId: (goodsReceiptId: string | null) => set({ goodsReceiptId }),
 
+  selectedAddressId: 0,
+  selectAddressCallback: null,
   isOpen: false,
   getType: () => get().type,
   getIsOpen: () => get().isOpen,
   onOpen: (type: ModalType) => set({ isOpen: true, type: type }),
+  onOpenSelectAddress: (selectedId: number, cb: (addressId: number) => void) =>
+    set({ isOpen: true, type: ModalType.SELECT_ADDRESS, selectedAddressId: selectedId, selectAddressCallback: cb }),
   onClose: () => set({ isOpen: false }),
 }));

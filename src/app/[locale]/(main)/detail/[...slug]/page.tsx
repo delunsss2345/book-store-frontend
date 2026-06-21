@@ -1,7 +1,7 @@
 "use client";
 
 import { Minus, Plus, ShoppingCart } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import * as React from "react";
@@ -9,7 +9,6 @@ import { toast } from "sonner";
 
 import RecommendedSection from "@/src/app/[locale]/(main)/_components/RecommendSection";
 import { LoadingLazy } from "@/src/components/common/LoadingLazy";
-import { Button } from "@/src/components/ui/button";
 import { useAddToCartMutation } from "@/features/cart/hooks";
 import { useBookQuery } from "@/features/catalog/hooks/use-book.mutation";
 import { useCatalogStore } from "@/features/catalog/store/catalog.store";
@@ -23,6 +22,7 @@ import { WishlistAction } from "./_components/WishlistAction";
 
 export default function DetailPage() {
   const t = useTranslations();
+  const locale = useLocale();
   const params = useParams<{ slug?: string | string[] }>();
   const slug = Array.isArray(params.slug)
     ? params.slug[params.slug.length - 1]
@@ -78,11 +78,17 @@ export default function DetailPage() {
     <div className="bg-surface">
       <div className="px-6 py-6 lg:px-10">
         <nav className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-widest text-ink-3">
-          <Link href={`/${locale}`} className="hover:text-ink transition-colors">
+          <Link
+            href={`/${locale}`}
+            className="hover:text-ink transition-colors"
+          >
             {t("catalog.breadcrumbs.home")}
           </Link>
           <span className="text-line-2">/</span>
-          <Link href={`/${locale}/books`} className="hover:text-ink transition-colors">
+          <Link
+            href={`/${locale}/books`}
+            className="hover:text-ink transition-colors"
+          >
             {t("catalog.breadcrumbs.books")}
           </Link>
           <span className="text-line-2">/</span>
@@ -96,7 +102,7 @@ export default function DetailPage() {
               title={bookDetail.title}
             />
           </div>
-          
+
           <section className="flex flex-col lg:col-span-7 lg:pl-6">
             <div className="border-b border-line pb-6">
               <div className="flex items-center justify-between">
@@ -154,7 +160,7 @@ export default function DetailPage() {
                   <ShoppingCart className="h-4 w-4" />
                   Add to cart
                 </button>
-                
+
                 <Link
                   href={`/${locale}/checkout`}
                   className="btn-accent flex h-12 flex-1 items-center justify-center gap-2 rounded-lg text-[13px] font-bold uppercase tracking-[0.15em]"
@@ -187,8 +193,9 @@ export default function DetailPage() {
               {/* Quote block */}
               <div className="border-l-2 border-ink pl-6 py-1">
                 <p className="display text-[18px] italic leading-relaxed text-ink-2">
-                  &ldquo;Strategy without tactics is the slowest route to victory.
-                  Tactics without strategy is the noise before defeat.&rdquo;
+                  &ldquo;Strategy without tactics is the slowest route to
+                  victory. Tactics without strategy is the noise before
+                  defeat.&rdquo;
                 </p>
                 <cite className="mt-3 block text-[12px] font-bold uppercase tracking-widest text-ink-3 not-italic">
                   — Sun Tzu, The Art of War

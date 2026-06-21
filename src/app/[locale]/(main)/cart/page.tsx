@@ -8,7 +8,7 @@ import {
 import { Button } from "@/src/components/ui/button";
 import { Separator } from "@/src/components/ui/separator";
 import { Skeleton } from "@/src/components/ui/skeleton";
-import { fmt } from "@/utils/format-number-vi";
+
 import { Minus, Plus, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -198,7 +198,7 @@ export default function ShoppingCartPage() {
                 <div className="flex justify-between text-ink-2">
                   <span>Shipping</span>
                   <span className="font-semibold text-ok uppercase">
-                    {fmt(ShipFee) === "0 ₫" ? "Free" : fmt(ShipFee)}
+                    {ShipFee === 0 ? "Free" : `${numberFormatter.format(ShipFee)} ${items[0]?.variant.currencyCode ?? ""}`}
                   </span>
                 </div>
 

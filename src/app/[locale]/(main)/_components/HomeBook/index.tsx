@@ -3,7 +3,8 @@
 import { useHomeQuery } from "@/features/catalog/hooks/use-home.mutation";
 import { cn } from "@/lib/utils";
 import { PricedBook } from "@/types/response/catalog.response";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
 import { useMemo } from "react";
 import BookCard from "../BookCard";
 import { BookCardSkeleton } from "@/src/components/common/Skeletons";
@@ -11,6 +12,7 @@ import { BookCardSkeleton } from "@/src/components/common/Skeletons";
 export function HomeBook() {
   const { data: home, isPending, isError } = useHomeQuery();
   const t = useTranslations();
+  const locale = useLocale();
 
   const newAndTrending = useMemo(() => home?.newAndTrending ?? [], [home]);
 
@@ -39,6 +41,7 @@ export function HomeBook() {
 
         {/* Danh sách sản phẩm */}
         {!isPending && !isError && (
+          <>
           <div
             className={cn(
               "grid grid-cols-2 gap-x-8 gap-y-16 md:grid-cols-3 lg:grid-cols-4 transition-opacity duration-500",
@@ -64,6 +67,17 @@ export function HomeBook() {
               );
             })}
           </div>
+          {newAndTrending.length > 0 && (
+            <div className="mt-16 flex justify-center">
+              <Link
+                href={`/${locale}/books`}
+                className="btn-outline rounded-lg px-12 py-4 text-[13px] font-bold uppercase tracking-widest text-ink hover:bg-ink hover:text-white transition-all"
+              >
+                {t("home.viewMore") || "View more"}
+              </Link>
+            </div>
+          )}
+          </>
         )}
 
         {/* Trạng thái lỗi: Làm cho nhẹ nhàng hơn */}

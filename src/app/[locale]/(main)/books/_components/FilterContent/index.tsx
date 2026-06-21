@@ -113,24 +113,7 @@ export function FilterContent({
         </div>
       </div>
 
-      <div className="my-6 h-px w-full bg-line" />
 
-      {/* Height */}
-      <div>
-        <div className="flex items-center justify-between">
-          <p className="text-[12px] font-bold uppercase tracking-wider text-ink">
-            {t("catalog.height")}
-          </p>
-          <span className="text-[11px] text-ink-3">13 – 70 cm</span>
-        </div>
-        <input
-          type="range"
-          min="13"
-          max="70"
-          defaultValue="70"
-          className="mt-2 w-full accent-ink"
-        />
-      </div>
 
       <button className="btn-outline mt-7 h-11 w-full rounded-none text-[11px] font-bold uppercase tracking-[0.15em]">
         {t("catalog.applyFilters")}
