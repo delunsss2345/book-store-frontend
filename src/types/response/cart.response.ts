@@ -49,7 +49,10 @@ export type UpdateCartItemDeltaData = {
     };
 };
 
-export type MergeCartData = unknown;
+export type MergeCartData = {
+    mergeCount?: number;
+    mergeCart: boolean;
+};
 
 export type GetCartApiResponse = ApiResponse<Cart>;
 export type ClearCartApiResponse = ApiResponse<ClearCartData>;

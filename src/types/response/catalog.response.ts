@@ -124,6 +124,7 @@ export interface PricedBook extends BookBase {
   minPrice: DecimalString;
   maxPrice: DecimalString;
   currencyCode: CurrencyCode;
+  description?: string | null;
 }
 
 export interface HomeData {

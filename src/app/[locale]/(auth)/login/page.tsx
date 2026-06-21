@@ -1,6 +1,7 @@
 "use client";
 
 import { useLoginMutation } from "@/features/auth/hooks/use-login-mutation";
+import { useQueryMergeCart } from "@/features/cart/hooks";
 import useTranslator from "@/hooks/use-translator";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -14,12 +15,21 @@ const Login = () => {
   const locale = useLocale();
 
   const loginMutation = useLoginMutation();
+  const mergeCartMutation = useQueryMergeCart();
   const isLoading = loginMutation.isPending;
 
   const onSubmit = async (values: LoginValues) => {
     toast.promise(loginMutation.mutateAsync(values), {
       loading: t("auth.loginLoading"),
       success: () => {
+        mergeCartMutation.mutate(
+          {},
+          {
+            onError: (err) => {
+              console.error("Merge cart failed silently:", err);
+            },
+          },
+        );
         router.push(`/${locale}`);
         return t("auth.success.login");
       },
@@ -34,12 +44,15 @@ const Login = () => {
       {/* Brand panel */}
       <div className="relative hidden w-1/2 flex-col justify-between overflow-hidden bg-ink p-10 text-white md:flex">
         <div className="relative z-10 flex items-center gap-2">
-          <Link href={`/${locale}`} className="text-2xl font-black tracking-tightest">Velora</Link>
+          <Link
+            href={`/${locale}`}
+            className="text-2xl font-black tracking-tightest"
+          >
+            Velora
+          </Link>
         </div>
         <div className="relative z-10 max-w-sm">
-          <p className="eyebrow text-white/45">
-            {t("auth.brand.eyebrow")}
-          </p>
+          <p className="eyebrow text-white/45">{t("auth.brand.eyebrow")}</p>
           <p className="display mt-4 text-[40px] font-medium leading-[1.05]">
             {t("auth.brand.loginTitle")}
           </p>
@@ -56,7 +69,7 @@ const Login = () => {
         </div>
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink via-ink/10 to-transparent"></div>
       </div>
-      
+
       {/* Form */}
       <div className="flex w-full flex-col justify-center px-6 py-12 sm:px-14 md:w-1/2">
         <div className="mx-auto w-full max-w-sm">

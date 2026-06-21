@@ -19,7 +19,6 @@ export const useCartQuery = () =>
     staleTime: 0,
   });
 
-
 export const useUpdateQtyMutation = () => {
   const updateQty = useCartStore(selectorUpdateQty);
   const queryClient = useQueryClient();
@@ -56,7 +55,6 @@ export const useRemoveItemMutation = () => {
   });
 };
 
-
 export const useAddToCartMutation = () => {
   const cart = useCartStore(selectorCart);
   const setUpdateCart = useCartStore(selectorSetUpdateCart);
@@ -66,13 +64,13 @@ export const useAddToCartMutation = () => {
     mutationFn: ({ bookVariantId, quantity }: AddCartItemRequest) => {
       if (cart) {
         const item = cart.items.find(
-          (item) => Number(item.bookVariantId) === Number(bookVariantId)
+          (item) => Number(item.bookVariantId) === Number(bookVariantId),
         );
         if (item) {
-          setUpdateCart(item.id, (quantity ?? 1)); // optimistic tăng qty
+          setUpdateCart(item.id, quantity ?? 1); // optimistic tăng qty
         }
       }
-      return cartApi.addCartItem({ bookVariantId, quantity: (quantity ?? 1) });
+      return cartApi.addCartItem({ bookVariantId, quantity: quantity ?? 1 });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: cartQueryKey });
@@ -80,12 +78,23 @@ export const useAddToCartMutation = () => {
     onError: (_err, { bookVariantId, quantity }) => {
       if (cart) {
         const item = cart.items.find(
-          (item) => Number(item.bookVariantId) === Number(bookVariantId)
+          (item) => Number(item.bookVariantId) === Number(bookVariantId),
         );
         if (item) {
-          setUpdateCart(item.id, ((quantity ?? 1) * -1));
+          setUpdateCart(item.id, (quantity ?? 1) * -1);
         }
       }
+    },
+  });
+};
+
+export const useQueryMergeCart = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: cartApi.mergeCart,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: cartQueryKey });
     },
   });
 };

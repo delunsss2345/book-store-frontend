@@ -21,7 +21,7 @@ export async function proxy(request: NextRequest) {
   const cookieStore = await cookies();
   const language = cookieStore.get("NEXT_LOCALE")?.value || "vi";
 
-  const token = cookieStore.get("rt")?.value || "";
+  const token = cookieStore.get("accessToken")?.value || "";
 
   const header = await headers();
 

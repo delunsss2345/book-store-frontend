@@ -31,7 +31,7 @@ function appendSetCookies(response: NextResponse, backendResponse: Response) {
       : backendResponse.headers.get("set-cookie")
         ? [backendResponse.headers.get("set-cookie") as string]
         : [];
-  console.log(setCookies);
+
   for (const cookie of setCookies) {
     response.headers.append("set-cookie", cookie);
   }
@@ -43,7 +43,8 @@ function createBackendUrl(request: NextRequest, path: string[]) {
   }
 
   const requestUrl = new URL(request.url);
-  const backendPath = path.map(encodeURIComponent).join("/");
+  // Prepend "auth" since this proxy specifically handles /api/auth/*
+  const backendPath = ["auth", ...path].map(encodeURIComponent).join("/");
   const backendUrl = new URL(backendPath, envConfig.BACKEND_API_URL);
   backendUrl.search = requestUrl.search;
 
@@ -59,14 +60,9 @@ async function createBackendHeaders(request: NextRequest) {
   }
 
   const accessToken = cookieStore.get("accessToken")?.value;
-  const language = cookieStore.get("appLanguage")?.value ?? "vi";
 
   if (accessToken && !headers.has("authorization")) {
     headers.set("authorization", `Bearer ${accessToken}`);
-  }
-  console.log(accessToken);
-  if (language) {
-    headers.set("x-app-lang", language);
   }
 
   return headers;
@@ -93,6 +89,76 @@ async function proxyToBackend(request: NextRequest, context: RouteContext) {
       responseHeaders.set("content-type", contentType);
     }
 
+    const pathString = path.join("/");
+
+    // Intercept auth endpoints to manage HttpOnly cookies for tokens
+    if (
+      (pathString === "login" ||
+        pathString === "register" ||
+        pathString === "refresh-token") &&
+      backendResponse.ok &&
+      contentType?.includes("application/json")
+    ) {
+      const data = await backendResponse.json();
+      const response = NextResponse.json(data, {
+        status: backendResponse.status,
+        statusText: backendResponse.statusText,
+        headers: responseHeaders,
+      });
+      console.log(backendResponse.headers);
+      appendSetCookies(response, backendResponse);
+
+      // Save tokens to Next.js cookies if they exist in the response
+      if (data?.data?.accessToken) {
+        response.cookies.set({
+          name: "accessToken",
+          value: data.data.accessToken,
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          path: "/",
+        });
+      }
+
+      if (data?.data?.refreshToken) {
+        response.cookies.set({
+          name: "refreshToken",
+          value: data.data.refreshToken,
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          path: "/",
+        });
+      }
+
+      return response;
+    }
+
+    // Intercept logout to clear cookies
+    if (pathString === "logout") {
+      let data;
+      if (contentType?.includes("application/json")) {
+        data = await backendResponse.json();
+      } else {
+        data = { success: backendResponse.ok };
+      }
+
+      const response = NextResponse.json(data, {
+        status: backendResponse.status,
+        statusText: backendResponse.statusText,
+        headers: responseHeaders,
+      });
+
+      appendSetCookies(response, backendResponse);
+
+      // Clear tokens
+      response.cookies.delete("accessToken");
+      response.cookies.delete("refreshToken");
+
+      return response;
+    }
+
+    // Default fallback for other /api/auth/* endpoints (like /api/auth/me)
     const response = new NextResponse(await backendResponse.arrayBuffer(), {
       status: backendResponse.status,
       statusText: backendResponse.statusText,

@@ -63,7 +63,7 @@ axiosInstance.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      // await refreshInstance.post("auth/refresh-token");
+      await refreshInstance.post("auth/refresh-token");
       processQueue(null);
       // retry request (gọi là tất cả request lỗi cũ)
       return axiosInstance(originalRequest);

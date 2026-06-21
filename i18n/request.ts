@@ -5,7 +5,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
   // requestLocale được truyền từ middleware
   let locale = await requestLocale;
 
-  if (!locale || !routing.locales.includes(locale)) {
+  if (!locale || !routing.locales.includes(locale as "en" | "vi")) {
     locale = routing.defaultLocale;
   }
 
