@@ -9,8 +9,7 @@ import { Info } from "lucide-react";
 import { useCartQuery } from "@/features/cart/hooks";
 
 import CheckoutUser from "./_components/CheckoutUser";
-import { selectorCurrentUser } from "@/features/auth/selector/auth.selector";
-import { useAuthStore } from "@/features/auth";
+import { useQueryMe } from "@/features/auth/hooks/use-query-me";
 import { CheckoutGuest } from "./_components/CheckoutGuest";
 import { CheckoutPageSkeleton } from "./_components/CheckoutPageSekeleton";
 import { OrderSummary } from "./_components/OrderSummany";
@@ -19,7 +18,8 @@ export default function CheckoutPage() {
   const router = useRouter();
   const locale = useLocale();
   const { data: cart, isLoading } = useCartQuery();
-  const user = useAuthStore(selectorCurrentUser);
+  const { data } = useQueryMe();
+  const user = data?.data;
   const subtotal =
     cart?.items.reduce((sum, item) => {
       return sum + parseFloat(item.variant.price) * item.quantity;

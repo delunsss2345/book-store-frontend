@@ -60,11 +60,14 @@ async function createBackendHeaders(request: NextRequest) {
   }
 
   const accessToken = cookieStore.get("accessToken")?.value;
+  const refreshToken = cookieStore.get("refreshToken")?.value;
 
   if (accessToken && !headers.has("authorization")) {
     headers.set("authorization", `Bearer ${accessToken}`);
   }
-
+  if (refreshToken && !headers.has("x-refresh-token")) {
+    headers.set("x-refresh-token", refreshToken);
+  }
   return headers;
 }
 
@@ -105,7 +108,6 @@ async function proxyToBackend(request: NextRequest, context: RouteContext) {
         statusText: backendResponse.statusText,
         headers: responseHeaders,
       });
-      console.log("Backend Headers: ", backendResponse.headers);
       appendSetCookies(response, backendResponse); // nó tự đính rồi không cần set thủ công
 
       // Save tokens to Next.js cookies if they exist in the response

@@ -1,84 +1,120 @@
-import { useAuthStore } from "@/features/auth";
-import { envConfig } from "@/src/config/env.config";
 import axios, {
+  AxiosResponse,
   type AxiosInstance,
   type AxiosRequestConfig,
-  type InternalAxiosRequestConfig,
 } from "axios";
 import { isPublicApi } from "./isPublicPath";
+import { ApiError, PromiseHandlers } from "../types/axios";
 
-const baseURL = envConfig.NEXT_PUBLIC_BASE_API ?? "";
+type ErrorResponse = {
+  message?: string;
+  errors?: Record<string, string[]>;
+};
+
+const toBffPath = (path: string) => {
+  if (/^https?:\/\//i.test(path)) return path;
+  if (path.startsWith("/api/")) return path;
+  return path.startsWith("/") ? `/api${path}` : `/api/${path}`;
+};
+
+const toApiError = (error: unknown): ApiError => {
+  if (!axios.isAxiosError<ErrorResponse>(error)) {
+    return {
+      status: 500,
+      message: "Server Error",
+    };
+  }
+
+  const data = error.response?.data;
+
+  return {
+    status: error.response?.status ?? 500,
+    message: data?.message ?? "Server Error",
+    errors: data?.errors,
+  };
+};
 
 export const axiosInstance: AxiosInstance = axios.create({
-  baseURL,
+  baseURL: "",
+  withCredentials: true,
 });
 
-export const refreshInstance: AxiosInstance = axios.create({
-  baseURL,
+const refreshAxiosInstance: AxiosInstance = axios.create({
+  baseURL: "",
+  withCredentials: true,
 });
 
+// Có đang refreshToken không
 let isRefreshing = false;
-let failedQueue: {
-  resolve: (value?: unknown) => void;
-  reject: (reason?: unknown) => void;
-}[] = [];
+// Ngăn xếp queue
+let failedQueue: PromiseHandlers[] = [];
 
-const processQueue = (error: unknown | null) => {
-  failedQueue.forEach(({ resolve, reject }) => {
+// Xử lí queue
+const processQueue = (error: unknown) => {
+  failedQueue.forEach((prom) => {
     if (error) {
-      reject(error);
+      prom.reject(error);
     } else {
-      resolve();
+      prom.resolve();
     }
   });
+
   failedQueue = [];
 };
 
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config as InternalAxiosRequestConfig & {
-      _retry?: boolean;
-    };
-
-    const isPublicRoute = isPublicApi(originalRequest.url);
-    if (isPublicRoute) return;
-    // Chỉ xử lý 401 và không phải request refresh-token (tránh loop)
-    if (
-      error.response?.status !== 401 ||
-      originalRequest._retry ||
-      originalRequest.url?.includes("/auth/refresh-token")
-    ) {
-      return Promise.reject(error);
-    }
-
-    // Nếu đang refresh → xếp hàng chờ
-    if (isRefreshing) {
-      return new Promise((resolve, reject) => {
-        failedQueue.push({ resolve, reject });
-      }).then(() => axiosInstance(originalRequest));
-    }
-
-    originalRequest._retry = true;
+const refreshToken = async () => {
+  try {
+    await refreshAxiosInstance.post(`/api/auth/refresh-token`);
+    // Gắn queue  null nếu thành công
+    processQueue(null);
+  } catch (error) {
+    processQueue(error);
+    isRefreshing = false; // Đánh dấu đã refresh xong
+    throw error;
+  }
+};
+// Get token mới
+const getNewToken = async () => {
+  // Chưa refresh token thì đánh giấu
+  if (!isRefreshing) {
     isRefreshing = true;
+    await refreshToken(); // gọi lại
+    isRefreshing = false; // thành công đánh dấu
+    return;
+  }
 
-    try {
-      await refreshInstance.post("auth/refresh-token");
-      processQueue(null);
-      // retry request (gọi là tất cả request lỗi cũ)
-      return axiosInstance(originalRequest);
-    } catch (refreshError) {
-      processQueue(refreshError);
+  // đã từng gọi thì push mảng lỗi
+  return new Promise((resolve, reject) => {
+    failedQueue.push({ resolve, reject });
+  });
+};
 
-      if (typeof window !== "undefined") {
-        const clearSession = useAuthStore.getState().clearSession;
-        localStorage.clear();
-        clearSession();
+/// Sử dụng bắt request
+axiosInstance.interceptors.response.use(
+  (response: AxiosResponse) => response,
+
+  async (error) => {
+    const originalRequest = error.config;
+    const isAuthApi = isPublicApi(originalRequest?.url);
+
+    const shouldRenewToken =
+      error.response?.status === 401 && !isAuthApi && !originalRequest?._retry;
+
+    // Nếu chưa từng đánh dấu thì vào
+    if (shouldRenewToken) {
+      // đánh dấu
+      originalRequest._retry = true;
+
+      // Gọi lại
+      await getNewToken();
+      try {
+        return axiosInstance(originalRequest); // Trả request
+      } catch (error) {
+        return Promise.reject(error); // Lỗi ném reject
       }
-      return Promise.reject(refreshError);
-    } finally {
-      isRefreshing = false;
     }
+    // Đã từng đánh dấu thì ném reject
+    return Promise.reject(error);
   },
 );
 
@@ -86,24 +122,20 @@ class AxiosHttp {
   private _send = async <T = unknown>(
     method: "get" | "post" | "put" | "delete" | "patch",
     path: string,
-    data: object | undefined,
+    data?: unknown,
     config?: AxiosRequestConfig,
   ) => {
     try {
       const response = await axiosInstance.request<T>({
-        method,
-        url: path,
-        data,
         ...config,
+        method,
+        url: toBffPath(path),
+        data,
       });
-      if (response.status === 401) {
-        console.log(response);
-        throw new Error("Unauthorized");
-      }
+
       return response.data;
-    } catch (error) {
-      console.log("error", error);
-      throw error;
+    } catch (error: unknown) {
+      throw toApiError(error);
     }
   };
 
@@ -116,7 +148,7 @@ class AxiosHttp {
 
   post = <T = unknown>(
     path: string,
-    data?: object,
+    data?: unknown,
     config?: AxiosRequestConfig,
   ): Promise<T> => {
     return this._send<T>("post", path, data, config);
@@ -124,7 +156,7 @@ class AxiosHttp {
 
   put = <T = unknown>(
     path: string,
-    data: object,
+    data: unknown,
     config?: AxiosRequestConfig,
   ): Promise<T> => {
     return this._send<T>("put", path, data, config);
@@ -132,7 +164,7 @@ class AxiosHttp {
 
   patch = <T = unknown>(
     path: string,
-    data: object,
+    data: unknown,
     config?: AxiosRequestConfig,
   ): Promise<T> => {
     return this._send<T>("patch", path, data, config);
@@ -145,4 +177,5 @@ class AxiosHttp {
     return this._send<T>("delete", path, undefined, config);
   };
 }
+
 export const http = new AxiosHttp();

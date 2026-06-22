@@ -1,5 +1,4 @@
-import { useAuthStore } from "@/features/auth";
-import { selectorCurrentUser } from "@/features/auth/selector/auth.selector";
+import { useAuth } from "@/src/components/auth/AuthProvider";
 import { useCreateUserAddressMutation } from "@/features/user-address";
 import { FormMessageI18n } from "@/src/components/common/FormMessageI18n";
 import { Button } from "@/src/components/ui/button";
@@ -30,7 +29,7 @@ import { toast } from "sonner";
 
 export function AddressForm({ onToggle }: { onToggle: () => void }) {
   const t = useTranslations();
-  const currentUser = useAuthStore(selectorCurrentUser);
+  const { user: currentUser } = useAuth();
   const form = useForm<CreateUserAddressInput>({
     resolver: zodResolver(CreateUserAddressSchema),
     defaultValues: {

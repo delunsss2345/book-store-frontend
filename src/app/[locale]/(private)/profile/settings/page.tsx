@@ -1,15 +1,14 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useAuthStore } from "@/features/auth";
-import { selectorCurrentUser } from "@/features/auth/selector/auth.selector";
+import { useAuth } from "@/src/components/auth/AuthProvider";
 import { Input } from "@/src/components/ui/input";
 import { ShieldCheck, Plus } from "lucide-react";
 import { toast } from "sonner";
 
 export default function PersonalInfoPage() {
   const t = useTranslations();
-  const currentUser = useAuthStore(selectorCurrentUser);
+  const { user: currentUser } = useAuth();
 
   const handleSave = () => {
     // Mock save

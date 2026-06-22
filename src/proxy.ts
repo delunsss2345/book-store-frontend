@@ -31,7 +31,8 @@ export async function proxy(request: NextRequest) {
   }
 
   if (!token && pathname.includes("/profile")) {
-    return NextResponse.redirect(new URL(`/${language}/login`, request.url));
+    console.log("/");
+    return NextResponse.redirect(new URL(`/${language}/login`, request?.url));
   }
   let decode: JwtPayload | null = null;
   // Đang bị bug ở trang admin mà refreshtoken lỗi là bị lag luôn

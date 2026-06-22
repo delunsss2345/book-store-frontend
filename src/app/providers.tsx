@@ -19,7 +19,7 @@ export default function Providers({
   messages,
 }: ProvidersProps) {
   return (
-    <NextIntlClientProvider locale={locale} messages={messages}>
+    <NextIntlClientProvider locale={locale} messages={messages} timeZone="Asia/Ho_Chi_Minh">
       <QueryClientProvider client={queryClient}>
         <Toaster position="bottom-center" />
         <ModalHost />

@@ -1,7 +1,6 @@
 "use client";
 
-import { useAuthStore } from "@/features/auth";
-import { selectorCurrentUser } from "@/features/auth/selector/auth.selector";
+import { useQueryMe } from "@/features/auth/hooks/use-query-me";
 import { useCreateUserAddressMutation } from "@/features/user-address";
 import { useQueryAddress } from "@/features/user-address/hooks/use-query-address-mutation";
 import { FormMessageI18n } from "@/src/components/common/FormMessageI18n";
@@ -155,7 +154,8 @@ function AddressForm({
   onBack: () => void;
 }) {
   const t = useTranslations();
-  const currentUser = useAuthStore(selectorCurrentUser);
+  const { data } = useQueryMe();
+  const currentUser = data?.data;
 
   const { mutateAsync: createAddress, isPending: isLoadingCreateAddress } =
     useCreateUserAddressMutation();

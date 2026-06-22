@@ -40,7 +40,6 @@ export const adminService = {
   getBooks: () => http.get<AdminBookListResponse>("admin/books"),
 
   getBookById: (bookId: string) => {
-    console.log(bookId);
     return http.get<ProxySuccessResponse<AdminBookDetail>>(
       `admin/books/${bookId}`,
     );

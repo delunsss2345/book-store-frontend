@@ -1,7 +1,6 @@
 "use client";
 
-import { selectorCurrentUser } from "@/features/auth/selector/auth.selector";
-import { useAuthStore } from "@/features/auth/store/auth.store";
+import { useQueryMe } from "@/features/auth/hooks/use-query-me";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { useEffect } from "react";
@@ -11,7 +10,8 @@ type AuthGuardProps = {
 };
 
 const AuthGuard = ({ children }: AuthGuardProps) => {
-  const currentUser = useAuthStore(selectorCurrentUser);
+  const { data, isLoading } = useQueryMe();
+  const currentUser = data?.data;
   const router = useRouter();
   const locale = useLocale();
 
@@ -21,7 +21,7 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
     }
   }, [currentUser, router]);
 
-  if (currentUser) {
+  if (isLoading || currentUser) {
     return null;
   }
 

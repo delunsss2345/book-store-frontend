@@ -4,14 +4,13 @@ import {
   Book,
   Tags,
   ShoppingCart,
-  BadgePercent,
   Truck,
   ClipboardList,
   PackageCheck,
-  Layers,
   RefreshCcw,
   BarChart3,
   Users,
+  ShieldCheck,
 } from "lucide-react";
 
 export const sidebarData: SidebarData = {
@@ -66,11 +65,7 @@ export const sidebarData: SidebarData = {
           url: "dashboard/orders",
           icon: ShoppingCart,
         },
-        {
-          title: "Khuyến mãi",
-          url: "dashboard/promotions",
-          icon: BadgePercent,
-        },
+
         {
           title: "Yêu cầu Hoàn/Đổi",
           url: "dashboard/return-requests",
@@ -98,9 +93,9 @@ export const sidebarData: SidebarData = {
           icon: PackageCheck,
         },
         {
-          title: "Quản lý Lô hàng",
-          url: "dashboard/batches",
-          icon: Layers,
+          title: "Quản lý Quyền",
+          url: "dashboard/roles",
+          icon: ShieldCheck,
         },
       ],
     },

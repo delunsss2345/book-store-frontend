@@ -1,10 +1,7 @@
 import { ShipFee } from "@/constants/enums/order";
 import { useCartQuery } from "@/features/cart/hooks";
-import { Button } from "@/src/components/ui/button";
-import { Input } from "@/src/components/ui/input";
-import { Separator } from "@/src/components/ui/separator";
 import { fmt } from "@/utils/format-number-vi";
-import { Info, TicketPercent } from "lucide-react";
+import { Info } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 type OrderSummaryProps = {
@@ -44,17 +41,16 @@ export function OrderSummary({ cart, subtotal }: OrderSummaryProps) {
                       className="object-cover transition-transform group-hover:scale-105"
                     />
                   )}
-                  <span className="absolute -right-1 -top-1 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-zinc-900 text-[10px] font-bold text-white shadow-md">
-                    {item.quantity}
-                  </span>
                 </div>
 
                 <div className="flex flex-1 flex-col justify-center min-w-0">
                   <p className="line-clamp-1 text-[14px] font-semibold text-ink">
                     {title}
                   </p>
-                  <p className="mt-0.5 text-[10px] font-medium uppercase tracking-wider text-ink-3">
+                  <p className="mt-0.5 flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-wider text-ink-3">
                     {item.variant.format}
+                    <span className="text-line-2">·</span>
+                    <span>×{item.quantity}</span>
                   </p>
                   <p className="mt-1 text-[14px] font-bold text-ink">
                     {fmt(price * item.quantity)}
@@ -63,25 +59,6 @@ export function OrderSummary({ cart, subtotal }: OrderSummaryProps) {
               </div>
             );
           })}
-        </div>
-
-        <div className="my-6 hairline" />
-
-        {/* Promo Code Section */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-ink-3">
-            <TicketPercent className="h-3.5 w-3.5" />
-            Promo Code
-          </div>
-          <div className="flex gap-2">
-            <input
-              placeholder={t("checkout.orderSummary.discountPlaceholder")}
-              className="field flex-1 rounded-xl"
-            />
-            <button className="btn-outline h-11 rounded-xl px-5 text-[12px]">
-              {t("checkout.orderSummary.apply")}
-            </button>
-          </div>
         </div>
 
         <div className="mt-8 space-y-3.5 border-t border-line pt-6 text-[14px]">

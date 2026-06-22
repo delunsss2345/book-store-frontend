@@ -20,6 +20,7 @@ import type {
   ResetPasswordResponse,
   ResetPasswordValidateResponse,
   VerifyEmailResponse,
+  GetMeResponse,
 } from "@/types/response/auth.response";
 import { http } from "@/utils/http";
 
@@ -30,14 +31,11 @@ export const authApi = {
   register: (payload: RegisterDTO) =>
     http.post<RegisterResponse>("/auth/register", payload),
 
-  me: () =>
-    http.get<LoginResponse>("/auth/me"),
+  me: () => http.get<GetMeResponse>("/auth/me"),
 
-  refreshToken: () =>
-    http.post<RefreshTokenResponse>("/auth/refresh-token"),
+  refreshToken: () => http.post<RefreshTokenResponse>("/auth/refresh-token"),
 
-  logout: () =>
-    http.post<LogoutResponse>("/auth/logout"),
+  logout: () => http.post<LogoutResponse>("/auth/logout"),
 
   forgotPassword: (payload: ForgotPasswordDTO) =>
     http.post<ForgotPasswordResponse>("/auth/forgot-password", payload),
@@ -54,7 +52,10 @@ export const authApi = {
     http.post<ChangePasswordResponse>("/auth/change-password", payload),
 
   resetPasswordValidate: (payload: ResetPasswordValidateDTO) =>
-    http.post<ResetPasswordValidateResponse>("/auth/reset-password/validate", payload),
+    http.post<ResetPasswordValidateResponse>(
+      "/auth/reset-password/validate",
+      payload,
+    ),
 
   resetPassword: (payload: ResetPasswordDTO) =>
     http.post<ResetPasswordResponse>("/auth/reset-password", payload),

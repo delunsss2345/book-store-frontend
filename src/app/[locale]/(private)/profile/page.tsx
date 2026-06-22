@@ -4,8 +4,7 @@ import { useMemo, useState } from "react";
 
 import { Card, CardContent } from "@/src/components/ui/card";
 
-import { selectorCurrentUser } from "@/features/auth/selector/auth.selector";
-import { useAuthStore } from "@/features/auth/store/auth.store";
+import { useAuth } from "@/src/components/auth/AuthProvider";
 import useTranslator from "@/hooks/use-translator";
 
 import {
@@ -37,33 +36,6 @@ type AddressItem = {
   isDefault: boolean;
 };
 
-type AddressFormState = {
-  addressType: AddressType;
-  recipientName: string;
-  phoneNumber: string;
-  addressDetail: string;
-  ward: string;
-  district: string;
-  city: string;
-  isDefault: boolean;
-};
-
-const getEmptyAddressForm = (): AddressFormState => ({
-  addressType: "HOME",
-  recipientName: "",
-  phoneNumber: "",
-  addressDetail: "",
-  ward: "",
-  district: "",
-  city: "",
-  isDefault: false,
-});
-
-const isAddressType = (value: string): value is AddressType =>
-  ADDRESS_TYPES.includes(value as AddressType);
-
-
-
 const formatAddress = (address: AddressItem) =>
   [address.addressDetail, address.ward, address.district, address.city]
     .filter(Boolean)
@@ -71,11 +43,11 @@ const formatAddress = (address: AddressItem) =>
 
 const ProfilePage = () => {
   const { t } = useTranslator();
-  const currentUser = useAuthStore(selectorCurrentUser);
+  const { user: currentUser } = useAuth();
   const { data: addresses, isPending: isAddressesLoading } = useQueryAddress();
   const { mutateAsync: setDefaultAddress } = useSetDefaultAddressMutation();
   const { mutateAsync: deleteAddress } = useDeleteUserAddressMutation();
-  const [isAddingAddress, setIsAddingAddress] = useState(false);
+  const [_, setIsAddingAddress] = useState(false);
 
   const fullName = useMemo(() => {
     if (!currentUser) return "N/A";
@@ -99,10 +71,6 @@ const ProfilePage = () => {
 
   const handleDeleteAddress = (addressId: string) => {
     deleteAddress(addressId);
-  };
-
-  const handleCancelAddAddress = () => {
-    setIsAddingAddress(false);
   };
 
   return (

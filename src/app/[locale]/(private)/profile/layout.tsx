@@ -1,11 +1,10 @@
 "use client";
 
-import { useQueryMe } from "@/features/auth/hooks/use-query-me";
+import React from "react";
 import Header from "./_components/Header";
-import Footer from "./_components/Footer";
+import { Footer } from "./_components/Footer";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  useQueryMe();
   return (
     <>
       <Header />

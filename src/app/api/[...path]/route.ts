@@ -31,7 +31,6 @@ function appendSetCookies(response: NextResponse, backendResponse: Response) {
       : backendResponse.headers.get("set-cookie")
         ? [backendResponse.headers.get("set-cookie") as string]
         : [];
-  console.log(setCookies);
   for (const cookie of setCookies) {
     response.headers.append("set-cookie", cookie);
   }
@@ -64,7 +63,6 @@ async function createBackendHeaders(request: NextRequest) {
   if (accessToken && !headers.has("authorization")) {
     headers.set("authorization", `Bearer ${accessToken}`);
   }
-  console.log(accessToken);
   if (language) {
     headers.set("x-app-lang", language);
   }
