@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/src/components/ui/card";
-import { numberFmt } from "../dashboard.data";
+import { numberFmt } from "../data/dashboard.data";
 
 export function CustomersTab() {
   return (
@@ -23,12 +23,19 @@ export function CustomersTab() {
           { name: "Leslie Alexander", orders: 14, spend: 2240 },
           { name: "Jane Cooper", orders: 11, spend: 1840 },
         ].map((customer) => (
-          <div key={customer.name} className="flex items-center justify-between rounded-xl border p-3">
+          <div
+            key={customer.name}
+            className="flex items-center justify-between rounded-xl border p-3"
+          >
             <div>
               <p className="font-semibold">{customer.name}</p>
-              <p className="text-xs text-zinc-500">{numberFmt.format(customer.orders)} orders</p>
+              <p className="text-xs text-zinc-500">
+                {numberFmt.format(customer.orders)} orders
+              </p>
             </div>
-            <p className="text-sm font-bold">${numberFmt.format(customer.spend)}</p>
+            <p className="text-sm font-bold">
+              ${numberFmt.format(customer.spend)}
+            </p>
           </div>
         ))}
       </CardContent>

@@ -11,6 +11,7 @@ import {
   Layers,
   RefreshCcw,
   BarChart3,
+  Users,
 } from "lucide-react";
 
 export const sidebarData: SidebarData = {
@@ -26,12 +27,12 @@ export const sidebarData: SidebarData = {
       items: [
         {
           title: "Dashboard",
-          url: "dashboard/overview",
+          url: "dashboard",
           icon: LayoutDashboard,
         },
         {
           title: "Báo cáo",
-          url: "reports",
+          url: "dashboard/reports",
           icon: BarChart3,
         },
       ],
@@ -40,13 +41,14 @@ export const sidebarData: SidebarData = {
       title: "Sản phẩm",
       items: [
         {
-          title: "Thêm sách mới",
-          url: "books/create",
+          title: "Quản lý Sách",
+          url: "dashboard/books",
           icon: Book,
         },
+
         {
           title: "Quản lý Thể loại",
-          url: "categories",
+          url: "dashboard/categories",
           icon: Tags,
         },
       ],
@@ -55,18 +57,23 @@ export const sidebarData: SidebarData = {
       title: "Bán hàng",
       items: [
         {
+          title: "Khách hàng",
+          url: "dashboard/customers",
+          icon: Users,
+        },
+        {
           title: "Quản lý Đơn hàng",
-          url: "orders",
+          url: "dashboard/orders",
           icon: ShoppingCart,
         },
         {
           title: "Khuyến mãi",
-          url: "promotions",
+          url: "dashboard/promotions",
           icon: BadgePercent,
         },
         {
           title: "Yêu cầu Hoàn/Đổi",
-          url: "return-requests",
+          url: "dashboard/return-requests",
           icon: RefreshCcw,
         },
       ],
@@ -76,22 +83,23 @@ export const sidebarData: SidebarData = {
       items: [
         {
           title: "Nhà cung cấp",
-          url: "suppliers",
+          url: "dashboard/suppliers",
           icon: Truck,
         },
         {
-          title: "Tạo đơn nhập hàng",
-          url: "purchase-orders/create",
+          title: "Quản lý Đơn nhập hàng",
+          url: "dashboard/purchase-orders",
           icon: ClipboardList,
         },
+
         {
           title: "Phiếu Nhập kho",
-          url: "goods-receipt",
+          url: "dashboard/goods-receipt",
           icon: PackageCheck,
         },
         {
           title: "Quản lý Lô hàng",
-          url: "batches",
+          url: "dashboard/batches",
           icon: Layers,
         },
       ],

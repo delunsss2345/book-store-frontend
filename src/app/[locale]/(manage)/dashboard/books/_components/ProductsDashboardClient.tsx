@@ -1,13 +1,14 @@
 "use client";
 
-import {
-  useAdminBooksQuery,
-  useAdminBooksStatsQuery,
-} from "@/features/admin";
+import { useAdminBooksQuery, useAdminBooksStatsQuery } from "@/features/admin";
 import useTranslator from "@/hooks/use-translator";
-import { useRouter } from "@/i18n/navigation";
 import { Button } from "@/src/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/src/components/ui/card";
 import { Input } from "@/src/components/ui/input";
 import {
   Table,
@@ -30,6 +31,7 @@ import { ProductSummaryCards } from "./ProductSummaryCards";
 import { ProductsPagination } from "./ProductsPagination";
 import ProductsTableSkeleton from "./ProductsTableSkeleton";
 import { useProductColumns } from "./useProductColumns";
+import { useRouter } from "next/navigation";
 
 export function ProductsDashboardClient() {
   const { t } = useTranslator();
@@ -69,11 +71,7 @@ export function ProductsDashboardClient() {
           </p>
         </div>
         <Button
-          onClick={() =>
-            router.push({
-              pathname: "/books/create",
-            })
-          }
+          onClick={() => router.push("books/create")}
           className="w-fit gap-2 bg-slate-950 hover:bg-slate-800 text-white shadow-md transition-all"
         >
           <Plus className="size-4" /> Add New Product
@@ -116,9 +114,9 @@ export function ProductsDashboardClient() {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
                   ))}
                 </TableRow>
