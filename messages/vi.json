@@ -258,6 +258,62 @@
     }
   },
   "dashboard": {
+    "roles": {
+      "title": "Quản lý Quyền",
+      "description": "Quản lý các nhóm quyền và phân quyền trong hệ thống.",
+      "addNew": "Thêm Quyền Mới",
+      "listTitle": "Danh sách Quyền",
+      "searchPlaceholder": "Tìm kiếm...",
+      "filter": "Lọc",
+      "table": {
+        "columns": {
+          "id": "ID",
+          "code": "Mã Quyền",
+          "name": "Tên Quyền",
+          "description": "Mô tả",
+          "status": "Trạng thái",
+          "actions": "Thao tác"
+        },
+        "status": {
+          "active": "Hoạt động",
+          "inactive": "Tạm ngưng"
+        },
+        "empty": "Không có dữ liệu quyền nào."
+      },
+      "actions": {
+        "label": "Hành động",
+        "edit": "Chỉnh sửa",
+        "delete": "Xóa"
+      }
+    },
+    "permissions": {
+      "title": "Quản lý API Permissions",
+      "description": "Quản lý các endpoints và phương thức truy cập hệ thống.",
+      "addNew": "Thêm Permission Mới",
+      "listTitle": "Danh sách Permission",
+      "searchPlaceholder": "Tìm kiếm permission...",
+      "filter": "Lọc",
+      "table": {
+        "columns": {
+          "code": "Mã",
+          "method": "Phương thức",
+          "pathPattern": "Đường dẫn (Path)",
+          "description": "Mô tả",
+          "status": "Trạng thái",
+          "actions": "Thao tác"
+        },
+        "status": {
+          "active": "Hoạt động",
+          "inactive": "Tạm ngưng"
+        },
+        "empty": "Không có dữ liệu permission nào."
+      },
+      "actions": {
+        "label": "Hành động",
+        "edit": "Chỉnh sửa",
+        "delete": "Xóa"
+      }
+    },
     "products": {
       "title": "Sản phẩm",
       "summary": {

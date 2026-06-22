@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 
 import { Card, CardContent } from "@/src/components/ui/card";
 
-import { useAuth } from "@/src/components/auth/AuthProvider";
+import { useQueryMe } from "@/features/auth/hooks/use-query-me";
 import useTranslator from "@/hooks/use-translator";
 
 import {
@@ -43,11 +43,12 @@ const formatAddress = (address: AddressItem) =>
 
 const ProfilePage = () => {
   const { t } = useTranslator();
-  const { user: currentUser } = useAuth();
+  const { data } = useQueryMe();
+  const currentUser = data?.data;
   const { data: addresses, isPending: isAddressesLoading } = useQueryAddress();
   const { mutateAsync: setDefaultAddress } = useSetDefaultAddressMutation();
   const { mutateAsync: deleteAddress } = useDeleteUserAddressMutation();
-  const [_, setIsAddingAddress] = useState(false);
+  const [isAddingAddress, setIsAddingAddress] = useState(false);
 
   const fullName = useMemo(() => {
     if (!currentUser) return "N/A";
@@ -71,6 +72,10 @@ const ProfilePage = () => {
 
   const handleDeleteAddress = (addressId: string) => {
     deleteAddress(addressId);
+  };
+
+  const handleCancelAddAddress = () => {
+    setIsAddingAddress(false);
   };
 
   return (

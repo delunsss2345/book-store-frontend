@@ -1,16 +1,16 @@
-import { useAuthStore } from "@/features/auth/store/auth.store";
-import { selectorSession } from "@/features/auth/selector/auth.selector";
+import { useQueryClient } from "@tanstack/react-query";
+import { ME_QUERY_KEY } from "@/features/auth/hooks/use-query-me";
 import { authApi } from "@/services/auth.service";
 import { useMutation } from "@tanstack/react-query";
 
 export const useLoginMutation = () => {
-    const setSession = useAuthStore(selectorSession);
+    const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: authApi.login,
         onSuccess: (res) => {
-            setSession({
-                user: res.data.user,
+            queryClient.setQueryData(ME_QUERY_KEY, {
+                data: res.data.user,
             });
         },
     });

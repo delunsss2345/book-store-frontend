@@ -258,6 +258,62 @@
     }
   },
   "dashboard": {
+    "roles": {
+      "title": "Roles Management",
+      "description": "Manage user roles and system authorizations.",
+      "addNew": "Add New Role",
+      "listTitle": "Roles List",
+      "searchPlaceholder": "Search...",
+      "filter": "Filter",
+      "table": {
+        "columns": {
+          "id": "ID",
+          "code": "Role Code",
+          "name": "Role Name",
+          "description": "Description",
+          "status": "Status",
+          "actions": "Actions"
+        },
+        "status": {
+          "active": "Active",
+          "inactive": "Inactive"
+        },
+        "empty": "No roles to display."
+      },
+      "actions": {
+        "label": "Actions",
+        "edit": "Edit",
+        "delete": "Delete"
+      }
+    },
+    "permissions": {
+      "title": "API Permissions Management",
+      "description": "Manage endpoints and system access methods.",
+      "addNew": "Add New Permission",
+      "listTitle": "Permissions List",
+      "searchPlaceholder": "Search permissions...",
+      "filter": "Filter",
+      "table": {
+        "columns": {
+          "code": "Code",
+          "method": "Method",
+          "pathPattern": "Path Pattern",
+          "description": "Description",
+          "status": "Status",
+          "actions": "Actions"
+        },
+        "status": {
+          "active": "Active",
+          "inactive": "Inactive"
+        },
+        "empty": "No permissions to display."
+      },
+      "actions": {
+        "label": "Actions",
+        "edit": "Edit",
+        "delete": "Delete"
+      }
+    },
     "products": {
       "title": "Products",
       "summary": {

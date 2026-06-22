@@ -11,6 +11,8 @@ import {
   BarChart3,
   Users,
   ShieldCheck,
+  UsersRound,
+  LayoutGrid,
 } from "lucide-react";
 
 export const sidebarData: SidebarData = {
@@ -57,8 +59,13 @@ export const sidebarData: SidebarData = {
       items: [
         {
           title: "Khách hàng",
-          url: "dashboard/customers",
-          icon: Users,
+          url: "/dashboard/customers",
+          icon: UsersRound,
+        },
+        {
+          title: "API Permissions",
+          url: "/dashboard/permissions",
+          icon: LayoutGrid,
         },
         {
           title: "Quản lý Đơn hàng",
