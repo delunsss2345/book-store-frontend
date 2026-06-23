@@ -2,21 +2,27 @@
 
 import { ModalType, useModalStore } from "@/features/modal";
 import { ModalPortal } from "../ModalPortal";
-import ModalBookDetail from "./ModalBookDetail";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import ModalAddVariant from "./ModalAddVariant";
-import ModalAddTranslateBook from "./ModalAddTranslateBook";
-import ModalAddSupplier from "./ModalAddSupplier";
-import ModalPurchaseOrderDetail from "./ModelPurchaseOrderDetail";
-import ModalGoodsReceiptDetail from "./ModalGoodsReceiptDetail";
-import ModalCreateAddress from "./ModalCreateAddress";
-import ModalOrderItemsDetail from "./ModalShowOrderItem";
-import ModalBookVariantPricing from "./ModalShowVariant";
-import ModelShowSpecEdit from "./ModalShowSpecEdit";
-import ModelShowOrderDetailAdmin from "./ModelShowOrderDetailAdmin";
-import ModalApproveOrderAdmin from "./ModalApprovalOrderAdmin";
-import ModalSelectAddress from "./ModalSelectAddress";
+import { lazy, Suspense } from "react";
+
+const ModalBookDetail = lazy(() => import("./ModalBookDetail"));
+const ModalAddVariant = lazy(() => import("./ModalAddVariant"));
+const ModalAddTranslateBook = lazy(() => import("./ModalAddTranslateBook"));
+const ModalAddSupplier = lazy(() => import("./ModalAddSupplier"));
+const ModalPurchaseOrderDetail = lazy(
+  () => import("./ModelPurchaseOrderDetail"),
+);
+const ModalGoodsReceiptDetail = lazy(() => import("./ModalGoodsReceiptDetail"));
+const ModalCreateAddress = lazy(() => import("./ModalCreateAddress"));
+const ModalOrderItemsDetail = lazy(() => import("./ModalShowOrderItem"));
+const ModalBookVariantPricing = lazy(() => import("./ModalShowVariant"));
+const ModelShowSpecEdit = lazy(() => import("./ModalShowSpecEdit"));
+const ModelShowOrderDetailAdmin = lazy(
+  () => import("./ModelShowOrderDetailAdmin"),
+);
+const ModalApproveOrderAdmin = lazy(() => import("./ModalApprovalOrderAdmin"));
+const ModalSelectAddress = lazy(() => import("./ModalSelectAddress"));
 
 export function ModalHost() {
   const { getIsOpen, onClose, getType } = useModalStore();
@@ -42,7 +48,10 @@ export function ModalHost() {
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
               className={`relative w-full max-h-[90vh] overflow-y-auto bg-surface rounded-2xl shadow-2xl border border-line custom-scrollbar ${
-                type === ModalType.CREATE_ADDRESS || type === ModalType.SELECT_ADDRESS ? "max-w-lg" : "max-w-3xl"
+                type === ModalType.CREATE_ADDRESS ||
+                type === ModalType.SELECT_ADDRESS
+                  ? "max-w-lg"
+                  : "max-w-3xl"
               }`}
             >
               <button
@@ -53,52 +62,57 @@ export function ModalHost() {
               </button>
 
               <div className="p-6 md:p-8">
-                {type === ModalType.BOOK_DETAIL && (
-                  <ModalBookDetail onClose={onClose} />
-                )}
-                {type === ModalType.BOOK_ADD_VARIANT && (
-                  <ModalAddVariant onClose={onClose} />
-                )}
-                {type === ModalType.BOOK_TRANSLATION && (
-                  <ModalAddTranslateBook onClose={onClose} />
-                )}
-                {type === ModalType.ADD_SUPPLIER && (
-                  <ModalAddSupplier onClose={onClose} />
-                )}
-                {type === ModalType.DETAIL_PURCHASE_ORDER && (
-                  <ModalPurchaseOrderDetail onClose={onClose} />
-                )}
-                {type === ModalType.DETAIL_GOODS_RECEIPT && (
-                  <ModalGoodsReceiptDetail />
-                )}
-                {type === ModalType.CREATE_ADDRESS && (
-                  <ModalCreateAddress onClose={onClose} />
-                )}
-                {type === ModalType.SHOW_ORDER_ITEMS && (
-                  <ModalOrderItemsDetail />
-                )}
-                {type === ModalType.SHOW_VARIANT_EDIT && (
-                  <ModalBookVariantPricing />
-                )}
-                {type === ModalType.SHOW_BOOK_SPECIFICATIONS_EDIT && (
-                  <ModelShowSpecEdit />
-                )}
-                {type === ModalType.ORDER_DETAIL_ADMIN && (
-                  <ModelShowOrderDetailAdmin />
-                )}
-                {type === ModalType.ORDER_APPROVAL_ADMIN && (
-                  <ModalApproveOrderAdmin />
-                )}
-                {type === ModalType.SELECT_ADDRESS && (
-                  <ModalSelectAddress
-                    onClose={onClose}
-                    selectedAddressId={useModalStore.getState().selectedAddressId}
-                    onSelect={(addressId) => {
-                      const cb = useModalStore.getState().selectAddressCallback;
-                      if (cb) cb(addressId);
-                    }}
-                  />
-                )}
+                <Suspense fallback={null}>
+                  {type === ModalType.BOOK_DETAIL && (
+                    <ModalBookDetail onClose={onClose} />
+                  )}
+                  {type === ModalType.BOOK_ADD_VARIANT && (
+                    <ModalAddVariant onClose={onClose} />
+                  )}
+                  {type === ModalType.BOOK_TRANSLATION && (
+                    <ModalAddTranslateBook onClose={onClose} />
+                  )}
+                  {type === ModalType.ADD_SUPPLIER && (
+                    <ModalAddSupplier onClose={onClose} />
+                  )}
+                  {type === ModalType.DETAIL_PURCHASE_ORDER && (
+                    <ModalPurchaseOrderDetail onClose={onClose} />
+                  )}
+                  {type === ModalType.DETAIL_GOODS_RECEIPT && (
+                    <ModalGoodsReceiptDetail />
+                  )}
+                  {type === ModalType.CREATE_ADDRESS && (
+                    <ModalCreateAddress onClose={onClose} />
+                  )}
+                  {type === ModalType.SHOW_ORDER_ITEMS && (
+                    <ModalOrderItemsDetail />
+                  )}
+                  {type === ModalType.SHOW_VARIANT_EDIT && (
+                    <ModalBookVariantPricing />
+                  )}
+                  {type === ModalType.SHOW_BOOK_SPECIFICATIONS_EDIT && (
+                    <ModelShowSpecEdit />
+                  )}
+                  {type === ModalType.ORDER_DETAIL_ADMIN && (
+                    <ModelShowOrderDetailAdmin />
+                  )}
+                  {type === ModalType.ORDER_APPROVAL_ADMIN && (
+                    <ModalApproveOrderAdmin />
+                  )}
+                  {type === ModalType.SELECT_ADDRESS && (
+                    <ModalSelectAddress
+                      onClose={onClose}
+                      selectedAddressId={
+                        useModalStore.getState().selectedAddressId
+                      }
+                      onSelect={(addressId) => {
+                        const cb =
+                          useModalStore.getState().selectAddressCallback;
+                        if (cb) cb(addressId);
+                      }}
+                    />
+                  )}
+                </Suspense>
               </div>
             </motion.div>
           </div>

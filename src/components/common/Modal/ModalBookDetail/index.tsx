@@ -7,12 +7,11 @@ import {
   Star,
   Tag,
   Wallet,
-  XCircle
+  XCircle,
 } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 
-// Shadcn UI Components
 import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
 import { Card } from "@/src/components/ui/card";
@@ -35,10 +34,10 @@ export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
 
   if (!book) return null;
 
-  const title = book.translation[0].title || "No Title";
+  const title = book?.translation?.title || "No Title";
   const description =
-    book.translation[0].description || "No description available.";
-
+    book?.translation?.description || "No description available.";
+  console.log(book.coverImageUrl);
   return (
     <div className="space-y-6">
       {/* 1. Header & Cover Section */}
@@ -46,6 +45,7 @@ export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
         <Card className="shrink-0 w-40 h-56 overflow-hidden shadow-md border-muted">
           {book.coverImageUrl ? (
             <Image
+              unoptimized
               src={book.coverImageUrl}
               alt={title}
               width={160}
@@ -159,7 +159,7 @@ export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
                   <TableCell className="text-right py-2">
                     <span
                       className={
-                        v?.stock ?? 0 < 10 ? "text-destructive font-bold" : ""
+                        (v?.stock ?? 0 < 10) ? "text-destructive font-bold" : ""
                       }
                     >
                       {v.stock}
@@ -187,7 +187,6 @@ export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
     </div>
   );
 }
-
 
 function StatBox({
   icon,

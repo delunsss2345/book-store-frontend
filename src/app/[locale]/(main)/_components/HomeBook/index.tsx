@@ -2,7 +2,7 @@
 
 import { useHomeQuery } from "@/features/catalog/hooks/use-home.mutation";
 import { cn } from "@/lib/utils";
-import { PricedBook } from "@/types/response/catalog.response";
+import { CatalogHomeBookDto } from "@/types/response/catalog.response";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useMemo } from "react";
@@ -48,21 +48,18 @@ export function HomeBook() {
               newAndTrending.length > 0 ? "opacity-100" : "opacity-0",
             )}
           >
-            {newAndTrending.map((b) => {
-              const book = b as PricedBook & {
-                price: number;
-                bookVariantId: number;
-              };
+            {newAndTrending.map((book: CatalogHomeBookDto) => {
               return (
                 <BookCard
-                  key={b.id}
-                  title={b.title}
-                  description={b.description} // Bạn có thể đổi thành b.author nếu có
-                  price={book.price}
+                  key={book.id}
+                  title={book.title}
+                  description={book.description} // Bạn có thể đổi thành b.author nếu có
+                  price={Number(book.price)}
                   currency="VND"
-                  imageUrl={b.coverImageUrl}
-                  href={`/detail/${b.slug}`}
+                  imageUrl={book.coverImageUrl}
+                  href={`/detail/${book.slug}`}
                   bookVariantId={book.bookVariantId}
+                  badges={book.badges}
                 />
               );
             })}

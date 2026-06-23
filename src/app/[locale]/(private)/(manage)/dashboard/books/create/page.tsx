@@ -3,23 +3,20 @@
 import { useCreateBookAllMutation } from "@/features/admin/hooks/use-create-book-all";
 import { useCategoryQuery } from "@/features/category/hooks/use-category-query";
 import { useSearchIsbnMutation } from "@/features/search/hooks/use-search-isbn";
-import { useSearchStore } from "@/features/search/store/search.store";
 import { useSupplierQuery } from "@/features/supplier/hooks/use-supplier-query";
 import { AdminBookVariant } from "@/types/response/admin.response";
-import { convertIsbnResultToBookSchema } from "@/utils/convert-book";
-import { ArrowLeft, ChevronRight, Image as ImageIcon, Info, Plus, Save, ScanLine, WandSparkles, X } from "lucide-react";
+import { ArrowLeft, ChevronRight, Image as ImageIcon, Info, Plus, Save, ScanLine, WandSparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import VariantCreate from "./_components/VariantCreate";
+import { createBookSchema, CreateBookFormValues, scanIsbnSchema } from "./_components/book.schema";
 
 export default function CreateBookPage() {
   const t = useTranslations();
   const [variants, setVariants] = useState<AdminBookVariant[]>([]);
-  const [language, setLanguage] = useState<string>("vi");
-  const [categoryId, setCategoryId] = useState<string>("");
-  const [supplierId, setSupplierId] = useState<string>("");
-  const [isbn, setIsbn] = useState("");
 
   const { data: supplierData, isLoading: isSupplierLoading } = useSupplierQuery();
   const suppliers = supplierData?.items || [];
@@ -30,35 +27,135 @@ export default function CreateBookPage() {
   });
   const categories = categoryData?.data?.items || [];
 
-  const { isbnSearchResult } = useSearchStore();
-  const { mutateAsync: searchIsbn, isPending: searchIsbnPending } =
-    useSearchIsbnMutation();
+  const { mutateAsync: searchIsbn, isPending: searchIsbnPending } = useSearchIsbnMutation();
+  const { mutateAsync: createBookAll, isPending: createBookAllPending } = useCreateBookAllMutation();
 
-  const { mutateAsync: createBookAll, isPending: createBookAllPending } =
-    useCreateBookAllMutation();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<CreateBookFormValues>({
+    resolver: zodResolver(createBookSchema),
+    defaultValues: {
+      language: "vi",
+      isbn: "",
+      title: "",
+      description: "",
+      authorName: "",
+      publisherName: "",
+      categoryId: "",
+      supplierId: "",
+      coverImageUrl: "",
+      widthCm: undefined,
+      heightCm: undefined,
+      thicknessCm: undefined,
+      weightGrams: undefined,
+      publicationYear: undefined,
+      pageCount: undefined,
+    },
+  });
 
-  const onScanHandler = () => {
+  const language = watch("language");
+  const isbn = watch("isbn") || "";
+  const coverImageUrl = watch("coverImageUrl");
+
+  const onScanHandler = (e: React.MouseEvent) => {
+    e.preventDefault();
     if (!isbn.trim()) return;
+
+    const result = scanIsbnSchema.safeParse({ isbn: isbn.trim() });
+    if (!result.success) {
+      toast.error(result.error.errors[0].message);
+      return;
+    }
+
     toast.promise(searchIsbn({ isbn: isbn.trim(), lang: language }), {
       loading: t("dashboard.products.create.toast.scanLoading"),
-      success: t("dashboard.products.create.toast.scanSuccess"),
+      success: (data) => {
+        if (data.title) setValue("title", data.title);
+        if (data.description) setValue("description", data.description);
+        if (data.spec?.widthCm) setValue("widthCm", data.spec.widthCm);
+        if (data.spec?.heightCm) setValue("heightCm", data.spec.heightCm);
+        if (data.spec?.thicknessCm) setValue("thicknessCm", data.spec.thicknessCm);
+        if (data.weightGrams) setValue("weightGrams", data.weightGrams);
+        if (data.authorName) setValue("authorName", data.authorName);
+        if (data.publisherName) setValue("publisherName", data.publisherName);
+        if (data.publicationYear) setValue("publicationYear", data.publicationYear);
+        if (data.pageCount) setValue("pageCount", data.pageCount);
+        if (data.coverImageUrl) setValue("coverImageUrl", data.coverImageUrl);
+        return t("dashboard.products.create.toast.scanSuccess");
+      },
       error: t("dashboard.products.create.toast.scanError"),
     });
   };
 
-  const onSaveHandler = async () => {
-    const bookData = convertIsbnResultToBookSchema(
-      isbnSearchResult,
-      variants,
-      language,
-    );
-    if (!bookData) return;
-    toast.promise(createBookAll(bookData), {
+  const onSubmit = async (data: CreateBookFormValues) => {
+    const languageId = data.language === "en" ? 2 : 1;
+    const authors = data.authorName
+      .split(",")
+      .map((author: string, i: number) => ({
+        authorName: author.trim(),
+        isPrimary: i === 0,
+      }));
+
+    const normalizedVariants: any[] = variants.map((variant) => ({
+      format: variant.format,
+      edition: variant.edition,
+      isbn: variant.isbn,
+      costPrice: Number(variant.costPrice),
+      price: Number(variant.price),
+      currencyCode: variant.currencyCode,
+      stock: variant.stock,
+      isActive: variant.isActive,
+    }));
+
+    const slugify = (text: string) => {
+      return text
+        .toString()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, "-")
+        .replace(/[^\w-]+/g, "")
+        .replace(/--+/g, "-");
+    };
+
+    const bookData = {
+      publisherName: data.publisherName,
+      publicationYear: data.publicationYear || new Date().getFullYear(),
+      pageCount: data.pageCount || 0,
+      weightGrams: data.weightGrams || 0,
+      coverImageUrl: data.coverImageUrl || "",
+      badgeCode: "NEW",
+      spec: {
+        widthCm: data.widthCm,
+        heightCm: data.heightCm,
+        thicknessCm: data.thicknessCm,
+      },
+      translations: [
+        {
+          languageId,
+          languageCode: data.language,
+          title: data.title,
+          description: data.description || "",
+          slug: slugify(data.title),
+        },
+      ],
+      authors,
+      variants: normalizedVariants,
+    };
+
+    toast.promise(createBookAll(bookData as any), {
       loading: t("dashboard.products.create.toast.createLoading"),
       success: t("dashboard.products.create.toast.createSuccess"),
       error: t("dashboard.products.create.toast.createError"),
     });
   };
+
+  const onSaveHandler = handleSubmit(onSubmit);
 
   return (
     <div className="min-w-0">
@@ -81,7 +178,6 @@ export default function CreateBookPage() {
         </div>
       </div>
       <div className="page">
-        {/* step chips */}
         <div className="mb-5 flex flex-wrap items-center gap-2 text-[12px]">
           <span className="chip bg-ink text-white">1 · Quét ISBN</span><ChevronRight className="h-4 w-4 text-ink-3" />
           <span className="chip bg-paper text-ink-2 ring-1 ring-line">2 · Điền nội dung</span><ChevronRight className="h-4 w-4 text-ink-3" />
@@ -90,7 +186,6 @@ export default function CreateBookPage() {
         
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           <div className="space-y-4 lg:col-span-2">
-            {/* magic fill */}
             <div className="card overflow-hidden">
               <div className="flex items-center gap-2 border-b border-line bg-gradient-to-r from-accent-soft to-paper px-5 py-3">
                 <WandSparkles className="h-4 w-4 text-accent" />
@@ -99,7 +194,7 @@ export default function CreateBookPage() {
               <div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-end">
                 <div className="w-40">
                   <label className="flabel">Ngôn ngữ</label>
-                  <select className="field" value={language} onChange={(e) => setLanguage(e.target.value)}>
+                  <select className="field" {...register("language")}>
                     <option value="vi">Tiếng Việt</option>
                     <option value="en">English</option>
                   </select>
@@ -109,8 +204,7 @@ export default function CreateBookPage() {
                   <input 
                     className="field font-mono" 
                     placeholder="Ví dụ: 9780135398548" 
-                    value={isbn}
-                    onChange={(e) => setIsbn(e.target.value)}
+                    {...register("isbn")}
                   />
                 </div>
                 <button 
@@ -123,25 +217,23 @@ export default function CreateBookPage() {
               </div>
             </div>
 
-            {/* content */}
             <div className="card p-5">
               <h4 className="display text-[17px] font-semibold text-ink">Nội dung hiển thị</h4>
               <div className="mt-4">
                 <label className="flabel">Tiêu đề sách <span className="text-accent">*</span></label>
-                <input className="field" defaultValue={isbnSearchResult?.title || ""} key={`title-${isbnSearchResult?.title}`} />
+                <input className={`field ${errors.title ? "border-red-500" : ""}`} {...register("title")} />
+                {errors.title && <p className="mt-1 text-xs text-red-500">{errors.title.message}</p>}
               </div>
               <div className="mt-4">
                 <label className="flabel">Mô tả chi tiết</label>
                 <textarea 
                   className="field h-28 py-2.5" 
                   placeholder="Mô tả nội dung sách…"
-                  defaultValue={isbnSearchResult?.description || ""}
-                  key={`desc-${isbnSearchResult?.description}`}
+                  {...register("description")}
                 ></textarea>
               </div>
             </div>
 
-            {/* variants */}
             <div className="card p-5">
               <div className="flex items-center justify-between">
                 <h4 className="display text-[17px] font-semibold text-ink">Biến thể & Giá bán</h4>
@@ -155,41 +247,68 @@ export default function CreateBookPage() {
               </div>
             </div>
 
-            {/* physical specs */}
             <div className="card p-5">
               <h4 className="display text-[17px] font-semibold text-ink">Thông số kỹ thuật & Xuất bản</h4>
               <p className="mt-3 text-[11px] font-semibold uppercase tracking-wider text-ink-3">Kích thước</p>
               <div className="mt-2 grid grid-cols-4 gap-3">
-                <div><label className="flabel">Rộng (cm)</label><input className="field" defaultValue={isbnSearchResult?.spec?.widthCm || ""} /></div>
-                <div><label className="flabel">Cao (cm)</label><input className="field" defaultValue={isbnSearchResult?.spec?.heightCm || ""} /></div>
-                <div><label className="flabel">Dày (cm)</label><input className="field" defaultValue={isbnSearchResult?.spec?.thicknessCm || ""} /></div>
-                <div><label className="flabel">Nặng (g)</label><input className="field" defaultValue={isbnSearchResult?.weightGrams || ""} /></div>
+                <div>
+                  <label className="flabel">Rộng (cm)</label>
+                  <input type="number" step="0.1" className="field" {...register("widthCm")} />
+                </div>
+                <div>
+                  <label className="flabel">Cao (cm)</label>
+                  <input type="number" step="0.1" className="field" {...register("heightCm")} />
+                </div>
+                <div>
+                  <label className="flabel">Dày (cm)</label>
+                  <input type="number" step="0.1" className="field" {...register("thicknessCm")} />
+                </div>
+                <div>
+                  <label className="flabel">Nặng (g)</label>
+                  <input type="number" className="field" {...register("weightGrams")} />
+                </div>
               </div>
               <p className="mt-4 text-[11px] font-semibold uppercase tracking-wider text-ink-3">Xuất bản & Phân loại</p>
               <div className="mt-2 grid grid-cols-4 gap-3">
-                <div><label className="flabel">Tác giả</label><input className="field" defaultValue={isbnSearchResult?.authorName || ""} /></div>
-                <div><label className="flabel">Nhà xuất bản</label><input className="field" defaultValue={isbnSearchResult?.publisherName || ""} /></div>
                 <div className="col-span-2">
-                  <label className="flabel">Danh mục</label>
-                  <select className="field" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
+                  <label className="flabel">Tác giả <span className="text-accent">*</span></label>
+                  <input className={`field ${errors.authorName ? "border-red-500" : ""}`} placeholder="Cách nhau bằng dấu phẩy" {...register("authorName")} />
+                  {errors.authorName && <p className="mt-1 text-xs text-red-500">{errors.authorName.message}</p>}
+                </div>
+                <div className="col-span-2">
+                  <label className="flabel">Nhà xuất bản <span className="text-accent">*</span></label>
+                  <input className={`field ${errors.publisherName ? "border-red-500" : ""}`} {...register("publisherName")} />
+                  {errors.publisherName && <p className="mt-1 text-xs text-red-500">{errors.publisherName.message}</p>}
+                </div>
+                <div className="col-span-2">
+                  <label className="flabel">Danh mục <span className="text-accent">*</span></label>
+                  <select className={`field ${errors.categoryId ? "border-red-500" : ""}`} {...register("categoryId")}>
                     <option value="">Chọn danh mục...</option>
                     {categories.map((cat) => (
                       <option key={cat.id} value={cat.id}>{cat.name}</option>
                     ))}
                   </select>
+                  {errors.categoryId && <p className="mt-1 text-xs text-red-500">{errors.categoryId.message}</p>}
                 </div>
-              </div>
-              <div className="mt-3 grid grid-cols-4 gap-3">
-                <div><label className="flabel">Năm XB</label><input className="field" defaultValue={isbnSearchResult?.publicationYear || ""} /></div>
-                <div><label className="flabel">Số trang</label><input className="field" defaultValue={isbnSearchResult?.pageCount || ""} /></div>
                 <div className="col-span-2">
-                  <label className="flabel">Nhà cung cấp</label>
-                  <select className="field" value={supplierId} onChange={(e) => setSupplierId(e.target.value)}>
+                  <label className="flabel">Nhà cung cấp <span className="text-accent">*</span></label>
+                  <select className={`field ${errors.supplierId ? "border-red-500" : ""}`} {...register("supplierId")}>
                     <option value="">Chọn nhà cung cấp...</option>
                     {suppliers.map((sup) => (
                       <option key={sup.id} value={sup.id}>{sup.name}</option>
                     ))}
                   </select>
+                  {errors.supplierId && <p className="mt-1 text-xs text-red-500">{errors.supplierId.message}</p>}
+                </div>
+              </div>
+              <div className="mt-3 grid grid-cols-4 gap-3">
+                <div>
+                  <label className="flabel">Năm XB</label>
+                  <input type="number" className="field" {...register("publicationYear")} />
+                </div>
+                <div>
+                  <label className="flabel">Số trang</label>
+                  <input type="number" className="field" {...register("pageCount")} />
                 </div>
               </div>
               <p className="mt-4 text-[11px] font-semibold uppercase tracking-wider text-ink-3">Nhãn</p>
@@ -199,13 +318,12 @@ export default function CreateBookPage() {
             </div>
           </div>
 
-          {/* right column */}
           <div className="space-y-4">
             <div className="card p-5">
               <h4 className="display text-[17px] font-semibold text-ink">Ảnh bìa & Preview</h4>
               <div className="mt-3 grid aspect-[3/4] overflow-hidden place-items-center rounded-xl border-2 border-dashed border-line-2 bg-paper text-center">
-                {isbnSearchResult?.coverImageUrl ? (
-                  <img src={isbnSearchResult.coverImageUrl} alt="Cover" className="h-full w-full object-cover" />
+                {coverImageUrl ? (
+                  <img src={coverImageUrl} alt="Cover" className="h-full w-full object-cover" />
                 ) : (
                   <div>
                     <ImageIcon className="mx-auto text-[26px] text-ink-3" />
@@ -216,7 +334,8 @@ export default function CreateBookPage() {
               </div>
               <div className="mt-3">
                 <label className="flabel">Đường dẫn ảnh (URL)</label>
-                <input className="field font-mono text-[12px]" placeholder="https://…" defaultValue={isbnSearchResult?.coverImageUrl || ""} />
+                <input className={`field font-mono text-[12px] ${errors.coverImageUrl ? "border-red-500" : ""}`} placeholder="https://…" {...register("coverImageUrl")} />
+                {errors.coverImageUrl && <p className="mt-1 text-xs text-red-500">{errors.coverImageUrl.message}</p>}
               </div>
             </div>
             <div className="card p-5">

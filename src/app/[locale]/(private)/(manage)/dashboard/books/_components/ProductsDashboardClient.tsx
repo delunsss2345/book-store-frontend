@@ -41,6 +41,7 @@ export function ProductsDashboardClient() {
     error: booksError,
     isPending,
   } = useAdminBooksQuery();
+
   const { data: bookStats, error: bookStatsError } = useAdminBooksStatsQuery();
 
   const router = useRouter();

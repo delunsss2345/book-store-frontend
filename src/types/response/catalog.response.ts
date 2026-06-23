@@ -120,15 +120,24 @@ export interface BookBase {
   createdAt: ISODateString;
 }
 
-export interface PricedBook extends BookBase {
-  minPrice: DecimalString;
-  maxPrice: DecimalString;
-  currencyCode: CurrencyCode;
+export interface CatalogHomeBookDto {
+  id: number;
+  title: string;
+  slug: string;
+  coverImageUrl: string;
+  soldCount: number;
+  createdAt: string;
+  badges: string[];
+  bookVariantId: number;
+  price: string;
   description: string;
+  currencyCode: string;
+  format: string;
+  isOutOfStock: boolean;
 }
 
 export interface HomeData {
-  newAndTrending: PricedBook[];
+  newAndTrending: CatalogHomeBookDto[];
 }
 
 export type BookFormat = "PAPERBACK" | "HARDCOVER" | (string & {});

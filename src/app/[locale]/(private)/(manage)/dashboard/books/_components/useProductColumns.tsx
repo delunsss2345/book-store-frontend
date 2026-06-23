@@ -105,10 +105,7 @@ export function useProductColumns(t: Translator) {
             </Button>
             <Button
               onClick={() => {
-                router.push({
-                  pathname: `/books/[id]/edit`,
-                  params: { id: row.original.id },
-                });
+                router.push(`/dashboard/books/${row.original.id}/edit`);
               }}
               variant="ghost"
               size="icon"

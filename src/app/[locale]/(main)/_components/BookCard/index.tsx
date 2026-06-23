@@ -11,7 +11,7 @@ type BookCardProps = {
   description: string;
   price: number;
   currency?: string;
-  badge?: string;
+  badges?: string[];
   imageUrl?: string;
   href?: string;
   variant?: BookCardVariant;
@@ -46,7 +46,7 @@ function CardInner({
   description,
   price,
   currency = "US$",
-  badge,
+  badges,
   imageUrl,
   variant = "default",
   className,
@@ -63,7 +63,7 @@ function CardInner({
       <div className="aspect-[3/4] overflow-hidden rounded-md bg-surface relative">
         {imageUrl ? (
           <img
-            className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover/card:scale-105"
+            className="h-full w-full object-cover transition-transform duration-700 ease-out"
             src={imageUrl}
             alt={`${title} cover`}
             loading="lazy"
@@ -75,11 +75,13 @@ function CardInner({
           </div>
         )}
 
-        {badge && (
-          <div className="absolute top-4 left-4 z-10">
-            <span className="bg-white/90 backdrop-blur-sm px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-ink shadow-sm border border-line rounded-full">
-              {badge}
-            </span>
+        {badges && badges.length > 0 && (
+          <div className="absolute top-4 left-4 z-10 flex flex-wrap gap-1.5">
+            {badges.map((badge, idx) => (
+              <span key={idx} className="bg-white/90 backdrop-blur-sm px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-ink shadow-sm border border-line rounded-full">
+                {badge}
+              </span>
+            ))}
           </div>
         )}
       </div>
