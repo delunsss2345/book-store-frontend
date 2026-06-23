@@ -914,6 +914,10 @@
     }
   },
   "catalog": {
+    "breadcrumbs": {
+      "home": "Home",
+      "books": "Books"
+    },
     "title": "All Titles",
     "home": "Home",
     "books": "Books ({count} items)",

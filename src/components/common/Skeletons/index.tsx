@@ -109,3 +109,47 @@ export function BookCardSkeleton({ className }: { className?: string }) {
     </div>
   );
 }
+
+export function BookDetailSkeleton({ className }: { className?: string }) {
+  return (
+    <div className={cn("bg-surface animate-pulse", className)}>
+      <div className="px-6 py-6 lg:px-10">
+        <Skeleton className="h-4 w-1/3 mb-6" />
+
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-5">
+            <Skeleton className="aspect-[3/4] w-full rounded-md" />
+            <div className="mt-4 flex gap-4">
+              <Skeleton className="h-20 w-20 rounded-md" />
+              <Skeleton className="h-20 w-20 rounded-md" />
+            </div>
+          </div>
+
+          <div className="flex flex-col lg:col-span-7 lg:pl-6 space-y-6">
+            <div className="border-b border-line pb-6 space-y-4">
+              <div className="flex justify-between">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-4 w-24" />
+              </div>
+              <Skeleton className="h-10 w-3/4" />
+              <Skeleton className="h-8 w-32" />
+            </div>
+
+            <div className="space-y-4">
+              <Skeleton className="h-16 w-full" />
+              <Skeleton className="h-4 w-40" />
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Skeleton className="h-12 w-full sm:w-32" />
+              <Skeleton className="h-12 flex-1" />
+              <Skeleton className="h-12 flex-1" />
+            </div>
+
+            <Skeleton className="h-40 w-full rounded-xl" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

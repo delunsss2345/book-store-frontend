@@ -112,7 +112,7 @@ export default function AllTitlesPage() {
                       bookVariantId={Number(book.bookVariantId ?? 0)}
                       currency={book.currencyCode ?? "VND"}
                       imageUrl={book.coverImageUrl ?? undefined}
-                      href={`/${locale}/detail/${book.slug ?? book.id}`}
+                      href={`/detail/${book.slug ?? book.id}`}
                       variant="compact"
                     />
                   ))}

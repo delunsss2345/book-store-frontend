@@ -1,6 +1,6 @@
 "use client";
 
-import { useQueryMe } from "@/features/auth/hooks/use-query-me";
+import { useAuth } from "@/src/components/auth/AuthProvider";
 import { useCreateUserAddressMutation } from "@/features/user-address";
 import { FormMessageI18n } from "@/src/components/common/FormMessageI18n";
 import { Button } from "@/src/components/ui/button";
@@ -31,8 +31,7 @@ import { toast } from "sonner";
 
 export default function ModalCreateAddress(_props: { onClose: () => void }) {
   const t = useTranslations();
-  const { data } = useQueryMe();
-  const currentUser = data?.data;
+  const { user: currentUser } = useAuth();
 
   const { mutateAsync: createAddress, isPending: isLoadingCreateAddress } =
     useCreateUserAddressMutation();

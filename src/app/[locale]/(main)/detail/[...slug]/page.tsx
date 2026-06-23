@@ -8,7 +8,7 @@ import * as React from "react";
 import { toast } from "sonner";
 
 import RecommendedSection from "@/src/app/[locale]/(main)/_components/RecommendSection";
-import { LoadingLazy } from "@/src/components/common/LoadingLazy";
+import { BookDetailSkeleton } from "@/src/components/common/Skeletons";
 import { useAddToCartMutation } from "@/features/cart/hooks";
 import { useBookQuery } from "@/features/catalog/hooks/use-book.mutation";
 import { useCatalogStore } from "@/features/catalog/store/catalog.store";
@@ -49,7 +49,7 @@ export default function DetailPage() {
     }
   }, [bookDetail, setVariantDetail, setWishVariantDetail]);
 
-  if (isPending) return <LoadingLazy />;
+  if (isPending) return <BookDetailSkeleton />;
   if (isError || !bookDetail) {
     return (
       <div className="container-main py-20 text-center text-zinc-500">
@@ -110,7 +110,7 @@ export default function DetailPage() {
                   {bookDetail.categories?.[0]?.name || "Fine Art"}
                 </span>
                 <span className="text-[12px] text-ink-3 italic">
-                  SKU: {bookDetail.id.slice(0, 8)}
+                  SKU: {String(bookDetail.id).slice(0, 8)}
                 </span>
               </div>
 

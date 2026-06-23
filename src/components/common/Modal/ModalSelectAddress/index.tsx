@@ -1,6 +1,6 @@
 "use client";
 
-import { useQueryMe } from "@/features/auth/hooks/use-query-me";
+import { useAuth } from "@/src/components/auth/AuthProvider";
 import { useCreateUserAddressMutation } from "@/features/user-address";
 import { useQueryAddress } from "@/features/user-address/hooks/use-query-address-mutation";
 import { FormMessageI18n } from "@/src/components/common/FormMessageI18n";
@@ -55,12 +55,7 @@ export default function ModalSelectAddress({
   };
 
   if (view === "form") {
-    return (
-      <AddressForm
-        onClose={onClose}
-        onBack={() => setView("list")}
-      />
-    );
+    return <AddressForm onClose={onClose} onBack={() => setView("list")} />;
   }
 
   return (
@@ -73,7 +68,10 @@ export default function ModalSelectAddress({
         {isPending ? (
           <div className="space-y-3">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="animate-pulse rounded-xl border border-line p-5">
+              <div
+                key={i}
+                className="animate-pulse rounded-xl border border-line p-5"
+              >
                 <div className="h-4 w-32 rounded bg-line" />
                 <div className="mt-2 h-3 w-full rounded bg-line" />
               </div>
@@ -144,8 +142,6 @@ export default function ModalSelectAddress({
   );
 }
 
-/* ─── Inline Add-Address Form ─── */
-
 function AddressForm({
   onClose,
   onBack,
@@ -154,8 +150,7 @@ function AddressForm({
   onBack: () => void;
 }) {
   const t = useTranslations();
-  const { data } = useQueryMe();
-  const currentUser = data?.data;
+  const { user: currentUser } = useAuth();
 
   const { mutateAsync: createAddress, isPending: isLoadingCreateAddress } =
     useCreateUserAddressMutation();
@@ -165,7 +160,8 @@ function AddressForm({
     mode: "onSubmit",
     defaultValues: {
       addressType: "HOME",
-      recipientName: `${currentUser?.firstName ?? ""} ${currentUser?.lastName ?? ""}`.trim(),
+      recipientName:
+        `${currentUser?.firstName ?? ""} ${currentUser?.lastName ?? ""}`.trim(),
       phoneNumber: currentUser?.phoneNumber ?? "",
       addressDetail: "",
       ward: "",
@@ -202,17 +198,27 @@ function AddressForm({
       </h2>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="mt-5 grid gap-4 sm:grid-cols-2">
+        <form
+          onSubmit={form.handleSubmit(handleSubmit)}
+          className="mt-5 grid gap-4 sm:grid-cols-2"
+        >
           <FormField
             control={form.control}
             name="addressType"
             render={({ field }) => (
               <FormItem className="sm:col-span-2">
-                <FormLabel className="flabel">{t("profile.page.form.addressTypeLabel")}</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormLabel className="flabel">
+                  {t("profile.page.form.addressTypeLabel")}
+                </FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger className="field flex h-11 w-full items-center justify-between rounded-lg border border-line bg-white px-4 text-[14px]">
-                      <SelectValue placeholder={t("profile.page.form.addressTypeLabel")} />
+                      <SelectValue
+                        placeholder={t("profile.page.form.addressTypeLabel")}
+                      />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -233,7 +239,9 @@ function AddressForm({
             name="recipientName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="flabel">{t("profile.page.form.recipientNameLabel")}</FormLabel>
+                <FormLabel className="flabel">
+                  {t("profile.page.form.recipientNameLabel")}
+                </FormLabel>
                 <FormControl>
                   <Input {...field} className="field" />
                 </FormControl>
@@ -247,7 +255,9 @@ function AddressForm({
             name="phoneNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="flabel">{t("profile.page.form.phoneNumberLabel")}</FormLabel>
+                <FormLabel className="flabel">
+                  {t("profile.page.form.phoneNumberLabel")}
+                </FormLabel>
                 <FormControl>
                   <Input {...field} className="field" />
                 </FormControl>
@@ -261,7 +271,9 @@ function AddressForm({
             name="addressDetail"
             render={({ field }) => (
               <FormItem className="sm:col-span-2">
-                <FormLabel className="flabel">{t("profile.page.form.addressDetailLabel")}</FormLabel>
+                <FormLabel className="flabel">
+                  {t("profile.page.form.addressDetailLabel")}
+                </FormLabel>
                 <FormControl>
                   <Input {...field} className="field" />
                 </FormControl>
@@ -275,7 +287,9 @@ function AddressForm({
             name="ward"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="flabel">{t("profile.page.form.wardLabel")}</FormLabel>
+                <FormLabel className="flabel">
+                  {t("profile.page.form.wardLabel")}
+                </FormLabel>
                 <FormControl>
                   <Input {...field} className="field" />
                 </FormControl>
@@ -289,7 +303,9 @@ function AddressForm({
             name="district"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="flabel">{t("profile.page.form.districtLabel")}</FormLabel>
+                <FormLabel className="flabel">
+                  {t("profile.page.form.districtLabel")}
+                </FormLabel>
                 <FormControl>
                   <Input {...field} className="field" />
                 </FormControl>
@@ -303,7 +319,9 @@ function AddressForm({
             name="city"
             render={({ field }) => (
               <FormItem className="sm:col-span-2">
-                <FormLabel className="flabel">{t("profile.page.form.cityLabel")}</FormLabel>
+                <FormLabel className="flabel">
+                  {t("profile.page.form.cityLabel")}
+                </FormLabel>
                 <FormControl>
                   <Input {...field} className="field" />
                 </FormControl>

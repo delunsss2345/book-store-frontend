@@ -932,6 +932,10 @@
     }
   },
   "catalog": {
+    "breadcrumbs": {
+      "home": "Trang chủ",
+      "books": "Sách"
+    },
     "title": "Tất cả Tựa sách",
     "home": "Trang chủ",
     "books": "Sách ({count} sản phẩm)",

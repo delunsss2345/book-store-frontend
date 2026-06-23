@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 
 import { Card, CardContent } from "@/src/components/ui/card";
 
-import { useQueryMe } from "@/features/auth/hooks/use-query-me";
+import { useAuth } from "@/src/components/auth/AuthProvider";
 import useTranslator from "@/hooks/use-translator";
 
 import {
@@ -43,8 +43,7 @@ const formatAddress = (address: AddressItem) =>
 
 const ProfilePage = () => {
   const { t } = useTranslator();
-  const { data } = useQueryMe();
-  const currentUser = data?.data;
+  const { user: currentUser } = useAuth();
   const { data: addresses, isPending: isAddressesLoading } = useQueryAddress();
   const { mutateAsync: setDefaultAddress } = useSetDefaultAddressMutation();
   const { mutateAsync: deleteAddress } = useDeleteUserAddressMutation();
