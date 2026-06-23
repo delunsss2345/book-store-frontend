@@ -18,7 +18,7 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
     if (currentUser) {
       router.push(`/${locale}`);
     }
-  }, [currentUser, router]);
+  }, [router, currentUser, locale]);
 
   if (isLoading || currentUser) {
     return null;
