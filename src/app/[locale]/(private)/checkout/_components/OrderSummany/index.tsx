@@ -18,15 +18,15 @@ export function OrderSummary({ cart, subtotal }: OrderSummaryProps) {
         <h3 className="mb-6 text-[17px] font-bold tracking-tight text-ink flex items-center gap-2">
           {t("checkout.orderSummary.title")}
           <span className="rounded-full bg-paper px-2.5 py-0.5 text-[12px] font-medium text-ink-3">
-            {cart.items.length}
+            {cart.items?.length}
           </span>
         </h3>
 
         {/* Danh sách sản phẩm */}
         <div className="custom-scrollbar -mr-2 max-h-[320px] space-y-5 overflow-y-auto pr-2">
-          {cart.items.map((item) => {
+          {cart?.items?.map((item) => {
             const title =
-              item.variant.book.translations[0]?.title ??
+              item.variant.book.title ||
               t("checkout.orderSummary.productFallback");
             const price = parseFloat(item.variant.price);
 

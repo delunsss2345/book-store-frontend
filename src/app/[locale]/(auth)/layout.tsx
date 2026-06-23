@@ -1,5 +1,11 @@
+import AuthGuard from "./_components/AuthGuard";
+
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  return <div className="min-h-screen w-full bg-surface">{children}</div>;
+  return (
+    <AuthGuard>
+      <div className="min-h-screen w-full bg-surface">{children}</div>
+    </AuthGuard>
+  );
 };
 
 export default Layout;

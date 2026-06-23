@@ -7,7 +7,9 @@ export type BookTranslation = {
 export type Book = {
     id: string;
     coverImageUrl: string | null;
-    translations: BookTranslation[];
+    title: string;
+    description?: string | null;
+    slug?: string | null;
 };
 
 export type VariantBase = {

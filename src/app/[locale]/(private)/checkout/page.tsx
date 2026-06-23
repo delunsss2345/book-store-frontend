@@ -1,40 +1,43 @@
 "use client";
 
-import Image from "next/image";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useLocale, useTranslations } from "next-intl";
-import { Info } from "lucide-react";
-
-import { useCartQuery } from "@/features/cart/hooks";
-
 import CheckoutUser from "./_components/CheckoutUser";
 import { useAuth } from "@/src/components/auth/AuthProvider";
 import { CheckoutGuest } from "./_components/CheckoutGuest";
-import { CheckoutPageSkeleton } from "./_components/CheckoutPageSekeleton";
 import { OrderSummary } from "./_components/OrderSummany";
+import { useOrderStore } from "@/features/orders/store/order.store";
+import { useMemo } from "react";
+import { notFound } from "next/navigation";
 
 export default function CheckoutPage() {
-  const router = useRouter();
-  const locale = useLocale();
-  const { data: cart, isLoading } = useCartQuery();
   const { user } = useAuth();
-  const subtotal =
-    cart?.items.reduce((sum, item) => {
-      return sum + parseFloat(item.variant.price) * item.quantity;
-    }, 0) ?? 0;
+  const buyNow = useOrderStore((state) => state.buyNow);
 
-  useEffect(() => {
-    if (!isLoading && (!cart || cart?.items.length === 0)) {
-      router.push(`/${locale}/cart`);
+  const cart = useMemo(() => {
+    if (buyNow) {
+      return {
+        items: [
+          {
+            id: "buy_now_item",
+            quantity: buyNow.quantity,
+            variant: {
+              ...buyNow.variant,
+              book: buyNow.book,
+            },
+          },
+        ],
+      } as any;
     }
-  }, [cart, isLoading, router, locale]);
+    return [];
+  }, [buyNow]);
 
-  if (isLoading) {
-    return <CheckoutPageSkeleton />;
-  }
+  const subtotal = useMemo(() => {
+    if (!cart?.items) return 0;
+    return cart.items.reduce((sum: number, item: any) => {
+      return sum + parseFloat(item.variant.price) * item.quantity;
+    }, 0);
+  }, [cart]);
 
-  if (!cart) return null;
+  if (!cart || !cart?.items?.length) return notFound();
 
   return (
     <section className="bg-paper min-h-screen pb-20">

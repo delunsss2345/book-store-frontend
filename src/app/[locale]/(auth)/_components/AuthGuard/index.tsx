@@ -1,6 +1,6 @@
 "use client";
 
-import { useQueryMe } from "@/features/auth/hooks/use-query-me";
+import { useAuth } from "@/src/components/auth/AuthProvider";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { useEffect } from "react";
@@ -10,8 +10,7 @@ type AuthGuardProps = {
 };
 
 const AuthGuard = ({ children }: AuthGuardProps) => {
-  const { data, isLoading } = useQueryMe();
-  const currentUser = data?.data;
+  const { user: currentUser, isLoading } = useAuth();
   const router = useRouter();
   const locale = useLocale();
 

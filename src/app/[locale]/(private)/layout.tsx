@@ -1,6 +1,5 @@
 "use client";
 
-import { AuthProvider } from "@/src/components/auth/AuthProvider";
 import React from "react";
 
 export default function PrivateLayout({
@@ -8,5 +7,5 @@ export default function PrivateLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <AuthProvider>{children}</AuthProvider>;
+  return <>{children}</>;
 }

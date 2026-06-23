@@ -49,6 +49,7 @@ export function CheckoutGuest() {
   const paymentGateway = useOrderStore((state) => state.paymentGateway);
   const clearCart = useCartStore((state) => state.clearCart);
   const setTimeLeft = useHooksStore((state) => state.setTimeLeft);
+  const setBuyNow = useOrderStore((state) => state.setBuyNow);
 
   const form = useForm<CreateGuestOrdersAndPaymentInput>({
     resolver: zodResolver(CreateGuestOrdersAndPaymentSchema),
@@ -87,9 +88,12 @@ export function CheckoutGuest() {
         if (payload.paymentGateway === PaymentGateway.COD) {
           router.push(`/${locale}/orders`);
           clearCart();
+          setBuyNow(null);
           return t("checkout.toast.success");
         }
         setTimeLeft(60);
+        clearCart();
+        setBuyNow(null);
         router.push(`/${locale}/checkout/payment/${data.tokenUrl}`);
         return t("checkout.toast.success");
       },

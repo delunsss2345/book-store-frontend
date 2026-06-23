@@ -51,8 +51,7 @@ export default function GlobalError({
                 </summary>
                 <pre className="mt-3 overflow-x-auto rounded-lg bg-surface p-4 text-[11.5px] border border-line text-ink-2">
                   <span className="text-ink-3">
-                    // digest surfaced to the user, full stack logged
-                    server-side{"\n"}
+                    digest surfaced to the user, full stack logged server-side
                   </span>
                   Error digest:{" "}
                   <span className="font-semibold text-ink">

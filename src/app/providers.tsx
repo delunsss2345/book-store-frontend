@@ -6,6 +6,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { NextIntlClientProvider, AbstractIntlMessages } from "next-intl";
 import { Toaster } from "sonner";
 import { ModalHost } from "@/src/components/common/Modal";
+import { AuthProvider } from "@/src/components/auth/AuthProvider";
 
 type ProvidersProps = {
   children: React.ReactNode;
@@ -21,9 +22,11 @@ export default function Providers({
   return (
     <NextIntlClientProvider locale={locale} messages={messages} timeZone="Asia/Ho_Chi_Minh">
       <QueryClientProvider client={queryClient}>
-        <Toaster position="bottom-center" />
-        <ModalHost />
-        {children}
+        <AuthProvider>
+          <Toaster position="bottom-center" />
+          <ModalHost />
+          {children}
+        </AuthProvider>
         {process.env.NODE_ENV === "development" ? <ReactQueryDevtools /> : null}
       </QueryClientProvider>
     </NextIntlClientProvider>

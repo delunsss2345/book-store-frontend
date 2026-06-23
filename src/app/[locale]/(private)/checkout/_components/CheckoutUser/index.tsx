@@ -4,6 +4,7 @@ import { useCartStore } from "@/features/cart/store/cart.store";
 import { useHooksStore } from "@/features/hooks/store/hooks.store";
 import { useModalStore } from "@/features/modal";
 import { useCreateOrderUserMutation } from "@/features/orders";
+import { useOrderStore } from "@/features/orders/store/order.store";
 import { useQueryAddress } from "@/features/user-address/hooks/use-query-address-mutation";
 import { useRouter } from "@/i18n/navigation";
 import { FormMessageI18n } from "@/src/components/common/FormMessageI18n";
@@ -32,6 +33,7 @@ export default function CheckoutUser() {
   const { onOpenSelectAddress } = useModalStore();
   const clearCart = useCartStore((state) => state.clearCart);
   const setTimeLeft = useHooksStore((state) => state.setTimeLeft);
+  const setBuyNow = useOrderStore((state) => state.setBuyNow);
   const { mutateAsync: createOrderUser, isPending: isCreatingOrder } =
     useCreateOrderUserMutation();
 
@@ -73,10 +75,12 @@ export default function CheckoutUser() {
         if (values.paymentGateway === PaymentGateway.COD) {
           router.push("/orders");
           clearCart();
+          setBuyNow(null);
           return t("checkout.toast.success");
         }
         setTimeLeft(60);
         clearCart();
+        setBuyNow(null);
         router.push({
           pathname: "/checkout/payment",
           query: {

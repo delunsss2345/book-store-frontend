@@ -10,19 +10,29 @@ export const useCreateOrderGuestMutation = () => {
   const { data: cart } = useCartQuery();
   const queryOrder = useQueryOrder();
   const setIsOrdering = useOrderStore(selectorSetIsOrdering);
+  const buyNow = useOrderStore((state) => state.buyNow);
 
   return useMutation({
     mutationFn: async (values: CreateGuestOrdersAndPaymentInput) => {
-      if (!cart?.id) {
+      if (!cart?.id && !buyNow) {
         throw new Error("Cart not found");
       }
       setIsOrdering(true);
       try {
-        const response = await orderService.createOrderGuest({
+        const payload: any = {
           ...values,
-          cartId: Number(cart.id),
           languageCode: "vi",
-        });
+        };
+        if (buyNow) {
+          payload.buyNowItem = {
+            bookVariantId: Number(buyNow.variant.id),
+            quantity: buyNow.quantity,
+          };
+        } else {
+          payload.cartId = Number(cart?.id);
+        }
+        
+        const response = await orderService.createOrderGuest(payload);
         return response.data!;
       } finally {
         setIsOrdering(false);
@@ -37,23 +47,29 @@ export const useCreateOrderGuestMutation = () => {
 export const useCreateOrderUserMutation = () => {
   const { data: cart } = useCartQuery();
   const setIsOrdering = useOrderStore(selectorSetIsOrdering);
+  const buyNow = useOrderStore((state) => state.buyNow);
 
   return useMutation({
     mutationFn: async (values: CreateUserOrdersAndPaymentInput) => {
-      if (!cart?.id) {
+      if (!cart?.id && !buyNow) {
         throw new Error("Cart not found");
       }
       setIsOrdering(true);
       try {
-        console.log({
+        const payload: any = {
           ...values,
-          cartId: Number(cart.id),
-          languageCode: "vi",
-        });
-        const response = await orderService.createOrderUser({
-          ...values,
-          cartId: Number(cart.id),
-        });
+        };
+        if (buyNow) {
+          payload.buyNowItem = {
+            bookVariantId: Number(buyNow.variant.id),
+            quantity: buyNow.quantity,
+          };
+        } else {
+          payload.cartId = Number(cart?.id);
+        }
+
+        console.log("Create Order Payload:", payload);
+        const response = await orderService.createOrderUser(payload);
         return response.data;
       } finally {
         setIsOrdering(false);

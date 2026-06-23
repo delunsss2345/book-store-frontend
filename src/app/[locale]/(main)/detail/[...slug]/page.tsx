@@ -3,7 +3,7 @@
 import { Minus, Plus, ShoppingCart } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import * as React from "react";
 import { toast } from "sonner";
 
@@ -12,6 +12,7 @@ import { BookDetailSkeleton } from "@/src/components/common/Skeletons";
 import { useAddToCartMutation } from "@/features/cart/hooks";
 import { useBookQuery } from "@/features/catalog/hooks/use-book.mutation";
 import { useCatalogStore } from "@/features/catalog/store/catalog.store";
+import { useOrderStore } from "@/features/orders/store/order.store";
 import { useWishStore } from "@/features/wish/store/wish.store";
 import { FormatAvailability } from "./_components/FormatAvailability";
 import { FormatPicker } from "./_components/FormatPicker";
@@ -23,6 +24,7 @@ import { WishlistAction } from "./_components/WishlistAction";
 export default function DetailPage() {
   const t = useTranslations();
   const locale = useLocale();
+  const router = useRouter();
   const params = useParams<{ slug?: string | string[] }>();
   const slug = Array.isArray(params.slug)
     ? params.slug[params.slug.length - 1]
@@ -36,6 +38,7 @@ export default function DetailPage() {
   const setWishVariantDetail = useWishStore(
     (state) => state.setWishVariantDetail,
   );
+  const setBuyNow = useOrderStore((state) => state.setBuyNow);
 
   const { mutateAsync: addToCart, isPending: isAdding } =
     useAddToCartMutation();
@@ -71,6 +74,17 @@ export default function DetailPage() {
           error: t("detail.toast.addToCartError"),
         },
       );
+    }
+  };
+
+  const handleBuyNow = () => {
+    if (bookDetail && bookVariantDetail && qty >= 1) {
+      setBuyNow({
+        book: bookDetail,
+        variant: bookVariantDetail,
+        quantity: qty,
+      });
+      router.push(`/${locale}/checkout`);
     }
   };
 
@@ -161,12 +175,12 @@ export default function DetailPage() {
                   Add to cart
                 </button>
 
-                <Link
-                  href={`/${locale}/checkout`}
+                <button
+                  onClick={handleBuyNow}
                   className="btn-accent flex h-12 flex-1 items-center justify-center gap-2 rounded-lg text-[13px] font-bold uppercase tracking-[0.15em]"
                 >
                   Buy now
-                </Link>
+                </button>
               </div>
 
               <div className="space-y-4 rounded-xl bg-paper p-5">
