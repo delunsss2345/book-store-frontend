@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "dummyimage.com" },
-      { protocol: "https", hostname: "picsum.photos" },
+      { protocol: "https", hostname: "i.pinimg.com" },
       { protocol: "http", hostname: "books.google.com" },
       { protocol: "https", hostname: "taschen.makaira.media" },
     ],

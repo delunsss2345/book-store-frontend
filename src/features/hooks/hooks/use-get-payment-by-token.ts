@@ -1,9 +1,9 @@
 import { paymentService } from "@/services/payment.service";
-import { CreateGuestOrderResponse } from "@/types/response/order.response";
+import { PaymentQrResponse } from "@/types/response/order.response";
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
 type PaymentByTokenOptions = Omit<
-  UseQueryOptions<CreateGuestOrderResponse, Error>,
+  UseQueryOptions<PaymentQrResponse, Error>,
   "queryKey" | "queryFn"
 >;
 

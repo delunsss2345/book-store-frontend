@@ -1,36 +1,35 @@
-export type CreateOrderAddressDTO = {
-  country: string;
-  recipientName?: string;
-  firstName: string;
-  lastName: string;
+// ─── Shared ────────────────────────────────────────────────────────────────
+
+export type CheckoutItem = {
+  bookVariantId: number;
+  quantity: number;
+};
+
+// ─── Guest address ──────────────────────────────────────────────────────────
+
+export type GuestAddressDTO = {
+  name: string;
   addressLine: string;
   city: string;
   ward?: string;
   district?: string;
-  postalCode?: string;
   phoneNumber: string;
-  countryCode?: string;
   note?: string;
 };
 
-export type CreateGuestOrdersAndPaymentDTO = {
-  cartId: number;
-  guestEmail?: string;
-  newsletter?: boolean;
-  paymentGateway: string;
-  note?: string;
-  languageCode: string;
-  orderAddress: CreateOrderAddressDTO;
-};
+// ─── Unified checkout request ────────────────────────────────────────────────
 
-export type CreateUserOrdersAndPaymentInput = {
-  paymentGateway: string;
-  note?: string;
-  addressId: number;
-};
-export type CreateUserOrdersAndPaymentDTO = {
-  cartId: number;
-  paymentGateway: string;
-  note?: string;
-  addressId: number;
-};
+export type CheckoutDTO =
+  | {
+      isGuest: true;
+      guestEmail: string;
+      guestAddress: GuestAddressDTO;
+      paymentGateway: string;
+      items: CheckoutItem[];
+    }
+  | {
+      isGuest: false;
+      addressId: number;
+      paymentGateway: string;
+      items: CheckoutItem[];
+    };

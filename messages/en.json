@@ -722,17 +722,13 @@
     "newsletter": "Receive order updates and latest offers",
     "shippingTitle": "Shipping address",
     "addNewAddress": "Add new address",
-    "countryPlaceholder": "Country / Region",
-    "countries": {
-      "vn": "Vietnam",
-      "us": "United States"
-    },
-    "firstNamePlaceholder": "First name",
-    "lastNamePlaceholder": "Last name",
+    "namePlaceholder": "Full name",
     "addressPlaceholder": "Address (Street, house number...)",
+    "wardPlaceholder": "Ward (Optional)",
+    "districtPlaceholder": "District (Optional)",
     "cityPlaceholder": "City / Province",
-    "postalCodePlaceholder": "Postal code (Optional)",
     "phonePlaceholder": "Phone number",
+    "notePlaceholder": "Note for shipper (Optional)",
     "paymentTitle": "Payment method",
     "secureText": "Your information is always secured and encrypted",
     "secureTextHigh": "Payment security follows international standards",
@@ -941,5 +937,14 @@
       "titleAZ": "title, A-Z",
       "titleZA": "title, Z-A"
     }
+  },
+  "success": {
+    "eyebrow": "Order confirmed",
+    "title": "Order placed.",
+    "orderLabel": "Order",
+    "description": "Thank you for your purchase. We'll send a confirmation email shortly with your order details and estimated delivery date.",
+    "viewOrders": "View my orders",
+    "backHome": "Back to home",
+    "note": "Questions? Contact our support team anytime."
   }
 }

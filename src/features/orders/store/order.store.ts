@@ -33,7 +33,7 @@ export const useOrderStore = create<OrderStore>()(
       setIsOrdering: (isOrdering: boolean) => set({ isOrdering }),
       idempotencyKey: "",
       setIdempotencyKey: (idempotencyKey: string) => set({ idempotencyKey }),
-      paymentGateway: PaymentGateway.SEPAY,
+      paymentGateway: PaymentGateway.COD,
       setPaymentGateway: (paymentGateway: PaymentGateway) =>
         set({ paymentGateway }),
     }),

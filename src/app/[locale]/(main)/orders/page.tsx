@@ -6,9 +6,10 @@ import { Input } from "@/src/components/ui/input";
 import { OrderStatus } from "@/src/constants/enums/order";
 import { OrderSummary } from "@/types/response/order.response";
 import { Search } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { OrderCard } from "./_components/OrderCard";
 import { OrdersSkeleton } from "./_components/OrdersSkeleton";
+import { useOrderStore } from "@/src/features/orders";
 
 type TabValue = "all" | "in-progress" | "delivered" | "returns";
 
@@ -42,9 +43,13 @@ export default function OrdersPage() {
   const [searchValue, setSearchValue] = useState("");
   const { data: orders, isLoading, isFetching, error } = useQueryOrder();
   const { setOrderShowDetailId, onOpen } = useModalStore();
+  const setBuyNow = useOrderStore((state) => state.setBuyNow);
 
   const isOrdersLoading = isLoading || isFetching;
   const searchTerm = searchValue.trim().toLowerCase();
+  useEffect(() => {
+    setBuyNow(null);
+  }, [setBuyNow]);
 
   const filteredOrders = useMemo(() => {
     if (!orders?.length) {
@@ -54,8 +59,9 @@ export default function OrdersPage() {
     const statusFilter = STATUS_FILTERS[activeTab];
     const baseOrders = statusFilter
       ? orders.filter(
-        (order: OrderSummary) => order.status && statusFilter.includes(order.status),
-      )
+          (order: OrderSummary) =>
+            order.status && statusFilter.includes(order.status),
+        )
       : orders;
 
     if (!searchTerm) {
@@ -81,10 +87,11 @@ export default function OrdersPage() {
               <button
                 key={tab.value}
                 onClick={() => setActiveTab(tab.value)}
-                className={`rounded-md px-3 py-1.5 text-sm font-medium transition ${activeTab === tab.value
-                  ? "bg-neutral-100 text-neutral-900"
-                  : "text-neutral-500 hover:text-neutral-900"
-                  }`}
+                className={`rounded-md px-3 py-1.5 text-sm font-medium transition ${
+                  activeTab === tab.value
+                    ? "bg-neutral-100 text-neutral-900"
+                    : "text-neutral-500 hover:text-neutral-900"
+                }`}
               >
                 {tab.label}
               </button>

@@ -1,6 +1,8 @@
 import type { OrderStatus, PaymentStatus } from "@/src/constants/enums/order";
 import { ProxyResponse } from "@/types/response/base.response";
 
+// ─── Order list ──────────────────────────────────────────────────────────────
+
 export type OrderSummary = {
   id: string;
   orderCode: string;
@@ -19,18 +21,42 @@ export type OrderSummary = {
 
 export type OrderListResponseData = OrderSummary[];
 
-export type OrderStatusData = {
-  orderId: string;
-  status: string;
+// ─── Checkout responses ───────────────────────────────────────────────────────
+
+/** Returned for COD orders */
+export type CheckoutCODData = {
+  orderId: number;
+  subtotal: number;
+  totalAmount: number;
+  orderCode: string;
 };
-export type CreateGuestOrderResponseData = {
-  id: string;
+
+/** Returned for online gateway orders (VNPAY / MOMO / etc.) */
+export type CheckoutOnlineData = {
+  orderId: number;
+  subtotal: number;
+  totalAmount: number;
+  orderCode: string;
+  paymentUrl: string;
+  /** Short token used to navigate to the payment status page */
+  tokenUrl?: string;
+  expiredAt?: string;
+};
+
+/** Union of all possible checkout responses */
+export type CheckoutResponseData = CheckoutCODData | CheckoutOnlineData;
+
+export type CheckoutResponse = ProxyResponse<CheckoutResponseData>;
+
+// ─── Payment QR (GET /payments/:tokenUrl/qr) ─────────────────────────────────
+
+export type PaymentQrData = {
   orderId: string;
   gateway: string;
   orderCode: string;
   status: string;
   paymentUrl: string;
-  expiredAt: Date;
+  expiredAt: string;
   tokenUrl: string;
   totalAmount: string;
   bankName: string;
@@ -39,18 +65,18 @@ export type CreateGuestOrderResponseData = {
   nameAccount: string;
 };
 
-export type CreateUserOrder = {
-  orderCode: string;
+export type PaymentQrResponse = ProxyResponse<PaymentQrData>;
+
+// ─── Order status ─────────────────────────────────────────────────────────────
+
+export type OrderStatusData = {
   orderId: string;
-  subtotal: number;
-  totalAmount: number;
+  status: string;
 };
 
 export type OrderStatusResponse = ProxyResponse<OrderStatusData>;
-export type CreateGuestOrderResponse =
-  ProxyResponse<CreateGuestOrderResponseData>;
-export type GetUserOrdersResponse = ProxyResponse<OrderListResponseData>;
-export type CreateUserOrderResponse = ProxyResponse<CreateUserOrder>;
+
+// ─── Order items ──────────────────────────────────────────────────────────────
 
 export type OrderItemBookTranslation = {
   title: string;
@@ -81,4 +107,5 @@ export type OrderItem = {
 
 export type OrderItemListData = OrderItem[];
 
+export type GetUserOrdersResponse = ProxyResponse<OrderListResponseData>;
 export type GetOrderItemsResponse = ProxyResponse<OrderItemListData>;

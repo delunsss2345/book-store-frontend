@@ -6,13 +6,6 @@ import { useForm } from "react-hook-form";
 import { Checkbox } from "@/src/components/ui/checkbox";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/src/components/ui/select";
 import { Info, Truck } from "lucide-react";
 
 import { CheckoutFooter } from "../CheckoutFooter";
@@ -33,12 +26,12 @@ import { useCartStore } from "@/features/cart/store/cart.store";
 import { useHooksStore } from "@/features/hooks/store/hooks.store";
 import {
   selectorIsOrdering,
-  useCreateOrderGuestMutation,
+  useCheckoutGuestMutation,
   useOrderStore,
 } from "@/features/orders";
 import {
-  CreateGuestOrdersAndPaymentInput,
-  CreateGuestOrdersAndPaymentSchema,
+  GuestCheckoutInput,
+  GuestCheckoutSchema,
   PaymentGateway,
 } from "@/validation/order-address/orderAddressValidation";
 import { useLocale, useTranslations } from "next-intl";
@@ -49,57 +42,59 @@ export function CheckoutGuest() {
   const paymentGateway = useOrderStore((state) => state.paymentGateway);
   const clearCart = useCartStore((state) => state.clearCart);
   const setTimeLeft = useHooksStore((state) => state.setTimeLeft);
-  const setBuyNow = useOrderStore((state) => state.setBuyNow);
 
-  const form = useForm<CreateGuestOrdersAndPaymentInput>({
-    resolver: zodResolver(CreateGuestOrdersAndPaymentSchema),
+  const form = useForm<GuestCheckoutInput>({
+    resolver: zodResolver(GuestCheckoutSchema),
     defaultValues: {
       paymentGateway,
-      newsletter: true,
       guestEmail: "",
-      note: "",
-      orderAddress: {
-        country: "vn",
-        firstName: "",
-        lastName: "",
+      guestAddress: {
+        name: "",
         addressLine: "",
         city: "",
-        postalCode: "",
+        ward: "",
+        district: "",
         phoneNumber: "",
+        note: "",
       },
     },
     mode: "onSubmit",
   });
 
-  const { mutateAsync: createOrderGuest } = useCreateOrderGuestMutation();
+  const { mutateAsync: checkout } = useCheckoutGuestMutation();
   const isOrdering = useOrderStore(selectorIsOrdering);
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations();
 
-  const onSubmit = async (values: CreateGuestOrdersAndPaymentInput) => {
-    const payload = {
+  const onSubmit = async (values: GuestCheckoutInput) => {
+    const payload: GuestCheckoutInput = {
       ...values,
       paymentGateway,
     };
-    toast.promise(createOrderGuest(payload), {
+    toast.promise(checkout(payload), {
       loading: t("checkout.toast.loading"),
       success: (data) => {
+        console.log(paymentGateway);
         if (payload.paymentGateway === PaymentGateway.COD) {
           router.push(`/${locale}/orders`);
           clearCart();
-          setBuyNow(null);
           return t("checkout.toast.success");
         }
+        const onlineData = data as { tokenUrl?: string };
         setTimeLeft(60);
         clearCart();
-        setBuyNow(null);
-        router.push(`/${locale}/checkout/payment/${data.tokenUrl}`);
+        if (onlineData.tokenUrl) {
+          router.push(`/${locale}/checkout/payment/${onlineData.tokenUrl}`);
+        } else {
+          router.push(`/${locale}/orders`);
+        }
         return t("checkout.toast.success");
       },
       error: (error) => error.message,
     });
   };
+
   return (
     <Form {...form}>
       <form
@@ -140,24 +135,6 @@ export function CheckoutGuest() {
               </FormItem>
             )}
           />
-
-          <FormField
-            control={form.control}
-            name="newsletter"
-            render={({ field }) => (
-              <FormItem className="flex items-center gap-2 px-1">
-                <FormControl>
-                  <Checkbox
-                    checked={!!field.value}
-                    onCheckedChange={(v) => field.onChange(!!v)}
-                  />
-                </FormControl>
-                <Label className="text-[13px] text-ink-2">
-                  {t("checkout.newsletter")}
-                </Label>
-              </FormItem>
-            )}
-          />
         </section>
 
         {/* Shipping Section */}
@@ -170,74 +147,28 @@ export function CheckoutGuest() {
           </div>
 
           <div className="grid gap-4">
-            {/* Country */}
+            {/* Full name */}
             <FormField
               control={form.control}
-              name="orderAddress.country"
+              name="guestAddress.name"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Select
-                      value={field.value ?? "vn"}
-                      onValueChange={(v) => field.onChange(v)}
-                      defaultValue="vn"
-                      disabled
-                    >
-                      <SelectTrigger className="field">
-                        <SelectValue
-                          placeholder={t("checkout.countryPlaceholder")}
-                        />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="vn">
-                          {t("checkout.countries.vn")}
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Input
+                      placeholder={t("checkout.namePlaceholder")}
+                      className="field"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="orderAddress.firstName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        placeholder={t("checkout.firstNamePlaceholder")}
-                        className="field"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="orderAddress.lastName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        placeholder={t("checkout.lastNamePlaceholder")}
-                        className="field"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
+            {/* Address line */}
             <FormField
               control={form.control}
-              name="orderAddress.addressLine"
+              name="guestAddress.addressLine"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -253,14 +184,15 @@ export function CheckoutGuest() {
             />
 
             <div className="grid grid-cols-2 gap-4">
+              {/* Ward */}
               <FormField
                 control={form.control}
-                name="orderAddress.city"
+                name="guestAddress.ward"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <Input
-                        placeholder={t("checkout.cityPlaceholder")}
+                        placeholder={t("checkout.wardPlaceholder")}
                         className="field"
                         {...field}
                       />
@@ -270,14 +202,15 @@ export function CheckoutGuest() {
                 )}
               />
 
+              {/* District */}
               <FormField
                 control={form.control}
-                name="orderAddress.postalCode"
+                name="guestAddress.district"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <Input
-                        placeholder={t("checkout.postalCodePlaceholder")}
+                        placeholder={t("checkout.districtPlaceholder")}
                         className="field"
                         {...field}
                       />
@@ -288,9 +221,28 @@ export function CheckoutGuest() {
               />
             </div>
 
+            {/* City */}
             <FormField
               control={form.control}
-              name="orderAddress.phoneNumber"
+              name="guestAddress.city"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      placeholder={t("checkout.cityPlaceholder")}
+                      className="field"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Phone */}
+            <FormField
+              control={form.control}
+              name="guestAddress.phoneNumber"
               render={({ field }) => (
                 <FormItem className="relative">
                   <FormControl>
@@ -301,6 +253,24 @@ export function CheckoutGuest() {
                     />
                   </FormControl>
                   <Info className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Note */}
+            <FormField
+              control={form.control}
+              name="guestAddress.note"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      placeholder={t("checkout.notePlaceholder")}
+                      className="field"
+                      {...field}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

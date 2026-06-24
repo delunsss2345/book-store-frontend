@@ -740,17 +740,13 @@
     "newsletter": "Nhận thông tin cập nhật về đơn hàng và ưu đãi mới nhất",
     "shippingTitle": "Địa chỉ giao hàng",
     "addNewAddress": "Thêm địa chỉ mới",
-    "countryPlaceholder": "Quốc gia / Vùng",
-    "countries": {
-      "vn": "Việt Nam",
-      "us": "United States"
-    },
-    "firstNamePlaceholder": "Họ và tên đệm",
-    "lastNamePlaceholder": "Tên",
+    "namePlaceholder": "Họ và tên người nhận",
     "addressPlaceholder": "Địa chỉ chi tiết (Số nhà, tên đường...)",
+    "wardPlaceholder": "Phường / Xã (Tùy chọn)",
+    "districtPlaceholder": "Quận / Huyện (Tùy chọn)",
     "cityPlaceholder": "Tỉnh / Thành phố",
-    "postalCodePlaceholder": "Mã bưu chính (Tùy chọn)",
     "phonePlaceholder": "Số điện thoại",
+    "notePlaceholder": "Ghi chú cho shipper (Tùy chọn)",
     "paymentTitle": "Phương thức thanh toán",
     "secureText": "Thông tin của bạn luôn được bảo mật và mã hóa",
     "secureTextHigh": "Bảo mật thanh toán theo tiêu chuẩn quốc tế",
@@ -959,5 +955,15 @@
       "titleAZ": "Tiêu đề, A-Z",
       "titleZA": "Tiêu đề, Z-A"
     }
+  },
+  "success": {
+    "eyebrow": "Đặt hàng thành công",
+    "title": "Đơn hàng đã được đặt.",
+    "orderLabel": "Đơn hàng",
+    "description": "Cảm ơn bạn đã mua hàng tại Velora. Chúng tôi sẽ gửi email xác nhận cùng thông tin đơn hàng và thời gian dự kiến giao hàng trong thời gian sớm nhất.",
+    "viewOrders": "Xem đơn hàng của tôi",
+    "backHome": "Về trang chủ",
+    "note": "Cần hỗ trợ? Liên hệ đội ngũ chăm sóc khách hàng của chúng tôi bất cứ lúc nào."
   }
 }
+

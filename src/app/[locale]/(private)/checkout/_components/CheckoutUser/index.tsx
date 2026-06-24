@@ -3,7 +3,7 @@
 import { useCartStore } from "@/features/cart/store/cart.store";
 import { useHooksStore } from "@/features/hooks/store/hooks.store";
 import { useModalStore } from "@/features/modal";
-import { useCreateOrderUserMutation } from "@/features/orders";
+import { useCheckoutUserMutation } from "@/features/orders";
 import { useOrderStore } from "@/features/orders/store/order.store";
 import { useQueryAddress } from "@/features/user-address/hooks/use-query-address-mutation";
 import { useRouter } from "@/i18n/navigation";
@@ -11,8 +11,8 @@ import { FormMessageI18n } from "@/src/components/common/FormMessageI18n";
 import { Form, FormField, FormItem } from "@/src/components/ui/form";
 import { Skeleton } from "@/src/components/ui/skeleton";
 import {
-  CreateUserOrdersAndPaymentInput,
-  CreateUserOrdersAndPaymentSchema,
+  UserCheckoutInput,
+  UserCheckoutSchema,
   PaymentGateway,
 } from "@/validation/order-address/orderAddressValidation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,11 +34,11 @@ export default function CheckoutUser() {
   const clearCart = useCartStore((state) => state.clearCart);
   const setTimeLeft = useHooksStore((state) => state.setTimeLeft);
   const setBuyNow = useOrderStore((state) => state.setBuyNow);
-  const { mutateAsync: createOrderUser, isPending: isCreatingOrder } =
-    useCreateOrderUserMutation();
+  const { mutateAsync: checkout, isPending: isCreatingOrder } =
+    useCheckoutUserMutation();
 
-  const form = useForm<CreateUserOrdersAndPaymentInput>({
-    resolver: zodResolver(CreateUserOrdersAndPaymentSchema),
+  const form = useForm<UserCheckoutInput>({
+    resolver: zodResolver(UserCheckoutSchema),
     defaultValues: {
       addressId: 0,
       paymentGateway: PaymentGateway.COD,
@@ -64,34 +64,43 @@ export default function CheckoutUser() {
     }
   }, [defaultAddress, form]);
 
-  const handleSubmit = async (values: CreateUserOrdersAndPaymentInput) => {
+  const handleSubmit = async (values: UserCheckoutInput) => {
     if (!values.addressId) {
       toast.warning(t("checkout.toast.addressRequired"));
       return;
     }
-    await toast.promise(createOrderUser(values), {
+    await toast.promise(checkout(values), {
       loading: t("checkout.toast.loading"),
       success: (data) => {
-        if (values.paymentGateway === PaymentGateway.COD) {
-          router.push("/orders");
-          clearCart();
-          setBuyNow(null);
-          return t("checkout.toast.success");
-        }
-        setTimeLeft(60);
         clearCart();
         setBuyNow(null);
-        router.push({
-          pathname: "/checkout/payment",
-          query: {
-            orderCode: data.orderCode,
-            totalAmount: data.totalAmount,
-            subtotal: data.subtotal,
-          },
-        });
+        if (values.paymentGateway === PaymentGateway.COD) {
+          router.push("/orders");
+          return t("checkout.toast.success");
+        }
+        // Online gateway
+        const onlineData = data as { tokenUrl?: string; orderCode?: string; totalAmount?: number; subtotal?: number };
+        setTimeLeft(60);
+        if (onlineData.tokenUrl) {
+          router.push({
+            pathname: "/checkout/payment",
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            query: { tokenUrl: onlineData.tokenUrl } as any,
+          });
+        } else {
+          router.push({
+            pathname: "/checkout/payment",
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            query: {
+              orderCode: onlineData.orderCode,
+              totalAmount: onlineData.totalAmount,
+              subtotal: onlineData.subtotal,
+            } as any,
+          });
+        }
         return t("checkout.toast.success");
       },
-      error: (error) => error.response.data.message,
+      error: (error: Error) => error.message,
     });
   };
 

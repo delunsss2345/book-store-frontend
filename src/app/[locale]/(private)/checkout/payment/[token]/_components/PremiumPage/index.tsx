@@ -19,7 +19,7 @@ import { useQueryOrderStatus } from "@/features/hooks/hooks/use-get-order-status
 import { useGetPaymentByToken } from "@/features/hooks/hooks/use-get-payment-by-token";
 import { useHooksStore } from "@/features/hooks/store/hooks.store";
 import LoadingState from "@/src/components/common/LoadingState";
-import { CreateGuestOrderResponseData } from "@/types/response/order.response";
+import { PaymentQrData } from "@/types/response/order.response";
 import { CopyCard } from "../CopyCard";
 
 function PremiumPaymentContent({ tokenUrl }: { tokenUrl: string }) {
@@ -35,7 +35,7 @@ function PremiumPaymentContent({ tokenUrl }: { tokenUrl: string }) {
       enabled: !!tokenUrl,
     },
   );
-  const payment = response?.data as CreateGuestOrderResponseData | undefined;
+  const payment = response?.data as PaymentQrData | undefined;
 
   // 2. Long Polling: Kiểm tra trạng thái đơn hàng mỗi 5 giây
   const { data: orderStatus } = useQueryOrderStatus(payment?.orderCode ?? "", {
