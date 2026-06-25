@@ -17,10 +17,11 @@ export type CreatePurchaseOrderItemRequest = {
 
 export type CreatePurchaseOrderRequest = {
   supplierId: number;
+  bookId: number;
   code: string;
   createdAt: string;
   note?: string;
-  totalAmount: number;
+  discountPrice: number;
   taxAmount?: number;
   items: CreatePurchaseOrderItemRequest[];
 };

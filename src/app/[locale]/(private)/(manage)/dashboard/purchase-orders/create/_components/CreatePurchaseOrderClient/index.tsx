@@ -2,42 +2,55 @@
 
 import { useAdminBooksQuery } from "@/features/admin/hooks/use-admin-books-query";
 import { useCreatePurchaseOrderMutation } from "@/features/purchaser-orders/hooks/create-purchaser-orders.mutation";
-import {
-  usePurchaseStore,
-} from "@/features/purchaser-orders/store";
+import { usePurchaseStore } from "@/features/purchaser-orders/store";
 import { useSupplierQuery } from "@/features/supplier/hooks/use-supplier-query";
-import { AdminBookVariantDetail } from "@/types/response/admin-book-variant.response";
-import { Book } from "@/types/response/variant.response";
+import { useDebounceInput } from "@/hooks/use-debounce-input";
 import {
   purchaseOrderSchema,
   PurchaseOrderSchemaType,
 } from "@/validation/supplier/supplier.validation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, CheckCheck, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useDebounceInput } from "@/hooks/use-debounce-input";
+import { FieldErrors, useForm } from "react-hook-form";
 import { generateOrderCode, todayISO } from "../utils";
-import { ProductPickerTable } from "../ProductPickerTable";
+import { CreatePurchaseOrderTopbar } from "./CreatePurchaseOrderTopbar";
+import {
+  BookFormat,
+  calculateImportUnitPrice,
+  normalizeBookFormat,
+  PurchaseOrderBookOption,
+  PurchaseOrderVariantOption,
+} from "./helpers";
+import { OrderInfoSection } from "./OrderInfoSection";
+import { OrderSummaryCard } from "./OrderSummaryCard";
+import { PurchaseItemsSection } from "./PurchaseItemsSection";
+
+type PurchaseItemField = "quantity" | "originalPrice" | "discount" | "format";
 
 export function CreatePurchaseOrderClient() {
   const router = useRouter();
   const [searchPhrase, setSearchPhrase] = useState("");
   const [debouncedSearch] = useDebounceInput(searchPhrase, 300);
   const [page, setPage] = useState(1);
-  const limit = 10;
+  const [taxPercent, setTaxPercent] = useState(0);
+  const [errors, setErrors] = useState<{ supplier?: string; items?: string }>(
+    {},
+  );
+  const [isSaving, setIsSaving] = useState(false);
 
-  const { data: booksData, isPending: bookPending } =
-    useAdminBooksQuery(
-      {
-        page,
-        limit,
-        searchPhrase: debouncedSearch || undefined,
-      },
-      (response) => response.data
-    );
-  const { data: suppliers, isPending: supplierPending } = useSupplierQuery();
+  const { data: booksData, isPending: bookPending } = useAdminBooksQuery(
+    {
+      page,
+      limit: 10,
+      searchPhrase: debouncedSearch || undefined,
+    },
+    (response) => response.data,
+  );
+  const { data: suppliers } = useSupplierQuery();
+  const { mutateAsync: createPurchaseOrder } = useCreatePurchaseOrderMutation();
+  const { purchaseItems, addItem, deleteItem, updateQuantityItem, updateItem } =
+    usePurchaseStore();
 
   const form = useForm<PurchaseOrderSchemaType>({
     resolver: zodResolver(purchaseOrderSchema),
@@ -46,99 +59,98 @@ export function CreatePurchaseOrderClient() {
       code: generateOrderCode()!,
       createdAt: todayISO()!,
       note: "",
-      totalAmount: 0,
+      discountPrice: 0,
+      bookId: 0,
     },
   });
 
-  const { purchaseItems, addItem, deleteItem, updateQuantityItem, updateItem } =
-    usePurchaseStore();
-
-  const { mutateAsync: createPurchaseOrder } = useCreatePurchaseOrderMutation();
-
-  const [taxPercent, setTaxPercent] = useState(0);
-  const [errors, setErrors] = useState<{ supplier?: string; items?: string }>(
-    {},
-  );
-  const [isSaving, setIsSaving] = useState(false);
-
   const addedIds = useMemo(
-    () => new Set(purchaseItems.map((i) => i.id)),
+    () => new Set(purchaseItems.map((item) => item.id)),
     [purchaseItems],
   );
 
-  const handleAddItem = (variant: any, book: any) => {
-    if (purchaseItems.some((i) => i.id === variant.id)) {
-      updateQuantityItem(variant.id);
+  const subtotal = useMemo(
+    () =>
+      purchaseItems.reduce(
+        (sum, item) =>
+          sum +
+          item.quantity *
+          calculateImportUnitPrice(
+            item.originalPrice ?? item.unitPrice ?? 0,
+            item.discount ?? 0,
+          ),
+        0,
+      ),
+    [purchaseItems],
+  );
+  const taxAmount = subtotal * (taxPercent / 100);
+  const grandTotal = subtotal + taxAmount;
+  const totalQty = purchaseItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  useEffect(() => {
+    form.setValue("discountPrice", subtotal);
+    form.setValue(
+      "bookId",
+      Number(purchaseItems[0]?.bookId ?? purchaseItems[0]?.bookVariantId ?? 0),
+    );
+  }, [subtotal, purchaseItems, form]);
+
+  const handleAddItem = (
+    variant: PurchaseOrderVariantOption,
+    book: PurchaseOrderBookOption,
+  ) => {
+    const variantId = String(variant.id);
+
+    if (purchaseItems.some((item) => item.id === variantId)) {
+      updateQuantityItem(variantId);
       return;
     }
 
     const title = book.translations?.[0]?.title || book.title || "—";
-    const initialPrice = Number(variant.price) || 0;
+    const originalPrice = Number(variant.price) || 0;
+    const discount = 0;
+    const unitPrice = calculateImportUnitPrice(originalPrice, discount);
 
     addItem({
-      id: variant.id,
+      id: variantId,
+      bookId: String(book.id),
       bookVariantName: title,
-      bookVariantId: variant.id,
-      format: typeof variant.format === "string" ? variant.format : (variant.format as any)?.format || "Mặc định",
+      bookVariantId: variantId,
+      format: normalizeBookFormat(variant.format),
       quantity: 1,
-      unitPrice: initialPrice,
-      originalPrice: initialPrice,
-      discount: 0,
-      totalPrice: initialPrice,
+      originalPrice,
+      discount,
+      unitPrice,
+      totalPrice: unitPrice,
     });
   };
 
-  const handleRemoveItem = (id: string) => {
-    deleteItem(id);
-  };
-
   const handleItemChange = useCallback(
-    (
-      id: string,
-      field: "quantity" | "originalPrice" | "discount" | "unitPrice",
-      value: number,
-    ) => {
-      const item = purchaseItems.find((i) => i.id === id);
+    (id: string, field: PurchaseItemField, value: number | BookFormat) => {
+      const item = purchaseItems.find((purchaseItem) => purchaseItem.id === id);
       if (!item) return;
 
-      if (field === "quantity") {
-        updateItem(id, "quantity", value);
-      } else if (field === "originalPrice") {
-        const discount = item.discount ?? 0;
-        const newUnitPrice = value * (1 - discount / 100);
-        updateItem(id, "originalPrice", value);
-        updateItem(id, "unitPrice", Math.round(newUnitPrice));
-      } else if (field === "discount") {
-        const origPrice = item.originalPrice ?? item.unitPrice ?? 0;
-        const newUnitPrice = origPrice * (1 - value / 100);
-        updateItem(id, "discount", value);
-        updateItem(id, "unitPrice", Math.round(newUnitPrice));
-      } else if (field === "unitPrice") {
-        const origPrice = item.originalPrice ?? value ?? 0;
-        const newDiscount =
-          origPrice > 0 ? ((origPrice - value) / origPrice) * 100 : 0;
-        updateItem(id, "unitPrice", value);
-        updateItem(id, "discount", Math.round(newDiscount * 100) / 100);
+      if (field === "quantity" || field === "format") {
+        updateItem(id, field, value);
+        return;
       }
+
+      const originalPrice =
+        field === "originalPrice"
+          ? Number(value) || 0
+          : (item.originalPrice ?? item.unitPrice ?? 0);
+      const discount =
+        field === "discount" ? Number(value) || 0 : (item.discount ?? 0);
+      const unitPrice = calculateImportUnitPrice(originalPrice, discount);
+
+      updateItem(id, field, Number(value) || 0);
+      updateItem(id, "unitPrice", unitPrice);
     },
     [purchaseItems, updateItem],
   );
 
-
-
-  const subtotal = purchaseItems.reduce(
-    (sum, i) => sum + i.quantity * i.unitPrice,
-    0,
-  );
-  useEffect(() => {
-    form.setValue("totalAmount", subtotal);
-  }, [subtotal, form]);
-  const taxAmount = subtotal * (taxPercent / 100);
-  const grandTotal = subtotal + taxAmount;
-  const totalQty = purchaseItems.reduce((sum, i) => sum + i.quantity, 0);
-
   const onSubmit = async (values: PurchaseOrderSchemaType) => {
-    if (purchaseItems.length === 0) {
+    if (purchaseItems.items.length === 0) {
       setErrors({ items: "Vui lòng thêm ít nhất một sản phẩm" });
       return;
     }
@@ -146,25 +158,28 @@ export function CreatePurchaseOrderClient() {
     try {
       setIsSaving(true);
       setErrors({});
+      // await createPurchaseOrder({
+      //   supplierId: Number(values.supplierId),
+      //   bookId: Number(values.bookId),
+      //   code: values.code,
+      //   createdAt: values.createdAt,
+      //   note: values.note,
+      //   discountPrice: subtotal,
+      //   taxAmount,
+      //   items: purchaseItems.map((item) => {
+      //     const unitPrice = calculateImportUnitPrice(
+      //       item.originalPrice ?? item.unitPrice ?? 0,
+      //       item.discount ?? 0,
+      //     );
 
-      const items = purchaseItems.map((i) => ({
-        bookVariantId: Number(i.bookVariantId),
-        quantity: i.quantity,
-        unitPrice: i.unitPrice,
-        totalPrice: i.quantity * i.unitPrice,
-      }));
-
-      const payload = {
-        supplierId: Number(values.supplierId),
-        code: values.code,
-        createdAt: values.createdAt,
-        note: values.note,
-        totalAmount: subtotal,
-        taxAmount,
-        items,
-      };
-
-      await createPurchaseOrder(payload);
+      //     return {
+      //       bookVariantId: Number(item.bookVariantId),
+      //       quantity: item.quantity,
+      //       unitPrice,
+      //       totalPrice: item.quantity * unitPrice,
+      //     };
+      //   }),
+      // });
     } catch (error) {
       console.error("[onSubmit] API error:", error);
     } finally {
@@ -172,294 +187,61 @@ export function CreatePurchaseOrderClient() {
     }
   };
 
-  const onInvalid = (formErrors: any) => {
+  const onInvalid = (formErrors: FieldErrors<PurchaseOrderSchemaType>) => {
+    if (formErrors.bookId) {
+      setErrors({ items: "Vui lòng thêm ít nhất một sản phẩm" });
+    }
     console.error("[form invalid] errors:", formErrors);
   };
 
+  const submit = form.handleSubmit(onSubmit, onInvalid);
+
   return (
     <div className="min-w-0">
-      <div className="topbar">
-        <button className="icon-btn" onClick={() => router.back()}>
-          <ArrowLeft className="h-4 w-4" />
-        </button>
-        <div>
-          <div className="text-[15px] font-semibold text-ink">
-            Tạo Đơn Nhập Hàng Mới
-          </div>
-          <div className="text-[11px] text-ink-3">
-            Điền thông tin và thêm sản phẩm để tạo đơn nhập hàng
-          </div>
-        </div>
-        <div className="ml-auto flex items-center gap-2">
-          <button className="btn-soft rounded-lg px-3.5 py-2 text-[12.5px]">
-            Lưu Nháp
-          </button>
-          <button
-            className="btn-ink rounded-lg px-3.5 py-2 text-[12.5px]"
-            onClick={form.handleSubmit(onSubmit, onInvalid)}
-            disabled={isSaving}
-          >
-            <CheckCheck className="h-4 w-4" /> Xác Nhận Nhập Hàng
-          </button>
-        </div>
-      </div>
+      <CreatePurchaseOrderTopbar
+        disabled={isSaving}
+        onBack={() => router.back()}
+        onSubmit={submit}
+      />
 
       <div className="page">
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           <div className="space-y-4 lg:col-span-2">
-            {/* Thông tin chung */}
-            <div className="card p-5">
-              <h4 className="display text-[17px] font-semibold text-ink">
-                Thông tin chung
-              </h4>
-              <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="flabel">
-                    Nhà cung cấp <span className="text-accent">*</span>
-                  </label>
-                  <select className="field" {...form.register("supplierId")}>
-                    <option value="">Chọn nhà cung cấp…</option>
-                    {suppliers?.items?.map((s) => (
-                      <option key={s.id} value={s.id}>
-                        {s.name}
-                      </option>
-                    ))}
-                  </select>
-                  {form.formState.errors.supplierId && (
-                    <p className="mt-1 text-xs text-accent">
-                      {form.formState.errors.supplierId.message}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <label className="flabel">Mã đơn nhập</label>
-                  <input
-                    className="field font-mono bg-paper"
-                    readOnly
-                    {...form.register("code")}
-                  />
-                </div>
-                <div>
-                  <label className="flabel">Ngày nhập</label>
-                  <input
-                    className="field"
-                    type="date"
-                    {...form.register("createdAt")}
-                  />
-                </div>
-                <div>
-                  <label className="flabel">Ghi chú</label>
-                  <input
-                    className="field"
-                    placeholder="Nhập ghi chú cho đơn nhập hàng…"
-                    {...form.register("note")}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Sản phẩm trong đơn */}
-            <div className="card ">
-              <div className="flex items-center justify-between px-5 py-4">
-                <h4 className="display text-[17px] font-semibold text-ink">
-                  Chọn sản phẩm
-                </h4>
-                {purchaseItems.length > 0 && (
-                  <span className="bdg bdg-blue">
-                    {purchaseItems.length} đã chọn
-                  </span>
-                )}
-              </div>
-              <div className="px-5 pb-4">
-                <ProductPickerTable
-                  booksData={booksData}
-                  bookPending={bookPending}
-                  addedIds={addedIds}
-                  search={searchPhrase}
-                  onSearchChange={(v) => {
-                    setSearchPhrase(v);
-                    setPage(1);
-                  }}
-                  page={page}
-                  onPageChange={setPage}
-                  onAddItem={handleAddItem}
-                />
-                {errors.items && (
-                  <p className="mt-2 text-xs text-accent">{errors.items}</p>
-                )}
-              </div>
-
-              {purchaseItems.length > 0 ? (
-                <div className="overflow-x-auto">
-                  <table className="tbl w-full">
-                    <thead>
-                      <tr>
-                        <th>Sản phẩm</th>
-                        <th>Định dạng</th>
-                        <th>Số lượng</th>
-                        <th>Đơn giá bìa (₫)</th>
-                        <th>Chiết khấu (%)</th>
-                        <th>Đơn giá nhập (₫)</th>
-                        <th className="text-right">Thành tiền</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {purchaseItems.map((item) => (
-                        <tr key={item.id}>
-                          <td
-                            className="font-semibold text-ink max-w-[200px] truncate"
-                            title={item.bookVariantName}
-                          >
-                            {item.bookVariantName}
-                          </td>
-                          <td>
-                            <span className="bdg bdg-gray">{item.format}</span>
-                          </td>
-                          <td>
-                            <input
-                              type="number"
-                              min="1"
-                              className="field h-8 w-20 px-2"
-                              value={item.quantity}
-                              onChange={(e) =>
-                                handleItemChange(
-                                  item.id,
-                                  "quantity",
-                                  Number(e.target.value) || 0,
-                                )
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="number"
-                              min="0"
-                              className="field h-8 w-28 px-2"
-                              value={item.originalPrice ?? item.unitPrice ?? 0}
-                              onChange={(e) =>
-                                handleItemChange(
-                                  item.id,
-                                  "originalPrice",
-                                  Number(e.target.value) || 0,
-                                )
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="number"
-                              min="0"
-                              max="100"
-                              step="0.1"
-                              className="field h-8 w-24 px-2"
-                              value={item.discount ?? 0}
-                              onChange={(e) =>
-                                handleItemChange(
-                                  item.id,
-                                  "discount",
-                                  Number(e.target.value) || 0,
-                                )
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="number"
-                              min="0"
-                              className="field h-8 w-28 px-2"
-                              value={item.unitPrice}
-                              onChange={(e) =>
-                                handleItemChange(
-                                  item.id,
-                                  "unitPrice",
-                                  Number(e.target.value) || 0,
-                                )
-                              }
-                            />
-                          </td>
-                          <td className="text-right font-semibold text-ink">
-                            {(item.quantity * item.unitPrice).toLocaleString()}{" "}
-                            ₫
-                          </td>
-                          <td className="text-right">
-                            <button
-                              className="icon-btn h-8 w-8 text-accent hover:border-accent hover:text-accent"
-                              onClick={() => handleRemoveItem(item.id)}
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <div className="p-8 text-center text-ink-3">
-                  <p className="text-[13px]">Chưa có sản phẩm nào được chọn.</p>
-                </div>
-              )}
-            </div>
+            <OrderInfoSection form={form} suppliers={suppliers} />
+            <PurchaseItemsSection
+              booksData={booksData}
+              bookPending={bookPending}
+              addedIds={addedIds}
+              search={searchPhrase}
+              onSearchChange={(value) => {
+                setSearchPhrase(value);
+                setPage(1);
+              }}
+              page={page}
+              onPageChange={setPage}
+              onAddItem={handleAddItem}
+              errors={errors.items}
+              purchaseItems={purchaseItems}
+              onItemChange={handleItemChange}
+              onRemoveItem={deleteItem}
+            />
           </div>
 
           <div className="space-y-4">
-            {/* Tổng kết */}
-            <div className="card p-5">
-              <h4 className="display text-[17px] font-semibold text-ink">
-                Tổng kết
-              </h4>
-              <div className="mt-4 space-y-2.5 text-[13px]">
-                <div className="flex justify-between">
-                  <span className="text-ink-2">Tổng sản phẩm</span>
-                  <span className="font-medium text-ink">
-                    {purchaseItems.length} loại · {totalQty} items
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-ink-2">Thuế (%)</span>
-                  <input
-                    type="number"
-                    className="field h-8 w-20 text-right px-2"
-                    value={taxPercent}
-                    onChange={(e) => setTaxPercent(Number(e.target.value) || 0)}
-                  />
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-ink-2">Tạm tính</span>
-                  <span className="font-medium text-ink">
-                    {subtotal.toLocaleString()} ₫
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-ink-2">Thuế</span>
-                  <span className="font-medium text-ink">
-                    {taxAmount.toLocaleString()} ₫
-                  </span>
-                </div>
-                <div className="hairline my-2"></div>
-                <div className="flex items-center justify-between text-[15px]">
-                  <span className="font-semibold text-ink">
-                    Tổng thanh toán
-                  </span>
-                  <span className="display font-semibold text-accent">
-                    {grandTotal.toLocaleString()} ₫
-                  </span>
-                </div>
-              </div>
-              <button
-                className="btn-ink mt-4 w-full rounded-lg py-2.5 text-[13px]"
-                onClick={form.handleSubmit(onSubmit, onInvalid)}
-                disabled={isSaving}
-              >
-                <CheckCheck className="h-4 w-4 mr-2 inline" /> Xác Nhận Nhập
-                Hàng
-              </button>
-            </div>
+            <OrderSummaryCard
+              itemCount={purchaseItems.length}
+              totalQty={totalQty}
+              taxPercent={taxPercent}
+              onTaxPercentChange={setTaxPercent}
+              subtotal={subtotal}
+              taxAmount={taxAmount}
+              grandTotal={grandTotal}
+              onSubmit={submit}
+              isSaving={isSaving}
+            />
           </div>
         </div>
       </div>
-
     </div>
   );
 }

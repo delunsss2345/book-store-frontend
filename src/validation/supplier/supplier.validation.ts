@@ -12,8 +12,9 @@ export const purchaseOrderSchema = z.object({
   code: z.string().min(1, "Mã đơn nhập không được để trống"),
   createdAt: z.string().min(1, "Ngày tạo đơn không được để trống"),
   note: z.string().optional(),
-  totalAmount: z.number().min(0, "Tổng tiền không hợp lệ"),
+  discountPrice: z.number().min(0, "Tổng tiền không hợp lệ"),
   taxAmount: z.number().optional(),
+  bookId: z.number().min(1, "Mã sách là bắt buộc"),
 });
 
 export const createPurchaseOrderSchema = purchaseOrderSchema.extend({

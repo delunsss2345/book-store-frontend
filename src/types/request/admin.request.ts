@@ -48,10 +48,15 @@ export type CreateAdminBookAllRequest = {
 };
 
 export type CreateAdminBookRequest = {
-  isbn: string;
   title: string;
   description: string;
   publisherName: string;
+  bookVariantItems: {
+    format: string;
+    isbn: string;
+    publicationYear?: number;
+    edition: number;
+  }[];
   authors?: { authorName: string; isPrimary?: boolean }[];
   categories?: { categoryId: number }[];
   spec?: {
@@ -60,7 +65,6 @@ export type CreateAdminBookRequest = {
     thicknessCm?: number;
     packaging?: string;
   };
-  publicationYear?: number;
   pageCount?: number;
   badgeCode?: string | null;
   coverImageUrl?: string;
@@ -90,7 +94,7 @@ export type UpdateAdminBookPayload = {
 
 export type AdminBookDetail = {
   id: string;
-  publisherId: string;
+  publisherId: number;
   publicationYear: number;
   pageCount: number;
   weightGrams: number;

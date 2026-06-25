@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 
 export type PurchaseItem = {
   id: string;
+  bookId: string;
   bookVariantName: string;
   format: string;
   bookVariantId: string;
@@ -17,7 +18,11 @@ type PurchaseStore = {
   purchaseItems: PurchaseItem[];
 
   addItem: (item: PurchaseItem) => void;
-  updateItem: (id: string, field: string, value: any) => void;
+  updateItem: <K extends keyof PurchaseItem>(
+    id: string,
+    field: K,
+    value: PurchaseItem[K],
+  ) => void;
   updateQuantityItem: (id: string) => void;
   deleteItem: (id: string) => void;
   clearItems: () => void;
@@ -33,7 +38,7 @@ export const usePurchaseStore = create<PurchaseStore>()(
           purchaseItems: [...state.purchaseItems, item],
         })),
 
-      updateItem: (id: string, field: string, value: any) =>
+      updateItem: (id, field, value) =>
         set((state) => ({
           purchaseItems: state.purchaseItems.map((i) =>
             i.id === id ? { ...i, [field]: value } : i,

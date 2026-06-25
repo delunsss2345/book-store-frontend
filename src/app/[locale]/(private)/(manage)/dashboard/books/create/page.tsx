@@ -3,9 +3,9 @@
 import { useCreateBookMutation } from "@/features/admin/hooks/use-create-book-mutation";
 import { useCategoryQuery } from "@/features/category/hooks/use-category-query";
 import { useSearchIsbnMutation } from "@/features/search/hooks/use-search-isbn";
-import { useSupplierQuery } from "@/features/supplier/hooks/use-supplier-query";
 import {
   ArrowLeft,
+  Check,
   ChevronRight,
   Image as ImageIcon,
   Info,
@@ -16,31 +16,35 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams, useRouter } from "next/navigation";
 import {
   createBookSchema,
+  CreateBookFormInput,
   CreateBookFormValues,
   scanIsbnSchema,
 } from "./_components/book.schema";
 
+const BOOK_FORMAT_OPTIONS = [
+  { value: "HARDCOVER", label: "Bìa cứng" },
+  { value: "PAPERBACK", label: "Bìa mềm" },
+  { value: "EBOOK", label: "E-book" },
+  { value: "AUDIOBOOK", label: "Audiobook" },
+] as const;
+
+type BookFormatOption = (typeof BOOK_FORMAT_OPTIONS)[number]["value"];
+
 export default function CreateBookPage() {
   const t = useTranslations();
   const router = useRouter();
-  const params = useParams();
+  const params = useParams<{ locale?: string }>();
   const locale = params.locale || "vi";
 
-  const { data: supplierData, isLoading: isSupplierLoading } =
-    useSupplierQuery();
-  const suppliers = supplierData?.items || [];
-
-  const { data: categoryData, isLoading: isCategoryLoading } = useCategoryQuery(
-    {
-      limit: 100,
-      isActive: true,
-    },
-  );
+  const { data: categoryData } = useCategoryQuery({
+    limit: 100,
+    isActive: true,
+  });
   const categories = categoryData?.data?.items || [];
 
   const { mutateAsync: searchIsbn, isPending: searchIsbnPending } =
@@ -51,45 +55,74 @@ export default function CreateBookPage() {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
+    getValues,
     setValue,
     formState: { errors },
-  } = useForm<CreateBookFormValues>({
+  } = useForm<CreateBookFormInput, unknown, CreateBookFormValues>({
     resolver: zodResolver(createBookSchema),
     defaultValues: {
       language: "vi",
-      isbn: "",
+      lookupIsbn: "",
       title: "",
       description: "",
       authorName: "",
       publisherName: "",
       categoryId: "",
+      formatItems: [
+        {
+          format: "PAPERBACK",
+          isbn: "",
+          publicationYear: undefined,
+          edition: 1,
+        },
+      ],
       supplierId: "",
       coverImageUrl: "",
       widthCm: undefined,
       heightCm: undefined,
       thicknessCm: undefined,
       weightGrams: undefined,
-      publicationYear: undefined,
       pageCount: undefined,
     },
   });
 
-  const language = watch("language");
-  const isbn = watch("isbn") || "";
-  const coverImageUrl = watch("coverImageUrl");
+  const language = useWatch({ control, name: "language" }) || "vi";
+  const lookupIsbn = useWatch({ control, name: "lookupIsbn" }) || "";
+  const coverImageUrl = useWatch({ control, name: "coverImageUrl" });
+  const formatItems = useWatch({ control, name: "formatItems" }) || [];
+  const selectedFormats = formatItems.map((item) => item.format);
+
+  const toggleFormat = (format: BookFormatOption) => {
+    const nextFormatItems = selectedFormats.includes(format)
+      ? formatItems.filter((item) => item.format !== format)
+      : [
+          ...formatItems,
+          {
+            format,
+            isbn: "",
+            publicationYear: undefined,
+            edition: 1,
+          },
+        ];
+
+    setValue("formatItems", nextFormatItems, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+  };
 
   const onScanHandler = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (!isbn.trim()) return;
+    if (!lookupIsbn.trim()) return;
 
-    const result = scanIsbnSchema.safeParse({ isbn: isbn.trim() });
+    const result = scanIsbnSchema.safeParse({ isbn: lookupIsbn.trim() });
     if (!result.success) {
-      toast.error(result.error.errors[0].message);
+      toast.error(result.error.issues[0]?.message);
       return;
     }
 
-    toast.promise(searchIsbn({ isbn: isbn.trim(), lang: language }), {
+    toast.promise(searchIsbn({ isbn: lookupIsbn.trim(), lang: language }), {
       loading: t("dashboard.products.create.toast.scanLoading"),
       success: (data) => {
         if (data.title) setValue("title", data.title);
@@ -101,8 +134,16 @@ export default function CreateBookPage() {
         if (data.weightGrams) setValue("weightGrams", data.weightGrams);
         if (data.authorName) setValue("authorName", data.authorName);
         if (data.publisherName) setValue("publisherName", data.publisherName);
-        if (data.publicationYear)
-          setValue("publicationYear", data.publicationYear);
+        if (data.publicationYear) {
+          setValue(
+            "formatItems",
+            getValues("formatItems").map((item) => ({
+              ...item,
+              publicationYear: data.publicationYear,
+            })),
+            { shouldDirty: true, shouldValidate: true },
+          );
+        }
         if (data.pageCount) setValue("pageCount", data.pageCount);
         if (data.coverImageUrl) setValue("coverImageUrl", data.coverImageUrl);
         return t("dashboard.products.create.toast.scanSuccess");
@@ -120,10 +161,15 @@ export default function CreateBookPage() {
       }));
 
     const bookData = {
-      isbn: data.isbn,
       title: data.title,
       description: data.description,
       publisherName: data.publisherName,
+      bookVariantItems: data.formatItems.map((item) => ({
+        format: item.format,
+        isbn: item.isbn,
+        publicationYear: item.publicationYear,
+        edition: item.edition,
+      })),
       authors,
       categories: [
         {
@@ -135,7 +181,6 @@ export default function CreateBookPage() {
         heightCm: data.heightCm,
         thicknessCm: data.thicknessCm,
       },
-      publicationYear: data.publicationYear,
       pageCount: data.pageCount,
       badgeCode: "NEW",
       coverImageUrl: data.coverImageUrl || undefined,
@@ -149,7 +194,7 @@ export default function CreateBookPage() {
         loading: t("dashboard.products.create.toast.createLoading"),
         success: t("dashboard.products.create.toast.createSuccess"),
         error: t("dashboard.products.create.toast.createError"),
-      }
+      },
     );
   };
 
@@ -220,11 +265,11 @@ export default function CreateBookPage() {
                   </select>
                 </div>
                 <div className="flex-1">
-                  <label className="flabel">Mã ISBN</label>
+                  <label className="flabel">ISBN tra cứu nhanh</label>
                   <input
                     className="field font-mono"
                     placeholder="Ví dụ: 9780135398548"
-                    {...register("isbn")}
+                    {...register("lookupIsbn")}
                   />
                 </div>
                 <button
@@ -363,18 +408,135 @@ export default function CreateBookPage() {
                     </p>
                   )}
                 </div>
+                <div className="col-span-4">
+                  <label className="flabel">
+                    Định dạng muốn tạo <span className="text-accent">*</span>
+                  </label>
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                    {BOOK_FORMAT_OPTIONS.map((format) => {
+                      const checked = selectedFormats.includes(format.value);
+
+                      return (
+                        <button
+                          key={format.value}
+                          type="button"
+                          onClick={() => toggleFormat(format.value)}
+                          className={`flex h-10 items-center justify-center gap-2 rounded-lg border px-3 text-[12.5px] font-medium transition-colors ${
+                            checked
+                              ? "border-ink bg-ink text-white"
+                              : "border-line bg-paper text-ink-2 hover:border-ink hover:text-ink"
+                          }`}
+                          aria-pressed={checked}
+                        >
+                          <span
+                            className={`flex h-4 w-4 items-center justify-center rounded border ${
+                              checked
+                                ? "border-white bg-white text-ink"
+                                : "border-line-2 bg-white text-transparent"
+                            }`}
+                          >
+                            <Check className="h-3 w-3" />
+                          </span>
+                          {format.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {errors.formatItems && !Array.isArray(errors.formatItems) && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {errors.formatItems.message}
+                    </p>
+                  )}
+                </div>
               </div>
+              {formatItems.length > 0 && (
+                <div className="mt-4 overflow-hidden rounded-lg border border-line">
+                  <div className="hidden grid-cols-4 gap-3 border-b border-line bg-paper px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-ink-3 md:grid">
+                    <span>Định dạng</span>
+                    <span>ISBN</span>
+                    <span>Năm XB</span>
+                    <span>Lần tái bản</span>
+                  </div>
+                  <div className="divide-y divide-line">
+                    {formatItems.map((item, index) => {
+                      const formatLabel =
+                        BOOK_FORMAT_OPTIONS.find(
+                          (format) => format.value === item.format,
+                        )?.label ?? item.format;
+                      const itemError = Array.isArray(errors.formatItems)
+                        ? errors.formatItems[index]
+                        : undefined;
+
+                      return (
+                        <div
+                          key={item.format}
+                          className="grid grid-cols-1 gap-3 px-3 py-3 md:grid-cols-4"
+                        >
+                          <input
+                            type="hidden"
+                            {...register(`formatItems.${index}.format`)}
+                          />
+                          <div>
+                            <label className="flabel sm:hidden">
+                              Định dạng
+                            </label>
+                            <div className="field flex items-center bg-paper font-medium">
+                              {formatLabel}
+                            </div>
+                          </div>
+                          <div>
+                            <label className="flabel sm:hidden">ISBN</label>
+                            <input
+                              className={`field font-mono text-[12px] ${itemError?.isbn ? "border-red-500" : ""}`}
+                              placeholder="ISBN riêng cho format"
+                              {...register(`formatItems.${index}.isbn`)}
+                            />
+                            {itemError?.isbn && (
+                              <p className="mt-1 text-xs text-red-500">
+                                {itemError.isbn.message}
+                              </p>
+                            )}
+                          </div>
+                          <div>
+                            <label className="flabel sm:hidden">Năm XB</label>
+                            <input
+                              type="number"
+                              className={`field ${itemError?.publicationYear ? "border-red-500" : ""}`}
+                              {...register(
+                                `formatItems.${index}.publicationYear`,
+                              )}
+                            />
+                            {itemError?.publicationYear && (
+                              <p className="mt-1 text-xs text-red-500">
+                                {itemError.publicationYear.message}
+                              </p>
+                            )}
+                          </div>
+                          <div>
+                            <label className="flabel sm:hidden">
+                              Lần tái bản
+                            </label>
+                            <input
+                              type="number"
+                              min="1"
+                              className={`field ${itemError?.edition ? "border-red-500" : ""}`}
+                              {...register(`formatItems.${index}.edition`)}
+                            />
+                            {itemError?.edition && (
+                              <p className="mt-1 text-xs text-red-500">
+                                {itemError.edition.message}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
               <div className="mt-3 grid grid-cols-4 gap-3">
                 <div>
-                  <label className="flabel">Năm XB</label>
-                  <input
-                    type="number"
-                    className="field"
-                    {...register("publicationYear")}
-                  />
-                </div>
-                <div>
-                  <label className="flabel">Số trang</label>
+                  <label className="flabel">Số trang chung</label>
                   <input
                     type="number"
                     className="field"
@@ -400,6 +562,7 @@ export default function CreateBookPage() {
               </h4>
               <div className="mt-3 grid aspect-[3/4] overflow-hidden place-items-center rounded-xl border-2 border-dashed border-line-2 bg-paper text-center">
                 {coverImageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={coverImageUrl}
                     alt="Cover"

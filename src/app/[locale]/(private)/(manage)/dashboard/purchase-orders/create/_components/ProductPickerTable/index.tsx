@@ -1,6 +1,6 @@
 "use client";
 
-import { AdminBook, AdminBookListData } from "@/types/response/admin.response";
+import type { AdminBookListData } from "@/types/response/admin.response";
 import {
   BookOpen,
   Check,
@@ -9,6 +9,45 @@ import {
   Plus,
   Search,
 } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+
+type ProductAuthor = {
+  authorName?: string | null;
+};
+
+type ProductTranslation = {
+  title?: string | null;
+};
+
+type ProductPickerBook = Omit<AdminBookListData["items"][number], "authors"> & {
+  authorName?: string | null;
+  authors?: string | ProductAuthor | ProductAuthor[] | null;
+  translation?: ProductTranslation | ProductTranslation[] | null;
+  variants?: ProductPickerVariant[];
+};
+
+type ProductPickerVariant = {
+  id: string;
+  format: string;
+  edition: number;
+  isbn: string;
+  costPrice: string;
+  price: string;
+  currencyCode: string;
+  stock: number;
+  isActive: boolean;
+};
+
+type ProductPickerSelectedBook = {
+  id: string;
+  translations: {
+    id: string;
+    languageId: number;
+    title: string;
+    description: string;
+    slug: string;
+  }[];
+};
 
 export function ProductPickerTable({
   booksData,
@@ -27,13 +66,19 @@ export function ProductPickerTable({
   onSearchChange: (v: string) => void;
   page: number;
   onPageChange: (page: number) => void;
-  onAddItem: (variant: any, book: any) => void;
+  onAddItem: (
+    variant: ProductPickerVariant,
+    book: ProductPickerSelectedBook,
+  ) => void;
 }) {
-  const books = booksData?.items ?? [];
+  const router = useRouter();
+  const params = useParams<{ locale?: string }>();
+  const books = (booksData?.items ?? []) as ProductPickerBook[];
   const total = booksData?.total ?? 0;
   const totalPages = booksData?.totalPages ?? 1;
+  const locale = params.locale ?? "vi";
 
-  const getBookTitle = (book: any) => {
+  const getBookTitle = (book: ProductPickerBook) => {
     if (book.title) return book.title;
     const translation = book.translation;
     if (!translation) return "—";
@@ -43,10 +88,11 @@ export function ProductPickerTable({
     return translation.title ?? "—";
   };
 
-  const getBookAuthors = (book: any) => {
+  const getBookAuthors = (book: ProductPickerBook) => {
     if (book.authorName) return book.authorName;
+    if (typeof book.authors === "string") return book.authors;
     if (Array.isArray(book.authors)) {
-      return book.authors.map((a: any) => a.authorName).join(", ");
+      return book.authors.map((author) => author.authorName).join(", ");
     }
     if (book.authors?.authorName) return book.authors.authorName;
     return "";
@@ -93,7 +139,19 @@ export function ProductPickerTable({
             ) : books.length === 0 ? (
               <tr>
                 <td colSpan={3} className="px-4 py-10 text-center text-ink-3">
-                  Không tìm thấy sản phẩm
+                  <div className="flex flex-col items-center gap-3">
+                    <span>Không tìm thấy sản phẩm</span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        router.push(`/${locale}/dashboard/books/create`)
+                      }
+                      className="btn-ink rounded-lg px-3.5 py-2 text-[12.5px]"
+                    >
+                      <Plus className="size-3.5" />
+                      Tạo sách mới
+                    </button>
+                  </div>
                 </td>
               </tr>
             ) : (
@@ -101,17 +159,10 @@ export function ProductPickerTable({
                 const title = getBookTitle(book);
                 const authors = getBookAuthors(book);
                 const stringId = String(book.id);
-                const isAdded = addedIds.has(stringId);
                 const rowNum = (page - 1) * (booksData?.limit ?? 10) + idx + 1;
-
-                // Find first variant id or fallback to book id
-                const variantId = (book as any).variants?.[0]?.id || stringId;
-                const format =
-                  (book as any).variants?.[0]?.format || "Mặc định";
-
-                const mockVariant = {
+                const selectedVariant = book.variants?.[0] ?? {
                   id: stringId,
-                  format,
+                  format: "PAPERBACK",
                   edition: 1,
                   isbn: "",
                   costPrice: "0",
@@ -120,6 +171,7 @@ export function ProductPickerTable({
                   stock: 0,
                   isActive: true,
                 };
+                const isAdded = addedIds.has(String(selectedVariant.id));
 
                 const mockBook = {
                   id: stringId,
@@ -150,6 +202,7 @@ export function ProductPickerTable({
                       <div className="flex items-center gap-3">
                         {book.coverImageUrl ? (
                           <div className="relative h-12 w-9 shrink-0 overflow-hidden rounded shadow-sm border border-line bg-muted">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                               src={book.coverImageUrl}
                               alt={title}
@@ -179,9 +232,7 @@ export function ProductPickerTable({
                     <td className="px-4 py-2.5 text-center">
                       <button
                         type="button"
-                        onClick={() =>
-                          onAddItem(mockVariant as any, mockBook as any)
-                        }
+                        onClick={() => onAddItem(selectedVariant, mockBook)}
                         className={`inline-flex h-7 w-7 items-center justify-center rounded-md border transition-colors ${
                           isAdded
                             ? "border-blue-300 bg-blue-100 text-blue-600 dark:border-blue-700 dark:bg-blue-900/40 dark:text-blue-400"
