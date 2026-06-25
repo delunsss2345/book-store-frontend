@@ -1,4 +1,4 @@
-import { ApiResponse, PaginationResponse } from "./base.response";
+import { ApiResponse, PaginationResponse, ProxySuccessResponse } from "./base.response";
 
 export enum AdminOrderStatus {
   PENDING_PAYMENT = "PENDING_PAYMENT",
@@ -121,6 +121,28 @@ export type AdminOrderDetails = {
 
 export type AdminOrderDetailResponse = ApiResponse<AdminOrderDetails>;
 
+// --- Admin Book Translation ---
+export type AdminBookTranslation = {
+  id: string;
+  languageId: number;
+  title: string;
+  description: string;
+  slug: string;
+};
+
+// --- Admin Book Variant ---
+export type AdminBookVariant = {
+  id: string;
+  format: "PAPERBACK" | "HARDCOVER" | "EBOOK" | "AUDIOBOOK" | (string & {});
+  edition: number;
+  isbn: string;
+  costPrice: string;
+  price: string;
+  currencyCode: string;
+  stock: number;
+  isActive: boolean;
+};
+
 export type AdminBook = {
   id: string;
   coverImageUrl?: string | null;
@@ -129,8 +151,47 @@ export type AdminBook = {
   isActive?: boolean;
 };
 
-export type AdminBookListResponse = {
-  data: {
-    items: AdminBook[];
-  };
+export type AdminBookListData = PaginationResponse<AdminBook>;
+export type AdminBookListResponse = ApiResponse<AdminBookListData>;
+
+export type AdminBookStats = {
+  totalBooks: number;
+  activeBooks: number;
+  totalAuthors: number;
+  totalPublishers: number;
 };
+
+export type AdminBookResponse = ApiResponse<AdminBook>;
+export type AdminBookStatsProxyResponse = ProxySuccessResponse<AdminBookStats>;
+
+// --- Admin User ---
+export type AdminUser = {
+  id: string;
+  email: string;
+  phoneNumber?: string;
+  firstName?: string;
+  lastName?: string;
+  gender?: string;
+  avatarUrl?: string;
+  isEmailVerified: boolean;
+  status?: string;
+  role?: string;
+};
+
+export type AdminUserListData = PaginationResponse<AdminUser>;
+export type AdminUserListResponse = ApiResponse<AdminUserListData>;
+
+export type AdminUserStats = {
+  totalUsers: number;
+  customersLoggedInLast24Hours: number;
+};
+
+export type AdminUserStatsProxyResponse = ProxySuccessResponse<AdminUserStats>;
+
+// --- Admin Category ---
+export type AdminCategoryStats = {
+  totalCategories: number;
+  activeCategories: number;
+};
+
+export type AdminCategoryStatsProxyResponse = ProxySuccessResponse<AdminCategoryStats>;

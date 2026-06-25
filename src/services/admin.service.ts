@@ -1,6 +1,7 @@
 import {
   AdminBookDetail,
   CreateAdminBookAllRequest,
+  CreateAdminBookRequest,
   UpdateAdminBookPayload,
 } from "@/types/request/admin.request";
 import { AdminBookVariantListData } from "@/types/response/admin-book-variant.response";
@@ -36,8 +37,8 @@ export const adminService = {
   getUsersStats: () =>
     http.get<AdminUserStatsProxyResponse>("admin/users/stats"),
 
-  // Books
-  getBooks: () => http.get<AdminBookListResponse>("admin/books"),
+  getBooks: (params?: { page?: number; limit?: number; searchPhrase?: string; isbn?: string }) =>
+    http.get<AdminBookListResponse>("admin/books", { params }),
 
   getBookById: (bookId: string) => {
     return http.get<ProxySuccessResponse<AdminBookDetail>>(
@@ -45,8 +46,8 @@ export const adminService = {
     );
   },
 
-  createBook: (payload: AdminMutationPayload) =>
-    http.post("admin/books", payload),
+  createBook: (payload: CreateAdminBookRequest) =>
+    http.post<AdminBookResponse>("admin/books", payload),
 
   createBookAll: (payload: CreateAdminBookAllRequest) =>
     http.post<AdminBookResponse>("admin/books/all", payload),

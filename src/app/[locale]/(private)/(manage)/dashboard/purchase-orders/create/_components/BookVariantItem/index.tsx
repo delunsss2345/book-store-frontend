@@ -4,7 +4,7 @@ import { Book } from "@/types/response/variant.response";
 import { BookOpen } from "lucide-react";
 
 type Props = {
-  book: Book;
+  book: any;
   variant: AdminBookVariantDetail;
   alreadyAdded?: boolean;
   onSelect?: (variant: AdminBookVariantDetail) => void;

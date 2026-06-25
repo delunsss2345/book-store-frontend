@@ -206,6 +206,7 @@
       "addressTypes": {
         "HOME": "Nhà",
         "OFFICE": "Văn phòng",
+        "WORK": "Nơi làm việc",
         "OTHER": "Khác"
       }
     },

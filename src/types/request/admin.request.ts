@@ -47,6 +47,25 @@ export type CreateAdminBookAllRequest = {
   variants: CreateBookVariantRequest[];
 };
 
+export type CreateAdminBookRequest = {
+  isbn: string;
+  title: string;
+  description: string;
+  publisherName: string;
+  authors?: { authorName: string; isPrimary?: boolean }[];
+  categories?: { categoryId: number }[];
+  spec?: {
+    widthCm?: number;
+    heightCm?: number;
+    thicknessCm?: number;
+    packaging?: string;
+  };
+  publicationYear?: number;
+  pageCount?: number;
+  badgeCode?: string | null;
+  coverImageUrl?: string;
+};
+
 export type UpdateAdminBookTranslationPayload = {
   languageId: number;
   title?: string;

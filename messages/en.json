@@ -206,6 +206,7 @@
       "addressTypes": {
         "HOME": "Home",
         "OFFICE": "Office",
+        "WORK": "Work",
         "OTHER": "Other"
       }
     },

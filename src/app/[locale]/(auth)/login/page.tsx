@@ -34,7 +34,7 @@ const Login = () => {
         return t("auth.success.login");
       },
       error: (err) => {
-        return err.response.data ?? "Sai tài khoản hoặc mật khẩu";
+        return err.response?.data ?? "Sai tài khoản hoặc mật khẩu";
       },
     });
   };

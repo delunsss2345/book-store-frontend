@@ -65,22 +65,22 @@ export function ProductSearchBox({
 
   return (
     <div ref={searchRef} className="relative">
-      <div className="searchbar h-10 bg-paper">
-        <Search className="size-[14px] text-ink-3 shrink-0" />
+      <div className="flex h-12 w-full items-center gap-3 rounded-xl border border-line bg-paper px-4 shadow-sm transition-all focus-within:border-ink focus-within:ring-1 focus-within:ring-ink">
+        <Search className="size-5 text-ink-3 shrink-0" />
         <input
           placeholder="Tìm sách theo tên, ISBN hoặc mã..."
-          className="flex-1 bg-transparent border-0 outline-none text-ink placeholder:text-ink-3/70 min-w-0"
+          className="flex-1 bg-transparent border-0 outline-none text-ink text-[15px] placeholder:text-ink-3/70 min-w-0 h-full"
           value={searchQuery}
           onChange={(e) => handleSearchChange(e.target.value)}
           onFocus={() => setIsSearchOpen(true)}
         />
         {isSearching && (
-          <Loader2 className="size-4 text-ink-3 animate-spin shrink-0" />
+          <Loader2 className="size-5 text-ink-3 animate-spin shrink-0" />
         )}
       </div>
 
       {isSearchOpen && (
-        <div className="absolute z-30 top-full mt-1 w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg shadow-lg max-h-72 overflow-y-auto">
+        <div className="absolute z-30 top-full mt-2 w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl max-h-96 overflow-y-auto">
           {isSearching ? (
             <div className="flex items-center justify-center py-6 text-sm text-muted-foreground gap-2">
               <Loader2 className="size-4 animate-spin" />
