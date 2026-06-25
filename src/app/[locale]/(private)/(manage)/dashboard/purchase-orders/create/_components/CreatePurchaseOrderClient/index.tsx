@@ -73,15 +73,18 @@ export function CreatePurchaseOrderClient() {
     }
 
     const title = book.translations?.[0]?.title || book.title || "—";
+    const initialPrice = Number(variant.price) || 0;
 
     addItem({
       id: variant.id,
       bookVariantName: title,
       bookVariantId: variant.id,
-      format: variant.format,
+      format: typeof variant.format === "string" ? variant.format : (variant.format as any)?.format || "Mặc định",
       quantity: 1,
-      unitPrice: 0,
-      totalPrice: 0,
+      unitPrice: initialPrice,
+      originalPrice: initialPrice,
+      discount: 0,
+      totalPrice: initialPrice,
     });
   };
 
@@ -90,10 +93,35 @@ export function CreatePurchaseOrderClient() {
   };
 
   const handleItemChange = useCallback(
-    (id: string, field: "quantity" | "unitPrice", value: number) => {
-      updateItem(id, field, value);
+    (
+      id: string,
+      field: "quantity" | "originalPrice" | "discount" | "unitPrice",
+      value: number,
+    ) => {
+      const item = purchaseItems.find((i) => i.id === id);
+      if (!item) return;
+
+      if (field === "quantity") {
+        updateItem(id, "quantity", value);
+      } else if (field === "originalPrice") {
+        const discount = item.discount ?? 0;
+        const newUnitPrice = value * (1 - discount / 100);
+        updateItem(id, "originalPrice", value);
+        updateItem(id, "unitPrice", Math.round(newUnitPrice));
+      } else if (field === "discount") {
+        const origPrice = item.originalPrice ?? item.unitPrice ?? 0;
+        const newUnitPrice = origPrice * (1 - value / 100);
+        updateItem(id, "discount", value);
+        updateItem(id, "unitPrice", Math.round(newUnitPrice));
+      } else if (field === "unitPrice") {
+        const origPrice = item.originalPrice ?? value ?? 0;
+        const newDiscount =
+          origPrice > 0 ? ((origPrice - value) / origPrice) * 100 : 0;
+        updateItem(id, "unitPrice", value);
+        updateItem(id, "discount", Math.round(newDiscount * 100) / 100);
+      }
     },
-    [updateItem],
+    [purchaseItems, updateItem],
   );
 
 
@@ -269,6 +297,8 @@ export function CreatePurchaseOrderClient() {
                         <th>Sản phẩm</th>
                         <th>Định dạng</th>
                         <th>Số lượng</th>
+                        <th>Đơn giá bìa (₫)</th>
+                        <th>Chiết khấu (%)</th>
                         <th>Đơn giá nhập (₫)</th>
                         <th className="text-right">Thành tiền</th>
                         <th></th>
@@ -296,6 +326,38 @@ export function CreatePurchaseOrderClient() {
                                 handleItemChange(
                                   item.id,
                                   "quantity",
+                                  Number(e.target.value) || 0,
+                                )
+                              }
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="number"
+                              min="0"
+                              className="field h-8 w-28 px-2"
+                              value={item.originalPrice ?? item.unitPrice ?? 0}
+                              onChange={(e) =>
+                                handleItemChange(
+                                  item.id,
+                                  "originalPrice",
+                                  Number(e.target.value) || 0,
+                                )
+                              }
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="number"
+                              min="0"
+                              max="100"
+                              step="0.1"
+                              className="field h-8 w-24 px-2"
+                              value={item.discount ?? 0}
+                              onChange={(e) =>
+                                handleItemChange(
+                                  item.id,
+                                  "discount",
                                   Number(e.target.value) || 0,
                                 )
                               }

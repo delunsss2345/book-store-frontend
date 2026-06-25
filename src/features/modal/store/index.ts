@@ -1,4 +1,3 @@
-import { AdminBookDetail } from "@/types/request/admin.request";
 import { AdminOrderStatus, AdminBook } from "@/types/response/admin.response";
 import { create } from "zustand";
 
@@ -27,7 +26,7 @@ export type ApproveOrderAdmin = {
 };
 
 interface ModalStore {
-  bookDetail: AdminBook | null;
+  bookDetailId: string | null;
   type: ModalType;
   isOpen: boolean;
   purchaseOrderId: string | null;
@@ -38,18 +37,21 @@ interface ModalStore {
   selectAddressCallback: ((addressId: number) => void) | null;
   setActionApproveOrder: (actionApproveOrder: ApproveOrderAdmin) => void;
   setOrderShowDetailId: (orderShowDetailId: string | null) => void;
-  setBookDetail: (bookDetail: AdminBook | null) => void;
+  setBookDetailId: (bookDetailId: string | null) => void;
   setPurchaseOrderId: (purchaseOrderId: string | null) => void;
   setGoodsReceiptId: (goodsReceiptId: string | null) => void;
   getIsOpen: () => boolean;
   getType: () => ModalType;
   onOpen: (type: ModalType) => void;
-  onOpenSelectAddress: (selectedId: number, cb: (addressId: number) => void) => void;
+  onOpenSelectAddress: (
+    selectedId: number,
+    cb: (addressId: number) => void,
+  ) => void;
   onClose: () => void;
 }
 
 export const useModalStore = create<ModalStore>((set, get) => ({
-  bookDetail: null,
+  bookDetailId: null,
   orderShowDetailId: null,
   setOrderShowDetailId: (orderShowDetailId: string | null) => {
     set({ orderShowDetailId });
@@ -58,7 +60,7 @@ export const useModalStore = create<ModalStore>((set, get) => ({
   setActionApproveOrder: (actionApproveOrder: ApproveOrderAdmin) => {
     set({ actionApproveOrder });
   },
-  setBookDetail: (bookDetail: AdminBook | null) => set({ bookDetail }),
+  setBookDetailId: (bookDetailId: string | null) => set({ bookDetailId }),
   type: ModalType.BOOK,
   purchaseOrderId: null,
   setPurchaseOrderId: (purchaseOrderId: string | null) =>
@@ -73,6 +75,11 @@ export const useModalStore = create<ModalStore>((set, get) => ({
   getIsOpen: () => get().isOpen,
   onOpen: (type: ModalType) => set({ isOpen: true, type: type }),
   onOpenSelectAddress: (selectedId: number, cb: (addressId: number) => void) =>
-    set({ isOpen: true, type: ModalType.SELECT_ADDRESS, selectedAddressId: selectedId, selectAddressCallback: cb }),
+    set({
+      isOpen: true,
+      type: ModalType.SELECT_ADDRESS,
+      selectedAddressId: selectedId,
+      selectAddressCallback: cb,
+    }),
   onClose: () => set({ isOpen: false }),
 }));

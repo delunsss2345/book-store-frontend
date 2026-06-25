@@ -27,16 +27,38 @@ import {
 } from "@/src/components/ui/table";
 
 import { useModalStore } from "@/features/modal";
-import { AdminBook } from "@/types/response/admin.response";
+import { useAdminBookQuery } from "@/features/admin";
+import { useParams } from "next/navigation";
 
 export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
-  const book = useModalStore((state) => state.bookDetail) as AdminBook;
+  const bookId = useModalStore((state) => state.bookDetailId);
+  const params = useParams();
+  const locale = (params?.locale as string) || "vi";
+  const languageId = locale === "en" ? 2 : 1;
 
-  if (!book) return null;
+  const { data: book, isLoading } = useAdminBookQuery(bookId || "");
 
-  const title = book?.translation?.title || "No Title";
-  const description =
-    book?.translation?.description || "No description available.";
+  if (!bookId) return null;
+
+  if (isLoading) {
+    return <ModalBookDetailSkeleton />;
+  }
+
+  if (!book) {
+    return (
+      <div className="text-center py-8 text-muted-foreground">
+        Không tìm thấy thông tin sách.
+      </div>
+    );
+  }
+
+  const translations = (book as any)?.translations || book?.translation;
+  const transObj = Array.isArray(translations)
+    ? translations.find((t: any) => t.languageId === languageId) ||
+      translations[0]
+    : translations;
+  const title = transObj?.title || "No Title";
+  const description = transObj?.description || "No description available.";
   console.log(book.coverImageUrl);
   return (
     <div className="space-y-6">
@@ -120,7 +142,7 @@ export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
         <StatBox
           icon={<Building2 />}
           label="Pub ID"
-          value={book.publisherId.slice(0, 8)}
+          value={book.publisherId ? book.publisherId.slice(0, 8) : "N/A"}
         />
       </div>
 
@@ -150,7 +172,7 @@ export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
                 <TableRow key={v.id}>
                   <TableCell className="font-bold py-2">
                     <Badge variant="outline" className="text-[10px]">
-                      {v.format}
+                      {typeof v.format === "string" ? v.format : (v.format as any)?.format || "Mặc định"}
                     </Badge>
                   </TableCell>
                   <TableCell className="font-mono text-xs text-muted-foreground">
@@ -159,7 +181,7 @@ export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
                   <TableCell className="text-right py-2">
                     <span
                       className={
-                        (v?.stock ?? 0 < 10) ? "text-destructive font-bold" : ""
+                        (v?.stock ?? 0) < 10 ? "text-destructive font-bold" : ""
                       }
                     >
                       {v.stock}
@@ -208,6 +230,47 @@ function StatBox({
         </span>
       </div>
       <p className="text-sm font-bold truncate">{value || "---"}</p>
+    </div>
+  );
+}
+
+function ModalBookDetailSkeleton() {
+  return (
+    <div className="space-y-6 animate-pulse">
+      {/* 1. Header & Cover Section Skeleton */}
+      <div className="flex flex-col md:flex-row gap-6">
+        <div className="shrink-0 w-40 h-56 rounded bg-muted/60" />
+        <div className="flex-1 space-y-3">
+          <div className="h-6 w-2/3 bg-muted/60 rounded" />
+          <div className="h-4 w-1/4 bg-muted/60 rounded" />
+          <div className="h-20 w-full bg-muted/30 rounded p-2" />
+        </div>
+      </div>
+
+      {/* 2. Stats Grid Skeleton */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="h-16 rounded-lg border bg-card p-3 space-y-2">
+            <div className="h-3 w-1/2 bg-muted/55 rounded" />
+            <div className="h-4 w-3/4 bg-muted/55 rounded" />
+          </div>
+        ))}
+      </div>
+
+      {/* 3. Variants Table Skeleton */}
+      <div className="space-y-3">
+        <div className="h-4 w-1/4 bg-muted/60 rounded" />
+        <div className="rounded-md border p-4 space-y-3">
+          {Array.from({ length: 2 }).map((_, i) => (
+            <div key={i} className="flex justify-between items-center">
+              <div className="h-4 w-16 bg-muted/60 rounded" />
+              <div className="h-4 w-32 bg-muted/60 rounded" />
+              <div className="h-4 w-8 bg-muted/60 rounded" />
+              <div className="h-4 w-20 bg-muted/60 rounded" />
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,7 +1,14 @@
 "use client";
 
 import { AdminBook, AdminBookListData } from "@/types/response/admin.response";
-import { BookOpen, Check, ChevronLeft, ChevronRight, Plus, Search } from "lucide-react";
+import {
+  BookOpen,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Plus,
+  Search,
+} from "lucide-react";
 
 export function ProductPickerTable({
   booksData,
@@ -26,7 +33,8 @@ export function ProductPickerTable({
   const total = booksData?.total ?? 0;
   const totalPages = booksData?.totalPages ?? 1;
 
-  const getBookTitle = (book: AdminBook) => {
+  const getBookTitle = (book: any) => {
+    if (book.title) return book.title;
     const translation = book.translation;
     if (!translation) return "—";
     if (Array.isArray(translation)) {
@@ -62,9 +70,15 @@ export function ProductPickerTable({
         <table className="w-full text-[13px]">
           <thead>
             <tr className="border-b border-line bg-paper">
-              <th className="px-4 py-2.5 text-left font-medium text-ink-2 w-10">#</th>
-              <th className="px-4 py-2.5 text-left font-medium text-ink-2">Sản phẩm</th>
-              <th className="px-4 py-2.5 text-center font-medium text-ink-2 w-16">Thêm</th>
+              <th className="px-4 py-2.5 text-left font-medium text-ink-2 w-10">
+                #
+              </th>
+              <th className="px-4 py-2.5 text-left font-medium text-ink-2">
+                Sản phẩm
+              </th>
+              <th className="px-4 py-2.5 text-center font-medium text-ink-2 w-16">
+                Thêm
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -92,7 +106,8 @@ export function ProductPickerTable({
 
                 // Find first variant id or fallback to book id
                 const variantId = (book as any).variants?.[0]?.id || stringId;
-                const format = (book as any).variants?.[0]?.format || "Mặc định";
+                const format =
+                  (book as any).variants?.[0]?.format || "Mặc định";
 
                 const mockVariant = {
                   id: stringId,
@@ -115,7 +130,7 @@ export function ProductPickerTable({
                       title,
                       description: "",
                       slug: "",
-                    }
+                    },
                   ],
                 };
 
@@ -128,7 +143,9 @@ export function ProductPickerTable({
                         : "hover:bg-paper/70"
                     }`}
                   >
-                    <td className="px-4 py-2.5 text-ink-3 tabular-nums">{rowNum}</td>
+                    <td className="px-4 py-2.5 text-ink-3 tabular-nums">
+                      {rowNum}
+                    </td>
                     <td className="px-4 py-2.5">
                       <div className="flex items-center gap-3">
                         {book.coverImageUrl ? (
@@ -162,7 +179,9 @@ export function ProductPickerTable({
                     <td className="px-4 py-2.5 text-center">
                       <button
                         type="button"
-                        onClick={() => onAddItem(mockVariant as any, mockBook as any)}
+                        onClick={() =>
+                          onAddItem(mockVariant as any, mockBook as any)
+                        }
                         className={`inline-flex h-7 w-7 items-center justify-center rounded-md border transition-colors ${
                           isAdded
                             ? "border-blue-300 bg-blue-100 text-blue-600 dark:border-blue-700 dark:bg-blue-900/40 dark:text-blue-400"

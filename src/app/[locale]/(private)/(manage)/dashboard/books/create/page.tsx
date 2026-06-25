@@ -18,6 +18,7 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useParams, useRouter } from "next/navigation";
 import {
   createBookSchema,
   CreateBookFormValues,
@@ -26,6 +27,9 @@ import {
 
 export default function CreateBookPage() {
   const t = useTranslations();
+  const router = useRouter();
+  const params = useParams();
+  const locale = params.locale || "vi";
 
   const { data: supplierData, isLoading: isSupplierLoading } =
     useSupplierQuery();
@@ -137,11 +141,16 @@ export default function CreateBookPage() {
       coverImageUrl: data.coverImageUrl || undefined,
     };
 
-    toast.promise(createBook(bookData), {
-      loading: t("dashboard.products.create.toast.createLoading"),
-      success: t("dashboard.products.create.toast.createSuccess"),
-      error: t("dashboard.products.create.toast.createError"),
-    });
+    toast.promise(
+      createBook(bookData).then(() => {
+        router.push(`/${locale}/dashboard/books`);
+      }),
+      {
+        loading: t("dashboard.products.create.toast.createLoading"),
+        success: t("dashboard.products.create.toast.createSuccess"),
+        error: t("dashboard.products.create.toast.createError"),
+      }
+    );
   };
 
   const onSaveHandler = handleSubmit(onSubmit);
@@ -149,7 +158,10 @@ export default function CreateBookPage() {
   return (
     <div className="min-w-0">
       <div className="topbar">
-        <button className="icon-btn">
+        <button
+          className="icon-btn"
+          onClick={() => router.push(`/${locale}/dashboard/books`)}
+        >
           <ArrowLeft className="h-4 w-4" />
         </button>
         <div>
@@ -162,7 +174,10 @@ export default function CreateBookPage() {
         </div>
         <div className="ml-auto flex items-center gap-2">
           <span className="bdg bdg-gray">Draft</span>
-          <button className="btn-soft rounded-lg px-3.5 py-2 text-[12.5px]">
+          <button
+            className="btn-soft rounded-lg px-3.5 py-2 text-[12.5px]"
+            onClick={() => router.push(`/${locale}/dashboard/books`)}
+          >
             Hủy
           </button>
           <button

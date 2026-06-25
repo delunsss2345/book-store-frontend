@@ -1,13 +1,19 @@
 import { adminService } from "@/services/admin.service";
 import {
-  AdminBook,
+  AdminBookListItem,
   AdminBookListResponse,
 } from "@/types/response/admin.response";
 import { useQuery } from "@tanstack/react-query";
 
-export const useAdminBooksQuery = <T = AdminBook[]>(
-  params?: { page?: number; limit?: number; searchPhrase?: string; isbn?: string },
-  select?: (data: AdminBookListResponse) => T
+export const useAdminBooksQuery = <T = AdminBookListItem[]>(
+  params?: {
+    page?: number;
+    limit?: number;
+    searchPhrase?: string;
+    isbn?: string;
+    languageId?: number;
+  },
+  select?: (data: AdminBookListResponse) => T,
 ) =>
   useQuery<AdminBookListResponse, Error, T>({
     queryKey: ["admin", "books", params],

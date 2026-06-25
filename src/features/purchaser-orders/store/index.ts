@@ -9,13 +9,15 @@ export type PurchaseItem = {
   quantity: number;
   unitPrice: number;
   totalPrice: number;
+  originalPrice?: number;
+  discount?: number;
 };
 
 type PurchaseStore = {
   purchaseItems: PurchaseItem[];
 
   addItem: (item: PurchaseItem) => void;
-  updateItem: (id: string, field: string, value: number) => void;
+  updateItem: (id: string, field: string, value: any) => void;
   updateQuantityItem: (id: string) => void;
   deleteItem: (id: string) => void;
   clearItems: () => void;
@@ -31,7 +33,7 @@ export const usePurchaseStore = create<PurchaseStore>()(
           purchaseItems: [...state.purchaseItems, item],
         })),
 
-      updateItem: (id: string, field: string, value: number) =>
+      updateItem: (id: string, field: string, value: any) =>
         set((state) => ({
           purchaseItems: state.purchaseItems.map((i) =>
             i.id === id ? { ...i, [field]: value } : i,

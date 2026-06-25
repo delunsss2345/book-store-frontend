@@ -37,8 +37,19 @@ export const adminService = {
   getUsersStats: () =>
     http.get<AdminUserStatsProxyResponse>("admin/users/stats"),
 
-  getBooks: (params?: { page?: number; limit?: number; searchPhrase?: string; isbn?: string }) =>
-    http.get<AdminBookListResponse>("admin/books", { params }),
+  getBooks: (params?: {
+    page?: number;
+    limit?: number;
+    searchPhrase?: string;
+    isbn?: string;
+    languageId?: number;
+  }) => {
+    const { languageId, ...rest } = params || {};
+    return http.get<AdminBookListResponse>("admin/books/list", {
+      params: rest,
+      headers: languageId ? { "language-id": String(languageId) } : undefined,
+    });
+  },
 
   getBookById: (bookId: string) => {
     return http.get<ProxySuccessResponse<AdminBookDetail>>(

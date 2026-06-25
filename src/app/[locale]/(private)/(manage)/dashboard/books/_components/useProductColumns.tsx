@@ -4,29 +4,27 @@ import { ModalType, useModalStore } from "@/features/modal";
 import { useRouter } from "@/i18n/navigation";
 import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
-import type { AdminBook } from "@/types/response/admin.response";
+import type { AdminBookListItem } from "@/types/response/admin.response";
 import type { ColumnDef } from "@tanstack/react-table";
-import { BookOpen, Eye, ImageIcon, Pencil } from "lucide-react";
+import { BookOpen, Eye, ImageIcon, Pencil, ExternalLink } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
 
 type Translator = (key: string) => string;
 
 export function useProductColumns(t: Translator) {
-  const { onOpen, setBookDetail } = useModalStore();
+  const { onOpen, setBookDetailId } = useModalStore();
   const router = useRouter();
+  const params = useParams();
+  const locale = (params?.locale as string) || "vi";
 
-  return useMemo<ColumnDef<AdminBook>[]>(
+  return useMemo<ColumnDef<AdminBookListItem>[]>(
     () => [
       {
         id: "title",
         header: () => t("dashboard.products.table.columns.title"),
         cell: ({ row }) => {
-          const { coverImageUrl, id, translation } = row.original;
-          const transObj = Array.isArray(translation)
-            ? translation[0]
-            : translation;
-          const title = transObj?.title ?? "";
+          const { coverImageUrl, id, title } = row.original;
           return (
             <div className="flex items-center gap-3">
               <div className="flex h-12 w-9 shrink-0 items-center justify-center overflow-hidden rounded border bg-muted shadow-sm">
@@ -53,13 +51,12 @@ export function useProductColumns(t: Translator) {
         },
       },
       {
-        accessorKey: "pageCount",
-        header: () => t("dashboard.products.table.columns.pageCount"),
+        accessorKey: "authors",
+        header: () => "Tác giả",
         cell: ({ row }) => (
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <BookOpen className="size-3.5" />
-            <span>{row.original.pageCount ?? "-"}</span>
-          </div>
+          <span className="text-muted-foreground text-sm font-medium">
+            {row.original.authors || "—"}
+          </span>
         ),
       },
       {
@@ -94,8 +91,19 @@ export function useProductColumns(t: Translator) {
           <div className="flex items-center justify-end gap-1">
             <Button
               onClick={() => {
+                window.open(`/${locale}/detail/${row.original.slug}`, "_blank");
+              }}
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-muted-foreground hover:text-foreground cursor-pointer"
+              title="Xem trực tiếp trên cửa hàng"
+            >
+              <ExternalLink className="size-4" />
+            </Button>
+            <Button
+              onClick={() => {
                 onOpen(ModalType.BOOK_DETAIL);
-                setBookDetail(row.original);
+                setBookDetailId(row.original.id);
               }}
               variant="ghost"
               size="icon"
@@ -117,6 +125,6 @@ export function useProductColumns(t: Translator) {
         ),
       },
     ],
-    [onOpen, router, setBookDetail, t],
+    [onOpen, router, setBookDetailId, t, locale],
   );
 }

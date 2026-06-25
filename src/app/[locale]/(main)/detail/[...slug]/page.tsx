@@ -3,7 +3,7 @@
 import { Minus, Plus, ShoppingCart } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { notFound, useParams, useRouter } from "next/navigation";
 import * as React from "react";
 import { toast } from "sonner";
 
@@ -54,11 +54,7 @@ export default function DetailPage() {
 
   if (isPending) return <BookDetailSkeleton />;
   if (isError || !bookDetail) {
-    return (
-      <div className="container-main py-20 text-center text-zinc-500">
-        {t("detail.bookNotFound")}
-      </div>
-    );
+    return notFound();
   }
 
   const handleAddToCart = async (quantity: number) => {

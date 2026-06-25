@@ -151,7 +151,23 @@ export type AdminBook = {
   isActive?: boolean;
 };
 
-export type AdminBookListData = PaginationResponse<AdminBook>;
+export type AdminBookListItem = {
+  id: string;
+  title: string;
+  description: string;
+  slug: string;
+  authors: string;
+  isActive: boolean;
+  coverImageUrl: string | null;
+  spec?: {
+    widthCm?: number;
+    heightCm?: number;
+    thicknessCm?: number;
+    packaging?: string;
+  };
+};
+
+export type AdminBookListData = PaginationResponse<AdminBookListItem>;
 export type AdminBookListResponse = ApiResponse<AdminBookListData>;
 
 export type AdminBookStats = {

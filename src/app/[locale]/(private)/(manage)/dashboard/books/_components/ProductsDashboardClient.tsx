@@ -18,7 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/src/components/ui/table";
-import type { AdminBook } from "@/types/response/admin.response";
+import type { AdminBookListItem } from "@/types/response/admin.response";
 import {
   flexRender,
   getCoreRowModel,
@@ -31,16 +31,19 @@ import { ProductSummaryCards } from "./ProductSummaryCards";
 import { ProductsPagination } from "./ProductsPagination";
 import ProductsTableSkeleton from "./ProductsTableSkeleton";
 import { useProductColumns } from "./useProductColumns";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 export function ProductsDashboardClient() {
   const { t } = useTranslator();
+  const params = useParams();
+  const locale = (params?.locale as string) || "vi";
+  const languageId = locale === "en" ? 2 : 1;
 
   const {
-    data: books = [] as AdminBook[],
+    data: books = [] as AdminBookListItem[],
     error: booksError,
     isPending,
-  } = useAdminBooksQuery();
+  } = useAdminBooksQuery({ languageId });
 
   const { data: bookStats, error: bookStatsError } = useAdminBooksStatsQuery();
 
