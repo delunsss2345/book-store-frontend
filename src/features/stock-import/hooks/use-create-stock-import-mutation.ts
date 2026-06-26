@@ -2,6 +2,7 @@ import { purchase_key } from "@/features/purchaser-orders/hooks/create-purchaser
 import { stockImportService } from "@/services/stock-import.service";
 import { CreateStockImportRequest } from "@/types/request/purchase-order.request";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { stock_import_key } from "./use-stock-import-detail-query";
 
 export const useCreateStockImportMutation = () => {
   const queryClient = useQueryClient();
@@ -11,6 +12,7 @@ export const useCreateStockImportMutation = () => {
       stockImportService.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: purchase_key.all });
+      queryClient.invalidateQueries({ queryKey: stock_import_key.all });
       queryClient.invalidateQueries({ queryKey: ["purchaser-order-detail"] });
     },
   });

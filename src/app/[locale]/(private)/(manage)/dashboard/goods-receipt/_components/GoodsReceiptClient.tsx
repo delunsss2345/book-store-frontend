@@ -186,7 +186,7 @@ export function GoodsReceiptClient() {
                   <DropdownMenuItem
                     onClick={() => {
                       setPurchaseOrderId(record.id);
-                      onOpen(ModalType.DETAIL_PURCHASE_ORDER);
+                      onOpen(ModalType.DETAIL_STOCK_IMPORT);
                     }}
                   >
                     Xem chi tiết

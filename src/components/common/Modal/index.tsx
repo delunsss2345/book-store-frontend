@@ -14,6 +14,7 @@ const ModalPurchaseOrderDetail = lazy(
   () => import("./ModelPurchaseOrderDetail"),
 );
 const ModalGoodsReceiptDetail = lazy(() => import("./ModalGoodsReceiptDetail"));
+const ModalStockImportDetail = lazy(() => import("./ModalStockImportDetail"));
 const ModalCreateStockImport = lazy(() => import("./ModalCreateStockImport"));
 const ModalCreateAddress = lazy(() => import("./ModalCreateAddress"));
 const ModalOrderItemsDetail = lazy(() => import("./ModalShowOrderItem"));
@@ -53,7 +54,8 @@ export function ModalHost() {
               transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
               className={`relative w-full max-h-[90vh] overflow-y-auto bg-surface rounded-2xl shadow-2xl border border-line custom-scrollbar ${
                 type === ModalType.CONFIRM_PURCHASE_ORDER ||
-                type === ModalType.CREATE_STOCK_IMPORT
+                type === ModalType.CREATE_STOCK_IMPORT ||
+                type === ModalType.DETAIL_STOCK_IMPORT
                   ? "max-w-5xl"
                   : type === ModalType.CREATE_ADDRESS ||
                       type === ModalType.SELECT_ADDRESS
@@ -87,6 +89,9 @@ export function ModalHost() {
                   )}
                   {type === ModalType.DETAIL_GOODS_RECEIPT && (
                     <ModalGoodsReceiptDetail />
+                  )}
+                  {type === ModalType.DETAIL_STOCK_IMPORT && (
+                    <ModalStockImportDetail onClose={onClose} />
                   )}
                   {type === ModalType.CREATE_STOCK_IMPORT && (
                     <ModalCreateStockImport onClose={onClose} />
