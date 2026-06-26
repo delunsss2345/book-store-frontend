@@ -1,9 +1,18 @@
 "use client";
 
-import { useGetGoodsReceiptsQuery } from "@/features/goods-receipt/hooks/goods-receipt.query";
+import {
+  useGetPurchaseOrdersQuery,
+  useTransferProcessingPurchaseOrderMutation,
+} from "@/features/purchaser-orders/hooks/create-purchaser-orders.mutation";
 import { ModalType, useModalStore } from "@/features/modal";
+import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/src/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,7 +28,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/src/components/ui/table";
-import type { GoodsReceiptItem } from "@/types/response/goods-receipt.response";
+import { PurchaseOrderStatus } from "@/types/request/purchase-order.request";
+import type { PurchaseOrderItem } from "@/types/response/purchase-order.response";
 import type { ColumnDef } from "@tanstack/react-table";
 import {
   flexRender,
@@ -33,9 +43,9 @@ import {
   Filter,
   Package,
   Search,
-  UserRound,
 } from "lucide-react";
 import { useMemo } from "react";
+import { toast } from "sonner";
 import GoodsReceiptSkeleton from "./GoodsReceiptSkeleton";
 
 function formatCurrency(value: number | string) {
@@ -56,18 +66,40 @@ function formatDate(dateStr: string) {
   }).format(new Date(dateStr));
 }
 
-export function GoodsReceiptClient() {
-  const { data: goodsReceipts, isPending } = useGetGoodsReceiptsQuery();
-  const { setGoodsReceiptId, onOpen } = useModalStore();
+function getStatusBadgeClass(status?: string | null) {
+  switch (status) {
+    case "APPROVED":
+      return "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-300";
+    case "PROCESSING":
+      return "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300";
+    case "RECEIVED":
+    case "COMPLETED":
+      return "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-900/60 dark:bg-blue-950/30 dark:text-blue-300";
+    case "CANCELLED":
+    case "REJECTED":
+      return "border-red-200 bg-red-50 text-red-700 dark:border-red-900/60 dark:bg-red-950/30 dark:text-red-300";
+    default:
+      return "border-slate-200 bg-slate-50 text-slate-600 dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-300";
+  }
+}
 
-  const columns = useMemo<ColumnDef<GoodsReceiptItem>[]>(
+export function GoodsReceiptClient() {
+  const { data: purchaseOrders, isPending } = useGetPurchaseOrdersQuery({
+    status: PurchaseOrderStatus.APPROVED,
+  });
+  const setPurchaseOrderId = useModalStore((state) => state.setPurchaseOrderId);
+  const onOpen = useModalStore((state) => state.onOpen);
+  const { mutateAsync: transferProcessing, isPending: isTransferProcessing } =
+    useTransferProcessingPurchaseOrderMutation();
+
+  const columns = useMemo<ColumnDef<PurchaseOrderItem>[]>(
     () => [
       {
-        accessorKey: "id",
-        header: () => "Mã phiếu",
+        accessorKey: "code",
+        header: () => "Mã đơn",
         cell: ({ row }) => (
           <span className="font-mono text-sm font-semibold text-foreground">
-            {row.original.id.slice(0, 8)}...
+            {row.original.code}
           </span>
         ),
       },
@@ -86,20 +118,6 @@ export function GoodsReceiptClient() {
         ),
       },
       {
-        id: "creatorName",
-        header: () => "Người tạo",
-        cell: ({ row }) => (
-          <div className="flex items-center gap-2">
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-indigo-50 dark:bg-indigo-950/30">
-              <UserRound className="size-3.5 text-indigo-500" />
-            </div>
-            <span className="text-sm text-foreground">
-              {row.original.creator?.name || "N/A"}
-            </span>
-          </div>
-        ),
-      },
-      {
         accessorKey: "createdAt",
         header: () => "Ngày tạo",
         cell: ({ row }) => (
@@ -107,6 +125,34 @@ export function GoodsReceiptClient() {
             {formatDate(row.original.createdAt)}
           </span>
         ),
+      },
+      {
+        accessorKey: "status",
+        header: () => "Trạng thái",
+        cell: ({ row }) => (
+          <Badge
+            variant="outline"
+            className={`font-medium ${getStatusBadgeClass(row.original.status)}`}
+          >
+            {row.original.status}
+          </Badge>
+        ),
+      },
+      {
+        accessorKey: "statusTransfer",
+        header: () => "Trạng thái xử lý",
+        cell: ({ row }) => {
+          const statusTransfer = row.original.statusTransfer || "Chưa chuyển";
+
+          return (
+            <Badge
+              variant="outline"
+              className={`font-medium ${getStatusBadgeClass(row.original.statusTransfer)}`}
+            >
+              {statusTransfer}
+            </Badge>
+          );
+        },
       },
       {
         accessorKey: "totalAmount",
@@ -139,12 +185,35 @@ export function GoodsReceiptClient() {
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem
                     onClick={() => {
-                      setGoodsReceiptId(record.id);
-                      onOpen(ModalType.DETAIL_GOODS_RECEIPT);
+                      setPurchaseOrderId(record.id);
+                      onOpen(ModalType.DETAIL_PURCHASE_ORDER);
                     }}
                   >
                     Xem chi tiết
                   </DropdownMenuItem>
+                  {record.statusTransfer === "PROCESSING" ? (
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setPurchaseOrderId(record.id);
+                        onOpen(ModalType.CREATE_STOCK_IMPORT);
+                      }}
+                    >
+                      Kiểm tra đơn hàng
+                    </DropdownMenuItem>
+                  ) : (
+                    <DropdownMenuItem
+                      disabled={isTransferProcessing}
+                      onClick={() =>
+                        toast.promise(transferProcessing(record.id), {
+                          loading: "Đang chuyển đơn sang xử lý...",
+                          success: "Đơn đã chuyển sang xử lý",
+                          error: "Chuyển trạng thái xử lý thất bại",
+                        })
+                      }
+                    >
+                      Chuyển xử lý
+                    </DropdownMenuItem>
+                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -152,11 +221,11 @@ export function GoodsReceiptClient() {
         },
       },
     ],
-    [onOpen, setGoodsReceiptId],
+    [isTransferProcessing, onOpen, setPurchaseOrderId, transferProcessing],
   );
 
   const table = useReactTable({
-    data: goodsReceipts?.items || [],
+    data: purchaseOrders?.items || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -170,7 +239,7 @@ export function GoodsReceiptClient() {
             Phiếu nhập kho
           </h1>
           <p className="text-sm text-muted-foreground">
-            Xem danh sách phiếu nhập kho từ nhà cung cấp.
+            Xem danh sách đơn nhập hàng đã được duyệt.
           </p>
         </div>
       </div>
@@ -198,64 +267,69 @@ export function GoodsReceiptClient() {
         </CardHeader>
 
         <CardContent className="p-0">
-          <Table>
-            <TableHeader className="bg-slate-50/50 dark:bg-slate-900/30">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id} className="hover:bg-transparent">
-                  {headerGroup.headers.map((header) => (
-                    <TableHead
-                      key={header.id}
-                      className="text-slate-900 dark:text-slate-100 font-bold h-11"
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {isPending ? (
-                <GoodsReceiptSkeleton />
-              ) : table && table.getRowModel().rows.length ? (
-                table.getRowModel().rows.map((row) => (
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader className="bg-slate-50/50 dark:bg-slate-900/30">
+                {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow
-                    key={row.id}
-                    className="group hover:bg-slate-50/50 dark:hover:bg-slate-900/30 transition-colors"
+                    key={headerGroup.id}
+                    className="hover:bg-transparent"
                   >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="py-3">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
+                    {headerGroup.headers.map((header) => (
+                      <TableHead
+                        key={header.id}
+                        className="text-slate-900 dark:text-slate-100 font-bold h-11"
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
+                      </TableHead>
                     ))}
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-32 text-center text-muted-foreground"
-                  >
-                    Không có phiếu nhập kho nào.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {isPending ? (
+                  <GoodsReceiptSkeleton />
+                ) : table && table.getRowModel().rows.length ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      className="group hover:bg-slate-50/50 dark:hover:bg-slate-900/30 transition-colors"
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id} className="py-3">
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-32 text-center text-muted-foreground"
+                    >
+                      Không có phiếu nhập kho nào.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
 
         {/* Pagination */}
         <div className="flex flex-col items-center justify-between gap-4 border-t bg-slate-50/30 dark:bg-slate-900/20 px-6 py-4 md:flex-row text-sm text-muted-foreground">
           <p>
-            Hiển thị {goodsReceipts?.items?.length ?? 0} /{" "}
-            {goodsReceipts?.total ?? 0} phiếu nhập kho
+            Hiển thị {purchaseOrders?.items?.length ?? 0} /{" "}
+            {purchaseOrders?.total ?? 0} đơn đã duyệt
           </p>
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1">

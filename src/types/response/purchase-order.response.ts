@@ -14,6 +14,7 @@ type PurchaseOrderItem = {
   supplierId: string;
   code: string;
   status: "PENDING" | "APPROVED" | "RECEIVED" | "CANCELLED";
+  statusTransfer?: string | null;
   note: string;
   totalAmount: string;
   taxAmount: string;
@@ -27,7 +28,9 @@ type PurchaseOrderDetailItem = {
   purchaseOrderId: string;
   bookVariantId: string;
   quantity: number;
+  price?: number | string | null;
   unitPrice: number;
+  discountPrice?: number | string | null;
   totalPrice: number;
   createdAt: string;
   updatedAt: string;

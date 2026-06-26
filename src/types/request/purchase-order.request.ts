@@ -8,6 +8,21 @@ export type ApprovePurchaseOrderRequest = {
   status: PurchaseOrderStatus;
 };
 
+export type GetPurchaseOrdersQuery = {
+  status?: PurchaseOrderStatus;
+};
+
+export type CreateStockImportItemRequest = {
+  purchaseOrderItemId: string;
+  realQuantity: number;
+};
+
+export type CreateStockImportRequest = {
+  purchaseOrderId: string;
+  note: string;
+  items: CreateStockImportItemRequest[];
+};
+
 export type CreatePurchaseOrderItemRequest = {
   bookVariantId: number;
   quantity: number;

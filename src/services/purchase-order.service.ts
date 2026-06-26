@@ -7,6 +7,7 @@ import {
 import {
   ApprovePurchaseOrderRequest,
   CreatePurchaseOrderRequest,
+  GetPurchaseOrdersQuery,
 } from "@/types/request/purchase-order.request";
 
 export const purchaserService = {
@@ -14,8 +15,10 @@ export const purchaserService = {
     return http.post("/purchase-orders", data);
   },
 
-  getAll: () => {
-    return http.get<PurchaseOrderListResponse>("/purchase-orders");
+  getAll: (query?: GetPurchaseOrdersQuery) => {
+    return http.get<PurchaseOrderListResponse>("/purchase-orders", {
+      params: query,
+    });
   },
 
   getById: (id: string) => {
@@ -26,6 +29,12 @@ export const purchaserService = {
     return http.post<PurchaseOrderResponse>(
       `/purchase-orders/${id}/approve`,
       data,
+    );
+  },
+
+  transferProcessing: (id: string) => {
+    return http.post<PurchaseOrderResponse>(
+      `/purchase-orders/${id}/transfer-processing`,
     );
   },
 };

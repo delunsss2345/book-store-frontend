@@ -25,14 +25,19 @@ export default function GoodsReceiptSkeleton({
             <Skeleton className="h-4 w-36" />
           </TableCell>
 
-          {/* Người tạo */}
+          {/* Ngày tạo */}
           <TableCell className="py-3">
             <Skeleton className="h-4 w-28" />
           </TableCell>
 
-          {/* Ngày tạo */}
+          {/* Trạng thái */}
           <TableCell className="py-3">
-            <Skeleton className="h-4 w-28" />
+            <Skeleton className="h-6 w-24 rounded-full" />
+          </TableCell>
+
+          {/* Trạng thái xử lý */}
+          <TableCell className="py-3">
+            <Skeleton className="h-6 w-28 rounded-full" />
           </TableCell>
 
           {/* Tổng tiền */}
