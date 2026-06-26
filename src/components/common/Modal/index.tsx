@@ -23,6 +23,9 @@ const ModelShowOrderDetailAdmin = lazy(
 );
 const ModalApproveOrderAdmin = lazy(() => import("./ModalApprovalOrderAdmin"));
 const ModalSelectAddress = lazy(() => import("./ModalSelectAddress"));
+const ModalPurchaseOrderConfirm = lazy(
+  () => import("./ModalPurchaseOrderConfirm"),
+);
 
 export function ModalHost() {
   const { getIsOpen, onClose, getType } = useModalStore();
@@ -48,10 +51,12 @@ export function ModalHost() {
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
               className={`relative w-full max-h-[90vh] overflow-y-auto bg-surface rounded-2xl shadow-2xl border border-line custom-scrollbar ${
-                type === ModalType.CREATE_ADDRESS ||
-                type === ModalType.SELECT_ADDRESS
-                  ? "max-w-lg"
-                  : "max-w-3xl"
+                type === ModalType.CONFIRM_PURCHASE_ORDER
+                  ? "max-w-5xl"
+                  : type === ModalType.CREATE_ADDRESS ||
+                      type === ModalType.SELECT_ADDRESS
+                    ? "max-w-lg"
+                    : "max-w-3xl"
               }`}
             >
               <button
@@ -111,6 +116,9 @@ export function ModalHost() {
                         if (cb) cb(addressId);
                       }}
                     />
+                  )}
+                  {type === ModalType.CONFIRM_PURCHASE_ORDER && (
+                    <ModalPurchaseOrderConfirm onClose={onClose} />
                   )}
                 </Suspense>
               </div>

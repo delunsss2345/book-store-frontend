@@ -8,6 +8,7 @@ import {
   ChevronRight,
   Plus,
   Search,
+  SquareArrowOutUpRight,
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 
@@ -23,30 +24,6 @@ type ProductPickerBook = Omit<AdminBookListData["items"][number], "authors"> & {
   authorName?: string | null;
   authors?: string | ProductAuthor | ProductAuthor[] | null;
   translation?: ProductTranslation | ProductTranslation[] | null;
-  variants?: ProductPickerVariant[];
-};
-
-type ProductPickerVariant = {
-  id: string;
-  format: string;
-  edition: number;
-  isbn: string;
-  costPrice: string;
-  price: string;
-  currencyCode: string;
-  stock: number;
-  isActive: boolean;
-};
-
-type ProductPickerSelectedBook = {
-  id: string;
-  translations: {
-    id: string;
-    languageId: number;
-    title: string;
-    description: string;
-    slug: string;
-  }[];
 };
 
 export function ProductPickerTable({
@@ -57,7 +34,7 @@ export function ProductPickerTable({
   onSearchChange,
   page,
   onPageChange,
-  onAddItem,
+  onOpenBook,
 }: {
   booksData?: AdminBookListData;
   bookPending: boolean;
@@ -66,10 +43,7 @@ export function ProductPickerTable({
   onSearchChange: (v: string) => void;
   page: number;
   onPageChange: (page: number) => void;
-  onAddItem: (
-    variant: ProductPickerVariant,
-    book: ProductPickerSelectedBook,
-  ) => void;
+  onOpenBook: (bookId: string) => void;
 }) {
   const router = useRouter();
   const params = useParams<{ locale?: string }>();
@@ -160,39 +134,16 @@ export function ProductPickerTable({
                 const authors = getBookAuthors(book);
                 const stringId = String(book.id);
                 const rowNum = (page - 1) * (booksData?.limit ?? 10) + idx + 1;
-                const selectedVariant = book.variants?.[0] ?? {
-                  id: stringId,
-                  format: "PAPERBACK",
-                  edition: 1,
-                  isbn: "",
-                  costPrice: "0",
-                  price: "0",
-                  currencyCode: "VND",
-                  stock: 0,
-                  isActive: true,
-                };
-                const isAdded = addedIds.has(String(selectedVariant.id));
-
-                const mockBook = {
-                  id: stringId,
-                  translations: [
-                    {
-                      id: stringId,
-                      languageId: 1,
-                      title,
-                      description: "",
-                      slug: "",
-                    },
-                  ],
-                };
+                const isAdded = addedIds.has(stringId);
 
                 return (
                   <tr
                     key={book.id}
+                    onClick={() => onOpenBook(stringId)}
                     className={`border-b border-line last:border-0 transition-colors ${
                       isAdded
                         ? "bg-blue-50/60 dark:bg-blue-950/20"
-                        : "hover:bg-paper/70"
+                        : "hover:bg-paper/70 cursor-pointer"
                     }`}
                   >
                     <td className="px-4 py-2.5 text-ink-3 tabular-nums">
@@ -232,7 +183,10 @@ export function ProductPickerTable({
                     <td className="px-4 py-2.5 text-center">
                       <button
                         type="button"
-                        onClick={() => onAddItem(selectedVariant, mockBook)}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          onOpenBook(stringId);
+                        }}
                         className={`inline-flex h-7 w-7 items-center justify-center rounded-md border transition-colors ${
                           isAdded
                             ? "border-blue-300 bg-blue-100 text-blue-600 dark:border-blue-700 dark:bg-blue-900/40 dark:text-blue-400"
@@ -243,7 +197,7 @@ export function ProductPickerTable({
                         {isAdded ? (
                           <Check className="size-3.5" />
                         ) : (
-                          <Plus className="size-3.5" />
+                          <SquareArrowOutUpRight className="size-3.5" />
                         )}
                       </button>
                     </td>

@@ -12,16 +12,13 @@ export type CreatePurchaseOrderItemRequest = {
   bookVariantId: number;
   quantity: number;
   unitPrice: number;
-  totalPrice: number;
+  discountPrice: number;
 };
 
 export type CreatePurchaseOrderRequest = {
   supplierId: number;
-  bookId: number;
   code: string;
-  createdAt: string;
   note?: string;
-  discountPrice: number;
   taxAmount?: number;
   items: CreatePurchaseOrderItemRequest[];
 };

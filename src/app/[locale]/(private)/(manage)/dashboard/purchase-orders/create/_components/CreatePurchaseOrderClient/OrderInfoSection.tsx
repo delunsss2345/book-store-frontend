@@ -13,7 +13,7 @@ export function OrderInfoSection({ form, suppliers }: OrderInfoSectionProps) {
       <h4 className="display text-[17px] font-semibold text-ink">
         Thông tin chung
       </h4>
-      <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
           <label className="flabel">
             Nhà cung cấp <span className="text-accent">*</span>
@@ -41,14 +41,6 @@ export function OrderInfoSection({ form, suppliers }: OrderInfoSectionProps) {
             className="field font-mono bg-paper"
             readOnly
             {...form.register("code")}
-          />
-        </div>
-        <div>
-          <label className="flabel">Ngày nhập</label>
-          <input
-            className="field"
-            type="date"
-            {...form.register("createdAt")}
           />
         </div>
         <div>

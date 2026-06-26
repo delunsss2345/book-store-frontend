@@ -11,9 +11,14 @@ export const purchase_key = {
 };
 
 export const useCreatePurchaseOrderMutation = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (data: CreatePurchaseOrderRequest) => {
       return purchaserService.create(data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: purchase_key.all });
     },
   });
 };

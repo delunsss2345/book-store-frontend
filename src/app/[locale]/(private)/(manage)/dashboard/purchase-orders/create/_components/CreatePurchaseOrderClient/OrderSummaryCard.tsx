@@ -1,11 +1,8 @@
 import { CheckCheck } from "lucide-react";
 
 type OrderSummaryCardProps = {
-  grandTotal: number;
   isSaving: boolean;
   itemCount: number;
-  subtotal: number;
-  taxAmount: number;
   taxPercent: number;
   totalQty: number;
   onSubmit: () => void;
@@ -13,11 +10,8 @@ type OrderSummaryCardProps = {
 };
 
 export function OrderSummaryCard({
-  grandTotal,
   isSaving,
   itemCount,
-  subtotal,
-  taxAmount,
   taxPercent,
   totalQty,
   onSubmit,
@@ -43,25 +37,6 @@ export function OrderSummaryCard({
               onTaxPercentChange(Number(event.target.value) || 0)
             }
           />
-        </div>
-        <div className="flex justify-between">
-          <span className="text-ink-2">Tạm tính</span>
-          <span className="font-medium text-ink">
-            {subtotal.toLocaleString()} ₫
-          </span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-ink-2">Thuế</span>
-          <span className="font-medium text-ink">
-            {taxAmount.toLocaleString()} ₫
-          </span>
-        </div>
-        <div className="hairline my-2"></div>
-        <div className="flex items-center justify-between text-[15px]">
-          <span className="font-semibold text-ink">Tổng thanh toán</span>
-          <span className="display font-semibold text-accent">
-            {grandTotal.toLocaleString()} ₫
-          </span>
         </div>
       </div>
       <button

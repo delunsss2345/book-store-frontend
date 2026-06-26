@@ -1,4 +1,5 @@
-import { AdminOrderStatus, AdminBook } from "@/types/response/admin.response";
+import { AdminOrderStatus } from "@/types/response/admin.response";
+import type { PurchaseItem } from "@/features/purchaser-orders/store";
 import { create } from "zustand";
 
 export enum ModalType {
@@ -18,11 +19,28 @@ export enum ModalType {
   ORDER_DETAIL_ADMIN = "ORDER_DETAIL_ADMIN",
   ORDER_APPROVAL_ADMIN = "ORDER_APPROVAL_ADMIN",
   SELECT_ADDRESS = "SELECT_ADDRESS",
+  CONFIRM_PURCHASE_ORDER = "CONFIRM_PURCHASE_ORDER",
 }
 
 export type ApproveOrderAdmin = {
   orderId: string;
   status: AdminOrderStatus.CANCELLED | AdminOrderStatus.CONFIRMED;
+};
+
+export type PurchaseOrderModalVariant = {
+  id: string | number;
+  format?: unknown;
+  price?: string | number | null;
+  costPrice?: string | number | null;
+  currencyCode?: string | null;
+  stock?: number | null;
+  isbn?: string | null;
+  isActive?: boolean;
+};
+
+export type PurchaseOrderModalBook = {
+  id: string | number;
+  title: string;
 };
 
 interface ModalStore {
@@ -35,11 +53,31 @@ interface ModalStore {
   actionApproveOrder: ApproveOrderAdmin | null;
   selectedAddressId: number;
   selectAddressCallback: ((addressId: number) => void) | null;
+  purchaseOrderVariantSelect:
+    | ((
+        variant: PurchaseOrderModalVariant,
+        book: PurchaseOrderModalBook,
+      ) => void)
+    | null;
+  purchaseOrderConfirmSubmit:
+    | ((items: PurchaseItem[]) => Promise<void> | void)
+    | null;
   setActionApproveOrder: (actionApproveOrder: ApproveOrderAdmin) => void;
   setOrderShowDetailId: (orderShowDetailId: string | null) => void;
   setBookDetailId: (bookDetailId: string | null) => void;
   setPurchaseOrderId: (purchaseOrderId: string | null) => void;
   setGoodsReceiptId: (goodsReceiptId: string | null) => void;
+  setPurchaseOrderVariantSelect: (
+    callback:
+      | ((
+          variant: PurchaseOrderModalVariant,
+          book: PurchaseOrderModalBook,
+        ) => void)
+      | null,
+  ) => void;
+  setPurchaseOrderConfirmSubmit: (
+    callback: ((items: PurchaseItem[]) => Promise<void> | void) | null,
+  ) => void;
   getIsOpen: () => boolean;
   getType: () => ModalType;
   onOpen: (type: ModalType) => void;
@@ -70,6 +108,12 @@ export const useModalStore = create<ModalStore>((set, get) => ({
 
   selectedAddressId: 0,
   selectAddressCallback: null,
+  purchaseOrderVariantSelect: null,
+  purchaseOrderConfirmSubmit: null,
+  setPurchaseOrderVariantSelect: (purchaseOrderVariantSelect) =>
+    set({ purchaseOrderVariantSelect }),
+  setPurchaseOrderConfirmSubmit: (purchaseOrderConfirmSubmit) =>
+    set({ purchaseOrderConfirmSubmit }),
   isOpen: false,
   getType: () => get().type,
   getIsOpen: () => get().isOpen,
@@ -81,5 +125,10 @@ export const useModalStore = create<ModalStore>((set, get) => ({
       selectedAddressId: selectedId,
       selectAddressCallback: cb,
     }),
-  onClose: () => set({ isOpen: false }),
+  onClose: () =>
+    set({
+      isOpen: false,
+      purchaseOrderVariantSelect: null,
+      purchaseOrderConfirmSubmit: null,
+    }),
 }));

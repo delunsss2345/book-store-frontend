@@ -11,6 +11,7 @@ export type PurchaseOrderVariantOption = {
   id: string | number;
   format?: unknown;
   price?: string | number | null;
+  costPrice?: string | number | null;
 };
 
 export type PurchaseOrderBookOption = {

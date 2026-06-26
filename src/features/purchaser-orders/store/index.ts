@@ -9,9 +9,10 @@ export type PurchaseItem = {
   bookVariantId: string;
   quantity: number;
   unitPrice: number;
-  totalPrice: number;
+  totalPrice?: number;
   originalPrice?: number;
   discount?: number;
+  discountPrice?: number;
 };
 
 type PurchaseStore = {

@@ -1,8 +1,12 @@
 "use client";
 
 import { useAdminBooksQuery } from "@/features/admin/hooks/use-admin-books-query";
+import { ModalType, useModalStore } from "@/features/modal";
 import { useCreatePurchaseOrderMutation } from "@/features/purchaser-orders/hooks/create-purchaser-orders.mutation";
-import { usePurchaseStore } from "@/features/purchaser-orders/store";
+import {
+  PurchaseItem,
+  usePurchaseStore,
+} from "@/features/purchaser-orders/store";
 import { useSupplierQuery } from "@/features/supplier/hooks/use-supplier-query";
 import { useDebounceInput } from "@/hooks/use-debounce-input";
 import {
@@ -10,13 +14,12 @@ import {
   PurchaseOrderSchemaType,
 } from "@/validation/supplier/supplier.validation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 import { FieldErrors, useForm } from "react-hook-form";
-import { generateOrderCode, todayISO } from "../utils";
+import { generateOrderCode } from "../utils";
 import { CreatePurchaseOrderTopbar } from "./CreatePurchaseOrderTopbar";
 import {
-  BookFormat,
   calculateImportUnitPrice,
   normalizeBookFormat,
   PurchaseOrderBookOption,
@@ -26,10 +29,10 @@ import { OrderInfoSection } from "./OrderInfoSection";
 import { OrderSummaryCard } from "./OrderSummaryCard";
 import { PurchaseItemsSection } from "./PurchaseItemsSection";
 
-type PurchaseItemField = "quantity" | "originalPrice" | "discount" | "format";
-
 export function CreatePurchaseOrderClient() {
   const router = useRouter();
+  const params = useParams<{ locale?: string }>();
+  const locale = params.locale ?? "vi";
   const [searchPhrase, setSearchPhrase] = useState("");
   const [debouncedSearch] = useDebounceInput(searchPhrase, 300);
   const [page, setPage] = useState(1);
@@ -42,58 +45,37 @@ export function CreatePurchaseOrderClient() {
   const { data: booksData, isPending: bookPending } = useAdminBooksQuery(
     {
       page,
-      limit: 10,
+      limit: 5,
       searchPhrase: debouncedSearch || undefined,
     },
     (response) => response.data,
   );
   const { data: suppliers } = useSupplierQuery();
   const { mutateAsync: createPurchaseOrder } = useCreatePurchaseOrderMutation();
-  const { purchaseItems, addItem, deleteItem, updateQuantityItem, updateItem } =
+  const { purchaseItems, addItem, deleteItem, updateQuantityItem, clearItems } =
     usePurchaseStore();
+  const {
+    onOpen,
+    setBookDetailId,
+    setPurchaseOrderConfirmSubmit,
+    setPurchaseOrderVariantSelect,
+  } = useModalStore();
 
   const form = useForm<PurchaseOrderSchemaType>({
     resolver: zodResolver(purchaseOrderSchema),
     defaultValues: {
       supplierId: 0,
       code: generateOrderCode()!,
-      createdAt: todayISO()!,
       note: "",
-      discountPrice: 0,
-      bookId: 0,
     },
   });
 
   const addedIds = useMemo(
-    () => new Set(purchaseItems.map((item) => item.id)),
+    () => new Set(purchaseItems.map((item) => item.bookId)),
     [purchaseItems],
   );
 
-  const subtotal = useMemo(
-    () =>
-      purchaseItems.reduce(
-        (sum, item) =>
-          sum +
-          item.quantity *
-          calculateImportUnitPrice(
-            item.originalPrice ?? item.unitPrice ?? 0,
-            item.discount ?? 0,
-          ),
-        0,
-      ),
-    [purchaseItems],
-  );
-  const taxAmount = subtotal * (taxPercent / 100);
-  const grandTotal = subtotal + taxAmount;
   const totalQty = purchaseItems.reduce((sum, item) => sum + item.quantity, 0);
-
-  useEffect(() => {
-    form.setValue("discountPrice", subtotal);
-    form.setValue(
-      "bookId",
-      Number(purchaseItems[0]?.bookId ?? purchaseItems[0]?.bookVariantId ?? 0),
-    );
-  }, [subtotal, purchaseItems, form]);
 
   const handleAddItem = (
     variant: PurchaseOrderVariantOption,
@@ -107,7 +89,7 @@ export function CreatePurchaseOrderClient() {
     }
 
     const title = book.translations?.[0]?.title || book.title || "—";
-    const originalPrice = Number(variant.price) || 0;
+    const originalPrice = Number(variant.costPrice ?? variant.price) || 0;
     const discount = 0;
     const unitPrice = calculateImportUnitPrice(originalPrice, discount);
 
@@ -120,77 +102,69 @@ export function CreatePurchaseOrderClient() {
       quantity: 1,
       originalPrice,
       discount,
+      discountPrice: discount,
       unitPrice,
       totalPrice: unitPrice,
     });
   };
 
-  const handleItemChange = useCallback(
-    (id: string, field: PurchaseItemField, value: number | BookFormat) => {
-      const item = purchaseItems.find((purchaseItem) => purchaseItem.id === id);
-      if (!item) return;
+  const handleOpenBook = (bookId: string) => {
+    setBookDetailId(bookId);
+    setPurchaseOrderVariantSelect(handleAddItem);
+    onOpen(ModalType.BOOK_DETAIL);
+  };
 
-      if (field === "quantity" || field === "format") {
-        updateItem(id, field, value);
-        return;
-      }
+  const createOrder = async (
+    values: PurchaseOrderSchemaType,
+    confirmedItems: PurchaseItem[],
+  ) => {
+    const confirmedSubtotal = confirmedItems.reduce(
+      (sum, item) =>
+        sum +
+        item.quantity *
+          calculateImportUnitPrice(
+            item.unitPrice,
+            item.discountPrice ?? item.discount ?? 0,
+          ),
+      0,
+    );
 
-      const originalPrice =
-        field === "originalPrice"
-          ? Number(value) || 0
-          : (item.originalPrice ?? item.unitPrice ?? 0);
-      const discount =
-        field === "discount" ? Number(value) || 0 : (item.discount ?? 0);
-      const unitPrice = calculateImportUnitPrice(originalPrice, discount);
+    await createPurchaseOrder({
+      supplierId: Number(values.supplierId),
+      code: values.code,
+      note: values.note,
+      taxAmount: confirmedSubtotal * (taxPercent / 100),
+      items: confirmedItems.map((item) => ({
+        bookVariantId: Number(item.bookVariantId),
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+        discountPrice: item.discountPrice ?? item.discount ?? 0,
+      })),
+    });
 
-      updateItem(id, field, Number(value) || 0);
-      updateItem(id, "unitPrice", unitPrice);
-    },
-    [purchaseItems, updateItem],
-  );
+    clearItems();
+    router.push(`/${locale}/dashboard/purchase-orders`);
+  };
 
   const onSubmit = async (values: PurchaseOrderSchemaType) => {
-    if (purchaseItems.items.length === 0) {
+    if (purchaseItems.length === 0) {
       setErrors({ items: "Vui lòng thêm ít nhất một sản phẩm" });
       return;
     }
 
-    try {
-      setIsSaving(true);
-      setErrors({});
-      // await createPurchaseOrder({
-      //   supplierId: Number(values.supplierId),
-      //   bookId: Number(values.bookId),
-      //   code: values.code,
-      //   createdAt: values.createdAt,
-      //   note: values.note,
-      //   discountPrice: subtotal,
-      //   taxAmount,
-      //   items: purchaseItems.map((item) => {
-      //     const unitPrice = calculateImportUnitPrice(
-      //       item.originalPrice ?? item.unitPrice ?? 0,
-      //       item.discount ?? 0,
-      //     );
-
-      //     return {
-      //       bookVariantId: Number(item.bookVariantId),
-      //       quantity: item.quantity,
-      //       unitPrice,
-      //       totalPrice: item.quantity * unitPrice,
-      //     };
-      //   }),
-      // });
-    } catch (error) {
-      console.error("[onSubmit] API error:", error);
-    } finally {
-      setIsSaving(false);
-    }
+    setErrors({});
+    setPurchaseOrderConfirmSubmit(async (confirmedItems) => {
+      try {
+        setIsSaving(true);
+        await createOrder(values, confirmedItems);
+      } finally {
+        setIsSaving(false);
+      }
+    });
+    onOpen(ModalType.CONFIRM_PURCHASE_ORDER);
   };
 
   const onInvalid = (formErrors: FieldErrors<PurchaseOrderSchemaType>) => {
-    if (formErrors.bookId) {
-      setErrors({ items: "Vui lòng thêm ít nhất một sản phẩm" });
-    }
     console.error("[form invalid] errors:", formErrors);
   };
 
@@ -219,10 +193,9 @@ export function CreatePurchaseOrderClient() {
               }}
               page={page}
               onPageChange={setPage}
-              onAddItem={handleAddItem}
+              onOpenBook={handleOpenBook}
               errors={errors.items}
               purchaseItems={purchaseItems}
-              onItemChange={handleItemChange}
               onRemoveItem={deleteItem}
             />
           </div>
@@ -233,9 +206,6 @@ export function CreatePurchaseOrderClient() {
               totalQty={totalQty}
               taxPercent={taxPercent}
               onTaxPercentChange={setTaxPercent}
-              subtotal={subtotal}
-              taxAmount={taxAmount}
-              grandTotal={grandTotal}
               onSubmit={submit}
               isSaving={isSaving}
             />

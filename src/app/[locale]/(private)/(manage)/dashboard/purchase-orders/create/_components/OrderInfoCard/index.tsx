@@ -1,12 +1,17 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/src/components/ui/card";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
 } from "@/src/components/ui/form";
 import { Input } from "@/src/components/ui/input";
 import {
@@ -18,7 +23,7 @@ import {
 } from "@/src/components/ui/select";
 import { Textarea } from "@/src/components/ui/textarea";
 import { PurchaseOrderSchemaType } from "@/validation/supplier/supplier.validation";
-import { CalendarDays, ClipboardList, FileText, Truck } from "lucide-react";
+import { ClipboardList, FileText, Truck } from "lucide-react";
 import type { UseFormReturn } from "react-hook-form";
 
 type SupplierOption = { id: number | string; name: string };
@@ -94,23 +99,6 @@ export function OrderInfoCard({
                     readOnly
                     className="h-9 text-sm bg-slate-50 dark:bg-slate-900 font-mono cursor-not-allowed"
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="createdAt"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                  <CalendarDays className="size-3.5" />
-                  Ngày nhập
-                </FormLabel>
-                <FormControl>
-                  <Input type="date" {...field} className="h-9 text-sm" />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -29,9 +29,13 @@ import {
 import { useModalStore } from "@/features/modal";
 import { useAdminBookQuery } from "@/features/admin";
 import { useParams } from "next/navigation";
+import { BookWithTranslations, getFormatLabel } from "./helpers";
 
 export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
   const bookId = useModalStore((state) => state.bookDetailId);
+  const onSelectPurchaseVariant = useModalStore(
+    (state) => state.purchaseOrderVariantSelect,
+  );
   const params = useParams();
   const locale = (params?.locale as string) || "vi";
   const languageId = locale === "en" ? 2 : 1;
@@ -52,14 +56,15 @@ export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
     );
   }
 
-  const translations = (book as any)?.translations || book?.translation;
+  const translations =
+    (book as BookWithTranslations).translations ||
+    (book as BookWithTranslations).translation;
   const transObj = Array.isArray(translations)
-    ? translations.find((t: any) => t.languageId === languageId) ||
-      translations[0]
+    ? translations.find((t) => t.languageId === languageId) || translations[0]
     : translations;
   const title = transObj?.title || "No Title";
   const description = transObj?.description || "No description available.";
-  console.log(book.coverImageUrl);
+
   return (
     <div className="space-y-6">
       {/* 1. Header & Cover Section */}
@@ -108,9 +113,7 @@ export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
             <Badge
               variant="secondary"
               className="rounded-sm px-1.5 uppercase text-[10px] font-bold"
-            >
-              {/* {book.translation?.languageId === 1 ? "VN" : "EN"} */}
-            </Badge>
+            />
             <Separator orientation="vertical" className="h-4" />
             <div className="flex items-center text-yellow-500">
               <Star className="w-4 h-4 fill-current mr-1" />
@@ -142,7 +145,9 @@ export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
         <StatBox
           icon={<Building2 />}
           label="Pub ID"
-          value={book.publisherId ? book.publisherId.slice(0, 8) : "N/A"}
+          value={
+            book.publisherId ? String(book.publisherId).slice(0, 8) : "N/A"
+          }
         />
       </div>
 
@@ -165,6 +170,9 @@ export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
                 <TableHead className="text-right font-bold text-foreground">
                   Price
                 </TableHead>
+                {onSelectPurchaseVariant && (
+                  <TableHead className="text-right">Chọn</TableHead>
+                )}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -172,7 +180,7 @@ export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
                 <TableRow key={v.id}>
                   <TableCell className="font-bold py-2">
                     <Badge variant="outline" className="text-[10px]">
-                      {typeof v.format === "string" ? v.format : (v.format as any)?.format || "Mặc định"}
+                      {getFormatLabel(v.format)}
                     </Badge>
                   </TableCell>
                   <TableCell className="font-mono text-xs text-muted-foreground">
@@ -193,6 +201,20 @@ export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
                       currency: v.currencyCode,
                     }).format(Number(v.price))}
                   </TableCell>
+                  {onSelectPurchaseVariant && (
+                    <TableCell className="text-right py-2">
+                      <Button
+                        size="sm"
+                        disabled={!v.isActive}
+                        onClick={() => {
+                          onSelectPurchaseVariant(v, { id: book.id, title });
+                          onClose();
+                        }}
+                      >
+                        Chọn
+                      </Button>
+                    </TableCell>
+                  )}
                 </TableRow>
               ))}
             </TableBody>

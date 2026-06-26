@@ -4,17 +4,14 @@ export const purchaseOrderItemSchema = z.object({
   bookVariantId: z.coerce.number(),
   quantity: z.number().min(1, "Số lượng phải lớn hơn 0"),
   unitPrice: z.number().min(0, "Giá không hợp lệ"),
-  totalPrice: z.number().min(0, "Tổng tiền không hợp lệ"),
+  discountPrice: z.number().min(0).max(100, "Chiết khấu không hợp lệ"),
 });
 
 export const purchaseOrderSchema = z.object({
   supplierId: z.number().min(1, "Vui lòng chọn nhà cung cấp"),
   code: z.string().min(1, "Mã đơn nhập không được để trống"),
-  createdAt: z.string().min(1, "Ngày tạo đơn không được để trống"),
   note: z.string().optional(),
-  discountPrice: z.number().min(0, "Tổng tiền không hợp lệ"),
   taxAmount: z.number().optional(),
-  bookId: z.number().min(1, "Mã sách là bắt buộc"),
 });
 
 export const createPurchaseOrderSchema = purchaseOrderSchema.extend({
