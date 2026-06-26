@@ -22,8 +22,8 @@ export async function proxy(request: NextRequest) {
   const language = cookieStore.get("NEXT_LOCALE")?.value || "vi";
   const token = cookieStore.get("accessToken")?.value || "";
   const header = await headers();
-  const intlResponse = intlMiddleware(request);
 
+  const intlResponse = intlMiddleware(request);
   if (!SUPPORTED_LOCALES.includes(locale as Locale)) {
     return NextResponse.redirect(
       new URL(`/${language}${pathname}`, request.url),
@@ -31,11 +31,10 @@ export async function proxy(request: NextRequest) {
   }
 
   if (!token && pathname.includes("/profile")) {
-    console.log("/");
     return NextResponse.redirect(new URL(`/${language}/login`, request?.url));
   }
   let decode: JwtPayload | null = null;
-  // Đang bị bug ở trang admin mà refreshtoken lỗi là bị lag luôn
+
   if (token) {
     try {
       decode = jwtDecode(token);
@@ -51,20 +50,19 @@ export async function proxy(request: NextRequest) {
   }
 
   const base = new URL(`/${language}`, request.url);
+
+
+
   if (
-    pathname.endsWith("/dashboard") &&
-    !decode?.roles?.includes(
-      request.nextUrl.pathname.split("/")[2]?.toUpperCase(),
-    ) &&
-    token
+    pathname.includes("/dashboard")
   ) {
+    const roles = decode?.roles ?? [];
+    if (roles.includes("USER") || roles.includes("GUEST")) return NextResponse.redirect(base);
+    if (roles.length <= 0) return NextResponse.redirect(base);
+    if (!token) return NextResponse.redirect(base);
     if (!decode?.isEmailVerified) {
       return NextResponse.redirect(base);
     }
-
-    const roles = decode?.roles ?? [];
-    if (roles.includes("USER") || roles.includes("GUEST"))
-      return NextResponse.redirect(base);
   }
 
   const response = NextResponse.next(intlResponse);

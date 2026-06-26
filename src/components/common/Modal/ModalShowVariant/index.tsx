@@ -21,7 +21,6 @@ import {
   TableRow,
 } from "@/src/components/ui/table";
 import { AdminBookVariant } from "@/types/response/admin.response";
-import { fmt } from "@/utils/format-number-vi";
 import { CircleDollarSign, Info, Lock } from "lucide-react";
 
 export default function ModalBookVariantPricing() {
@@ -75,7 +74,7 @@ export default function ModalBookVariantPricing() {
         ),
         cell: ({ row }) => (
           <span className="text-sm font-medium text-muted-foreground/70">
-            {fmt(row.original?.costPrice as number)}
+            {row.original?.costPrice}
           </span>
         ),
       },

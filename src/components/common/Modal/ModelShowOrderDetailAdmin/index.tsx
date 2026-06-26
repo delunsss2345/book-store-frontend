@@ -20,6 +20,7 @@ import {
 } from "@/src/components/ui/table";
 import { AdminOrderItem } from "@/types/response/admin.response";
 import { fmt } from "@/utils/format-number-vi";
+import { Image } from "@radix-ui/react-avatar";
 import { ImageIcon, Package } from "lucide-react";
 import LoadingState from "../../LoadingState";
 
@@ -41,9 +42,9 @@ export default function ModelShowOrderDetailAdmin() {
             <div className="flex items-center gap-4 py-1">
               <div className="h-14 w-10 rounded border bg-muted flex-shrink-0 overflow-hidden relative shadow-sm">
                 {item.coverImageUrlSnapshot ? (
-                  <img
+                  <Image
                     src={item.coverImageUrlSnapshot}
-                    alt={item.titleSnapshot}
+                    alt={item.titleSnapshot ?? 'No title'}
                     className="h-full w-full object-cover"
                   />
                 ) : (
