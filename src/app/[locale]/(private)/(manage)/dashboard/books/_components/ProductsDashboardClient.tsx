@@ -25,13 +25,13 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { Filter, Plus, Search } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { ProductSummaryCards } from "./ProductSummaryCards";
 import { ProductsPagination } from "./ProductsPagination";
 import ProductsTableSkeleton from "./ProductsTableSkeleton";
 import { useProductColumns } from "./useProductColumns";
-import { useParams, useRouter } from "next/navigation";
 
 export function ProductsDashboardClient() {
   const { t } = useTranslator();
@@ -43,7 +43,7 @@ export function ProductsDashboardClient() {
     data: books = [] as AdminBookListItem[],
     error: booksError,
     isPending,
-  } = useAdminBooksQuery({ languageId });
+  } = useAdminBooksQuery({ languageId, type: 'books' });
 
   const { data: bookStats, error: bookStatsError } = useAdminBooksStatsQuery();
 
@@ -118,9 +118,9 @@ export function ProductsDashboardClient() {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                     </TableHead>
                   ))}
                 </TableRow>

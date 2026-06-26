@@ -30,11 +30,20 @@ export type AdminBookVariant = {
   format: string;
   edition: number;
   isbn: string;
-  costPrice: string;
+  costPrice?: string;
   price: string;
   currencyCode: string;
   stock: number;
   isActive: boolean;
+  purchaseOrderItem?: AdminBookVariantPurchaseOrderItem[];
+};
+
+export type AdminBookVariantPurchaseOrderItem = {
+  id: string;
+  purchaseOrderId: string;
+  unitPrice: string;
+  discountPrice?: string | null;
+  price?: string | null;
 };
 
 export type AdminBookDetailResponse = ApiResponse<AdminBookDetailData>;

@@ -12,6 +12,7 @@ export const useAdminBooksQuery = <T = AdminBookListItem[]>(
     searchPhrase?: string;
     isbn?: string;
     languageId?: number;
+    type?: string
   },
   select?: (data: AdminBookListResponse) => T,
 ) =>

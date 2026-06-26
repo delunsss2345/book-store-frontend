@@ -4,7 +4,6 @@ import {
   Calendar,
   CheckCircle2,
   Layers,
-  Star,
   Tag,
   Wallet,
   XCircle,
@@ -15,8 +14,6 @@ import React from "react";
 import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
 import { Card } from "@/src/components/ui/card";
-import { ScrollArea } from "@/src/components/ui/scroll-area";
-import { Separator } from "@/src/components/ui/separator";
 import {
   Table,
   TableBody,
@@ -30,6 +27,26 @@ import { useModalStore } from "@/features/modal";
 import { useAdminBookQuery } from "@/features/admin";
 import { useParams } from "next/navigation";
 import { BookWithTranslations, getFormatLabel } from "./helpers";
+
+const formatCurrency = (
+  value: string | number | null | undefined,
+  currencyCode: string | null | undefined,
+) => {
+  if (value == null || value === "") return "--";
+
+  const amount = Number(value);
+  if (!Number.isFinite(amount)) return "--";
+
+  try {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: currencyCode || "VND",
+      maximumFractionDigits: 0,
+    }).format(amount);
+  } catch {
+    return `${amount.toLocaleString("vi-VN")} ${currencyCode || "VND"}`;
+  }
+};
 
 export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
   const bookId = useModalStore((state) => state.bookDetailId);
@@ -64,20 +81,42 @@ export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
     : translations;
   const title = transObj?.title || "No Title";
   const description = transObj?.description || "No description available.";
+  const compactStats = [
+    {
+      icon: <Calendar />,
+      label: "Năm XB",
+      value: book.publicationYear || "--",
+    },
+    {
+      icon: <Layers />,
+      label: "Trang",
+      value: book.pageCount || "--",
+    },
+    {
+      icon: <Tag />,
+      label: "Nặng",
+      value: book.weightGrams ? `${book.weightGrams}g` : "--",
+    },
+    {
+      icon: <Building2 />,
+      label: "NXB",
+      value: book.publisherName || String(book.publisherId || "--"),
+    },
+  ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* 1. Header & Cover Section */}
-      <div className="flex flex-col md:flex-row gap-6">
-        <Card className="shrink-0 w-40 h-56 overflow-hidden shadow-md border-muted">
+      <div className="flex flex-col gap-4 md:flex-row">
+        <Card className="h-40 w-28 shrink-0 overflow-hidden border-muted shadow-sm">
           {book.coverImageUrl ? (
             <Image
               unoptimized
               src={book.coverImageUrl}
               alt={title}
-              width={160}
-              height={224}
-              className="object-cover w-full h-full hover:scale-105 transition-transform duration-500"
+              width={112}
+              height={160}
+              className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
             />
           ) : (
             <div className="w-full h-full bg-muted flex items-center justify-center">
@@ -86,14 +125,15 @@ export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
           )}
         </Card>
 
-        <div className="flex-1 space-y-3">
+        <div className="min-w-0 flex-1 space-y-3">
           <div className="flex items-start justify-between gap-4">
-            <div>
-              <h2 className="text-2xl font-bold tracking-tight text-foreground">
+            <div className="min-w-0">
+              <h2 className="line-clamp-2 text-xl font-bold tracking-tight text-foreground">
                 {title}
               </h2>
-              <p className="text-xs text-muted-foreground font-mono mt-1">
-                ID: {book.id}
+              <p className="mt-1 text-xs text-muted-foreground">
+                {book.authorName || "Không rõ tác giả"} · ID{" "}
+                <span className="font-mono">{book.id}</span>
               </p>
             </div>
             <Badge
@@ -109,66 +149,52 @@ export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
             </Badge>
           </div>
 
-          <div className="flex items-center gap-3">
-            <Badge
-              variant="secondary"
-              className="rounded-sm px-1.5 uppercase text-[10px] font-bold"
-            />
-            <Separator orientation="vertical" className="h-4" />
-            <div className="flex items-center text-yellow-500">
-              <Star className="w-4 h-4 fill-current mr-1" />
-              <span className="text-sm font-semibold text-foreground">4.5</span>
-            </div>
+          <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
+            {compactStats.map((item) => (
+              <StatBox
+                key={item.label}
+                icon={item.icon}
+                label={item.label}
+                value={item.value}
+              />
+            ))}
           </div>
 
-          <ScrollArea className="h-20 w-full rounded-md border bg-muted/30 p-2">
-            <p className="text-xs leading-relaxed text-muted-foreground italic">
-              {description}
-            </p>
-          </ScrollArea>
+          <p className="line-clamp-2 rounded-md border bg-muted/25 px-3 py-2 text-xs leading-5 text-muted-foreground">
+            {description}
+          </p>
         </div>
-      </div>
-
-      {/* 2. Stats Grid using cards style */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <StatBox
-          icon={<Calendar />}
-          label="Year"
-          value={book.publicationYear}
-        />
-        <StatBox icon={<Layers />} label="Pages" value={book.pageCount} />
-        <StatBox
-          icon={<Tag />}
-          label="Weight"
-          value={book.weightGrams ? `${book.weightGrams}g` : "N/A"}
-        />
-        <StatBox
-          icon={<Building2 />}
-          label="Pub ID"
-          value={
-            book.publisherId ? String(book.publisherId).slice(0, 8) : "N/A"
-          }
-        />
       </div>
 
       {/* 3. Variants Table Section */}
       <div className="space-y-3">
-        <div className="flex items-center gap-2 px-1">
-          <Wallet className="w-4 h-4 text-primary" />
-          <h3 className="text-sm font-bold uppercase tracking-wider">
-            Book Variants
-          </h3>
+        <div className="flex items-center justify-between gap-3 px-1">
+          <div className="flex items-center gap-2">
+            <Wallet className="h-4 w-4 text-primary" />
+            <h3 className="text-sm font-bold uppercase tracking-wider">
+              Variant & so sánh giá
+            </h3>
+          </div>
+          <Badge variant="secondary" className="rounded-md text-[11px]">
+            {book.variants?.length || 0} variant
+          </Badge>
         </div>
 
-        <div className="rounded-md border shadow-sm overflow-hidden">
+        <div className="overflow-hidden rounded-md border shadow-sm">
           <Table>
             <TableHeader className="bg-muted/50">
               <TableRow>
-                <TableHead className="w-[100px]">Format</TableHead>
-                <TableHead>ISBN</TableHead>
-                <TableHead className="text-right">Stock</TableHead>
-                <TableHead className="text-right font-bold text-foreground">
-                  Price
+                <TableHead className="w-[110px]">Variant</TableHead>
+                <TableHead className="min-w-[140px]">ISBN</TableHead>
+                <TableHead className="text-right">Tồn</TableHead>
+                <TableHead className="min-w-[160px] text-right font-bold text-foreground">
+                  Giá bán
+                </TableHead>
+                <TableHead className="min-w-[150px] text-right">
+                  Giá nhập
+                </TableHead>
+                <TableHead className="min-w-[150px] text-right">
+                  Giá hiện tại
                 </TableHead>
                 {onSelectPurchaseVariant && (
                   <TableHead className="text-right">Chọn</TableHead>
@@ -176,47 +202,80 @@ export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {book.variants?.map((v) => (
-                <TableRow key={v.id}>
-                  <TableCell className="font-bold py-2">
-                    <Badge variant="outline" className="text-[10px]">
-                      {getFormatLabel(v.format)}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="font-mono text-xs text-muted-foreground">
-                    {v.isbn}
-                  </TableCell>
-                  <TableCell className="text-right py-2">
-                    <span
-                      className={
-                        (v?.stock ?? 0) < 10 ? "text-destructive font-bold" : ""
-                      }
-                    >
-                      {v.stock}
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-right font-bold text-emerald-600 py-2">
-                    {new Intl.NumberFormat("vi-VN", {
-                      style: "currency",
-                      currency: v.currencyCode,
-                    }).format(Number(v.price))}
-                  </TableCell>
-                  {onSelectPurchaseVariant && (
+              {book.variants?.map((v) => {
+                const purchasePrice = v.purchaseOrderItem?.[0]?.unitPrice;
+
+                return (
+                  <TableRow key={v.id}>
+                    <TableCell className="py-2 font-bold">
+                      <div className="space-y-1">
+                        <Badge variant="outline" className="text-[10px]">
+                          {getFormatLabel(v.format)}
+                        </Badge>
+                        {v.edition ? (
+                          <p className="text-[11px] text-muted-foreground">
+                            Lần {v.edition}
+                          </p>
+                        ) : null}
+                      </div>
+                    </TableCell>
+                    <TableCell className="font-mono text-xs text-muted-foreground">
+                      {v.isbn || "--"}
+                    </TableCell>
                     <TableCell className="text-right py-2">
-                      <Button
-                        size="sm"
-                        disabled={!v.isActive}
-                        onClick={() => {
-                          onSelectPurchaseVariant(v, { id: book.id, title });
-                          onClose();
-                        }}
+                      <span
+                        className={
+                          (v?.stock ?? 0) < 10
+                            ? "font-bold text-destructive"
+                            : ""
+                        }
                       >
-                        Chọn
+                        {v.stock ?? "--"}
+                      </span>
+                    </TableCell>
+                    <TableCell className="py-2 text-right">
+                      <div className="font-bold text-emerald-600">
+                        {formatCurrency(v.price, v.currencyCode)}
+                      </div>
+                      <p className="text-[11px] text-muted-foreground">
+                        variant.price
+                      </p>
+                    </TableCell>
+                    <TableCell className="py-2 text-right">
+                      <div className="font-semibold text-foreground">
+                        {formatCurrency(purchasePrice, v.currencyCode)}
+                      </div>
+                      <p className="text-[11px] text-muted-foreground">
+                        unitPrice
+                      </p>
+                    </TableCell>
+                    <TableCell className="py-2 text-right">
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        className="h-8 text-xs"
+                      >
+                        Chọn giá hiện tại
                       </Button>
                     </TableCell>
-                  )}
-                </TableRow>
-              ))}
+                    {onSelectPurchaseVariant && (
+                      <TableCell className="py-2 text-right">
+                        <Button
+                          size="sm"
+                          disabled={!v.isActive}
+                          onClick={() => {
+                            onSelectPurchaseVariant(v, { id: book.id, title });
+                            onClose();
+                          }}
+                        >
+                          Chọn
+                        </Button>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </div>
@@ -242,16 +301,16 @@ function StatBox({
   value: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-1 p-3 rounded-lg border bg-card text-card-foreground shadow-sm">
-      <div className="flex items-center gap-2 text-muted-foreground">
+    <div className="rounded-md border bg-card px-2.5 py-2 text-card-foreground">
+      <div className="flex items-center gap-1.5 text-muted-foreground">
         {React.cloneElement(icon, {
-          className: "w-3.5 h-3.5",
+          className: "h-3 w-3",
         })}
         <span className="text-[10px] font-bold uppercase tracking-tight">
           {label}
         </span>
       </div>
-      <p className="text-sm font-bold truncate">{value || "---"}</p>
+      <p className="mt-0.5 truncate text-xs font-bold">{value || "--"}</p>
     </div>
   );
 }

@@ -1,10 +1,10 @@
 "use client";
 
+import { ModalType, useModalStore } from "@/features/modal";
 import {
   useGetPurchaseOrdersQuery,
   useTransferProcessingPurchaseOrderMutation,
 } from "@/features/purchaser-orders/hooks/create-purchaser-orders.mutation";
-import { ModalType, useModalStore } from "@/features/modal";
 import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
 import {
@@ -201,18 +201,20 @@ export function GoodsReceiptClient() {
                       Kiểm tra đơn hàng
                     </DropdownMenuItem>
                   ) : (
-                    <DropdownMenuItem
-                      disabled={isTransferProcessing}
-                      onClick={() =>
-                        toast.promise(transferProcessing(record.id), {
-                          loading: "Đang chuyển đơn sang xử lý...",
-                          success: "Đơn đã chuyển sang xử lý",
-                          error: "Chuyển trạng thái xử lý thất bại",
-                        })
-                      }
-                    >
-                      Chuyển xử lý
-                    </DropdownMenuItem>
+                    record.statusTransfer === "PENDING" && (
+                      <DropdownMenuItem
+                        disabled={isTransferProcessing}
+                        onClick={() =>
+                          toast.promise(transferProcessing(record.id), {
+                            loading: "Đang chuyển đơn sang xử lý...",
+                            success: "Đơn đã chuyển sang xử lý",
+                            error: "Chuyển trạng thái xử lý thất bại",
+                          })
+                        }
+                      >
+                        Chuyển xử lý
+                      </DropdownMenuItem>
+                    )
                   )}
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -283,9 +285,9 @@ export function GoodsReceiptClient() {
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                       </TableHead>
                     ))}
                   </TableRow>

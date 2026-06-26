@@ -8,6 +8,6 @@ import { useQuery } from "@tanstack/react-query";
 export const useAdminBooksStatsQuery = () =>
   useQuery<AdminBookStatsProxyResponse, Error, AdminBookStats>({
     queryKey: ["admin", "books", "stats"],
-    queryFn: adminService.getBooksStats,
+    queryFn: () => adminService.getBooksStats(),
     select: (response) => response.data,
   });

@@ -12,9 +12,9 @@ import {
   AdminCategoryStatsProxyResponse,
   AdminGuestOrderListData,
   AdminOrderDetails,
+  AdminOrderStatus,
   AdminUserOrderListData,
   AdminUserStatsProxyResponse,
-  AdminOrderStatus,
 } from "@/types/response/admin.response";
 import { ProxySuccessResponse } from "@/types/response/base.response";
 import { http } from "@/utils/http";
@@ -43,6 +43,7 @@ export const adminService = {
     searchPhrase?: string;
     isbn?: string;
     languageId?: number;
+    type?: string
   }) => {
     const { languageId, ...rest } = params || {};
     return http.get<AdminBookListResponse>("admin/books/list", {

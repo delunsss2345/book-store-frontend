@@ -96,6 +96,8 @@ export type AdminBookDetail = {
   id: string;
   publisherId: number;
   publicationYear: number;
+  authorName?: string;
+  publisherName?: string;
   pageCount: number;
   weightGrams: number;
   coverImageUrl: string;
@@ -125,4 +127,13 @@ export type AdminBookVariant = {
   currencyCode: string;
   stock: number;
   isActive: boolean;
+  purchaseOrderItem?: AdminBookVariantPurchaseOrderItem[];
+};
+
+export type AdminBookVariantPurchaseOrderItem = {
+  id: string;
+  purchaseOrderId: string;
+  unitPrice: string;
+  discountPrice?: string | null;
+  price?: string | null;
 };
