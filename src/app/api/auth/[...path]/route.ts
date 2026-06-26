@@ -1,41 +1,6 @@
 import { envConfig } from "@/src/config/env.config";
-import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-
-type RouteContext = {
-  params: Promise<{
-    path: string[];
-  }>;
-};
-
-const HOP_BY_HOP_HEADERS = [
-  "connection",
-  "content-length",
-  "host",
-  "keep-alive",
-  "proxy-authenticate",
-  "proxy-authorization",
-  "te",
-  "trailer",
-  "transfer-encoding",
-  "upgrade",
-];
-
-function appendSetCookies(response: NextResponse, backendResponse: Response) {
-  const headers = backendResponse.headers as Headers & {
-    getSetCookie?: () => string[];
-  };
-  const setCookies =
-    typeof headers.getSetCookie === "function"
-      ? headers.getSetCookie()
-      : backendResponse.headers.get("set-cookie")
-        ? [backendResponse.headers.get("set-cookie") as string]
-        : [];
-
-  for (const cookie of setCookies) {
-    response.headers.append("set-cookie", cookie);
-  }
-}
+import { appendSetCookies, createBackendHeaders, RouteContext } from '../../../../utils/proxy-util';
 
 function createBackendUrl(request: NextRequest, path: string[]) {
   if (!envConfig.BACKEND_API_URL) {
@@ -51,26 +16,6 @@ function createBackendUrl(request: NextRequest, path: string[]) {
   return backendUrl;
 }
 
-async function createBackendHeaders(request: NextRequest) {
-  const cookieStore = await cookies();
-  const headers = new Headers(request.headers);
-
-  for (const header of HOP_BY_HOP_HEADERS) {
-    headers.delete(header);
-  }
-
-  const accessToken = cookieStore.get("accessToken")?.value;
-  const refreshToken = cookieStore.get("refreshToken")?.value;
-
-  if (accessToken && !headers.has("authorization")) {
-    headers.set("authorization", `Bearer ${accessToken}`);
-  }
-  if (refreshToken && !headers.has("x-refresh-token")) {
-    headers.set("x-refresh-token", refreshToken);
-  }
-  return headers;
-}
-
 async function proxyToBackend(request: NextRequest, context: RouteContext) {
   try {
     const { path } = await context.params;
@@ -80,7 +25,9 @@ async function proxyToBackend(request: NextRequest, context: RouteContext) {
 
     const backendResponse = await fetch(backendUrl, {
       method,
-      headers: await createBackendHeaders(request),
+      headers: await createBackendHeaders(request, {
+        attachRefreshToken: true
+      }),
       body: hasBody ? await request.arrayBuffer() : undefined,
       cache: "no-store",
     });
