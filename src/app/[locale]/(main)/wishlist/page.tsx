@@ -1,9 +1,8 @@
 "use client";
 
 import { useWishlistQuery } from "@/features/wish/hooks";
-import { Button } from "@/src/components/ui/button";
-import { Skeleton } from "@/src/components/ui/skeleton";
 import { CardSkeleton } from "@/src/components/common/Skeletons";
+import { Skeleton } from "@/src/components/ui/skeleton";
 import { WishItem } from "@/types/response/wish.response";
 import { useTranslations } from "next-intl";
 import BookCard from "../_components/BookCard";
@@ -50,8 +49,8 @@ const WishlistPage = () => {
             wishlist?.items.map((item: WishItem) => (
               <BookCard
                 key={item.id}
-                title={item.variant.book.translations[0].title}
-                subtitle={item.variant.book.translations[0].description ?? ""}
+                title={item.variant.book.translations.title}
+                subtitle={item.variant.book.translations.description ?? ""}
                 price={0}
                 bookVariantId={Number(item.variant.id)}
                 imageUrl={item.variant.book?.coverImageUrl ?? ""}

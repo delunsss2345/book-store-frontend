@@ -1,6 +1,5 @@
-import { useRouter } from '@/i18n/navigation';
 import { CatalogBookCardDto } from "@/types/response/catalog.response";
-
+import { useRouter } from "next/navigation";
 
 interface RecommendedSectionProps {
     books: CatalogBookCardDto[];
@@ -8,8 +7,9 @@ interface RecommendedSectionProps {
 }
 
 export default function RecommendedSection({ books, title = "Có thể bạn sẽ thích" }: RecommendedSectionProps) {
-    if (!books?.length) return null;
     const router = useRouter();
+
+    if (!books?.length) return null;
     return (
         <section className="py-12 px-4 max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-8 border-b border-neutral-100 pb-4">
@@ -22,12 +22,8 @@ export default function RecommendedSection({ books, title = "Có thể bạn s�
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-12">
                 {books.map((book) => (
-                    <div onClick={() => router.push({
-                        pathname: `/detail/[slug]`,
-                        params: {
-                            slug: book.slug!
-                        }
-                    })} key={book.id} className="group cursor-pointer">
+                    <div onClick={() => router.push(`/detail/${book.slug}`)}
+                        key={book.id} className="group cursor-pointer">
                         {/* Container Ảnh: Bỏ p-4, dùng object-cover */}
                         <div className="relative overflow-hidden bg-neutral-100 aspect-[3/4] mb-4">
                             <img

@@ -5,8 +5,6 @@ import {
   useRemoveItemMutation,
   useUpdateQtyMutation,
 } from "@/features/cart/hooks";
-import { Button } from "@/src/components/ui/button";
-import { Separator } from "@/src/components/ui/separator";
 import { Skeleton } from "@/src/components/ui/skeleton";
 
 import { Minus, Plus, X } from "lucide-react";
@@ -80,8 +78,8 @@ export default function ShoppingCartPage() {
             {items.length > 0 ? (
               items.map((item) => {
                 const id = item.id ?? item.bookVariantId;
-                const itemTitle = item.variant.book.translations[0].title;
-                const itemDesc = item.variant.book.translations[0].description;
+                const itemTitle = item.variant.book.translations.title;
+                const itemDesc = item.variant.book.translations.description;
                 const currencyCode = item.variant.currencyCode;
 
                 return (
