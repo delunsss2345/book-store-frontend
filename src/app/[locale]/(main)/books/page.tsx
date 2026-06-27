@@ -1,6 +1,5 @@
 "use client";
 
-import BooksGridSkeletonCard from "@/src/app/[locale]/(main)/books/_components/BookGridSkeleton";
 import { useBooksQuery } from "@/features/catalog/hooks/use-books.mutation";
 import {
   selectorBooksLimit,
@@ -11,10 +10,11 @@ import {
   selectorSetBooksPage,
 } from "@/features/catalog/selector/catalog.selector";
 import { useCatalogStore } from "@/features/catalog/store/catalog.store";
+import BooksGridSkeletonCard from "@/src/app/[locale]/(main)/books/_components/BookGridSkeleton";
 import { SlidersHorizontal } from "lucide-react";
+import { useLocale } from "next-intl";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useLocale } from "next-intl";
 import { useEffect, useState } from "react";
 import BookCard from "../_components/BookCard";
 import { BooksPagination } from "./_components/BooksPagiantion";
@@ -54,7 +54,9 @@ export default function AllTitlesPage() {
       });
     }
   }, [bookList, setBooksMeta]);
-
+  useEffect(() => {
+    setBooksPage(1);
+  }, [slugCategory, keyword, setBooksPage]);
   const filterProps = {
     sortOpen,
     setSortOpen,
@@ -101,21 +103,21 @@ export default function AllTitlesPage() {
             <div className="mt-7 grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-3 xl:grid-cols-4">
               {isPending
                 ? Array.from({ length: 12 }).map((_, index) => (
-                    <BooksGridSkeletonCard key={`books-skeleton-${index}`} />
-                  ))
+                  <BooksGridSkeletonCard key={`books-skeleton-${index}`} />
+                ))
                 : books.map((book) => (
-                    <BookCard
-                      key={book.id}
-                      title={book.title}
-                      subtitle={book.title}
-                      price={Number(book.price ?? 0)}
-                      bookVariantId={Number(book.bookVariantId ?? 0)}
-                      currency={book.currencyCode ?? "VND"}
-                      imageUrl={book.coverImageUrl ?? undefined}
-                      href={`/detail/${book.slug ?? book.id}`}
-                      variant="compact"
-                    />
-                  ))}
+                  <BookCard
+                    key={book.id}
+                    title={book.title}
+                    subtitle={book.title}
+                    price={Number(book.price ?? 0)}
+                    bookVariantId={Number(book.bookVariantId ?? 0)}
+                    currency={book.currencyCode ?? "VND"}
+                    imageUrl={book.coverImageUrl ?? undefined}
+                    href={`/detail/${book.slug ?? book.id}`}
+                    variant="compact"
+                  />
+                ))}
             </div>
 
             {/* Pagination */}

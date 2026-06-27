@@ -3,8 +3,8 @@ import type {
   CatalogCategoriesQuery,
 } from "@/types/request/catalog.request";
 import type {
-  CatalogBookListResponse,
   CatalogBookDetailResponse,
+  CatalogBookListResponse,
   CatalogCategoriesResponse,
   GetBookDetailResponse,
   HomeResponse,
@@ -15,8 +15,13 @@ export const catalogApi = {
   getHome: () => http.get<HomeResponse>("catalog/home"),
 
   getBooks: (query?: CatalogBookListQuery) => {
+    const slugCategory = query?.slugCategory
+    const keyword = query?.keyword;
     return http.get<CatalogBookListResponse>("catalog/books", {
-      params: query,
+      params: {
+        ...(slugCategory && { slugCategory }),
+        ...(keyword && { keyword }),
+      },
     });
   },
 
