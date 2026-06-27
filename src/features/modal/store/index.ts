@@ -1,5 +1,5 @@
-import { AdminOrderStatus } from "@/types/response/admin.response";
 import type { PurchaseItem } from "@/features/purchaser-orders/store";
+import { AdminOrderStatus } from "@/types/response/admin.response";
 import { create } from "zustand";
 
 export enum ModalType {
@@ -8,6 +8,7 @@ export enum ModalType {
   BOOK_DETAIL = "BOOK:DETAIL",
   ADD_NEW_BOOK = "ADD_NEW_BOOK",
   BOOK_ADD_VARIANT = "BOOK:ADD_VARIANT",
+  BOOK_VARIANT_PURCHASES = "BOOK:VARIANT_PURCHASES",
   BOOK_VARIANT_TRANSLATION = "BOOK:VARIANT_TRANSLATION",
   ADD_SUPPLIER = "ADD_SUPPLIER",
   DETAIL_PURCHASE_ORDER = "DETAIL_PURCHASE_ORDER",
@@ -45,8 +46,16 @@ export type PurchaseOrderModalBook = {
   title: string;
 };
 
+export type BookDetailPreview = {
+  id: string;
+  title: string;
+  coverImageUrl?: string | null;
+  authors?: string | null;
+};
+
 interface ModalStore {
   bookDetailId: string | null;
+  bookDetailPreview: BookDetailPreview | null;
   type: ModalType;
   isOpen: boolean;
   purchaseOrderId: string | null;
@@ -67,6 +76,7 @@ interface ModalStore {
   setActionApproveOrder: (actionApproveOrder: ApproveOrderAdmin) => void;
   setOrderShowDetailId: (orderShowDetailId: string | null) => void;
   setBookDetailId: (bookDetailId: string | null) => void;
+  setBookDetailPreview: (bookDetailPreview: BookDetailPreview | null) => void;
   setPurchaseOrderId: (purchaseOrderId: string | null) => void;
   setGoodsReceiptId: (goodsReceiptId: string | null) => void;
   setPurchaseOrderVariantSelect: (
@@ -92,6 +102,7 @@ interface ModalStore {
 
 export const useModalStore = create<ModalStore>((set, get) => ({
   bookDetailId: null,
+  bookDetailPreview: null,
   orderShowDetailId: null,
   setOrderShowDetailId: (orderShowDetailId: string | null) => {
     set({ orderShowDetailId });
@@ -101,6 +112,8 @@ export const useModalStore = create<ModalStore>((set, get) => ({
     set({ actionApproveOrder });
   },
   setBookDetailId: (bookDetailId: string | null) => set({ bookDetailId }),
+  setBookDetailPreview: (bookDetailPreview: BookDetailPreview | null) =>
+    set({ bookDetailPreview }),
   type: ModalType.BOOK,
   purchaseOrderId: null,
   setPurchaseOrderId: (purchaseOrderId: string | null) =>
@@ -130,6 +143,7 @@ export const useModalStore = create<ModalStore>((set, get) => ({
   onClose: () =>
     set({
       isOpen: false,
+      bookDetailPreview: null,
       purchaseOrderVariantSelect: null,
       purchaseOrderConfirmSubmit: null,
     }),

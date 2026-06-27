@@ -6,14 +6,20 @@ import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
 import type { AdminBookListItem } from "@/types/response/admin.response";
 import type { ColumnDef } from "@tanstack/react-table";
-import { BookOpen, Eye, ImageIcon, Pencil, ExternalLink } from "lucide-react";
+import {
+  CircleDollarSign,
+  ImageIcon,
+  Pencil,
+  ExternalLink,
+} from "lucide-react";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
 
 type Translator = (key: string) => string;
 
 export function useProductColumns(t: Translator) {
-  const { onOpen, setBookDetailId } = useModalStore();
+  const { onOpen, setBookDetailId, setBookDetailPreview } = useModalStore();
   const router = useRouter();
   const params = useParams();
   const locale = (params?.locale as string) || "vi";
@@ -29,9 +35,12 @@ export function useProductColumns(t: Translator) {
             <div className="flex items-center gap-3">
               <div className="flex h-12 w-9 shrink-0 items-center justify-center overflow-hidden rounded border bg-muted shadow-sm">
                 {coverImageUrl ? (
-                  <img
+                  <Image
+                    unoptimized
                     src={coverImageUrl}
                     alt={title}
+                    width={36}
+                    height={48}
                     className="h-full w-full object-cover"
                   />
                 ) : (
@@ -102,14 +111,22 @@ export function useProductColumns(t: Translator) {
             </Button>
             <Button
               onClick={() => {
-                onOpen(ModalType.BOOK_DETAIL);
                 setBookDetailId(row.original.id);
+                setBookDetailPreview({
+                  id: row.original.id,
+                  title: row.original.title,
+                  coverImageUrl: row.original.coverImageUrl,
+                  authors: row.original.authors,
+                });
+                onOpen(ModalType.BOOK_VARIANT_PURCHASES);
               }}
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-muted-foreground hover:text-foreground cursor-pointer"
+              className="h-8 w-8 cursor-pointer text-muted-foreground hover:text-emerald-600"
+              title="Sửa giá nhanh: xem variant và purchase order item"
+              aria-label="Sửa giá nhanh: xem variant và purchase order item"
             >
-              <Eye className="size-4" />
+              <CircleDollarSign className="size-4" />
             </Button>
             <Button
               onClick={() => {
@@ -118,6 +135,8 @@ export function useProductColumns(t: Translator) {
               variant="ghost"
               size="icon"
               className="h-8 w-8 text-muted-foreground hover:text-foreground"
+              title="Chỉnh sửa thông tin sách"
+              aria-label="Chỉnh sửa thông tin sách"
             >
               <Pencil className="size-4" />
             </Button>
@@ -125,6 +144,6 @@ export function useProductColumns(t: Translator) {
         ),
       },
     ],
-    [onOpen, router, setBookDetailId, t, locale],
+    [onOpen, router, setBookDetailId, setBookDetailPreview, t, locale],
   );
 }

@@ -19,6 +19,9 @@ const ModalCreateStockImport = lazy(() => import("./ModalCreateStockImport"));
 const ModalCreateAddress = lazy(() => import("./ModalCreateAddress"));
 const ModalOrderItemsDetail = lazy(() => import("./ModalShowOrderItem"));
 const ModalBookVariantPricing = lazy(() => import("./ModalShowVariant"));
+const ModalBookVariantPurchases = lazy(
+  () => import("./ModalBookVariantPurchases"),
+);
 const ModelShowSpecEdit = lazy(() => import("./ModalShowSpecEdit"));
 const ModelShowOrderDetailAdmin = lazy(
   () => import("./ModelShowOrderDetailAdmin"),
@@ -55,7 +58,8 @@ export function ModalHost() {
               className={`relative w-full max-h-[90vh] overflow-y-auto bg-surface rounded-2xl shadow-2xl border border-line custom-scrollbar ${
                 type === ModalType.CONFIRM_PURCHASE_ORDER ||
                 type === ModalType.CREATE_STOCK_IMPORT ||
-                type === ModalType.DETAIL_STOCK_IMPORT
+                type === ModalType.DETAIL_STOCK_IMPORT ||
+                type === ModalType.BOOK_VARIANT_PURCHASES
                   ? "max-w-5xl"
                   : type === ModalType.CREATE_ADDRESS ||
                       type === ModalType.SELECT_ADDRESS
@@ -104,6 +108,9 @@ export function ModalHost() {
                   )}
                   {type === ModalType.SHOW_VARIANT_EDIT && (
                     <ModalBookVariantPricing />
+                  )}
+                  {type === ModalType.BOOK_VARIANT_PURCHASES && (
+                    <ModalBookVariantPurchases onClose={onClose} />
                   )}
                   {type === ModalType.SHOW_BOOK_SPECIFICATIONS_EDIT && (
                     <ModelShowSpecEdit />

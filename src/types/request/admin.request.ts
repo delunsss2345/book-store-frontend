@@ -78,7 +78,7 @@ export type UpdateAdminBookTranslationPayload = {
 
 export type UpdateAdminBookVariantPayload = {
   id: number;
-  costPrice: number;
+  costPrice?: number;
   price?: number;
   isActive?: boolean;
 };
@@ -90,6 +90,10 @@ export type UpdateAdminBookPayload = {
   isActive?: boolean;
   translations?: UpdateAdminBookTranslationPayload[];
   variants: UpdateAdminBookVariantPayload[];
+};
+
+export type AdminUpdatePriceVariantPayload = {
+  purchaseOrderItemId: string;
 };
 
 export type AdminBookDetail = {

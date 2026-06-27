@@ -5,6 +5,7 @@ export * from "./hooks/use-admin-book-query";
 export * from "./hooks/use-admin-books-stats-query";
 export * from "./hooks/use-create-book-mutation";
 export * from "./hooks/use-update-book-mutation";
+export * from "./hooks/use-update-book-variant-price-mutation";
 export * from "./hooks/use-delete-book-mutation";
 export * from "./hooks/use-create-book-translation-mutation";
 export * from "./hooks/use-admin-book-snapshots-query";

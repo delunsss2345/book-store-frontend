@@ -26,7 +26,7 @@ export default function EditBookPage() {
   const { t } = useTranslator();
   const { bookId } = useParams<{ bookId: string }>();
 
-  const { data: bookDetail, isLoading } = useAdminBookQuery(bookId);
+  const { data: bookDetail, isLoading } = useAdminBookQuery(bookId || "");
   const { mutateAsync: updateBook } = useUpdateBookMutation();
 
   const detail = bookDetail as AdminBookDetailData | undefined;
@@ -63,7 +63,7 @@ export default function EditBookPage() {
       })),
     };
 
-    toast.promise(updateBook({ bookId, payload }), {
+    toast.promise(updateBook({ bookId: bookId || "", payload }), {
       loading: "Đang cập nhật sách...",
       success: "Cập nhật sách thành công",
       error: (error) => error.response.data.message,

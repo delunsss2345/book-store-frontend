@@ -1,5 +1,6 @@
 import {
   AdminBookDetail,
+  AdminUpdatePriceVariantPayload,
   CreateAdminBookAllRequest,
   CreateAdminBookRequest,
   UpdateAdminBookPayload,
@@ -52,9 +53,13 @@ export const adminService = {
     });
   },
 
-  getBookById: (bookId: string) => {
+  getBookById: (bookId: string, type?: string) => {
     return http.get<ProxySuccessResponse<AdminBookDetail>>(
-      `admin/books/${bookId}`,
+      `admin/books/${bookId}`, {
+      params: {
+        type
+      }
+    }
     );
   },
 
@@ -66,6 +71,11 @@ export const adminService = {
 
   updateBook: (bookId: string, payload: UpdateAdminBookPayload) =>
     http.patch(`admin/books/${bookId}`, payload),
+
+  updateBookVariantPrice: (
+    variantId: string,
+    payload: AdminUpdatePriceVariantPayload,
+  ) => http.patch(`admin/book-variants/${variantId}`, payload),
 
   deleteBook: (bookId: string) => http.del(`admin/books/${bookId}`),
 
