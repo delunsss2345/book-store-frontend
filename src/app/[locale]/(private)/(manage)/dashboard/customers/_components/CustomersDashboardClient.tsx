@@ -195,8 +195,8 @@ export function CustomersDashboardClient() {
         </Card>
       </div>
 
-      <Card className='shadow-sm overflow-hidden'>
-        <CardHeader className='border-b bg-muted/20 py-4'>
+      <Card className='admin-table-card'>
+        <CardHeader className='admin-table-toolbar'>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <CardTitle className="text-lg">Customer List</CardTitle>
             <div className="flex items-center gap-2">
@@ -216,11 +216,11 @@ export function CustomersDashboardClient() {
 
         <CardContent className='p-0'>
           <Table>
-            <TableHeader className="bg-muted/30">
+            <TableHeader className="admin-table-header">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id} className="font-semibold">
+                    <TableHead key={header.id} className="admin-table-head">
                       {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>
                   ))}
@@ -232,9 +232,9 @@ export function CustomersDashboardClient() {
                 <CustomersTableSkeleton />
               ) : table.getRowModel().rows.length ? (
                 table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id} className="hover:bg-muted/50 transition-colors cursor-pointer">
+                  <TableRow key={row.id} className="admin-table-row cursor-pointer">
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="py-3">
+                      <TableCell key={cell.id} className="admin-table-cell">
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     ))}
@@ -252,7 +252,7 @@ export function CustomersDashboardClient() {
         </CardContent>
 
         {/* Improved Pagination */}
-        <div className='flex flex-col gap-4 border-t px-6 py-4 md:flex-row md:items-center md:justify-between bg-muted/10'>
+        <div className='admin-table-footer flex flex-col gap-4 px-6 py-4 md:flex-row md:items-center md:justify-between'>
           <p className='text-sm text-muted-foreground'>
             Showing <strong>1-8</strong> of <strong>312</strong> customers
           </p>

@@ -56,6 +56,14 @@ function formatCurrency(value: number | string) {
   }).format(numValue || 0);
 }
 
+function formatNullableCurrency(value?: number | string | null) {
+  if (value === null || value === undefined || value === "") {
+    return "Đang tính toán";
+  }
+
+  return formatCurrency(value);
+}
+
 function formatDate(dateStr: string) {
   return new Intl.DateTimeFormat("vi-VN", {
     day: "2-digit",
@@ -66,21 +74,97 @@ function formatDate(dateStr: string) {
   }).format(new Date(dateStr));
 }
 
-function getStatusBadgeClass(status?: string | null) {
-  switch (status) {
-    case "APPROVED":
-      return "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-300";
-    case "PROCESSING":
-      return "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300";
-    case "RECEIVED":
-    case "COMPLETED":
-      return "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-900/60 dark:bg-blue-950/30 dark:text-blue-300";
-    case "CANCELLED":
-    case "REJECTED":
-      return "border-red-200 bg-red-50 text-red-700 dark:border-red-900/60 dark:bg-red-950/30 dark:text-red-300";
-    default:
-      return "border-slate-200 bg-slate-50 text-slate-600 dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-300";
+type StatusBadgeConfig = {
+  label: string;
+  className: string;
+  dotClassName: string;
+};
+
+const defaultStatusConfig: StatusBadgeConfig = {
+  label: "Chưa chuyển",
+  className:
+    "border-slate-200 bg-slate-50 text-slate-600 dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-300",
+  dotClassName: "bg-slate-400",
+};
+
+const purchaseOrderStatusConfig: Record<string, StatusBadgeConfig> = {
+  APPROVED: {
+    label: "Đã duyệt",
+    className:
+      "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-300",
+    dotClassName: "bg-emerald-500",
+  },
+  RECEIVED: {
+    label: "Đã nhận",
+    className:
+      "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-900/60 dark:bg-blue-950/30 dark:text-blue-300",
+    dotClassName: "bg-blue-500",
+  },
+  CANCELLED: {
+    label: "Đã hủy",
+    className:
+      "border-red-200 bg-red-50 text-red-700 dark:border-red-900/60 dark:bg-red-950/30 dark:text-red-300",
+    dotClassName: "bg-red-500",
+  },
+  REJECTED: {
+    label: "Từ chối",
+    className:
+      "border-red-200 bg-red-50 text-red-700 dark:border-red-900/60 dark:bg-red-950/30 dark:text-red-300",
+    dotClassName: "bg-red-500",
+  },
+};
+
+const processingStatusConfig: Record<string, StatusBadgeConfig> = {
+  PENDING: {
+    label: "Chờ xử lý",
+    className:
+      "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300",
+    dotClassName: "bg-amber-500",
+  },
+  PROCESSING: {
+    label: "Đang kiểm tra",
+    className:
+      "border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-900/60 dark:bg-sky-950/30 dark:text-sky-300",
+    dotClassName: "bg-sky-500",
+  },
+  PURCHASE: {
+    label: "Nhập kho",
+    className:
+      "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-300",
+    dotClassName: "bg-emerald-500",
+  },
+  RETURN: {
+    label: "Trả hàng",
+    className:
+      "border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/30 dark:text-rose-300",
+    dotClassName: "bg-rose-500",
+  },
+};
+
+function getStatusConfig(
+  status: string | null | undefined,
+  config: Record<string, StatusBadgeConfig>,
+) {
+  if (!status) {
+    return defaultStatusConfig;
   }
+
+  return config[status] ?? {
+    ...defaultStatusConfig,
+    label: status,
+  };
+}
+
+function StatusBadge({ config }: { config: StatusBadgeConfig }) {
+  return (
+    <Badge
+      variant="outline"
+      className={`inline-flex min-w-[112px] justify-start gap-2 rounded-full px-2.5 py-1 text-xs font-semibold ${config.className}`}
+    >
+      <span className={`size-1.5 rounded-full ${config.dotClassName}`} />
+      {config.label}
+    </Badge>
+  );
 }
 
 export function GoodsReceiptClient() {
@@ -130,29 +214,25 @@ export function GoodsReceiptClient() {
         accessorKey: "status",
         header: () => "Trạng thái",
         cell: ({ row }) => (
-          <Badge
-            variant="outline"
-            className={`font-medium ${getStatusBadgeClass(row.original.status)}`}
-          >
-            {row.original.status}
-          </Badge>
+          <StatusBadge
+            config={getStatusConfig(
+              row.original.status,
+              purchaseOrderStatusConfig,
+            )}
+          />
         ),
       },
       {
         accessorKey: "statusTransfer",
         header: () => "Trạng thái xử lý",
-        cell: ({ row }) => {
-          const statusTransfer = row.original.statusTransfer || "Chưa chuyển";
-
-          return (
-            <Badge
-              variant="outline"
-              className={`font-medium ${getStatusBadgeClass(row.original.statusTransfer)}`}
-            >
-              {statusTransfer}
-            </Badge>
-          );
-        },
+        cell: ({ row }) => (
+          <StatusBadge
+            config={getStatusConfig(
+              row.original.statusTransfer,
+              processingStatusConfig,
+            )}
+          />
+        ),
       },
       {
         accessorKey: "totalAmount",
@@ -160,6 +240,15 @@ export function GoodsReceiptClient() {
         cell: ({ row }) => (
           <div className="text-right font-semibold tabular-nums text-foreground">
             {formatCurrency(row.original.totalAmount)}
+          </div>
+        ),
+      },
+      {
+        accessorKey: "realPayPrice",
+        header: () => <div className="text-right">Giá thực trả</div>,
+        cell: ({ row }) => (
+          <div className="text-right font-semibold tabular-nums text-foreground">
+            {formatNullableCurrency(row.original.realPayPrice)}
           </div>
         ),
       },
@@ -247,8 +336,8 @@ export function GoodsReceiptClient() {
       </div>
 
       {/* Table Card */}
-      <Card className="shadow-sm border-slate-200 dark:border-slate-800 overflow-hidden">
-        <CardHeader className="bg-slate-50/50 dark:bg-slate-900/50 border-b py-4">
+      <Card className="admin-table-card">
+        <CardHeader className="admin-table-toolbar">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <CardTitle className="text-lg font-semibold">
               Danh sách phiếu nhập
@@ -271,7 +360,7 @@ export function GoodsReceiptClient() {
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <Table>
-              <TableHeader className="bg-slate-50/50 dark:bg-slate-900/30">
+              <TableHeader className="admin-table-header">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow
                     key={headerGroup.id}
@@ -280,7 +369,7 @@ export function GoodsReceiptClient() {
                     {headerGroup.headers.map((header) => (
                       <TableHead
                         key={header.id}
-                        className="text-slate-900 dark:text-slate-100 font-bold h-11"
+                        className="admin-table-head"
                       >
                         {header.isPlaceholder
                           ? null
@@ -300,10 +389,10 @@ export function GoodsReceiptClient() {
                   table.getRowModel().rows.map((row) => (
                     <TableRow
                       key={row.id}
-                      className="group hover:bg-slate-50/50 dark:hover:bg-slate-900/30 transition-colors"
+                      className="admin-table-row"
                     >
                       {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id} className="py-3">
+                        <TableCell key={cell.id} className="admin-table-cell">
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext(),
@@ -328,7 +417,7 @@ export function GoodsReceiptClient() {
         </CardContent>
 
         {/* Pagination */}
-        <div className="flex flex-col items-center justify-between gap-4 border-t bg-slate-50/30 dark:bg-slate-900/20 px-6 py-4 md:flex-row text-sm text-muted-foreground">
+        <div className="admin-table-footer flex flex-col items-center justify-between gap-4 px-6 py-4 md:flex-row text-sm text-muted-foreground">
           <p>
             Hiển thị {purchaseOrders?.items?.length ?? 0} /{" "}
             {purchaseOrders?.total ?? 0} đơn đã duyệt

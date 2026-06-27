@@ -2,6 +2,7 @@
 
 import {
   ColumnDef,
+  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   useReactTable,
@@ -45,8 +46,8 @@ export function OrdersTable<TData>({
   });
 
   return (
-    <section className="rounded-lg border bg-card">
-      <div className="border-b p-4">
+    <section className="admin-table-card">
+      <div className="admin-table-toolbar px-4">
         <div className="relative max-w-md">
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -59,15 +60,17 @@ export function OrdersTable<TData>({
       </div>
 
       <Table>
-        <TableHeader>
+        <TableHeader className="admin-table-header">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
+                <TableHead key={header.id} className="admin-table-head">
                   {header.isPlaceholder
                     ? null
-                    : (header.column.columnDef.header?.(header.getContext()) ??
-                      null)}
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
                 </TableHead>
               ))}
             </TableRow>
@@ -79,10 +82,10 @@ export function OrdersTable<TData>({
             <OrdersTableSkeleton />
           ) : table.getRowModel().rows.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
+              <TableRow key={row.id} className="admin-table-row">
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="align-top">
-                    {cell.column.columnDef.cell?.(cell.getContext())}
+                  <TableCell key={cell.id} className="admin-table-cell align-top">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
               </TableRow>

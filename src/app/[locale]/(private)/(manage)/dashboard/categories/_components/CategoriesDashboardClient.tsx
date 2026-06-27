@@ -194,8 +194,8 @@ export function CategoriesDashboardClient() {
         ))}
       </div>
 
-      <Card className="shadow-sm border-slate-200 overflow-hidden">
-        <CardHeader className="bg-slate-50/50 border-b py-4">
+      <Card className="admin-table-card">
+        <CardHeader className="admin-table-toolbar">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <CardTitle className="text-lg font-semibold">Catalog</CardTitle>
             <div className="flex items-center gap-2">
@@ -215,13 +215,13 @@ export function CategoriesDashboardClient() {
 
         <CardContent className="p-0">
           <Table>
-            <TableHeader className="bg-slate-50/50">
+            <TableHeader className="admin-table-header">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id} className="hover:bg-transparent">
                   {headerGroup.headers.map((header) => (
                     <TableHead
                       key={header.id}
-                      className="text-slate-900 font-bold h-11"
+                      className="admin-table-head"
                     >
                       {header.isPlaceholder
                         ? null
@@ -241,10 +241,10 @@ export function CategoriesDashboardClient() {
                 table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
-                    className="group hover:bg-slate-50/50 transition-colors"
+                    className="admin-table-row"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="py-3">
+                      <TableCell key={cell.id} className="admin-table-cell">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext(),

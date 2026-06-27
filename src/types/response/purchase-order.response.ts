@@ -17,6 +17,7 @@ type PurchaseOrderItem = {
   statusTransfer?: string | null;
   note: string;
   totalAmount: string;
+  realPayPrice?: string | null;
   taxAmount: string;
   createdAt: string;
   updatedAt: string;

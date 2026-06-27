@@ -146,23 +146,28 @@ export default function ModalPurchaseOrderConfirm({
                   />
                 </td>
                 <td>
-                  <input
-                    className="field h-8 w-28 px-2 text-right"
-                    max={100}
-                    min={0}
-                    type="number"
-                    value={item.discountPrice}
-                    onChange={(event) =>
-                      updateDraft(
-                        item.id,
-                        "discountPrice",
-                        Math.min(
-                          100,
-                          Math.max(0, Number(event.target.value) || 0),
-                        ),
-                      )
-                    }
-                  />
+                  <div className="relative w-28">
+                    <input
+                      className="field h-8 w-full px-2 pr-6 text-right"
+                      max={100}
+                      min={0}
+                      type="number"
+                      value={item.discountPrice}
+                      onChange={(event) =>
+                        updateDraft(
+                          item.id,
+                          "discountPrice",
+                          Math.min(
+                            100,
+                            Math.max(0, Number(event.target.value) || 0),
+                          ),
+                        )
+                      }
+                    />
+                    <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-ink-3">
+                      %
+                    </span>
+                  </div>
                 </td>
                 <td className="text-right font-semibold text-ink">
                   {getLineTotal(item).toLocaleString()} ₫

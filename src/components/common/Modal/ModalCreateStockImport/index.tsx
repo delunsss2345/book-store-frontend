@@ -33,6 +33,14 @@ const formatCurrency = (value?: number | string | null) => {
   }).format(Number.isFinite(amount) ? amount ?? 0 : 0);
 };
 
+const formatPercent = (value?: number | string | null) => {
+  const amount = typeof value === "string" ? Number(value) : value;
+
+  if (!Number.isFinite(amount) || !amount) return "-";
+
+  return `${amount.toLocaleString("vi-VN")}%`;
+};
+
 export default function ModalCreateStockImport({
   onClose,
 }: ModalCreateStockImportProps) {
@@ -154,7 +162,7 @@ export default function ModalCreateStockImport({
                     {formatCurrency(item.unitPrice)}
                   </TableCell>
                   <TableCell className="text-right">
-                    {formatCurrency(item.discountPrice ?? 0)}
+                    {formatPercent(item.discountPrice)}
                   </TableCell>
                   <TableCell className="text-right">
                     <Input

@@ -28,26 +28,26 @@ export function PurchaseItemsTable({
   onRemoveItem: (id: string) => void;
 }) {
   return (
-    <div className="hidden md:block rounded-lg border border-slate-200 dark:border-slate-800 overflow-hidden">
+    <div className="admin-table-card hidden md:block">
       <Table>
-        <TableHeader className="bg-slate-50/50 dark:bg-slate-900/30">
+        <TableHeader className="admin-table-header">
           <TableRow className="hover:bg-transparent">
-            <TableHead className="font-bold text-slate-900 dark:text-slate-100 h-10 w-[40%]">
+            <TableHead className="admin-table-head w-[40%]">
               Sản phẩm
             </TableHead>
-            <TableHead className="font-bold text-slate-900 dark:text-slate-100 h-10 w-[15%] text-center">
+            <TableHead className="admin-table-head w-[15%] text-center">
               Định dạng
             </TableHead>
-            <TableHead className="font-bold text-slate-900 dark:text-slate-100 h-10 w-[15%] text-center">
+            <TableHead className="admin-table-head w-[15%] text-center">
               Số lượng
             </TableHead>
-            <TableHead className="font-bold text-slate-900 dark:text-slate-100 h-10 w-[20%] text-right">
+            <TableHead className="admin-table-head w-[20%] text-right">
               Đơn giá nhập (₫)
             </TableHead>
-            <TableHead className="font-bold text-slate-900 dark:text-slate-100 h-10 w-[18%] text-right">
+            <TableHead className="admin-table-head w-[18%] text-right">
               Thành tiền
             </TableHead>
-            <TableHead className="font-bold text-slate-900 dark:text-slate-100 h-10 w-[7%] text-center">
+            <TableHead className="admin-table-head w-[7%] text-center">
               Xóa
             </TableHead>
           </TableRow>
@@ -57,21 +57,21 @@ export function PurchaseItemsTable({
           {purchaseItems.map((item, idx) => (
             <TableRow
               key={item.id}
-              className="group hover:bg-slate-50/50 dark:hover:bg-slate-900/30 transition-colors"
+              className="admin-table-row"
             >
-              <TableCell className="py-3">
+              <TableCell className="admin-table-cell">
                 <p className="text-sm font-medium text-foreground">
                   {item.bookVariantName}
                 </p>
               </TableCell>
 
-              <TableCell className="py-3">
+              <TableCell className="admin-table-cell">
                 <p className="text-sm font-medium text-foreground text-center">
                   {item.format}
                 </p>
               </TableCell>
 
-              <TableCell className="py-3">
+              <TableCell className="admin-table-cell">
                 <Input
                   type="number"
                   min={1}
@@ -88,7 +88,7 @@ export function PurchaseItemsTable({
                 />
               </TableCell>
 
-              <TableCell className="py-3">
+              <TableCell className="admin-table-cell">
                 <Input
                   type="number"
                   min={0}
@@ -106,13 +106,13 @@ export function PurchaseItemsTable({
                 />
               </TableCell>
 
-              <TableCell className="py-3 text-right">
+              <TableCell className="admin-table-cell text-right">
                 <span className="text-sm font-semibold tabular-nums text-foreground">
                   {formatCurrency(item.quantity * item.unitPrice)}
                 </span>
               </TableCell>
 
-              <TableCell className="py-3 text-center">
+              <TableCell className="admin-table-cell text-center">
                 <Button
                   type="button"
                   variant="ghost"

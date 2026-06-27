@@ -56,6 +56,7 @@ export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
   const params = useParams();
   const locale = (params?.locale as string) || "vi";
   const languageId = locale === "en" ? 2 : 1;
+  const isPurchaseOrderSelect = Boolean(onSelectPurchaseVariant);
 
   const { data: book, isLoading } = useAdminBookQuery(bookId || "");
 
@@ -172,7 +173,7 @@ export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
           <div className="flex items-center gap-2">
             <Wallet className="h-4 w-4 text-primary" />
             <h3 className="text-sm font-bold uppercase tracking-wider">
-              Variant & so sánh giá
+              {isPurchaseOrderSelect ? "Chọn variant" : "Variant & so sánh giá"}
             </h3>
           </div>
           <Badge variant="secondary" className="rounded-md text-[11px]">
@@ -187,15 +188,19 @@ export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
                 <TableHead className="w-[110px]">Variant</TableHead>
                 <TableHead className="min-w-[140px]">ISBN</TableHead>
                 <TableHead className="text-right">Tồn</TableHead>
-                <TableHead className="min-w-[160px] text-right font-bold text-foreground">
-                  Giá bán
-                </TableHead>
-                <TableHead className="min-w-[150px] text-right">
-                  Giá nhập
-                </TableHead>
-                <TableHead className="min-w-[150px] text-right">
-                  Giá hiện tại
-                </TableHead>
+                {!isPurchaseOrderSelect && (
+                  <>
+                    <TableHead className="min-w-[160px] text-right font-bold text-foreground">
+                      Giá bán
+                    </TableHead>
+                    <TableHead className="min-w-[150px] text-right">
+                      Giá nhập
+                    </TableHead>
+                    <TableHead className="min-w-[150px] text-right">
+                      Giá hiện tại
+                    </TableHead>
+                  </>
+                )}
                 {onSelectPurchaseVariant && (
                   <TableHead className="text-right">Chọn</TableHead>
                 )}
@@ -233,32 +238,36 @@ export default function ModalBookDetail({ onClose }: { onClose: () => void }) {
                         {v.stock ?? "--"}
                       </span>
                     </TableCell>
-                    <TableCell className="py-2 text-right">
-                      <div className="font-bold text-emerald-600">
-                        {formatCurrency(v.price, v.currencyCode)}
-                      </div>
-                      <p className="text-[11px] text-muted-foreground">
-                        variant.price
-                      </p>
-                    </TableCell>
-                    <TableCell className="py-2 text-right">
-                      <div className="font-semibold text-foreground">
-                        {formatCurrency(purchasePrice, v.currencyCode)}
-                      </div>
-                      <p className="text-[11px] text-muted-foreground">
-                        unitPrice
-                      </p>
-                    </TableCell>
-                    <TableCell className="py-2 text-right">
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="outline"
-                        className="h-8 text-xs"
-                      >
-                        Chọn giá hiện tại
-                      </Button>
-                    </TableCell>
+                    {!isPurchaseOrderSelect && (
+                      <>
+                        <TableCell className="py-2 text-right">
+                          <div className="font-bold text-emerald-600">
+                            {formatCurrency(v.price, v.currencyCode)}
+                          </div>
+                          <p className="text-[11px] text-muted-foreground">
+                            variant.price
+                          </p>
+                        </TableCell>
+                        <TableCell className="py-2 text-right">
+                          <div className="font-semibold text-foreground">
+                            {formatCurrency(purchasePrice, v.currencyCode)}
+                          </div>
+                          <p className="text-[11px] text-muted-foreground">
+                            unitPrice
+                          </p>
+                        </TableCell>
+                        <TableCell className="py-2 text-right">
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            className="h-8 text-xs"
+                          >
+                            Chọn giá hiện tại
+                          </Button>
+                        </TableCell>
+                      </>
+                    )}
                     {onSelectPurchaseVariant && (
                       <TableCell className="py-2 text-right">
                         <Button

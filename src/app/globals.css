@@ -287,6 +287,28 @@
     @apply bg-paper/60;
   }
 
+  .admin-table-card {
+    @apply overflow-hidden rounded-2xl border border-line bg-surface shadow-none;
+  }
+  .admin-table-toolbar {
+    @apply border-b border-line bg-[#FBFAF7] py-4;
+  }
+  .admin-table-header {
+    @apply bg-[#FBFAF7];
+  }
+  .admin-table-head {
+    @apply !h-10 !border-b !border-line !bg-[#FBFAF7] !px-4 !py-2.5 !text-[11px] !font-semibold !uppercase !tracking-[0.08em] !text-ink-3;
+  }
+  .admin-table-row {
+    @apply transition-colors hover:!bg-paper/80;
+  }
+  .admin-table-cell {
+    @apply !border-b !border-line/70 !px-4 !py-3 !text-[13px] !align-middle !text-ink-2;
+  }
+  .admin-table-footer {
+    @apply border-t border-line bg-[#FBFAF7];
+  }
+
   /* badges */
   .bdg {
     @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11.5px] font-semibold;
