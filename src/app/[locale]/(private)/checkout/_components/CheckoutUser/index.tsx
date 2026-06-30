@@ -34,6 +34,7 @@ export default function CheckoutUser() {
   const clearCart = useCartStore((state) => state.clearCart);
   const setTimeLeft = useHooksStore((state) => state.setTimeLeft);
   const setBuyNow = useOrderStore((state) => state.setBuyNow);
+  const paymentGateway = useOrderStore((state) => state.paymentGateway);
   const { mutateAsync: checkout, isPending: isCreatingOrder } =
     useCheckoutUserMutation();
 
@@ -41,7 +42,7 @@ export default function CheckoutUser() {
     resolver: zodResolver(UserCheckoutSchema),
     defaultValues: {
       addressId: 0,
-      paymentGateway: PaymentGateway.COD,
+      paymentGateway,
     },
     mode: "onSubmit",
   });
@@ -64,40 +65,42 @@ export default function CheckoutUser() {
     }
   }, [defaultAddress, form]);
 
+  useEffect(() => {
+    form.setValue("paymentGateway", paymentGateway);
+  }, [paymentGateway, form]);
+
   const handleSubmit = async (values: UserCheckoutInput) => {
     if (!values.addressId) {
       toast.warning(t("checkout.toast.addressRequired"));
       return;
     }
-    await toast.promise(checkout(values), {
+    const payload: UserCheckoutInput = {
+      ...values,
+      paymentGateway,
+    };
+    await toast.promise(checkout(payload), {
       loading: t("checkout.toast.loading"),
       success: (data) => {
         clearCart();
-        setBuyNow(null);
-        if (values.paymentGateway === PaymentGateway.COD) {
+
+        if (payload.paymentGateway === PaymentGateway.COD) {
           router.push("/orders");
           return t("checkout.toast.success");
         }
         // Online gateway
-        const onlineData = data as { tokenUrl?: string; orderCode?: string; totalAmount?: number; subtotal?: number };
+        const onlineData = data as {
+          tokenUrl?: string;
+          orderCode?: string;
+          totalAmount?: number;
+          subtotal?: number;
+        };
         setTimeLeft(60);
         if (onlineData.tokenUrl) {
-          router.push({
-            pathname: "/checkout/payment",
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            query: { tokenUrl: onlineData.tokenUrl } as any,
-          });
+          router.push("/checkout/payment/" + onlineData.tokenUrl);
         } else {
-          router.push({
-            pathname: "/checkout/payment",
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            query: {
-              orderCode: onlineData.orderCode,
-              totalAmount: onlineData.totalAmount,
-              subtotal: onlineData.subtotal,
-            } as any,
-          });
+          router.push("/orders");
         }
+        setBuyNow(null);
         return t("checkout.toast.success");
       },
       error: (error: Error) => error.message,
@@ -157,8 +160,9 @@ export default function CheckoutUser() {
                           )}
                         </div>
                         <p className="text-[13px] leading-relaxed text-ink-2 truncate">
-                          {selectedAddress.addressDetail}, {selectedAddress.ward},{" "}
-                          {selectedAddress.district}, {selectedAddress.city}
+                          {selectedAddress.addressDetail},{" "}
+                          {selectedAddress.ward}, {selectedAddress.district},{" "}
+                          {selectedAddress.city}
                         </p>
                       </div>
                     ) : (

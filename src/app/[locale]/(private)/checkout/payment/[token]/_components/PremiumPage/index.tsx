@@ -3,13 +3,7 @@
 import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
 import { Card } from "@/src/components/ui/card";
-import {
-  ArrowLeft,
-  Check,
-  Copy,
-  QrCode,
-  ShieldCheck,
-} from "lucide-react";
+import { ArrowLeft, Check, Copy, QrCode, ShieldCheck } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -28,7 +22,6 @@ function PremiumPaymentContent({ tokenUrl }: { tokenUrl: string }) {
   const router = useRouter();
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
-  // 1. Lấy dữ liệu chi tiết đơn hàng bằng tokenUrl (hash)
   const { data: response, isLoading: isPaymentLoading } = useGetPaymentByToken(
     tokenUrl,
     {
@@ -52,9 +45,9 @@ function PremiumPaymentContent({ tokenUrl }: { tokenUrl: string }) {
 
   // Chặn truy cập lẻ vào payment: phải có timeLeft trong store
   useEffect(() => {
-    if (timeLeft == null || timeLeft <= 0) {
-      router.replace(`/${locale}/not-found`);
-    }
+    // if (timeLeft == null || timeLeft <= 0) {
+    //   router.replace(`/${locale}/not-found`);
+    // }
   }, [timeLeft, router, locale]);
 
   // Đồng bộ countdown theo expiredAt
