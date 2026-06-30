@@ -967,6 +967,10 @@
     "viewOrders": "Xem đơn hàng của tôi",
     "backHome": "Về trang chủ",
     "note": "Cần hỗ trợ? Liên hệ đội ngũ chăm sóc khách hàng của chúng tôi bất cứ lúc nào."
+  },
+  "orders": {
+    "viewDetails": "Xem chi tiết đơn hàng",
+    "paymentHistory": "Lịch sử thanh toán"
   }
 }
 

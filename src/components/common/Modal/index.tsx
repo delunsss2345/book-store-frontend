@@ -31,6 +31,9 @@ const ModalSelectAddress = lazy(() => import("./ModalSelectAddress"));
 const ModalPurchaseOrderConfirm = lazy(
   () => import("./ModalPurchaseOrderConfirm"),
 );
+const ModalOrderPaymentHistory = lazy(
+  () => import("./ModalOrderPaymentHistory"),
+);
 
 export function ModalHost() {
   const isOpen = useModalStore((state) => state.isOpen);
@@ -136,6 +139,9 @@ export function ModalHost() {
                   )}
                   {type === ModalType.CONFIRM_PURCHASE_ORDER && (
                     <ModalPurchaseOrderConfirm onClose={onClose} />
+                  )}
+                  {type === ModalType.ORDER_PAYMENT_HISTORY && (
+                    <ModalOrderPaymentHistory />
                   )}
                 </Suspense>
               </div>

@@ -110,3 +110,15 @@ export type OrderItemListData = OrderItem[];
 
 export type GetUserOrdersResponse = ProxyResponse<OrderListResponseData>;
 export type GetOrderItemsResponse = ProxyResponse<OrderItemListData>;
+
+export type PaymentHistoryResponseDto = {
+  id: number;
+  orderId: number | null;
+  userId: number | null;
+  gateway: string;
+  status: string | null;
+  amount: string;
+  currencyCode: string;
+  createdAt: string;
+  updatedAt: string;
+};

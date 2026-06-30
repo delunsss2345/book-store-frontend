@@ -949,5 +949,9 @@
     "viewOrders": "View my orders",
     "backHome": "Back to home",
     "note": "Questions? Contact our support team anytime."
+  },
+  "orders": {
+    "viewDetails": "View order details",
+    "paymentHistory": "Payment history"
   }
 }

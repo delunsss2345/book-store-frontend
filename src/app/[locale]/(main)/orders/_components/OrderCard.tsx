@@ -2,10 +2,10 @@
 
 import { OrderStatus } from "@/constants/enums/order";
 import { Badge } from "@/src/components/ui/badge";
-import { Button } from "@/src/components/ui/button";
-import { Separator } from "@/src/components/ui/separator";
 import { OrderSummary } from "@/src/types/response/order.response";
-import { ArrowUpRight, ChevronRight, Package } from "lucide-react";
+import { ChevronRight } from "lucide-react";
+import { ModalType, useModalStore } from "@/features/modal";
+import { useTranslations } from "next-intl";
 
 type OrderCardProps = {
   order: OrderSummary;
@@ -89,21 +89,22 @@ const formatCurrency = (
   }).format(amount);
 };
 
-const formatLabel = (value: string | null | undefined) => {
-  if (!value) return null;
-  return value
-    .toLowerCase()
-    .split(/[_\s]+/)
-    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
-    .join(" ");
-};
+
 
 export function OrderCard({ order, onClick }: OrderCardProps) {
+  const t = useTranslations();
   const currency = order.currencyCode ?? "VND";
   const statusKey = order.status ?? OrderStatus.PENDING_PAYMENT;
   const status = ORDER_STATUS_STYLES[statusKey];
   const placedAt = order.createdAt;
   const total = Number(order.totalAmount ?? order.subtotal ?? 0);
+  const { setOrderShowDetailId, onOpen } = useModalStore();
+
+  const handleViewPaymentHistory = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setOrderShowDetailId(order.id);
+    onOpen(ModalType.ORDER_PAYMENT_HISTORY);
+  };
 
   return (
     <div className="overflow-hidden rounded-xl border border-neutral-200 bg-white">
@@ -135,31 +136,6 @@ export function OrderCard({ order, onClick }: OrderCardProps) {
         </Badge>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-4">
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-100">
-            <Package className="h-4 w-4 text-neutral-600" />
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-neutral-900">
-              {formatLabel(order.paymentStatus) ?? "Payment info"}
-            </p>
-            <p className="text-xs text-neutral-400">
-              {order.paymentStatus ? "Status captured" : "No payment yet"}
-            </p>
-          </div>
-        </div>
-        <Button
-          variant="outline"
-          size="sm"
-          className="gap-1 rounded-lg text-xs"
-        >
-          Track <ArrowUpRight className="h-3 w-3" />
-        </Button>
-      </div>
-
-      <Separator />
-
       <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-4 text-sm text-neutral-500">
         <div>
           <p className="text-xs uppercase tracking-wide text-neutral-400">
@@ -188,15 +164,20 @@ export function OrderCard({ order, onClick }: OrderCardProps) {
       </div>
 
       <div className="flex items-center justify-between border-t border-neutral-100 px-6 py-3 text-sm">
-        <button
-          onClick={onClick}
-          className="cursor-pointer flex items-center gap-1 text-sm font-medium text-blue-600 hover:underline"
-        >
-          View order details <ChevronRight className="h-3.5 w-3.5" />
-        </button>
-        <button className="text-sm font-medium text-neutral-500 hover:text-neutral-900">
-          Need Help?
-        </button>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={onClick}
+            className="cursor-pointer flex items-center gap-1 text-sm font-medium text-blue-600 hover:underline"
+          >
+            {t("orders.viewDetails")} <ChevronRight className="h-3.5 w-3.5" />
+          </button>
+          <button
+            onClick={handleViewPaymentHistory}
+            className="cursor-pointer flex items-center gap-1 text-sm font-medium text-amber-600 hover:underline"
+          >
+            {t("orders.paymentHistory")}
+          </button>
+        </div>
       </div>
     </div>
   );
