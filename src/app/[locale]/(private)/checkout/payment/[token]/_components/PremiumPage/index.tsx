@@ -4,23 +4,22 @@ import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
 import { Card } from "@/src/components/ui/card";
 import { ArrowLeft, Check, Copy, QrCode, ShieldCheck } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { useQueryOrderStatus } from "@/features/hooks/hooks/use-get-order-status";
 import { useGetPaymentByToken } from "@/features/hooks/hooks/use-get-payment-by-token";
-import { useHooksStore } from "@/features/hooks/store/hooks.store";
 import LoadingState from "@/src/components/common/LoadingState";
 import { PaymentQrData } from "@/types/response/order.response";
 import { CopyCard } from "../CopyCard";
 
 function PremiumPaymentContent({ tokenUrl }: { tokenUrl: string }) {
   const t = useTranslations();
-  const locale = useLocale();
   const router = useRouter();
   const [copiedField, setCopiedField] = useState<string | null>(null);
+  const [isVerifying, setIsVerifying] = useState(false);
 
   const { data: response, isLoading: isPaymentLoading } = useGetPaymentByToken(
     tokenUrl,
@@ -30,45 +29,54 @@ function PremiumPaymentContent({ tokenUrl }: { tokenUrl: string }) {
   );
   const payment = response?.data as PaymentQrData | undefined;
 
-  // 2. Long Polling: Kiểm tra trạng thái đơn hàng mỗi 5 giây
-  const { data: orderStatus } = useQueryOrderStatus(payment?.orderCode ?? "", {
-    enabled: !!payment?.orderCode,
-    refetchInterval: (query) => {
-      const status = query.state.data?.data?.status;
-      // Dừng polling nếu trạng thái là PAID hoặc CANCELLED
-      return status === "PAID" || status === "CANCELLED" ? false : 10000;
+  const { data: orderStatus, refetch } = useQueryOrderStatus(
+    payment?.orderCode ?? "",
+    {
+      enabled: !!payment?.orderCode,
+      refetchInterval: (query) => {
+        const data = query.state.data?.data;
+        const status = data?.paymentStatus;
+        if (
+          ["SUCCESS", "PAID", "CANCELLED", "FAILED", "EXPIRED"].includes(
+            status!,
+          )
+        ) {
+          return false;
+        }
+        const count = query.state.dataUpdateCount;
+        if (count <= 3) return 5000;
+        if (count <= 5) return 10000;
+        return 30000;
+      },
     },
-  });
+  );
 
-  const timeLeft = useHooksStore((state) => state.timeLeft);
-  const setTimeLeft = useHooksStore((state) => state.setTimeLeft);
-
-  // Chặn truy cập lẻ vào payment: phải có timeLeft trong store
-  useEffect(() => {
-    // if (timeLeft == null || timeLeft <= 0) {
-    //   router.replace(`/${locale}/not-found`);
-    // }
-  }, [timeLeft, router, locale]);
-
-  // Đồng bộ countdown theo expiredAt
-  useEffect(() => {
-    if (!tokenUrl || !response?.data?.expiredAt) return;
-
-    const expiry = new Date(response.data.expiredAt).getTime();
-    const updateCountdown = () => {
-      const now = new Date().getTime();
-      const diff = Math.max(0, Math.floor((expiry - now) / 1000));
-      setTimeLeft(diff);
-    };
-
-    updateCountdown();
-    const timer = setInterval(updateCountdown, 1000);
-    return () => clearInterval(timer);
-  }, [response?.data?.expiredAt, setTimeLeft, tokenUrl]);
+  const handleConfirmTransfer = async () => {
+    if (!payment?.orderCode) return;
+    setIsVerifying(true);
+    try {
+      const { data: result } = await refetch();
+      console.log(result);
+      const status = result?.data?.paymentStatus || result?.data?.status;
+      if (status === "SUCCESS") {
+        toast.success(t("checkout.toast.paymentSuccess"), { duration: 5000 });
+        router.push("/orders");
+      } else {
+        toast.error(t("checkout.toast.paymentPending"));
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Có lỗi xảy ra khi kiểm tra trạng thái thanh toán.");
+    } finally {
+      setIsVerifying(false);
+    }
+  };
 
   // Xử lý khi thanh toán thành công
   useEffect(() => {
-    if (orderStatus?.data?.status === "PAID") {
+    const status =
+      orderStatus?.data?.paymentStatus || orderStatus?.data?.status;
+    if (status === "SUCCESS") {
       toast.success(t("checkout.toast.paymentSuccess"), { duration: 5000 });
       router.push("/orders");
     }
@@ -77,13 +85,6 @@ function PremiumPaymentContent({ tokenUrl }: { tokenUrl: string }) {
   const formatCurrency = (amount: string | number) => {
     return new Intl.NumberFormat("vi-VN").format(Number(amount));
   };
-
-  const countdown = useMemo(() => {
-    if (timeLeft == null) return "--:--";
-    const minutes = Math.floor(timeLeft / 60);
-    const seconds = (timeLeft % 60).toString().padStart(2, "0");
-    return `${minutes}:${seconds}`;
-  }, [timeLeft]);
 
   const handleCopy = async (text: string, field: string) => {
     if (!text) return;
@@ -164,7 +165,7 @@ function PremiumPaymentContent({ tokenUrl }: { tokenUrl: string }) {
               <div className="flex items-center justify-center gap-2 text-amber-600 bg-amber-50 dark:bg-amber-900/20 w-fit mx-auto px-4 py-1.5 rounded-full border border-amber-100 dark:border-amber-800">
                 <div className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse" />
                 <span className="text-xs font-bold uppercase tracking-wider">
-                  {t("checkout.paymentPage.waiting")} | {countdown}
+                  {t("checkout.paymentPage.waiting")}
                 </span>
               </div>
 
@@ -242,9 +243,13 @@ function PremiumPaymentContent({ tokenUrl }: { tokenUrl: string }) {
 
             <div className="space-y-4">
               <Button
-                onClick={() => router.push("/orders")}
-                className="w-full bg-zinc-900 dark:bg-white dark:text-zinc-900 hover:scale-[1.02] active:scale-[0.98] transition-all h-14 rounded-2xl font-bold text-base shadow-xl"
+                onClick={handleConfirmTransfer}
+                disabled={isVerifying}
+                className="w-full bg-zinc-900 dark:bg-white dark:text-zinc-900 hover:scale-[1.02] active:scale-[0.98] transition-all h-14 rounded-2xl font-bold text-base shadow-xl flex items-center justify-center gap-2"
               >
+                {isVerifying && (
+                  <span className="w-4 h-4 border-2 border-zinc-400 border-t-zinc-900 dark:border-t-zinc-100 rounded-full animate-spin" />
+                )}
                 {t("checkout.paymentPage.confirmTransfer")}
               </Button>
 

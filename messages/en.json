@@ -782,7 +782,9 @@
       "loading": "Processing your order...",
       "success": "Order created successfully!",
       "error": "Failed to create order. Please try again.",
-      "addressRequired": "Please select a shipping address."
+      "addressRequired": "Please select a shipping address.",
+      "paymentSuccess": "Payment successful! Your order is being processed.",
+      "paymentPending": "Payment not received yet. Please try again in a few seconds!"
     },
     "addressModal": {
       "title": "My Addresses",

@@ -71,7 +71,8 @@ export type PaymentQrResponse = ProxyResponse<PaymentQrData>;
 
 export type OrderStatusData = {
   orderId: string;
-  status: string;
+  status?: string;
+  paymentStatus?: string;
 };
 
 export type OrderStatusResponse = ProxyResponse<OrderStatusData>;

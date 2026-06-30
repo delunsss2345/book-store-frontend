@@ -800,7 +800,9 @@
       "loading": "Đang xử lý đơn hàng...",
       "success": "Đơn hàng đã được tạo thành công!",
       "error": "Không thể tạo đơn hàng. Vui lòng thử lại.",
-      "addressRequired": "Vui lòng chọn địa chỉ giao hàng."
+      "addressRequired": "Vui lòng chọn địa chỉ giao hàng.",
+      "paymentSuccess": "Thanh toán thành công! Đơn hàng của bạn đang được xử lý.",
+      "paymentPending": "Thanh toán chưa được ghi nhận. Vui lòng kiểm tra lại!"
     },
     "addressModal": {
       "title": "Địa Chỉ Của Tôi",
