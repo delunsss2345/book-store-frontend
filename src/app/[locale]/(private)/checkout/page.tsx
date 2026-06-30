@@ -6,11 +6,12 @@ import { CheckoutGuest } from "./_components/CheckoutGuest";
 import { OrderSummary } from "./_components/OrderSummany";
 import { useOrderStore } from "@/features/orders/store/order.store";
 import { useMemo } from "react";
-import { notFound } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 
 export default function CheckoutPage() {
   const { user } = useAuth();
   const buyNow = useOrderStore((state) => state.buyNow);
+  const router = useRouter();
 
   const cart = useMemo(() => {
     if (buyNow) {
@@ -37,7 +38,7 @@ export default function CheckoutPage() {
     }, 0);
   }, [cart]);
 
-  if (!cart || !cart?.items?.length) return notFound();
+  if (!cart || !cart?.items?.length) return router.push("/orders");
 
   return (
     <section className="bg-paper min-h-screen pb-20">
