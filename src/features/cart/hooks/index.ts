@@ -1,5 +1,6 @@
 import { cartApi } from "@/services/cart.service";
 import { AddCartItemRequest } from "@/types/request/cart.request";
+import { GroupedCartItem } from "@/types/response/cart.response";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   selectorCart,
@@ -18,6 +19,13 @@ export const useCartQuery = () =>
     select: (response) => (response.success ? response.data : null),
     staleTime: 0,
   });
+
+/** Flattens all grouped items into a single array */
+export const useCartItemsFlat = (): GroupedCartItem[] => {
+  const { data } = useCartQuery();
+  if (!data) return [];
+  return data.groups.flatMap((g) => g.items);
+};
 
 export const useUpdateQtyMutation = () => {
   const updateQty = useCartStore(selectorUpdateQty);

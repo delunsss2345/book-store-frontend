@@ -1,25 +1,82 @@
 import { ApiResponse, ProxyResponse } from "@/types/response/base.response";
-import {
-    BaseCollection,
-    CartLikeItem,
-    PricedVariant,
-    Book as VariantBook,
-    BookTranslation as VariantBookTranslation,
-} from "@/types/response/variant.response";
 
-export type CartBookTranslation = VariantBookTranslation;
+// ─── Grouped Cart Types (new API shape) ──────────────────────────────────────
 
-export type CartBook = VariantBook;
+export type GroupedCartBook = {
+    id: number;
+    coverImageUrl: string | null;
+    title: string;
+    slug: string;
+};
 
-export type CartVariant = PricedVariant;
+export type GroupedCartVariant = {
+    id: number;
+    price: string;
+    format: string;
+    currencyCode: string;
+    stock: number;
+};
 
-export interface CartItem extends CartLikeItem { }
+export type GroupedCartItem = {
+    id: number;
+    bookVariantId: number;
+    quantity: number;
+    addedAt: string;
+    variant: GroupedCartVariant;
+    book: GroupedCartBook;
+};
 
-export interface Cart extends BaseCollection<CartItem> {
+export type CartGroup = {
+    date: string;
+    items: GroupedCartItem[];
+};
+
+export type GroupedCart = {
+    id: number;
+    groups: CartGroup[];
+};
+
+// ─── Legacy flat Cart (kept for cart store compatibility) ─────────────────────
+
+export type CartBookTranslation = {
+    title: string;
+    description: string | null;
+    slug: string | null;
+};
+
+export type CartBook = {
+    id: string;
+    coverImageUrl: string | null;
+    translations: CartBookTranslation;
+};
+
+export type CartVariant = {
+    id: string;
+    price: string;
+    format: string;
+    currencyCode: string | null;
+    stock: number | null;
+    book: CartBook;
+};
+
+export type CartItem = {
+    id: string;
+    bookVariantId: string;
+    quantity: number;
+    addedAt: string;
+    variant: CartVariant;
+};
+
+export interface Cart {
     id: string;
     createdAt: string;
     updatedAt: string;
+    userId: string | null;
+    guestSessionId: string | null;
+    items: CartItem[];
 }
+
+// ─── Mutation response types ─────────────────────────────────────────────────
 
 export type ClearCartData = {
     authError: boolean;
@@ -54,14 +111,14 @@ export type MergeCartData = {
     mergeCart: boolean;
 };
 
-export type GetCartApiResponse = ApiResponse<Cart>;
+export type GetCartApiResponse = ApiResponse<GroupedCart>;
 export type ClearCartApiResponse = ApiResponse<ClearCartData>;
 export type AddCartItemApiResponse = ApiResponse<AddCartItemData>;
 export type RemoveCartItemApiResponse = ApiResponse<RemoveCartItemData>;
 export type UpdateCartItemDeltaApiResponse = ApiResponse<UpdateCartItemDeltaData>;
 export type MergeCartApiResponse = ApiResponse<MergeCartData>;
 
-export type GetCartProxyResponse = ProxyResponse<Cart>;
+export type GetCartProxyResponse = ProxyResponse<GroupedCart>;
 export type ClearCartProxyResponse = ProxyResponse<ClearCartData>;
 export type AddCartItemProxyResponse = ProxyResponse<AddCartItemData>;
 export type RemoveCartItemProxyResponse = ProxyResponse<RemoveCartItemData>;

@@ -16,7 +16,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/src/components/ui/sheet";
-import { CartItem } from "@/types/response/cart.response";
+import { GroupedCartItem } from "@/types/response/cart.response";
 import { Minus, Plus, ShoppingBag } from "lucide-react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
@@ -32,7 +32,8 @@ const CartSheet = () => {
   const { data: cart } = useCartQuery();
   const updateQtyMutation = useUpdateQtyMutation();
   const removeItemMutation = useRemoveItemMutation();
-  const items = cart?.items ?? [];
+  // Flatten grouped items
+  const items: GroupedCartItem[] = (cart?.groups ?? []).flatMap((g) => g.items);
 
   const subtotal = items.reduce((sum, item) => {
     const price = Number(item.variant.price ?? 0);
@@ -48,7 +49,7 @@ const CartSheet = () => {
           aria-label={t("header.aria.cart")}
         >
           <ShoppingBag className="h-[17px] w-[17px]" />
-          <span className="text-[12px] font-semibold">{cart?.items?.length ?? 0}</span>
+          <span className="text-[12px] font-semibold">{items.length ?? 0}</span>
         </button>
       </SheetTrigger>
 
@@ -67,13 +68,11 @@ const CartSheet = () => {
             {items?.length === 0 ? (
               <p className="text-sm text-muted-foreground">Cart is empty.</p>
             ) : (
-              items.map((item: CartItem, idx: number) => {
+              items.map((item: GroupedCartItem, idx: number) => {
                 const id = item.id ?? item.bookVariantId;
-
-                const title = item.variant.book.translations[0].title;
+                const title = item.book.title;
                 const availability =
                   (item.variant.stock ?? 0) > 0 ? "In Stock" : "Out of Stock";
-
                 const price = item.variant.price;
                 const qty = item.quantity;
 
@@ -82,7 +81,7 @@ const CartSheet = () => {
                     <div className="flex gap-3 sm:gap-4">
                       <div className="h-[106px] w-[70px] shrink-0 overflow-hidden rounded-sm border bg-muted/30">
                         <img
-                          src={item.variant.book.coverImageUrl ?? ""}
+                          src={item.book.coverImageUrl ?? ""}
                           alt={title}
                           className="h-full w-full object-cover"
                         />

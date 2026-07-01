@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "i.pinimg.com" },
       { protocol: "http", hostname: "books.google.com" },
       { protocol: "https", hostname: "taschen.makaira.media" },
+      { protocol: "https", hostname: "picsum.photos" },
     ],
   },
 };
