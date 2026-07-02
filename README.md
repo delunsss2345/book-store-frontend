@@ -1,88 +1,190 @@
-# Bookstore E-commerce Frontend
+# Velora — Bookstore Frontend
 
-## Mục tiêu
-Dự án Next.js cho giao diện cửa hàng sách và khu vực admin/dashboard. Tài liệu này giúp bạn hiểu nhanh cấu trúc code, cách vào khu vực admin để làm UI, và cách viết API bằng Next.js (App Router).
+A modern, full-featured e-commerce storefront and admin dashboard for an online bookstore, built with Next.js 16 App Router, React 19, and TypeScript.
 
-## Chạy dự án
-1. Cài dependencies:
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 16 (App Router) |
+| Language | TypeScript 5 |
+| UI | React 19, Radix UI, shadcn/ui, Framer Motion |
+| Styling | Tailwind CSS v4 |
+| State Management | Zustand v5, TanStack Query v5 |
+| Forms & Validation | React Hook Form, Zod v4 |
+| Internationalization | next-intl v4 (EN / VI) |
+| Authentication | NextAuth v4, Auth.js |
+| HTTP Client | Axios |
+| Tables | TanStack Table v8 |
+| Charts | Recharts |
+| Maps | MapLibre GL |
+| CI / CD | GitHub Actions → Vercel |
+
+---
+
+## Prerequisites
+
+- **Node.js** ≥ 20
+- **npm** ≥ 10
+
+---
+
+## Getting Started
+
+### 1. Clone & install
 
 ```bash
+git clone <repo-url>
+cd book-store-fe
 npm install
 ```
 
-2. Tạo file môi trường `.env.local` (nếu chưa có):
+### 2. Configure environment variables
 
-```bash
-# API backend
-BACKEND_API_URL=
-NEXT_PUBLIC_BASE_API=
+Create a `.env.local` file at the project root:
 
-# NextAuth (Google)
+```env
+# Backend API
+BACKEND_API_URL=http://localhost:8000
+NEXT_PUBLIC_BASE_API=http://localhost:8000
+
+# NextAuth
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-secret
+
+# Google OAuth (optional)
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
-NEXTAUTH_URL=
-NEXTAUTH_SECRET=
-NEXTAUTH_DEBUG=
+
+# Debug (optional)
+NEXTAUTH_DEBUG=false
 ```
 
-3. Chạy dev:
+### 3. Run the development server
 
 ```bash
 npm run dev
 ```
 
-Mở `http://localhost:3000`.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Cấu trúc thư mục nhanh
-- `app/`: App Router của Next.js (route, layout, page, API).
-- `app/(main)/`: nhóm route cho giao diện chính (user-facing).
-- `app/dashboard/`: khu vực dashboard/admin (route mặc định là `/dashboard`).
-- `app/api/`: route API theo App Router (`route.ts`).
-- `layouts/`: layout và khối UI lớn (Admin, Auth, Default...).
-- `components/`: UI components dùng chung và UI primitives.
-- `features/`: module theo nghiệp vụ (UI + logic + state liên quan).
-- `services/`: tầng gọi API hoặc integration bên ngoài (nếu có).
-- `store/`: Redux store, slices, middleware.
-- `validation/`: schema validation (Zod).
-- `lib/`: helper cho API, response, utils.
+---
 
-## Admin/Dashboard: vào đâu để code UI
-**Điểm vào chính**
-- Route dashboard: `app/dashboard/page.tsx` → render `Dashboard` từ `layouts/AdminLayout`.
-- Layout admin: `app/dashboard/layout.tsx`.
-- Sidebar data: `layouts/data/sidebar-data.ts`.
-- Component admin: `layouts/AdminLayout/`.
+## Available Scripts
 
-**Cách thêm 1 trang dashboard mới**
-1. Tạo page mới, ví dụ: `app/dashboard/orders/page.tsx`.
-2. Thêm link vào sidebar: sửa `layouts/data/sidebar-data.ts`, thêm item với `url: "/dashboard/orders"`.
-3. Nếu cần component con, đặt vào `app/dashboard/_components/` hoặc `layouts/AdminLayout/`.
+| Command | Description |
+|---|---|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
 
-Lưu ý: các `url` trong sidebar hiện đang là `/`, `/tasks`, ... Nếu bạn muốn chúng nằm trong admin, hãy đổi thành `/dashboard/...`.
+---
 
-**Gợi ý cấu trúc component khi làm dashboard**
-- Page chỉ nên compose layout + section chính (ít logic).
-- Chia nhỏ theo feature: `app/dashboard/<feature>/_components/` cho widget cụ thể của trang đó.
-- Component dùng lại (table, cards, filters, charts) đặt ở `components/` hoặc `layouts/AdminLayout/` nếu dùng riêng cho admin.
-- Data/state: đặt trong `features/<feature>/` hoặc `store/` (nếu dùng Redux), không nhét hết vào page.
+## Project Structure
 
-## Cách code API với Next.js (App Router)
-Tất cả API nằm trong `app/api/**/route.ts`. Mỗi file export các hàm HTTP method (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`).
+```
+src/
+├── app/
+│   ├── [locale]/
+│   │   ├── (auth)/           # Login, register pages
+│   │   ├── (main)/           # Public storefront (home, books, cart, orders…)
+│   │   └── (private)/
+│   │       ├── checkout/     # Checkout & payment flow
+│   │       └── (manage)/
+│   │           └── dashboard/ # Admin dashboard
+│   └── api/                  # Next.js API route handlers (proxy layer)
+│
+├── components/               # Shared UI primitives (Button, Modal, Input…)
+├── features/                 # Domain modules (auth, catalog, orders, cart…)
+│   ├── admin/
+│   ├── auth/
+│   ├── cart/
+│   ├── catalog/
+│   ├── orders/
+│   ├── modal/
+│   └── ...
+├── hooks/                    # Generic custom hooks
+├── services/                 # API service layer
+├── types/                    # Global TypeScript types & response DTOs
+├── validation/               # Zod schemas
+├── lib/                      # Utilities (fetchHandler, responseHandler…)
+├── config/                   # App-wide configuration
+└── constants/                # Enums, static values
 
-**Validation**
-- Dùng Zod schemas trong `validation/`.
-- Ví dụ hiện có: `app/api/auth/login/route.ts` sử dụng `LoginSchema`.
+messages/
+├── en.json                   # English translations
+└── vi.json                   # Vietnamese translations
+```
 
-**Response chuẩn**
-- Dùng `ResponseApi` trong `lib/api/responseHandler.ts` để thống nhất format trả về.
+---
 
-**Gọi backend trong Next API**
-- Dùng `api` từ `lib/api/fetchHandler.ts` (wrapper HTTP đã viết sẵn, base URL lấy từ `BACKEND_API_URL`).
+## Architecture
 
-**Gọi API của Next từ client**
-- Dùng `axios` để gọi API nội bộ của Next (VD: gọi `/api/...` từ UI). Kiểu dữ liệu và response có thể tham khảo trong `types/` và `lib/api/responseHandler.ts`.
+### Routing
 
-## Gợi ý nhanh để bắt đầu
-- Xem `app/dashboard/page.tsx` và `layouts/AdminLayout/` để hiểu cấu trúc dashboard.
-- Xem `app/api/books/route.ts` để hiểu cách làm API proxy.
-- Xem `layouts/data/sidebar-data.ts` để update menu admin.
+The application uses **Next.js App Router** with locale-based routing via `next-intl`. Route groups keep concerns separated:
+
+- `(auth)` — unauthenticated pages
+- `(main)` — public storefront pages
+- `(private)` — requires session; split into `checkout` and `(manage)/dashboard`
+
+### Feature Modules
+
+Each feature under `src/features/<domain>/` is self-contained and typically includes:
+
+```
+features/orders/
+├── hooks/       # TanStack Query hooks (useQueryOrder, useMutateOrder…)
+├── store/       # Zustand slice
+├── components/  # Domain-specific components
+└── index.ts     # Public barrel export
+```
+
+### Data Fetching
+
+- **Server state** — TanStack Query v5 (`useQuery`, `useMutation`, `useInfiniteQuery`)
+- **Client state** — Zustand v5 stores (cart, order, modal, session…)
+- **API proxy** — `src/app/api/**` handlers forward requests to the NestJS backend, keeping secrets server-side
+
+### Internationalization
+
+Full i18n support for **English** and **Vietnamese** via `next-intl`. Translation keys live in `messages/`. All user-facing strings use `useTranslations()`.
+
+---
+
+## Admin Dashboard
+
+### Entry points
+
+| Purpose | Path |
+|---|---|
+| Dashboard root | `src/app/[locale]/(private)/(manage)/dashboard/` |
+| Sidebar config | `src/features/admin/` |
+
+### Adding a new dashboard page
+
+1. Create the page: `src/app/[locale]/(private)/(manage)/dashboard/<module>/page.tsx`
+2. Create a client component: `_components/<Module>DashboardClient/index.tsx`
+3. Add a sidebar entry in the admin sidebar data file
+4. Add translation keys to `messages/en.json` and `messages/vi.json`
+
+---
+
+## Code Quality
+
+| Tool | Purpose |
+|---|---|
+| ESLint | Linting (runs on staged files via `lint-staged`) |
+| Prettier | Code formatting |
+| Husky | Git hooks (pre-commit lint check) |
+| Commitlint | Enforce Conventional Commits |
+| TypeScript | Strict type checking |
+
+---
+
+## License
+
+Private — all rights reserved.
