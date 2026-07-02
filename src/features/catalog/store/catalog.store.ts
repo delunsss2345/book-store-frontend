@@ -1,9 +1,9 @@
-import { BookDetail, BookVariant, HomeData } from "@/types/response/catalog.response";
+import { BookDetail, BookVariant, CatalogHomeBookDto } from "@/types/response/catalog.response";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 type CatalogStore = {
-    home: HomeData | null;
+    home: CatalogHomeBookDto[] | null;
     isLoadingHome: boolean;
     isHydrated: boolean;
     bookDetail: BookDetail | null;
@@ -14,7 +14,7 @@ type CatalogStore = {
     booksTotalPages: number;
 
     setVariantDetail: (value: BookVariant) => void;
-    setHome: (value: HomeData | null) => void;
+    setHome: (value: CatalogHomeBookDto[] | null) => void;
     setLoadingHome: (value: boolean) => void;
     setHydrated: (value: boolean) => void;
     setBookDetail: (book: BookDetail | null) => void;
@@ -41,11 +41,11 @@ export const useCatalogStore = create<CatalogStore>()(
             booksTotal: 0,
             booksTotalPages: 1,
 
-            setVariantDetail: (bookVariantDetail) => set({ bookVariantDetail }),
-            setBookDetail: (bookDetail) => set({ bookDetail }),
-            setHome: (home) => set({ home }),
-            setLoadingHome: (value) => set({ isLoadingHome: value }),
+            setVariantDetail: (value: BookVariant) => set({ bookVariantDetail: value }),
+            setHome: (value: CatalogHomeBookDto[] | null) => set({ home: value }),
+            setLoadingHome: (value: boolean) => set({ isLoadingHome: value }),
             setHydrated: (value) => set({ isHydrated: value }),
+            setBookDetail: (bookDetail) => set({ bookDetail }),
             setBooksPage: (page) => set({ booksPage: page }),
             setBooksLimit: (limit) => set({ booksLimit: limit }),
             setBooksMeta: ({ page, limit, total, totalPages }) =>

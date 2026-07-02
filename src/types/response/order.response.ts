@@ -16,6 +16,7 @@ export type OrderSummary = {
   shippingFee: string | null;
   totalAmount: string | null;
   expiredAt: string | null;
+  placedAt: string | null;
   createdAt: string;
 };
 

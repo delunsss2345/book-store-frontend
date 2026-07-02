@@ -74,7 +74,7 @@ export default function SupplierDashboardClient() {
               <tr>
                 <th>Mã</th>
                 <th>Tên nhà cung cấp</th>
-                <th>Liên hệ</th>
+                <th>Ngày tạo</th>
                 <th>Trạng thái</th>
                 <th className="text-right">Thao tác</th>
               </tr>
@@ -85,7 +85,7 @@ export default function SupplierDashboardClient() {
                   <tr key={item.id}>
                     <td className="font-mono text-ink">NCC-{item.id.toString().padStart(3, '0')}</td>
                     <td className="font-semibold text-ink">{item.name}</td>
-                    <td className="text-[12px]">{item.email || "—"}</td>
+                    <td className="text-[12px] text-ink-3">{new Date(item.createdAt).toLocaleDateString("vi-VN")}</td>
                     <td>
                       {item.isActive ? (
                         <span className="bdg bdg-green">Hoạt động</span>

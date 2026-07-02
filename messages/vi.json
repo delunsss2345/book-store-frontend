@@ -8,6 +8,18 @@
   },
   "header": {
     "searchPlaceholder": "Tìm kiếm",
+    "nav": {
+      "books": "Sách",
+      "limitedEditions": "Phiên bản giới hạn",
+      "gifts": "Quà tặng",
+      "stores": "Cửa hàng",
+      "about": "Về chúng tôi"
+    },
+    "mobile": {
+      "search": "Tìm kiếm",
+      "language": "Ngôn ngữ / Tiền tệ",
+      "account": "Tài khoản của tôi"
+    },
     "aria": {
       "searchButton": "Tìm kiếm",
       "language": "Ngôn ngữ và quốc gia",

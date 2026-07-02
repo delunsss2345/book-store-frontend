@@ -9,7 +9,7 @@ type BookCardVariant = "default" | "compact";
 type BookCardProps = {
   title: string;
   description: string;
-  price: number;
+  price?: number;
   currency?: string;
   badges?: string[];
   imageUrl?: string;
@@ -104,9 +104,11 @@ function CardInner({
           {description}
         </p>
 
-        <p className={cn("mt-2 font-medium text-ink", style.price)}>
-          {formatPrice(price, currency)}
-        </p>
+        {price != null && (
+          <p className={cn("mt-2 font-medium text-ink", style.price)}>
+            {formatPrice(price, currency)}
+          </p>
+        )}
       </div>
 
       {/* Nút bấm: Hiệu ứng Hover hiện đại hơn */}

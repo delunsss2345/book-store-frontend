@@ -49,12 +49,11 @@ const WishlistPage = () => {
             wishlist?.items.map((item: WishItem) => (
               <BookCard
                 key={item.id}
-                title={item.variant.book.translations.title}
-                subtitle={item.variant.book.translations.description ?? ""}
-                price={0}
+                title={item.variant.book.title}
+                description={item.variant.book.description ?? ""}
                 bookVariantId={Number(item.variant.id)}
-                imageUrl={item.variant.book?.coverImageUrl ?? ""}
-                href={`/detail/${item.variant.book.id}`}
+                imageUrl={item.variant.book?.coverImageUrl ?? undefined}
+                href={`/detail/${item.variant.book.slug ?? item.variant.book.id}`}
               />
             ))}
           {wishlist?.items.length === 0 && (

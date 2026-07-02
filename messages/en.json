@@ -8,6 +8,18 @@
   },
   "header": {
     "searchPlaceholder": "Search",
+    "nav": {
+      "books": "Books",
+      "limitedEditions": "Limited Editions",
+      "gifts": "Gifts",
+      "stores": "Stores",
+      "about": "About Us"
+    },
+    "mobile": {
+      "search": "Search",
+      "language": "Language / Currency",
+      "account": "My Account"
+    },
     "aria": {
       "searchButton": "Search",
       "language": "Language and country",

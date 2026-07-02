@@ -28,9 +28,7 @@ export function ShippingMethodCard() {
           </div>
         </div>
 
-        <span className="text-[13px] font-bold text-ok">
-          {ShipFee === 0 ? "Free" : fmt(ShipFee)}
-        </span>
+        <span className="text-[13px] font-bold text-ok">{fmt(ShipFee)}</span>
       </div>
     </section>
   );

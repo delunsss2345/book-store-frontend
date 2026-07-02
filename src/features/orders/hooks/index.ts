@@ -15,29 +15,26 @@ import { useQueryOrder } from "./use-query-orders";
 
 /** Build the items array from the cart or the buyNow item. */
 function resolveItems(
-  cartItems: { bookVariantId: string; quantity: number }[] | undefined,
-  buyNow: { variant: { id: string }; quantity: number } | null,
+  storeItems: { bookVariantId: number; quantity: number }[],
+  buyNow: { variant: { id: string | number }; quantity: number } | null,
 ): CheckoutItem[] {
   if (buyNow) {
     return [{ bookVariantId: Number(buyNow.variant.id), quantity: buyNow.quantity }];
   }
-  return (cartItems ?? []).map((item) => ({
-    bookVariantId: Number(item.bookVariantId),
-    quantity: item.quantity,
-  }));
+  return storeItems;
 }
 
 // ─── Guest checkout mutation ──────────────────────────────────────────────────
 
 export const useCheckoutGuestMutation = () => {
-  const { data: cart } = useCartQuery();
   const queryOrder = useQueryOrder();
   const setIsOrdering = useOrderStore(selectorSetIsOrdering);
   const buyNow = useOrderStore((state) => state.buyNow);
+  const storeItems = useOrderStore((state) => state.items);
 
   return useMutation<CheckoutResponseData, Error, GuestCheckoutInput>({
     mutationFn: async (values) => {
-      const items = resolveItems(cart?.items, buyNow);
+      const items = resolveItems(storeItems, buyNow);
       if (items.length === 0) throw new Error("Giỏ hàng trống");
 
       setIsOrdering(true);
@@ -64,14 +61,14 @@ export const useCheckoutGuestMutation = () => {
 // ─── User checkout mutation ───────────────────────────────────────────────────
 
 export const useCheckoutUserMutation = () => {
-  const { data: cart } = useCartQuery();
   const setIsOrdering = useOrderStore(selectorSetIsOrdering);
   const buyNow = useOrderStore((state) => state.buyNow);
+  const storeItems = useOrderStore((state) => state.items);
   const queryOrder = useQueryOrder();
 
   return useMutation<CheckoutResponseData, Error, UserCheckoutInput>({
     mutationFn: async (values) => {
-      const items = resolveItems(cart?.items, buyNow);
+      const items = resolveItems(storeItems, buyNow);
       if (items.length === 0) throw new Error("Giỏ hàng trống");
 
       setIsOrdering(true);

@@ -96,7 +96,7 @@ export function OrderCard({ order, onClick }: OrderCardProps) {
   const currency = order.currencyCode ?? "VND";
   const statusKey = order.status ?? OrderStatus.PENDING_PAYMENT;
   const status = ORDER_STATUS_STYLES[statusKey];
-  const placedAt = order.createdAt;
+  const placedAt = order.placedAt ?? order.createdAt;
   const total = Number(order.totalAmount ?? order.subtotal ?? 0);
   const { setOrderShowDetailId, onOpen } = useModalStore();
 

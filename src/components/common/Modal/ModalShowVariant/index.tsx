@@ -39,7 +39,7 @@ export default function ModalBookVariantPricing() {
     },
     [updateBookVariant],
   );
-  const columns = useMemo<ColumnDef<AdminBookVariant>[]>(
+  const columns = useMemo<ColumnDef<AdminBookVariant, any>[]>(
     () => [
       {
         accessorKey: "variant",
@@ -140,7 +140,7 @@ export default function ModalBookVariantPricing() {
   );
 
   const table = useReactTable({
-    data: variants,
+    data: variants as any,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -182,9 +182,9 @@ export default function ModalBookVariantPricing() {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                   </TableHead>
                 ))}
               </TableRow>

@@ -34,6 +34,7 @@ export type CatalogBookCardDto = {
   minPrice?: string | null;
   maxPrice?: string | null;
   currencyCode?: string | null;
+  description?: string | null;
   ratingAvg?: number | null;
   ratingCount?: number;
   soldCount?: number;
@@ -136,9 +137,7 @@ export interface CatalogHomeBookDto {
   isOutOfStock: boolean;
 }
 
-export interface HomeData {
-  newAndTrending: CatalogHomeBookDto[];
-}
+export type HomeResponse = ApiResponse<CatalogHomeBookDto[]>;
 
 export type BookFormat = "PAPERBACK" | "HARDCOVER" | (string & {});
 
@@ -151,4 +150,3 @@ export type CatalogBookListResponse = ApiResponse<CatalogBookListData>;
 export type CatalogBookDetailResponse = ApiResponse<CatalogBookDetailDto>;
 export type CatalogCategoriesResponse = ApiResponse<CatalogCategoryTreeDto[]>;
 export type GetBookDetailResponse = ApiResponse<BookDetail>;
-export type HomeResponse = ApiResponse<HomeData>;

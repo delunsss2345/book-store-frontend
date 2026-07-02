@@ -1,15 +1,56 @@
+"use client";
+
 import { ShipFee } from "@/constants/enums/order";
 import { useCartQuery } from "@/features/cart/hooks";
+import { useOrderStore } from "@/features/orders/store/order.store";
 import { fmt } from "@/utils/format-number-vi";
 import { Info } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-type OrderSummaryProps = {
-  cart: NonNullable<ReturnType<typeof useCartQuery>["data"]>;
-  subtotal: number;
-};
-export function OrderSummary({ cart, subtotal }: OrderSummaryProps) {
+import { useMemo } from "react";
+
+export function OrderSummary() {
   const t = useTranslations();
+  const buyNow = useOrderStore((s) => s.buyNow);
+  const storeItems = useOrderStore((s) => s.items);
+  const { data: cart } = useCartQuery();
+
+  // Build display items from store selection + cart data for book details
+  const displayItems = useMemo(() => {
+    if (buyNow) {
+      return [
+        {
+          key: "buy_now",
+          title: buyNow.book.title,
+          coverImageUrl: buyNow.book.coverImageUrl ?? null,
+          format: buyNow.variant.format,
+          price: Number(buyNow.variant.price),
+          quantity: buyNow.quantity,
+        },
+      ];
+    }
+
+    // Join store items with cart groups for display metadata
+    const allCartItems = (cart?.groups ?? []).flatMap((g) => g.items);
+    return storeItems.map((si) => {
+      const cartItem = allCartItems.find(
+        (ci) => ci.bookVariantId === si.bookVariantId,
+      );
+      return {
+        key: String(si.bookVariantId),
+        title: cartItem?.book.title ?? t("checkout.orderSummary.productFallback"),
+        coverImageUrl: cartItem?.book.coverImageUrl ?? null,
+        format: cartItem?.variant.format ?? "",
+        price: cartItem ? Number(cartItem.variant.price) : 0,
+        quantity: si.quantity,
+      };
+    });
+  }, [buyNow, storeItems, cart, t]);
+
+  const subtotal = useMemo(
+    () => displayItems.reduce((sum, i) => sum + i.price * i.quantity, 0),
+    [displayItems],
+  );
   const total = subtotal + ShipFee;
 
   return (
@@ -18,47 +59,40 @@ export function OrderSummary({ cart, subtotal }: OrderSummaryProps) {
         <h3 className="mb-6 text-[17px] font-bold tracking-tight text-ink flex items-center gap-2">
           {t("checkout.orderSummary.title")}
           <span className="rounded-full bg-paper px-2.5 py-0.5 text-[12px] font-medium text-ink-3">
-            {cart.items?.length}
+            {displayItems.length}
           </span>
         </h3>
 
-        {/* Danh sách sản phẩm */}
+        {/* Product list */}
         <div className="custom-scrollbar -mr-2 max-h-[320px] space-y-5 overflow-y-auto pr-2">
-          {cart?.items?.map((item) => {
-            const title =
-              item.variant.book.title ||
-              t("checkout.orderSummary.productFallback");
-            const price = parseFloat(item.variant.price);
-
-            return (
-              <div key={item.id} className="flex gap-4 group">
-                <div className="relative h-20 w-16 shrink-0 rounded-lg border border-zinc-100 bg-white shadow-sm overflow-hidden">
-                  {item.variant.book.coverImageUrl && (
-                    <Image
-                      src={item.variant.book.coverImageUrl}
-                      alt={title}
-                      fill
-                      className="object-cover transition-transform group-hover:scale-105"
-                    />
-                  )}
-                </div>
-
-                <div className="flex flex-1 flex-col justify-center min-w-0">
-                  <p className="line-clamp-1 text-[14px] font-semibold text-ink">
-                    {title}
-                  </p>
-                  <p className="mt-0.5 flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-wider text-ink-3">
-                    {item.variant.format}
-                    <span className="text-line-2">·</span>
-                    <span>×{item.quantity}</span>
-                  </p>
-                  <p className="mt-1 text-[14px] font-bold text-ink">
-                    {fmt(price * item.quantity)}
-                  </p>
-                </div>
+          {displayItems.map((item) => (
+            <div key={item.key} className="flex gap-4 group">
+              <div className="relative h-20 w-16 shrink-0 rounded-lg border border-zinc-100 bg-white shadow-sm overflow-hidden">
+                {item.coverImageUrl && (
+                  <Image
+                    src={item.coverImageUrl}
+                    alt={item.title}
+                    fill
+                    className="object-cover transition-transform group-hover:scale-105"
+                  />
+                )}
               </div>
-            );
-          })}
+
+              <div className="flex flex-1 flex-col justify-center min-w-0">
+                <p className="line-clamp-1 text-[14px] font-semibold text-ink">
+                  {item.title}
+                </p>
+                <p className="mt-0.5 flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-wider text-ink-3">
+                  {item.format}
+                  <span className="text-line-2">·</span>
+                  <span>×{item.quantity}</span>
+                </p>
+                <p className="mt-1 text-[14px] font-bold text-ink">
+                  {fmt(item.price * item.quantity)}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
 
         <div className="mt-8 space-y-3.5 border-t border-line pt-6 text-[14px]">

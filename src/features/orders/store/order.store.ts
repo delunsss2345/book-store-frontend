@@ -9,6 +9,11 @@ export type BuyNowItem = {
   quantity: number;
 };
 
+export type CheckoutItem = {
+  bookVariantId: number;
+  quantity: number;
+};
+
 type OrderStore = {
   orders: any[];
   buyNow: BuyNowItem | null;
@@ -20,6 +25,10 @@ type OrderStore = {
   paymentGateway: PaymentGateway;
   setPaymentGateway: (paymentGateway: PaymentGateway) => void;
   setBuyNow: (order: BuyNowItem | null) => void;
+  // Selected cart items for checkout
+  items: CheckoutItem[];
+  setItems: (items: CheckoutItem[]) => void;
+  clearItems: () => void;
 };
 
 export const useOrderStore = create<OrderStore>()(
@@ -36,11 +45,15 @@ export const useOrderStore = create<OrderStore>()(
       paymentGateway: PaymentGateway.COD,
       setPaymentGateway: (paymentGateway: PaymentGateway) =>
         set({ paymentGateway }),
+      items: [],
+      setItems: (items: CheckoutItem[]) => set({ items }),
+      clearItems: () => set({ items: [] }),
     }),
     {
       name: "order-store",
       partialize: (state) => ({
         idempotencyKey: state.idempotencyKey,
+        items: state.items,
       }),
     },
   ),

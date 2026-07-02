@@ -1,49 +1,23 @@
 "use client";
 
-import { useCartQuery, useRemoveItemMutation, useUpdateQtyMutation } from "@/features/cart/hooks";
+import {
+  useCartQuery,
+  useRemoveItemMutation,
+  useUpdateQtyMutation,
+} from "@/features/cart/hooks";
+import { useOrderStore } from "@/features/orders/store/order.store";
 import { CartGroup, GroupedCartItem } from "@/types/response/cart.response";
-import { Skeleton } from "@/src/components/ui/skeleton";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
-import { ShipFee } from "../../../../constants/enums/order";
+import { useCallback, useMemo } from "react";
+import { CartSkeleton } from "./_components/CartSkeleton";
+import { CartSummaryPanel } from "./_components/CartSummaryPanel";
 
 const fmt = new Intl.NumberFormat("vi-VN", {
   style: "decimal",
   maximumFractionDigits: 0,
 });
-
-// ─── Skeleton loader ─────────────────────────────────────────────────────────
-
-function CartSkeleton() {
-  return (
-    <div className="bg-paper min-h-screen">
-      <div className="px-6 py-10 lg:px-10 max-w-7xl mx-auto space-y-10">
-        <Skeleton className="h-8 w-48" />
-        {[1, 2].map((g) => (
-          <div key={g} className="space-y-4">
-            <Skeleton className="h-5 w-40" />
-            {[1, 2].map((i) => (
-              <div key={i} className="flex items-center gap-4 py-5 border-b border-line">
-                <Skeleton className="h-4 w-4 rounded" />
-                <Skeleton className="h-[100px] w-[70px] rounded-sm shrink-0" />
-                <div className="flex-1 space-y-2">
-                  <Skeleton className="h-4 w-48" />
-                  <Skeleton className="h-3 w-24" />
-                </div>
-                <Skeleton className="h-8 w-24" />
-                <Skeleton className="h-4 w-20" />
-              </div>
-            ))}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function ShoppingCartPage() {
   const router = useRouter();
@@ -53,55 +27,96 @@ export default function ShoppingCartPage() {
   const updateQtyMutation = useUpdateQtyMutation();
   const removeItemMutation = useRemoveItemMutation();
 
-  // ─── Selection state (Set of item ids) ──────────────────────────────────
-  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  // ─── Zustand selection state ─────────────────────────────────────────────
+  const storeItems = useOrderStore((s) => s.items);
+  const setItems = useOrderStore((s) => s.setItems);
 
-  // Flatten all items for convenience
+  // Set of selected bookVariantIds (derived from store)
+  const selectedVariantIds = useMemo(
+    () => new Set(storeItems.map((i) => i.bookVariantId)),
+    [storeItems],
+  );
+
   const allItems = useMemo<GroupedCartItem[]>(
     () => (cart?.groups ?? []).flatMap((g) => g.items),
-    [cart]
+    [cart],
   );
-  const allIds = useMemo(() => allItems.map((i) => i.id), [allItems]);
 
-  const isAllSelected = allIds.length > 0 && allIds.every((id) => selectedIds.has(id));
-  const isIndeterminate = !isAllSelected && allIds.some((id) => selectedIds.has(id));
+  const allVariantIds = useMemo(
+    () => allItems.map((i) => Number(i.variant.id ?? i.bookVariantId)),
+    [allItems],
+  );
 
-  const toggleItem = useCallback((id: number) => {
-    setSelectedIds((prev) => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      return next;
-    });
-  }, []);
+  const isAllSelected =
+    allVariantIds.length > 0 &&
+    allVariantIds.every((id) => selectedVariantIds.has(id));
+  const isIndeterminate =
+    !isAllSelected && allVariantIds.some((id) => selectedVariantIds.has(id));
+
+  // ─── Helpers ─────────────────────────────────────────────────────────────
+  const itemToCheckout = useCallback(
+    (item: GroupedCartItem) => ({
+      bookVariantId: Number(item.variant.id ?? item.bookVariantId),
+      quantity: item.quantity,
+    }),
+    [],
+  );
+
+  const buildItems = useCallback(
+    (nextVariantIds: Set<number>) =>
+      allItems
+        .filter((i) =>
+          nextVariantIds.has(Number(i.variant.id ?? i.bookVariantId)),
+        )
+        .map(itemToCheckout),
+    [allItems, itemToCheckout],
+  );
+
+  // ─── Toggle actions ───────────────────────────────────────────────────────
+  const toggleItem = useCallback(
+    (item: GroupedCartItem) => {
+      const vid = Number(item.variant.id ?? item.bookVariantId);
+      const next = new Set(selectedVariantIds);
+      next.has(vid) ? next.delete(vid) : next.add(vid);
+      setItems(buildItems(next));
+    },
+    [selectedVariantIds, buildItems, setItems],
+  );
 
   const toggleGroup = useCallback(
     (items: GroupedCartItem[]) => {
-      const groupIds = items.map((i) => i.id);
-      const allChecked = groupIds.every((id) => selectedIds.has(id));
-      setSelectedIds((prev) => {
-        const next = new Set(prev);
-        groupIds.forEach((id) => (allChecked ? next.delete(id) : next.add(id)));
-        return next;
-      });
+      const groupVids = items.map((i) =>
+        Number(i.variant.id ?? i.bookVariantId),
+      );
+      const allChecked = groupVids.every((id) => selectedVariantIds.has(id));
+      const next = new Set(selectedVariantIds);
+      groupVids.forEach((id) => (allChecked ? next.delete(id) : next.add(id)));
+      setItems(buildItems(next));
     },
-    [selectedIds]
+    [selectedVariantIds, buildItems, setItems],
   );
 
   const toggleAll = useCallback(() => {
-    setSelectedIds(isAllSelected ? new Set() : new Set(allIds));
-  }, [isAllSelected, allIds]);
+    if (isAllSelected) {
+      setItems([]);
+    } else {
+      setItems(allItems.map(itemToCheckout));
+    }
+  }, [isAllSelected, allItems, itemToCheckout, setItems]);
 
-  // ─── Selected subtotal ───────────────────────────────────────────────────
-  const selectedItems = allItems.filter((i) => selectedIds.has(i.id));
-  const subtotal = selectedItems.reduce(
-    (sum, item) => sum + Number(item.variant.price) * item.quantity,
-    0
+  // ─── Derived ─────────────────────────────────────────────────────────────
+  const selectedItems = allItems.filter((i) =>
+    selectedVariantIds.has(Number(i.variant.id ?? i.bookVariantId)),
   );
-  const shipping = subtotal > 0 ? ShipFee : 0;
-  const total = subtotal + shipping;
   const currencyCode = allItems[0]?.variant.currencyCode ?? "VND";
 
-  // ─── Loading / Error states ──────────────────────────────────────────────
+  // ─── Checkout handler ─────────────────────────────────────────────────────
+  const handleCheckout = useCallback(() => {
+    // items already in store — just navigate
+    router.push(`/${locale}/checkout`);
+  }, [router, locale]);
+
+  // ─── Loading / Error ──────────────────────────────────────────────────────
   if (isPending) return <CartSkeleton />;
 
   if (isError) {
@@ -113,7 +128,8 @@ export default function ShoppingCartPage() {
   }
 
   const groups: CartGroup[] = cart?.groups ?? [];
-  const isEmpty = groups.length === 0 || groups.every((g) => g.items.length === 0);
+  const isEmpty =
+    groups.length === 0 || groups.every((g) => g.items.length === 0);
 
   return (
     <div className="bg-paper min-h-screen">
@@ -137,7 +153,9 @@ export default function ShoppingCartPage() {
               <ShoppingBag className="h-6 w-6 text-ink-3" />
             </div>
             <div>
-              <p className="text-[15px] font-medium text-ink">{t("cart.page.empty")}</p>
+              <p className="text-[15px] font-medium text-ink">
+                {t("cart.page.empty")}
+              </p>
               <p className="text-[13px] text-ink-3 mt-1">
                 {locale === "vi"
                   ? "Hãy thêm sách vào giỏ để tiến hành đặt hàng."
@@ -160,14 +178,26 @@ export default function ShoppingCartPage() {
                 <label className="flex items-center gap-2 cursor-pointer group select-none">
                   <span
                     role="checkbox"
-                    aria-checked={isAllSelected ? "true" : isIndeterminate ? "mixed" : "false"}
+                    aria-checked={
+                      isAllSelected
+                        ? "true"
+                        : isIndeterminate
+                          ? "mixed"
+                          : "false"
+                    }
                     onClick={toggleAll}
                     className={`h-[18px] w-[18px] shrink-0 rounded-sm border flex items-center justify-center cursor-pointer transition-colors
                       ${isAllSelected ? "bg-ink border-ink" : "border-line bg-paper group-hover:border-ink-3"}`}
                   >
                     {isAllSelected && (
                       <svg viewBox="0 0 12 10" fill="none" className="w-3 h-2.5">
-                        <path d="M1 5l3 4 7-8" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                        <path
+                          d="M1 5l3 4 7-8"
+                          stroke="white"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
                       </svg>
                     )}
                     {isIndeterminate && !isAllSelected && (
@@ -178,9 +208,10 @@ export default function ShoppingCartPage() {
                     {locale === "vi" ? "Chọn tất cả" : "Select all"}
                   </span>
                 </label>
-                {selectedIds.size > 0 && (
+                {selectedVariantIds.size > 0 && (
                   <span className="ml-auto text-[12px] text-ink-3">
-                    {selectedIds.size} {locale === "vi" ? "đã chọn" : "selected"}
+                    {selectedVariantIds.size}{" "}
+                    {locale === "vi" ? "đã chọn" : "selected"}
                   </span>
                 )}
               </div>
@@ -188,9 +219,15 @@ export default function ShoppingCartPage() {
               {/* Groups */}
               <div className="space-y-10">
                 {groups.map((group) => {
-                  const groupIds = group.items.map((i) => i.id);
-                  const allGroupChecked = groupIds.every((id) => selectedIds.has(id));
-                  const someGroupChecked = groupIds.some((id) => selectedIds.has(id));
+                  const groupVids = group.items.map((i) =>
+                    Number(i.variant.id ?? i.bookVariantId),
+                  );
+                  const allGroupChecked = groupVids.every((id) =>
+                    selectedVariantIds.has(id),
+                  );
+                  const someGroupChecked = groupVids.some((id) =>
+                    selectedVariantIds.has(id),
+                  );
 
                   return (
                     <section key={group.date}>
@@ -198,14 +235,30 @@ export default function ShoppingCartPage() {
                       <div className="flex items-center gap-3 mb-4">
                         <span
                           role="checkbox"
-                          aria-checked={allGroupChecked ? "true" : someGroupChecked ? "mixed" : "false"}
+                          aria-checked={
+                            allGroupChecked
+                              ? "true"
+                              : someGroupChecked
+                                ? "mixed"
+                                : "false"
+                          }
                           onClick={() => toggleGroup(group.items)}
                           className={`h-[18px] w-[18px] shrink-0 rounded-sm border flex items-center justify-center cursor-pointer transition-colors
                             ${allGroupChecked ? "bg-ink border-ink" : "border-line bg-paper hover:border-ink-3"}`}
                         >
                           {allGroupChecked && (
-                            <svg viewBox="0 0 12 10" fill="none" className="w-3 h-2.5">
-                              <path d="M1 5l3 4 7-8" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                            <svg
+                              viewBox="0 0 12 10"
+                              fill="none"
+                              className="w-3 h-2.5"
+                            >
+                              <path
+                                d="M1 5l3 4 7-8"
+                                stroke="white"
+                                strokeWidth="1.8"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
                             </svg>
                           )}
                           {!allGroupChecked && someGroupChecked && (
@@ -225,8 +278,12 @@ export default function ShoppingCartPage() {
                       {/* Items */}
                       <div className="divide-y divide-line border-t border-b border-line">
                         {group.items.map((item) => {
-                          const isChecked = selectedIds.has(item.id);
-                          const itemTotal = Number(item.variant.price) * item.quantity;
+                          const vid = Number(
+                            item.variant.id ?? item.bookVariantId,
+                          );
+                          const isChecked = selectedVariantIds.has(vid);
+                          const itemTotal =
+                            Number(item.variant.price) * item.quantity;
 
                           return (
                             <div
@@ -237,13 +294,23 @@ export default function ShoppingCartPage() {
                               <span
                                 role="checkbox"
                                 aria-checked={isChecked}
-                                onClick={() => toggleItem(item.id)}
+                                onClick={() => toggleItem(item)}
                                 className={`h-[18px] w-[18px] shrink-0 rounded-sm border flex items-center justify-center cursor-pointer transition-colors
                                   ${isChecked ? "bg-ink border-ink" : "border-line bg-paper hover:border-ink-3"}`}
                               >
                                 {isChecked && (
-                                  <svg viewBox="0 0 12 10" fill="none" className="w-3 h-2.5">
-                                    <path d="M1 5l3 4 7-8" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                                  <svg
+                                    viewBox="0 0 12 10"
+                                    fill="none"
+                                    className="w-3 h-2.5"
+                                  >
+                                    <path
+                                      d="M1 5l3 4 7-8"
+                                      stroke="white"
+                                      strokeWidth="1.8"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    />
                                   </svg>
                                 )}
                               </span>
@@ -284,9 +351,15 @@ export default function ShoppingCartPage() {
                                 <button
                                   className="h-7 w-7 flex items-center justify-center border border-line rounded-l-sm hover:bg-surface transition-colors disabled:opacity-40"
                                   onClick={() =>
-                                    updateQtyMutation.mutate({ id: String(item.id), delta: -1 })
+                                    updateQtyMutation.mutate({
+                                      id: String(item.id),
+                                      delta: -1,
+                                    })
                                   }
-                                  disabled={updateQtyMutation.isPending || item.quantity <= 1}
+                                  disabled={
+                                    updateQtyMutation.isPending ||
+                                    item.quantity <= 1
+                                  }
                                   aria-label="Decrease quantity"
                                 >
                                   <Minus className="h-3 w-3 text-ink-2" />
@@ -297,7 +370,10 @@ export default function ShoppingCartPage() {
                                 <button
                                   className="h-7 w-7 flex items-center justify-center border border-line rounded-r-sm hover:bg-surface transition-colors disabled:opacity-40"
                                   onClick={() =>
-                                    updateQtyMutation.mutate({ id: String(item.id), delta: 1 })
+                                    updateQtyMutation.mutate({
+                                      id: String(item.id),
+                                      delta: 1,
+                                    })
                                   }
                                   disabled={
                                     updateQtyMutation.isPending ||
@@ -318,7 +394,9 @@ export default function ShoppingCartPage() {
                                   {item.variant.currencyCode}
                                 </p>
                                 <button
-                                  onClick={() => removeItemMutation.mutate(String(item.id))}
+                                  onClick={() =>
+                                    removeItemMutation.mutate(String(item.id))
+                                  }
                                   disabled={removeItemMutation.isPending}
                                   aria-label="Remove item"
                                   className="text-line-2 hover:text-red-500 transition-colors disabled:opacity-40"
@@ -336,73 +414,13 @@ export default function ShoppingCartPage() {
               </div>
             </div>
 
-            {/* ── Right: Order summary ── */}
-            <div className="h-fit space-y-4 lg:sticky lg:top-8">
-              <div className="border border-line bg-surface p-6 shadow-sm">
-                <h2 className="border-b border-line pb-4 text-[11px] font-black uppercase tracking-[0.2em] text-ink">
-                  {locale === "vi" ? "Tóm tắt đơn hàng" : "Order Summary"}
-                </h2>
-
-                <div className="mt-5 space-y-3 text-[13px]">
-                  <div className="flex justify-between text-ink-2">
-                    <span>
-                      {locale === "vi" ? "Tạm tính" : "Subtotal"}
-                      {selectedItems.length > 0 && (
-                        <span className="ml-1 text-ink-3 text-[11px]">
-                          ({selectedItems.length}{" "}
-                          {locale === "vi" ? "sản phẩm" : "items"})
-                        </span>
-                      )}
-                    </span>
-                    <span className="font-semibold text-ink">
-                      {fmt.format(subtotal)} {currencyCode}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between text-ink-2">
-                    <span>{locale === "vi" ? "Vận chuyển" : "Shipping"}</span>
-                    <span className="font-semibold text-ok uppercase text-[12px]">
-                      {shipping === 0
-                        ? locale === "vi" ? "Miễn phí" : "Free"
-                        : `${fmt.format(shipping)} ${currencyCode}`}
-                    </span>
-                  </div>
-
-                  <div className="my-3 hairline" />
-
-                  <div className="flex justify-between text-[17px] font-bold text-ink">
-                    <span>{locale === "vi" ? "Tổng cộng" : "Total"}</span>
-                    <span>
-                      {fmt.format(total)} {currencyCode}
-                    </span>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => router.push(`/${locale}/checkout`)}
-                  className="btn-ink mt-7 block w-full rounded-none py-4 text-center text-[10px] font-bold uppercase tracking-[0.25em] disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={selectedIds.size === 0}
-                >
-                  {locale === "vi"
-                    ? `Thanh toán${selectedIds.size > 0 ? ` (${selectedIds.size})` : ""}`
-                    : `Checkout${selectedIds.size > 0 ? ` (${selectedIds.size})` : ""}`}
-                </button>
-
-                {selectedIds.size === 0 && (
-                  <p className="mt-3 text-center text-[11px] text-ink-3">
-                    {locale === "vi"
-                      ? "Chọn ít nhất 1 sản phẩm để thanh toán"
-                      : "Select at least 1 item to checkout"}
-                  </p>
-                )}
-              </div>
-
-              <p className="px-2 text-center text-[10px] leading-relaxed text-ink-3">
-                {locale === "vi"
-                  ? "Phí vận chuyển và ưu đãi sẽ được tính trong quá trình thanh toán."
-                  : "Shipping, taxes, and discounts will be calculated during checkout."}
-              </p>
-            </div>
+            {/* ── Right: Summary panel ── */}
+            <CartSummaryPanel
+              selectedItems={selectedItems}
+              selectedCount={selectedVariantIds.size}
+              currencyCode={currencyCode}
+              onCheckout={handleCheckout}
+            />
           </div>
         )}
       </div>

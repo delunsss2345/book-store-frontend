@@ -14,7 +14,7 @@ export function HomeBook() {
   const t = useTranslations();
   const locale = useLocale();
 
-  const newAndTrending = useMemo(() => home?.newAndTrending ?? [], [home]);
+  const newAndTrending = useMemo(() => home ?? [], [home]);
 
   return (
     <section className="container-main py-16 sm:py-24">

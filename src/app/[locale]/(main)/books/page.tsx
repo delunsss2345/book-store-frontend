@@ -15,15 +15,14 @@ import { SlidersHorizontal } from "lucide-react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import BookCard from "../_components/BookCard";
 import { BooksPagination } from "./_components/BooksPagiantion";
 import { FilterContent } from "./_components/FilterContent";
 import { sortOptions } from "./_components/filter.data";
-
 import useTranslator from "@/hooks/use-translator";
 
-export default function AllTitlesPage() {
+function AllTitlesContent() {
   const { t } = useTranslator();
   const [sortOpen, setSortOpen] = useState(false);
   const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
@@ -34,9 +33,12 @@ export default function AllTitlesPage() {
   const booksTotalPages = useCatalogStore(selectorBooksTotalPages);
   const setBooksPage = useCatalogStore(selectorSetBooksPage);
   const setBooksMeta = useCatalogStore(selectorSetBooksMeta);
-  const slugCategory = useSearchParams().get("search");
-  const keyword = useSearchParams().get("keyword");
+
+  const searchParams = useSearchParams();
+  const slugCategory = searchParams.get("search");
+  const keyword = searchParams.get("keyword");
   const locale = useLocale();
+
   const { data: bookList, isPending } = useBooksQuery({
     page: booksPage,
     limit: booksLimit,
@@ -54,9 +56,11 @@ export default function AllTitlesPage() {
       });
     }
   }, [bookList, setBooksMeta]);
+
   useEffect(() => {
     setBooksPage(1);
   }, [slugCategory, keyword, setBooksPage]);
+
   const filterProps = {
     sortOpen,
     setSortOpen,
@@ -70,7 +74,7 @@ export default function AllTitlesPage() {
 
   return (
     <div className="relative bg-paper w-full min-h-screen">
-      <div className="mx-auto ">
+      <div className="mx-auto">
         <div className="grid grid-cols-1 gap-0 lg:grid-cols-[300px_1fr]">
           {/* Sidebar Filter */}
           <FilterContent {...filterProps} />
@@ -83,7 +87,9 @@ export default function AllTitlesPage() {
                 {t("catalog.home")}
               </Link>
               <span>/</span>
-              <span className="text-ink-2">{t("catalog.books", { count: booksTotal })}</span>
+              <span className="text-ink-2">
+                {t("catalog.books", { count: booksTotal })}
+              </span>
             </div>
 
             {/* Header row */}
@@ -103,21 +109,21 @@ export default function AllTitlesPage() {
             <div className="mt-7 grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-3 xl:grid-cols-4">
               {isPending
                 ? Array.from({ length: 12 }).map((_, index) => (
-                  <BooksGridSkeletonCard key={`books-skeleton-${index}`} />
-                ))
+                    <BooksGridSkeletonCard key={`books-skeleton-${index}`} />
+                  ))
                 : books.map((book) => (
-                  <BookCard
-                    key={book.id}
-                    title={book.title}
-                    subtitle={book.title}
-                    price={Number(book.price ?? 0)}
-                    bookVariantId={Number(book.bookVariantId ?? 0)}
-                    currency={book.currencyCode ?? "VND"}
-                    imageUrl={book.coverImageUrl ?? undefined}
-                    href={`/detail/${book.slug ?? book.id}`}
-                    variant="compact"
-                  />
-                ))}
+                    <BookCard
+                      key={book.id}
+                      title={book.title}
+                      description={book.description ?? ""}
+                      {...(book.price != null && { price: Number(book.price) })}
+                      bookVariantId={Number(book.bookVariantId ?? 0)}
+                      currency={book.currencyCode ?? "VND"}
+                      imageUrl={book.coverImageUrl ?? undefined}
+                      href={`/detail/${book.slug ?? book.id}`}
+                      variant="compact"
+                    />
+                  ))}
             </div>
 
             {/* Pagination */}
@@ -132,5 +138,28 @@ export default function AllTitlesPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AllTitlesPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="relative bg-paper w-full min-h-screen">
+          <div className="mx-auto">
+            <div className="grid grid-cols-1 gap-0 lg:grid-cols-[300px_1fr]">
+              <div className="w-[300px]" />
+              <div className="mt-7 px-6 py-7 lg:px-10 grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-3 xl:grid-cols-4">
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <BooksGridSkeletonCard key={i} />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <AllTitlesContent />
+    </Suspense>
   );
 }
