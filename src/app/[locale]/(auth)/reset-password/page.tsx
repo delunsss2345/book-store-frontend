@@ -2,14 +2,13 @@
 
 import useTranslator from "@/hooks/use-translator";
 import {
-  useAuthStore,
   useResetPasswordMutation,
   useResetPasswordValidateMutation,
 } from "@/features/auth";
-import { redirect, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale } from "next-intl";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, KeyRound } from "lucide-react";
 import { Suspense, useEffect } from "react";
 import ResetPasswordForm, {
   ResetPasswordValues,
@@ -25,13 +24,8 @@ const ResetPasswordContent = () => {
   const locale = useLocale();
   const searchParams = useSearchParams();
   const token = searchParams.get("verify-token");
-
-  if (!token) {
-    toast.error(t("auth.errors.invalidLink"));
-    router.replace(`/${locale}/forgot-password`);
-    return null;
-  }
   useEffect(() => {
+    if (!token) return;
     toast.promise(validateResetPassword({ token }), {
       loading: t("auth.validating"),
       success: (data) => {
@@ -46,6 +40,12 @@ const ResetPasswordContent = () => {
     });
   }, [token]);
 
+  if (!token) {
+    toast.error(t("auth.errors.invalidLink"));
+    router.replace(`/${locale}/forgot-password`);
+    return null;
+  }
+
   const onSubmit = async (values: ResetPasswordValues) => {
     toast.promise(resetPasswordMutation(values), {
       loading: t("auth.resetting"),
@@ -58,27 +58,34 @@ const ResetPasswordContent = () => {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="space-y-1 text-center">
-        <h1 className="text-2xl font-semibold">
-          {t("auth.passwordResetTitle")}
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          {t("auth.passwordResetSubtitle")}
-        </p>
+    <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-paper">
+      <div className="mb-10 text-center text-3xl font-black tracking-tightest">
+        Velora
       </div>
 
-      {isValidatePending ? (
-        <div className="flex items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin" />
+      <div className="card w-full max-w-sm p-7 shadow-sm bg-surface">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-soft text-accent">
+          <KeyRound className="h-5 w-5" />
         </div>
-      ) : (
-        <ResetPasswordForm
-          token={token}
-          isLoading={isResetPending}
-          onSubmit={onSubmit}
-        />
-      )}
+        <h3 className="display mt-4 text-[22px] font-semibold">
+          {t("auth.passwordResetTitle")}
+        </h3>
+        <p className="mt-1.5 mb-5 text-[13px] leading-6 text-ink-2">
+          {t("auth.passwordResetSubtitle")}
+        </p>
+
+        {isValidatePending ? (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-8 w-8 animate-spin text-ink-3" />
+          </div>
+        ) : (
+          <ResetPasswordForm
+            token={token}
+            isLoading={isResetPending}
+            onSubmit={onSubmit}
+          />
+        )}
+      </div>
     </div>
   );
 };
