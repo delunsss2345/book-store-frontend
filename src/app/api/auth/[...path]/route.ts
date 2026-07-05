@@ -1,6 +1,10 @@
 import { envConfig } from "@/src/config/env.config";
 import { NextRequest, NextResponse } from "next/server";
-import { appendSetCookies, createBackendHeaders, RouteContext } from '../../../../utils/proxy-util';
+import {
+  appendSetCookies,
+  createBackendHeaders,
+  RouteContext,
+} from "../../../../utils/proxy-util";
 
 function createBackendUrl(request: NextRequest, path: string[]) {
   if (!envConfig.BACKEND_API_URL) {
@@ -26,7 +30,7 @@ async function proxyToBackend(request: NextRequest, context: RouteContext) {
     const backendResponse = await fetch(backendUrl, {
       method,
       headers: await createBackendHeaders(request, {
-        attachRefreshToken: true
+        attachRefreshToken: true,
       }),
       body: hasBody ? await request.arrayBuffer() : undefined,
       cache: "no-store",
@@ -118,8 +122,11 @@ async function proxyToBackend(request: NextRequest, context: RouteContext) {
 
     return response;
   } catch (error) {
+    console.log(error);
     const message =
-      error instanceof Error ? error.message : "Internal server error";
+      error instanceof Error
+        ? error.response.data.message
+        : "Internal server error";
 
     return NextResponse.json(
       { success: false, message },

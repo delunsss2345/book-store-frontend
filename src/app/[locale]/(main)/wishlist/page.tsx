@@ -46,16 +46,26 @@ const WishlistPage = () => {
 
         <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-3 xl:grid-cols-4">
           {wishlist &&
-            wishlist?.items.map((item: WishItem) => (
-              <BookCard
-                key={item.id}
-                title={item.variant.book.title}
-                description={item.variant.book.description ?? ""}
-                bookVariantId={Number(item.variant.id)}
-                imageUrl={item.variant.book?.coverImageUrl ?? undefined}
-                href={`/detail/${item.variant.book.slug ?? item.variant.book.id}`}
-              />
-            ))}
+            wishlist?.items.map((item: WishItem) => {
+              const book = item.variant.book;
+              const translation = book.translations?.[0];
+              const title = translation?.title || book.title || "";
+              const description = translation?.description || book.description || "";
+              const slug = translation?.slug || book.slug || book.id;
+
+              return (
+                <BookCard
+                  key={item.id}
+                  title={title}
+                  description={description}
+                  price={item.variant.price ? Number(item.variant.price) : undefined}
+                  currency={item.variant.currencyCode ?? undefined}
+                  bookVariantId={Number(item.variant.id)}
+                  imageUrl={book?.coverImageUrl ?? undefined}
+                  href={`/detail/${slug}`}
+                />
+              );
+            })}
           {wishlist?.items.length === 0 && (
             <p className="mt-4 text-[14px] text-ink-3 col-span-full">
               {t("wishlist.page.empty")}

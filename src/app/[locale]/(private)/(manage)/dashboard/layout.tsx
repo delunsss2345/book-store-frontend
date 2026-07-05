@@ -1,5 +1,5 @@
 import { SidebarProvider } from "@/src/components/ui/sidebar";
-import { Bell, Languages, Settings, SearchIcon } from "lucide-react";
+import { Languages, Settings, SearchIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { ProfileDropdown } from "../../profile/_components/ProfileDropdown";
 import { AppSidebar } from "./_components/AppSidebar";
@@ -30,10 +30,10 @@ export default function Layout({
               <button className="icon-btn">
                 <Languages className="w-4 h-4" />
               </button>
-              <button className="icon-btn relative">
+              {/* <button className="icon-btn relative">
                 <Bell className="w-4 h-4" />
                 <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-accent ring-2 ring-surface"></span>
-              </button>
+              </button> */}
               <button className="icon-btn">
                 <Settings className="w-4 h-4" />
               </button>

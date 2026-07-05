@@ -43,13 +43,13 @@ export async function createBackendHeaders(
       headers.set("x-refresh-token", refreshToken);
     }
   }
+  const language = cookieStore.get("appLanguage")?.value ?? "vi";
   if (attachLanguage) {
-    const language = cookieStore.get("appLanguage")?.value ?? "vi";
     if (language) {
       headers.set("x-app-lang", language);
-      headers.set("x-origin-url", `${process.env.BACKEND_API_URL}${language}`);
     }
   }
+  headers.set("x-origin-url", `${process.env.NEXT_PUBLIC_URL}/${language}`);
   return headers;
 }
 

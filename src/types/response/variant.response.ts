@@ -7,9 +7,10 @@ export type BookTranslation = {
 export type Book = {
     id: string;
     coverImageUrl: string | null;
-    title: string;
+    title?: string;
     description?: string | null;
     slug?: string | null;
+    translations?: BookTranslation[];
 };
 
 export type VariantBase = {
@@ -24,7 +25,7 @@ export interface PricedVariant extends VariantBase {
     price: string;
 }
 
-export interface WishVariant extends VariantBase { }
+export interface WishVariant extends PricedVariant { }
 
 export type BaseCollection<TItem> = {
     userId: string | null;

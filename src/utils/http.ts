@@ -26,7 +26,6 @@ const toApiError = (error: unknown): ApiError => {
   }
 
   const data = error.response?.data;
-
   return {
     status: error.response?.status ?? 500,
     message: data?.message ?? "Server Error",
