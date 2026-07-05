@@ -122,7 +122,6 @@ async function proxyToBackend(request: NextRequest, context: RouteContext) {
 
     return response;
   } catch (error) {
-    console.log(error);
     const message =
       error instanceof Error
         ? error.response.data.message
