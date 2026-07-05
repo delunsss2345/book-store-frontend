@@ -36,7 +36,7 @@ const ResetPasswordContent = () => {
         }
         return t("auth.success.validating");
       },
-      error: t("auth.errors.requestFailed"),
+      error: (error) => error?.message || t("auth.errors.requestFailed"),
     });
   }, [token]);
 
@@ -53,7 +53,7 @@ const ResetPasswordContent = () => {
         router.replace(`/${locale}/login`);
         return t("auth.success.reset");
       },
-      error: t("auth.errors.requestFailed"),
+      error: (error) => error?.message || t("auth.errors.requestFailed"),
     });
   };
 

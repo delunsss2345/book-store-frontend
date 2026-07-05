@@ -688,6 +688,7 @@
       "emailInvalid": "Invalid email address",
       "passwordMin": "Password must be at least {count} characters",
       "required": "This field is required",
+      "nameInvalid": "Name must contain letters only",
       "passwordMismatch": "Passwords do not match",
       "requestFailed": "Something went wrong. Please try again.",
       "missingVerifyId": "Verification link is missing an id.",

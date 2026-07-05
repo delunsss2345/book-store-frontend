@@ -16,11 +16,24 @@ import {
   FormLabel,
 } from "@/src/components/ui/form";
 import { Input } from "@/src/components/ui/input";
-import { ResetPasswordSchema } from "@/validation/auth/resetPasswordValidation";
+import { Loader2 } from "lucide-react";
 
 type TranslatorFn = ReturnType<typeof useTranslator>["t"];
 
-const getResetPasswordSchema = (_t: TranslatorFn) => ResetPasswordSchema;
+const getResetPasswordSchema = (t: TranslatorFn) =>
+  z
+    .object({
+      token: z.string().min(1),
+      email: z.string().email(t("auth.errors.emailInvalid")),
+      password: z.string().min(6, t("auth.errors.passwordMin", { count: 6 })),
+      passwordConfirmation: z
+        .string()
+        .min(6, t("auth.errors.passwordMin", { count: 6 })),
+    })
+    .refine((data) => data.password === data.passwordConfirmation, {
+      message: t("auth.errors.passwordMismatch"),
+      path: ["passwordConfirmation"],
+    });
 
 export type ResetPasswordValues = z.infer<
   ReturnType<typeof getResetPasswordSchema>
@@ -58,17 +71,19 @@ const ResetPasswordForm = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-        {/* Trường Email */}
+        {/* Email */}
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t("auth.emailLabel")}</FormLabel>
+              <FormLabel className="flabel">{t("auth.emailLabel")}</FormLabel>
               <FormControl>
                 <Input
                   type="email"
                   placeholder={t("auth.emailPlaceholder")}
+                  autoComplete="email"
+                  className="field"
                   {...field}
                 />
               </FormControl>
@@ -77,43 +92,56 @@ const ResetPasswordForm = ({
           )}
         />
 
-        {/* Trường Mật khẩu mới */}
+        {/* New password */}
         <FormField
           control={form.control}
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t("auth.newPasswordLabel")}</FormLabel>
+              <FormLabel className="flabel">{t("auth.newPasswordLabel")}</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="••••••••" {...field} />
+                <Input
+                  type="password"
+                  placeholder="••••••••"
+                  autoComplete="new-password"
+                  className="field"
+                  {...field}
+                />
               </FormControl>
               <FormMessageI18n />
             </FormItem>
           )}
         />
 
-        {/* Trường Xác nhận mật khẩu */}
+        {/* Confirm password */}
         <FormField
           control={form.control}
           name="passwordConfirmation"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t("auth.confirmPasswordLabel")}</FormLabel>
+              <FormLabel className="flabel">{t("auth.confirmPasswordLabel")}</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="••••••••" {...field} />
+                <Input
+                  type="password"
+                  placeholder="••••••••"
+                  autoComplete="new-password"
+                  className="field"
+                  {...field}
+                />
               </FormControl>
               <FormMessageI18n />
             </FormItem>
           )}
         />
 
-        <Button
+        <button
           type="submit"
-          className="w-full cursor-pointer"
+          className="btn-ink h-11 w-full rounded-lg text-[13px] mt-5"
           disabled={isLoading}
         >
+          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {isLoading ? t("auth.processing") : t("auth.resetSubmit")}
-        </Button>
+        </button>
       </form>
     </Form>
   );

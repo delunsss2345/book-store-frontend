@@ -123,9 +123,7 @@ async function proxyToBackend(request: NextRequest, context: RouteContext) {
     return response;
   } catch (error) {
     const message =
-      error instanceof Error
-        ? error.response.data.message
-        : "Internal server error";
+      error instanceof Error ? error.message : "Internal server error";
 
     return NextResponse.json(
       { success: false, message },

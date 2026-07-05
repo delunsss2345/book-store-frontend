@@ -31,7 +31,7 @@ const Header = () => {
         router.push(`/${locale}`);
         return t("auth.success.logout");
       },
-      error: t("auth.errors.requestFailed"),
+      error: (error) => error?.message || t("auth.errors.requestFailed"),
     });
   };
 

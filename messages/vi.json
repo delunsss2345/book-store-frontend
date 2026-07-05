@@ -688,6 +688,7 @@
       "emailInvalid": "Email không hợp lệ",
       "passwordMin": "Mật khẩu tối thiểu {count} ký tự",
       "required": "Bắt buộc",
+      "nameInvalid": "Họ tên chỉ được chứa chữ cái",
       "passwordMismatch": "Mật khẩu không khớp",
       "requestFailed": "Có lỗi xảy ra. Vui lòng thử lại.",
       "missingVerifyId": "Thiếu mã định danh xác minh.",

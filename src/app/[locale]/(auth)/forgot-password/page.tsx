@@ -22,7 +22,7 @@ const ForgotPassword = () => {
       success: () => {
         return t("auth.success.forgot", { email: values.email });
       },
-      error: t("auth.errors.requestFailed"),
+      error: (error) => error?.message || t("auth.errors.requestFailed"),
     });
   };
 

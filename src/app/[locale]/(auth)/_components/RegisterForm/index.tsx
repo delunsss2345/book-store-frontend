@@ -20,8 +20,14 @@ type TranslatorFn = ReturnType<typeof useTranslator>["t"];
 const getRegisterSchema = (t: TranslatorFn) =>
   z
     .object({
-      firstName: z.string().min(1, t("auth.errors.required")),
-      lastName: z.string().min(1, t("auth.errors.required")),
+      firstName: z
+        .string()
+        .min(1, t("auth.errors.required"))
+        .regex(/^[\p{L}\s'-]+$/u, t("auth.errors.nameInvalid")),
+      lastName: z
+        .string()
+        .min(1, t("auth.errors.required"))
+        .regex(/^[\p{L}\s'-]+$/u, t("auth.errors.nameInvalid")),
       email: z.string().email(t("auth.errors.emailInvalid")),
       password: z.string().min(6, t("auth.errors.passwordMin", { count: 6 })),
       confirmPassword: z
@@ -71,6 +77,7 @@ const RegisterForm = ({ isLoading = false, onSubmit }: RegisterFormProps) => {
                 <FormLabel className="flabel">{t("auth.firstNameLabel")}</FormLabel>
                 <FormControl>
                   <Input
+                    type="text"
                     placeholder={t("auth.firstNamePlaceholder")}
                     autoComplete="given-name"
                     className="field"
@@ -90,6 +97,7 @@ const RegisterForm = ({ isLoading = false, onSubmit }: RegisterFormProps) => {
                 <FormLabel className="flabel">{t("auth.lastNameLabel")}</FormLabel>
                 <FormControl>
                   <Input
+                    type="text"
                     placeholder={t("auth.lastNamePlaceholder")}
                     autoComplete="family-name"
                     className="field"

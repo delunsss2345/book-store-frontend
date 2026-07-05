@@ -33,9 +33,7 @@ const Login = () => {
         router.push(`/${locale}`);
         return t("auth.success.login");
       },
-      error: (err) => {
-        return err.response?.data ?? "Sai tài khoản hoặc mật khẩu";
-      },
+      error: (error) => error?.message || t("auth.errors.requestFailed"),
     });
   };
 
